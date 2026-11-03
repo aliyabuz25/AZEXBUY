@@ -1,0 +1,16 @@
+node_modules/
+admin/node_modules/
+build/
+dist/
+admin/dist/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
+.env
+.env.*
+.git
+backend/node_modules/
+data/
+uploads/

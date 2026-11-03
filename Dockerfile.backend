@@ -1,0 +1,47 @@
+FROM node:22-alpine AS builder
+
+WORKDIR /workspace
+
+# Build deps for native modules (better-sqlite3)
+RUN apk add --no-cache python3 make g++
+
+# ── Step 1: Build AZEXBUY frontend ───────────────────────────────
+COPY package.json package-lock.json* tsconfig.json vite.config.ts index.html tailwind.config.* ./
+COPY src ./src
+COPY public ./public
+RUN npm install --no-audit --no-fund
+# Build frontend into admin/dist/azexbuy
+RUN BUILD_OUTDIR=./admin/dist/azexbuy npm run build
+
+# ── Step 2: Build admin panel + backend ──────────────────────────
+WORKDIR /workspace/admin
+COPY admin/package.json admin/package-lock.json* ./
+RUN npm install --no-audit --no-fund
+COPY admin/src ./src
+COPY admin/vite.config.ts admin/tsconfig.json admin/index.html ./
+# vite builds client → dist/client; esbuild bundles server → dist/server.js
+RUN npm run build
+
+# ── Production image ──────────────────────────────────────────────
+FROM node:22-alpine
+
+WORKDIR /app
+
+RUN apk add --no-cache python3 make g++
+
+# Install only native runtime deps
+COPY admin/package.json ./package.json
+RUN npm install --no-audit --no-fund --omit=dev
+
+# Copy compiled output (client + server)
+COPY --from=builder /workspace/admin/dist ./dist
+
+# Create data and uploads dirs
+RUN mkdir -p /app/data /app/uploads/azexbuy
+
+EXPOSE 4320
+
+ENV NODE_ENV=production
+ENV PORT=4320
+
+CMD ["node", "dist/server.js"]

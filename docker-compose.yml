@@ -1,0 +1,36 @@
+services:
+  azexbuy-backend:
+    container_name: azexbuy-backend
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    image: azexbuy-backend:latest
+    pull_policy: build
+    restart: unless-stopped
+    ports:
+      - "4320:4320"
+    environment:
+      PORT: "4320"
+      NODE_ENV: "production"
+      JWT_SECRET: "change_this_to_a_long_random_secret_min_32_chars"
+      SITE_URL: "https://beta.azexbuy.com"
+      ALLOWED_ORIGINS: "https://beta.azexbuy.com,http://beta.azexbuy.com"
+    volumes:
+      - /datastore/azexbuy/uploads:/app/uploads
+      - /datastore/azexbuy/data:/app/data
+    networks:
+      - edge
+      - octobot-net
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.docker.network=edge'
+      - 'traefik.http.routers.azexbuy-api.rule=Host(`beta.azexbuy.com`)'
+      - 'traefik.http.routers.azexbuy-api.entrypoints=web,websecure'
+      - 'traefik.http.routers.azexbuy-api.tls=true'
+      - 'traefik.http.services.azexbuy-api.loadbalancer.server.port=4320'
+
+networks:
+  edge:
+    external: true
+  octobot-net:
+    external: true

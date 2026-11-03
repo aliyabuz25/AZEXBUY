@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brandNavy: #0f3156;
+  --color-brandNavyDark: #081c33;
+  --color-brandSovereign: #102c46;
+  --color-brandGreen: #009775;
+  --color-brandGreenDark: #007e62;
+  --color-brandGold: #c4993d;
+  --color-brandBlueLight: #eef6fc;
+  --color-brandGreenLight: #edf9f5;
+  --color-brandText: #1f2937;
+  --color-brandSubtext: #4b5563;
+  --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: "Inter", "Plus Jakarta Sans", sans-serif;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: #1f2937;
+  background-color: #ffffff;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+.custom-container {
+  max-width: 1380px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .custom-container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Thin line connectors for process steps */
+.step-line::after {
+  content: '';
+  position: absolute;
+  top: 14px;
+  left: calc(50% + 14px);
+  width: calc(100% - 28px);
+  height: 1.5px;
+  background-color: #cbd5e1;
+  z-index: 1;
+}
+
+.step-line-sm::after {
+  content: '';
+  position: absolute;
+  top: 12px;
+  left: calc(50% + 12px);
+  width: calc(100% - 24px);
+  height: 1.5px;
+  background-color: #cbd5e1;
+  z-index: 1;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printable-dossier,
+  #printable-dossier * {
+    visibility: visible;
+  }
+  #printable-dossier {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    box-shadow: none !important;
+    border: none !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
+
