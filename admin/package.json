@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "vite build && npx esbuild src/server.ts --bundle --platform=node --target=node22 --outfile=dist/server.js --external:better-sqlite3 --external:nodemailer --external:multer --external:express --external:cors --external:ioredis",
+    "build": "vite build && node_modules/.bin/esbuild src/server.ts --bundle --platform=node --target=node22 --outfile=dist/server.js --external:better-sqlite3 --external:nodemailer --external:multer --external:express --external:cors --external:ioredis --external:node:* --external:fsevents",
     "start": "node dist/server.js"
   },
   "dependencies": {

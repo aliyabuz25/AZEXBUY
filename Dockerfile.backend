@@ -1,42 +1,51 @@
-FROM node:22-alpine AS builder
+FROM node:22-alpine AS frontend-builder
 
-WORKDIR /workspace
+WORKDIR /frontend
 
-# Build deps for native modules (better-sqlite3)
 RUN apk add --no-cache python3 make g++
 
-# ── Step 1: Build AZEXBUY frontend ───────────────────────────────
-COPY package.json package-lock.json* tsconfig.json vite.config.ts index.html tailwind.config.* ./
+COPY package.json package-lock.json* ./
+RUN npm install --no-audit --no-fund
+
 COPY src ./src
 COPY public ./public
-RUN npm install --no-audit --no-fund
-# Build frontend into admin/dist/azexbuy
-RUN BUILD_OUTDIR=./admin/dist/azexbuy npm run build
+COPY index.html tsconfig.json vite.config.ts ./
 
-# ── Step 2: Build admin panel + backend ──────────────────────────
-WORKDIR /workspace/admin
-COPY admin/package.json admin/package-lock.json* ./
-RUN npm install --no-audit --no-fund
-COPY admin/src ./src
-COPY admin/vite.config.ts admin/tsconfig.json admin/index.html ./
-# vite builds client → dist/client; esbuild bundles server → dist/server.js
+# Build frontend dist → /frontend/dist
 RUN npm run build
 
-# ── Production image ──────────────────────────────────────────────
+# ── Admin panel + backend builder ────────────────────────────────
+FROM node:22-alpine AS admin-builder
+
+WORKDIR /admin
+
+RUN apk add --no-cache python3 make g++
+
+COPY admin/package.json admin/package-lock.json* ./
+RUN npm install --no-audit --no-fund
+
+COPY admin/src ./src
+COPY admin/vite.config.ts admin/tsconfig.json admin/index.html ./
+
+# Build admin client (vite → dist/client) + bundle server (esbuild → dist/server.js)
+RUN npm run build
+
+# Copy AZEXBUY frontend into admin dist so server can serve it
+COPY --from=frontend-builder /frontend/dist ./dist/azexbuy
+
+# ── Production runtime ────────────────────────────────────────────
 FROM node:22-alpine
 
 WORKDIR /app
 
 RUN apk add --no-cache python3 make g++
 
-# Install only native runtime deps
 COPY admin/package.json ./package.json
-RUN npm install --no-audit --no-fund --omit=dev
+RUN npm install --omit=dev --no-audit --no-fund
 
-# Copy compiled output (client + server)
-COPY --from=builder /workspace/admin/dist ./dist
+# Copy built artifacts (server.js + client + azexbuy frontend)
+COPY --from=admin-builder /admin/dist ./dist
 
-# Create data and uploads dirs
 RUN mkdir -p /app/data /app/uploads/azexbuy
 
 EXPOSE 4320

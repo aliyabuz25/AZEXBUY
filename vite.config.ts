@@ -21,7 +21,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     build: {
-      outDir: process.env.BUILD_OUTDIR || '../OctoUniversalController/dist/azexbuy',
+      outDir: process.env.BUILD_OUTDIR || 'dist',
       emptyOutDir: true,
     },
     server: {
