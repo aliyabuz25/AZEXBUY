@@ -181,13 +181,22 @@ export default function App() {
     setRfqModalOpen(false);
     setActivePrintProducer(null);
     setActivePrintRFQ(newRfq);
-    showToast('Official RFQ dossier registered and stored in trade registry.');
-    // Sync to OctoController backend
+    // Sync to backend first, then show toast
     fetch(`${OCTO_API}/api/azexbuy/rfqs`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newRfq),
-    }).catch(() => {});
+    }).then(r => {
+      if (r.ok) {
+        showToast('Official RFQ dossier registered and stored in trade registry.');
+      } else {
+        showToast('RFQ submitted locally. Server sync failed — our team will follow up.');
+        console.warn('[AZEXBUY] RFQ server sync failed:', r.status);
+      }
+    }).catch(() => {
+      showToast('RFQ submitted locally. Server sync failed — our team will follow up.');
+      console.warn('[AZEXBUY] RFQ server sync error');
+    });
   };
 
   const handleSubmitProducer = (newApp: ProducerApplication) => {
@@ -195,13 +204,22 @@ export default function App() {
     setProducerModalOpen(false);
     setActivePrintRFQ(null);
     setActivePrintProducer(newApp);
-    showToast('Producer export registration submitted for technical audit.');
-    // Sync to OctoController backend
+    // Sync to backend first, then show toast
     fetch(`${OCTO_API}/api/azexbuy/producers`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newApp),
-    }).catch(() => {});
+    }).then(r => {
+      if (r.ok) {
+        showToast('Producer export registration submitted for technical audit.');
+      } else {
+        showToast('Registration submitted locally. Server sync failed — our team will follow up.');
+        console.warn('[AZEXBUY] Producer server sync failed:', r.status);
+      }
+    }).catch(() => {
+      showToast('Registration submitted locally. Server sync failed — our team will follow up.');
+      console.warn('[AZEXBUY] Producer server sync error');
+    });
   };
 
   const handleToggleShortlist = (id: string) => {

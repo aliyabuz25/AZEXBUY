@@ -1350,7 +1350,7 @@ async function azDel(key) {
   } catch {
   }
 }
-app.get("/api/azexbuy/rfqs", async (req, res) => {
+app.get("/api/azexbuy/rfqs", requireAuth, async (req, res) => {
   const cached = await azGet("azexbuy:rfqs");
   if (cached) return res.json(JSON.parse(cached));
   const rows = azexbuyDb.prepare("SELECT * FROM azexbuy_rfqs ORDER BY created_at DESC").all();
@@ -1423,7 +1423,7 @@ app.delete("/api/azexbuy/rfqs/:id", requireAuth, async (req, res) => {
   await azDel("azexbuy:rfqs");
   res.json({ success: true });
 });
-app.get("/api/azexbuy/producers", async (req, res) => {
+app.get("/api/azexbuy/producers", requireAuth, async (req, res) => {
   const cached = await azGet("azexbuy:producers");
   if (cached) return res.json(JSON.parse(cached));
   const rows = azexbuyDb.prepare("SELECT * FROM azexbuy_producers ORDER BY created_at DESC").all();
