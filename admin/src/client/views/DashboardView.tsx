@@ -1,246 +1,354 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Database, 
-  Search, 
-  Image as ImageIcon, 
-  Globe, 
-  CheckCircle2, 
-  AlertCircle,
-  Clock,
-  HardDrive
+import {
+  ShoppingCart, Factory, Clock, TrendingUp,
+  CheckCircle2, AlertCircle, MapPin, Package, RefreshCw,
 } from 'lucide-react';
-import { RecordItem, MediaItem, TranslationItem, SeoConfig, SiteConfig, UiLanguage } from '../types';
+import { UiLanguage } from '../types';
 
-interface DashboardViewProps {
-  records: RecordItem[];
-  media?: MediaItem[];
-  translations?: TranslationItem[];
-  seo?: SeoConfig;
-  siteConfig?: SiteConfig | null;
-  uiLang: UiLanguage;
+interface RFQ {
+  id: string; createdAt: string; buyerCompany: string; country: string;
+  items: { productName: string; quantity: string; unit: string }[];
+  status: string;
+}
+interface Producer {
+  id: string; createdAt: string; companyName: string; productName: string;
+  monthlyCapacity?: string; readinessScore: number; status: string;
 }
 
-export const DashboardView: React.FC<DashboardViewProps> = ({ 
-  records = [], 
-  media = [], 
-  translations = [], 
-  seo, 
-  siteConfig, 
-  uiLang 
-}) => {
-  // 1. Real Records Statistics
-  const totalRecords = records.length;
-  const publishedRecords = records.filter(r => r.status === 'published').length;
-  const syncedRecords = records.filter(r => r.status === 'synced').length;
+interface DashboardViewProps {
+  records?: any[]; media?: any[]; translations?: any[];
+  seo?: any; siteConfig?: any; uiLang: UiLanguage;
+}
 
-  // 2. Real SEO Score Calculation
-  let computedSeoScore = 0;
-  if (seo?.title && seo.title.trim().length >= 10) computedSeoScore += 25;
-  if (seo?.description && seo.description.trim().length >= 30) computedSeoScore += 25;
-  if (seo?.canonical && seo.canonical.startsWith('http')) computedSeoScore += 20;
-  if (seo?.robotsIndex) computedSeoScore += 15;
-  if (seo?.ogImage) computedSeoScore += 15;
+const STATUS_COLOR: Record<string, string> = {
+  'Pending':      'bg-amber-100 text-amber-700 border-amber-200',
+  'Under Review': 'bg-blue-100 text-blue-700 border-blue-200',
+  'Completed':    'bg-emerald-100 text-emerald-700 border-emerald-200',
+  'Rejected':     'bg-red-100 text-red-700 border-red-200',
+};
 
-  // 3. Real Media Storage Calculation
-  const totalMediaCount = media.length;
-  const totalMediaBytes = media.reduce((acc, m) => acc + (m.size || 0), 0);
-  const formatBytes = (bytes: number) => {
-    if (bytes === 0) return '0 KB';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+function timeAgo(iso: string) {
+  const diff = Date.now() - new Date(iso).getTime();
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return 'İndicə';
+  if (m < 60) return `${m} dəq`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h} saat`;
+  return `${Math.floor(h / 24)} gün`;
+}
+
+// Mini bar chart component
+function BarChart({ data, color }: { data: { label: string; value: number }[]; color: string }) {
+  const max = Math.max(...data.map(d => d.value), 1);
+  return (
+    <div className="flex items-end gap-1.5 h-16">
+      {data.map((d, i) => (
+        <div key={i} className="flex-1 flex flex-col items-center gap-1">
+          <div
+            className={`w-full rounded-t-sm ${color} transition-all duration-500`}
+            style={{ height: `${Math.max(4, (d.value / max) * 52)}px` }}
+            title={`${d.label}: ${d.value}`}
+          />
+          <span className="text-[9px] text-slate-400 truncate w-full text-center">{d.label}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// Donut chart component
+function DonutChart({ pending, total, color }: { pending: number; total: number; color: string }) {
+  const r = 28;
+  const circ = 2 * Math.PI * r;
+  const pct = total > 0 ? (pending / total) : 0;
+  return (
+    <svg width="72" height="72" viewBox="0 0 72 72">
+      <circle cx="36" cy="36" r={r} fill="none" stroke="#f1f5f9" strokeWidth="8" />
+      <circle cx="36" cy="36" r={r} fill="none" stroke={color} strokeWidth="8"
+        strokeDasharray={`${pct * circ} ${circ}`}
+        strokeLinecap="round"
+        transform="rotate(-90 36 36)"
+        className="transition-all duration-700"
+      />
+      <text x="36" y="40" textAnchor="middle" fontSize="13" fontWeight="bold" fill="#0f172a">
+        {total}
+      </text>
+    </svg>
+  );
+}
+
+export const DashboardView: React.FC<DashboardViewProps> = ({ uiLang }) => {
+  const [rfqs, setRfqs] = useState<RFQ[]>([]);
+  const [producers, setProducers] = useState<Producer[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
+
+  const token = () => localStorage.getItem('octotech_admin_jwt') || '';
+
+  const load = async () => {
+    setLoading(true);
+    try {
+      const [rr, pr] = await Promise.all([
+        fetch('/api/azexbuy/rfqs', { headers: { Authorization: `Bearer ${token()}` } }),
+        fetch('/api/azexbuy/producers', { headers: { Authorization: `Bearer ${token()}` } }),
+      ]);
+      if (rr.ok) setRfqs(await rr.json());
+      if (pr.ok) setProducers(await pr.json());
+      setLastUpdate(new Date());
+    } catch {}
+    setLoading(false);
   };
 
-  // 4. Real Translations Statistics
-  const totalTranslations = translations.length;
+  useEffect(() => { load(); }, []);
 
-  // Dynamic SVG Heights based on real metrics
-  const h1 = Math.max(25, 110 - Math.min(80, totalRecords * 7));
-  const h2 = Math.max(20, 110 - Math.min(80, totalMediaCount * 12));
-  const h3 = Math.max(15, 110 - Math.min(85, totalTranslations * 6));
-  const h4 = Math.max(15, 110 - Math.min(90, computedSeoScore * 0.9));
+  // Stats
+  const rfqPending   = rfqs.filter(r => r.status === 'Pending').length;
+  const rfqCompleted = rfqs.filter(r => r.status === 'Completed').length;
+  const prodPending  = producers.filter(p => p.status === 'Pending').length;
+  const prodCompleted = producers.filter(p => p.status === 'Completed').length;
+
+  // Country distribution (top 5)
+  const countryCounts: Record<string, number> = {};
+  rfqs.forEach(r => { countryCounts[r.country || 'Unknown'] = (countryCounts[r.country || 'Unknown'] || 0) + 1; });
+  const topCountries = Object.entries(countryCounts).sort((a, b) => b[1] - a[1]).slice(0, 6)
+    .map(([label, value]) => ({ label, value }));
+
+  // Status distribution for bar chart
+  const rfqStatusData = [
+    { label: 'Pending',  value: rfqPending },
+    { label: 'Review',   value: rfqs.filter(r => r.status === 'Under Review').length },
+    { label: 'Done',     value: rfqCompleted },
+    { label: 'Rejected', value: rfqs.filter(r => r.status === 'Rejected').length },
+  ];
+  const prodStatusData = [
+    { label: 'Pending',  value: prodPending },
+    { label: 'Review',   value: producers.filter(p => p.status === 'Under Review').length },
+    { label: 'Done',     value: prodCompleted },
+    { label: 'Rejected', value: producers.filter(p => p.status === 'Rejected').length },
+  ];
+
+  // Readiness score avg
+  const avgReadiness = producers.length > 0
+    ? Math.round(producers.reduce((s, p) => s + p.readinessScore, 0) / producers.length)
+    : 0;
 
   return (
-    <div className="p-6 max-w-6xl mx-auto space-y-6 select-none">
-      {/* 4 Real Metric Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Card 1: Real Records Count */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.05 }}
-          className="bg-white p-4 rounded-none border border-slate-300 dark:border-slate-800 space-y-2"
-        >
-          <div className="flex items-center justify-between text-slate-500">
-            <span className="text-xs font-medium uppercase tracking-wider">Məlumat Bazası</span>
-            <Database className="w-4 h-4 text-slate-500" />
+    <div className="p-6 max-w-6xl mx-auto space-y-6">
+
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-lg font-bold text-slate-900">İdarə Paneli</h1>
+          <p className="text-xs text-slate-400 mt-0.5">
+            {lastUpdate ? `Son yenilənmə: ${timeAgo(lastUpdate.toISOString())} əvvəl` : 'Yüklənir...'}
+          </p>
+        </div>
+        <button onClick={load} disabled={loading}
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs border border-slate-200 hover:bg-slate-50 rounded-md text-slate-500 transition-colors cursor-pointer">
+          <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+          Yenilə
+        </button>
+      </div>
+
+      {/* 4 Stat Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {[
+          {
+            label: 'Ümumi RFQ',
+            value: rfqs.length,
+            sub: `${rfqPending} gözləyir`,
+            icon: ShoppingCart,
+            color: 'text-blue-600',
+            bg: 'bg-blue-50',
+            pending: rfqPending,
+            total: rfqs.length,
+            donutColor: '#3b82f6',
+          },
+          {
+            label: 'Ümumi İstehsalçı',
+            value: producers.length,
+            sub: `${prodPending} gözləyir`,
+            icon: Factory,
+            color: 'text-emerald-600',
+            bg: 'bg-emerald-50',
+            pending: prodPending,
+            total: producers.length,
+            donutColor: '#10b981',
+          },
+          {
+            label: 'Tamamlanan RFQ',
+            value: rfqCompleted,
+            sub: `${rfqs.length > 0 ? Math.round(rfqCompleted / rfqs.length * 100) : 0}% uğur`,
+            icon: CheckCircle2,
+            color: 'text-purple-600',
+            bg: 'bg-purple-50',
+            pending: rfqCompleted,
+            total: rfqs.length,
+            donutColor: '#8b5cf6',
+          },
+          {
+            label: 'Orta Hazırlıq',
+            value: `${avgReadiness}`,
+            sub: `${producers.length} istehsalçı`,
+            icon: TrendingUp,
+            color: 'text-orange-600',
+            bg: 'bg-orange-50',
+            pending: avgReadiness,
+            total: 100,
+            donutColor: '#f97316',
+          },
+        ].map((card, i) => (
+          <motion.div key={i}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.07 }}
+            className="bg-white rounded-xl border border-slate-200 p-4 flex items-center gap-4">
+            <DonutChart pending={card.pending} total={card.total} color={card.donutColor} />
+            <div className="min-w-0">
+              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider truncate">{card.label}</div>
+              <div className="text-2xl font-bold text-slate-900 mt-0.5">{card.value}</div>
+              <div className={`text-xs font-medium mt-0.5 ${card.pending > 0 ? 'text-amber-600' : 'text-slate-400'}`}>{card.sub}</div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Charts row */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+        {/* RFQ Status Bar */}
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+          className="bg-white rounded-xl border border-slate-200 p-4">
+          <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+            <ShoppingCart className="w-3.5 h-3.5 text-blue-500" /> RFQ Status Paylanması
           </div>
-          <div className="text-2xl font-bold text-slate-900 tracking-tight">
-            {totalRecords} <span className="text-xs font-normal text-slate-500">qeyd</span>
-          </div>
-          <div className="flex items-center gap-1.5 text-xs text-slate-600 font-mono">
-            <span className="text-slate-700 font-semibold">{publishedRecords} Dərc</span>
-            <span className="text-slate-400">•</span>
-            <span className="text-slate-500">{syncedRecords} Sinxron</span>
-          </div>
+          <BarChart data={rfqStatusData} color="bg-blue-400" />
         </motion.div>
 
-        {/* Card 2: Real SEO Score */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="bg-white p-4 rounded-none border border-slate-300 dark:border-slate-800 space-y-2"
-        >
-          <div className="flex items-center justify-between text-slate-500">
-            <span className="text-xs font-medium uppercase tracking-wider">Real SEO Skoru</span>
-            <Search className="w-4 h-4 text-slate-500" />
+        {/* Producer Status Bar */}
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
+          className="bg-white rounded-xl border border-slate-200 p-4">
+          <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+            <Factory className="w-3.5 h-3.5 text-emerald-500" /> İstehsalçı Status Paylanması
           </div>
-          <div className="text-2xl font-bold text-slate-900 tracking-tight">
-            {computedSeoScore} <span className="text-xs font-normal text-slate-500">/ 100</span>
-          </div>
-          <div className="flex items-center gap-1 text-xs text-slate-600 font-medium truncate">
-            {computedSeoScore >= 80 ? (
-              <>
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                <span className="truncate">Yüksək (Google SERP Uyğun)</span>
-              </>
-            ) : (
-              <>
-                <AlertCircle className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-                <span className="truncate">{seo?.canonical ? 'Meta teqlər qismən' : 'Kanonik URL təyin edin'}</span>
-              </>
-            )}
-          </div>
+          <BarChart data={prodStatusData} color="bg-emerald-400" />
         </motion.div>
 
-        {/* Card 3: Real Media Assets & Size */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-          className="bg-white p-4 rounded-none border border-slate-300 dark:border-slate-800 space-y-2"
-        >
-          <div className="flex items-center justify-between text-slate-500">
-            <span className="text-xs font-medium uppercase tracking-wider">Media Kitabxanası</span>
-            <ImageIcon className="w-4 h-4 text-slate-500" />
+        {/* Top Countries */}
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+          className="bg-white rounded-xl border border-slate-200 p-4">
+          <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+            <MapPin className="w-3.5 h-3.5 text-purple-500" /> Ən Çox Sorğu Göndərən Ölkələr
           </div>
-          <div className="text-2xl font-bold text-slate-900 tracking-tight">
-            {totalMediaCount} <span className="text-xs font-normal text-slate-500">fayl</span>
-          </div>
-          <div className="flex items-center gap-1 text-xs text-slate-600 font-mono">
-            <HardDrive className="w-3 h-3 text-slate-400" />
-            <span>{formatBytes(totalMediaBytes)} həcm</span>
-          </div>
-        </motion.div>
-
-        {/* Card 4: Real Localization Keys & Languages */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="bg-white p-4 rounded-none border border-slate-300 dark:border-slate-800 space-y-2"
-        >
-          <div className="flex items-center justify-between text-slate-500">
-            <span className="text-xs font-medium uppercase tracking-wider">Lokalizasiya</span>
-            <Globe className="w-4 h-4 text-slate-500" />
-          </div>
-          <div className="text-2xl font-bold text-slate-900 tracking-tight">
-            {totalTranslations} <span className="text-xs font-normal text-slate-500">açar</span>
-          </div>
-          <div className="flex items-center gap-1.5 text-xs text-slate-500 font-mono">
-            <span>4 Dil (AZ, TR, RU, EN)</span>
-          </div>
+          {topCountries.length === 0 ? (
+            <div className="h-16 flex items-center justify-center text-xs text-slate-300">Məlumat yoxdur</div>
+          ) : (
+            <BarChart data={topCountries} color="bg-purple-400" />
+          )}
         </motion.div>
       </div>
 
-      {/* Real Metrics Wave Graph */}
-      <div className="bg-white rounded-none border border-slate-300 dark:border-slate-800 p-5 space-y-3">
-        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
-          <div>
-            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-900">
-              Məzmun & Aktivlik Qrafiki
+      {/* Recent RFQs + Producers */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+        {/* Recent RFQs */}
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}
+          className="bg-white rounded-xl border border-slate-200 p-4">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+              <ShoppingCart className="w-3.5 h-3.5 text-blue-500" /> Son RFQ Sorğuları
             </h3>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Məlumat bazası, media aktivləri və tərcümələrin real paylanması.
-            </p>
+            <span className="text-[10px] text-slate-400">{rfqs.length} ümumi</span>
           </div>
-          <span className="text-[11px] font-mono text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 border border-slate-300 dark:border-slate-700">
-            Mərkəzi Baza İcmalı
+          {rfqs.length === 0 ? (
+            <div className="py-8 flex flex-col items-center gap-2 text-slate-300">
+              <ShoppingCart className="w-8 h-8" />
+              <span className="text-xs">Heç bir RFQ tapılmadı</span>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {rfqs.slice(0, 5).map(r => (
+                <div key={r.id} className="flex items-center justify-between gap-3 py-2 border-b border-slate-50 last:border-0">
+                  <div className="min-w-0 flex-1">
+                    <div className="text-xs font-semibold text-slate-800 truncate">{r.buyerCompany}</div>
+                    <div className="text-[10px] text-slate-400 flex items-center gap-1 mt-0.5">
+                      <MapPin className="w-2.5 h-2.5" />{r.country}
+                      {r.items?.length > 0 && (
+                        <span className="ml-1 flex items-center gap-0.5">
+                          <Package className="w-2.5 h-2.5" />
+                          {r.items[0].productName}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full border font-semibold ${STATUS_COLOR[r.status] || 'bg-slate-100 text-slate-500'}`}>
+                      {r.status}
+                    </span>
+                    <span className="text-[10px] text-slate-300 flex items-center gap-0.5">
+                      <Clock className="w-2.5 h-2.5" />{timeAgo(r.createdAt)}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </motion.div>
+
+        {/* Recent Producers */}
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
+          className="bg-white rounded-xl border border-slate-200 p-4">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+              <Factory className="w-3.5 h-3.5 text-emerald-500" /> Son İstehsalçılar
+            </h3>
+            <span className="text-[10px] text-slate-400">{producers.length} ümumi</span>
+          </div>
+          {producers.length === 0 ? (
+            <div className="py-8 flex flex-col items-center gap-2 text-slate-300">
+              <Factory className="w-8 h-8" />
+              <span className="text-xs">Heç bir istehsalçı tapılmadı</span>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {producers.slice(0, 5).map(p => (
+                <div key={p.id} className="flex items-center justify-between gap-3 py-2 border-b border-slate-50 last:border-0">
+                  <div className="min-w-0 flex-1">
+                    <div className="text-xs font-semibold text-slate-800 truncate">{p.companyName}</div>
+                    <div className="text-[10px] text-slate-400 flex items-center gap-1 mt-0.5">
+                      <Package className="w-2.5 h-2.5" />{p.productName}
+                      {p.monthlyCapacity && <span className="ml-1">· {p.monthlyCapacity}/ay</span>}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-full">
+                      {p.readinessScore}/100
+                    </span>
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full border font-semibold ${STATUS_COLOR[p.status] || 'bg-slate-100 text-slate-500'}`}>
+                      {p.status}
+                    </span>
+                    <span className="text-[10px] text-slate-300 flex items-center gap-0.5">
+                      <Clock className="w-2.5 h-2.5" />{timeAgo(p.createdAt)}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </motion.div>
+      </div>
+
+      {/* Pending alert */}
+      {(rfqPending + prodPending) > 0 && (
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.55 }}
+          className="bg-amber-50 border border-amber-200 rounded-xl px-5 py-3 flex items-center gap-3">
+          <AlertCircle className="w-4 h-4 text-amber-500 shrink-0" />
+          <span className="text-xs text-amber-700 font-medium">
+            <strong>{rfqPending + prodPending}</strong> gözləyən sorğu var — Gelen Qutusu'ndan nəzərdən keçirin.
           </span>
-        </div>
-
-        {/* SVG Sparkline Graph with Real Heights */}
-        <div className="h-44 w-full pt-2">
-          <svg className="w-full h-full overflow-visible" viewBox="0 0 600 120" preserveAspectRatio="none">
-            <defs>
-              <linearGradient id="freqGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="var(--theme-accent, #0f172a)" stopOpacity="0.22" />
-                <stop offset="100%" stopColor="var(--theme-accent, #0f172a)" stopOpacity="0.0" />
-              </linearGradient>
-            </defs>
-            <path
-              d={`M0,${h1 + 20} Q100,${h1} 200,${h2} T400,${h3} T600,${h4} L600,120 L0,120 Z`}
-              fill="url(#freqGrad)"
-            />
-            <path
-              d={`M0,${h1 + 20} Q100,${h1} 200,${h2} T400,${h3} T600,${h4}`}
-              fill="none"
-              stroke="var(--theme-accent, #0f172a)"
-              strokeWidth="2.5"
-            />
-            {/* Spark points matching real counts */}
-            <circle cx="200" cy={h2} r="3.5" fill="var(--theme-accent, #0f172a)" stroke="var(--theme-surface, #ffffff)" strokeWidth="2" />
-            <circle cx="400" cy={h3} r="3.5" fill="var(--theme-accent, #0f172a)" stroke="var(--theme-surface, #ffffff)" strokeWidth="2" />
-            <circle cx="600" cy={h4} r="3.5" fill="var(--theme-accent, #0f172a)" stroke="var(--theme-surface, #ffffff)" strokeWidth="2" />
-          </svg>
-        </div>
-
-        <div className="flex items-center justify-between text-[11px] font-mono text-slate-500 pt-2 border-t border-slate-100 dark:border-slate-800">
-          <span>Başlanğıc</span>
-          <span>Baza Qeydləri ({totalRecords})</span>
-          <span>Media Aktivləri ({totalMediaCount})</span>
-          <span>Tərcümələr ({totalTranslations})</span>
-          <span>SEO ({computedSeoScore}%)</span>
-        </div>
-      </div>
-
-      {/* Real Synced Events */}
-      <div className="bg-white rounded-none border border-slate-300 dark:border-slate-800 p-5 space-y-3">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-900 flex items-center gap-2">
-          <Clock className="w-4 h-4 text-slate-500" />
-          <span>Son Məzmun Qeydləri</span>
-        </h3>
-
-        {records.length === 0 ? (
-          <div className="py-8 text-center text-xs text-slate-400">
-            Hələ heç bir məzmun qeydi əlavə olunmayıb.
-          </div>
-        ) : (
-          <div className="divide-y divide-slate-100 dark:divide-slate-800">
-            {records.slice(0, 5).map(rec => (
-              <div key={rec.id} className="py-2.5 flex items-center justify-between text-xs">
-                <div className="flex items-center gap-2.5">
-                  <span className="font-mono text-slate-400 text-[11px]">{rec.id}</span>
-                  <span className="font-medium text-slate-800">{rec.title}</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-slate-400 font-mono text-[11px]">{rec.date}</span>
-                  <span className={`px-2 py-0.5 rounded-none text-[10.5px] font-mono capitalize ${
-                    rec.status === 'published' ? 'bg-slate-100 text-slate-800 border border-slate-200' :
-                    rec.status === 'synced' ? 'bg-slate-50 text-slate-700 border border-slate-200' :
-                    'bg-slate-100 text-slate-600'
-                  }`}>
-                    {rec.status}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+        </motion.div>
+      )}
     </div>
   );
 };
