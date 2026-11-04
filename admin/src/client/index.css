@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 :root {
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "SF Pro", -apple-system-body, system-ui, sans-serif;
   --theme-transition: background-color 0.15s ease, border-color 0.15s ease, color 0.12s ease;

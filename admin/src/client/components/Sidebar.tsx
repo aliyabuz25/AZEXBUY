@@ -12,6 +12,8 @@ import {
   Users,
   Inbox,
   Mail,
+  Image as ImageIcon,
+  Globe,
 } from 'lucide-react';
 import { UiLanguage } from '../types';
 import { DICTIONARIES } from '../i18n';
@@ -38,6 +40,13 @@ const AZEXBUY_ITEMS = [
 
 // Top-level nav sections (outside AZEXBUY collapsible)
 const PLATFORM_SECTIONS = [
+  {
+    title: 'Məzmun',
+    items: [
+      { id: 'media',        label: 'Media Mərkəzi',   icon: ImageIcon },
+      { id: 'localization', label: 'Lokalizasiya',    icon: Globe },
+    ],
+  },
   {
     title: 'İdarəetmə',
     items: [
@@ -68,7 +77,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   // Poll unread counts every 15s
   useEffect(() => {
-    const token = () => localStorage.getItem('octo_token') || sessionStorage.getItem('octo_token') || '';
+    const token = () => localStorage.getItem('octotech_admin_jwt') || sessionStorage.getItem('octotech_admin_jwt') || '';
     const fetchCounts = async () => {
       try {
         const [rr, pr] = await Promise.all([
