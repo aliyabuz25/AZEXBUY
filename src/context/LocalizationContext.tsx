@@ -22,13 +22,20 @@ function applyFlatOverrides(base: any, flat: Record<string, string>): any {
   for (const [path, value] of Object.entries(flat)) {
     const parts = path.replace(/\[(\d+)\]/g, '.$1').split('.');
     let cur = result;
+    let valid = true;
     for (let i = 0; i < parts.length - 1; i++) {
       const p = parts[i];
-      if (cur[p] === undefined || cur[p] === null) break;
+      if (cur === null || cur === undefined) { valid = false; break; }
+      // Auto-create missing intermediate objects/arrays
+      if (cur[p] === undefined || cur[p] === null) {
+        const nextKey = parts[i + 1];
+        cur[p] = /^\d+$/.test(nextKey) ? [] : {};
+      }
       cur = cur[p];
     }
+    if (!valid || cur === null || cur === undefined) continue;
     const last = parts[parts.length - 1];
-    if (cur && last !== undefined && last in cur) cur[last] = value;
+    if (last !== undefined) cur[last] = value;
   }
   return result;
 }
