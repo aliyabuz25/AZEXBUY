@@ -787,7 +787,7 @@ app.delete("/api/logs", requireAuth, (req, res) => {
   res.json({ success: true });
 });
 var clientDist = path3.join(ROOT_DIR, "dist", "client");
-var azexbuyDist = path3.join(ROOT_DIR, "dist");
+var azexbuyDist = path3.join(ROOT_DIR, "dist", "azexbuy");
 if (fs3.existsSync(clientDist)) {
   app.use("/octo-admin", express.static(clientDist));
 }
