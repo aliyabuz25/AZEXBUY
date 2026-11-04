@@ -569,6 +569,7 @@ export const App: React.FC = () => {
         onSelectTab={openTab}
         siteName={siteConfig?.name || 'Octotech Store'}
         uiLang={uiLang}
+        onSelectLang={handleSelectLang}
         adminName={adminUser.fullName || 'Admin'}
         adminEmail={adminUser.email}
         sessionRemainingSeconds={sessionRemaining}
