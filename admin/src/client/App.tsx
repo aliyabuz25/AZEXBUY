@@ -16,7 +16,6 @@ import { COLOR_THEMES, getInitialTheme, applyTheme } from './theme';
 import { Sidebar } from './components/Sidebar';
 import { TabsBar } from './components/TabsBar';
 import { OnboardingWizard } from './components/OnboardingWizard';
-import { FloatingFlagSelector } from './components/FloatingFlagSelector';
 import { CommandPalette } from './components/CommandPalette';
 import { ThemeSelectorModal } from './components/ThemeSelectorModal';
 import { InteractiveTutorial } from './components/InteractiveTutorial';
@@ -707,9 +706,6 @@ export const App: React.FC = () => {
           )}
         </div>
       </main>
-
-      {/* Floating Circular Flag Language Selector */}
-      <FloatingFlagSelector currentLang={uiLang} onSelectLang={handleSelectLang} />
 
       {/* Command Palette Modal */}
       <CommandPalette
