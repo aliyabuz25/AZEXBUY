@@ -44,10 +44,13 @@ export const UserManagementView: React.FC<UserManagementViewProps> = () => {
 
   const flash = (msg: string) => { setSuccessMsg(msg); setTimeout(() => setSuccessMsg(''), 2500); };
 
+  const token = () => localStorage.getItem('octotech_admin_jwt') || '';
+  const authH = () => ({ Authorization: `Bearer ${token()}`, 'Content-Type': 'application/json' });
+
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const r = await fetch('/api/admin-users');
+      const r = await fetch('/api/admin-users', { headers: authH() });
       if (r.ok) setUsers(await r.json());
     } catch {}
     setLoading(false);
@@ -64,7 +67,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = () => {
     setFormSaving(true);
     const r = await fetch('/api/admin-users', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authH(),
       body: JSON.stringify(form),
     });
     const data = await r.json();
@@ -79,7 +82,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = () => {
   const handlePatch = async (id: string, patch: any) => {
     await fetch(`/api/admin-users/${id}`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authH(),
       body: JSON.stringify(patch),
     });
     load();
@@ -87,7 +90,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = () => {
 
   const handleDelete = async (id: string, name: string) => {
     if (!confirm(`"${name}" istifadəçisini silmək istəyirsiniz?`)) return;
-    await fetch(`/api/admin-users/${id}`, { method: 'DELETE' });
+    await fetch(`/api/admin-users/${id}`, { method: 'DELETE', headers: authH() });
     flash('İstifadəçi silindi.');
     load();
   };
