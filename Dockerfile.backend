@@ -1,44 +1,17 @@
-FROM node:22-slim AS frontend-builder
+FROM node:22-slim
 
-WORKDIR /frontend
-
-COPY package.json package-lock.json ./
-RUN npm ci --no-audit --no-fund
-
-COPY src ./src
-COPY public ./public
-COPY index.html tsconfig.json vite.config.ts ./
-
-RUN npm run build
-
-# ── Admin panel + backend builder ────────────────────────────────
-FROM node:22-slim AS admin-builder
-
-WORKDIR /admin
+WORKDIR /app
 
 RUN apt-get update && apt-get install -y python3 make g++ && rm -rf /var/lib/apt/lists/*
 
 COPY admin/package.json admin/package-lock.json ./
 RUN npm ci --no-audit --no-fund
 
-COPY admin/src ./src
-COPY admin/vite.config.ts admin/tsconfig.json admin/index.html admin/build-server.mjs ./
+# Copy pre-built artifacts (lokal build: npm run build + admin npm run build)
+COPY admin/dist ./dist
 
-RUN npm run build
-
-# Copy AZEXBUY frontend into admin dist/azexbuy
-COPY --from=frontend-builder /frontend/dist ./dist/azexbuy
-
-# ── Production runtime ────────────────────────────────────────────
-FROM node:22-slim
-
-WORKDIR /app
-
-# Copy node_modules from builder (already compiled native modules)
-COPY --from=admin-builder /admin/node_modules ./node_modules
-
-# Copy built artifacts
-COPY --from=admin-builder /admin/dist ./dist
+# Copy AZEXBUY frontend into dist/azexbuy
+COPY dist ./dist/azexbuy
 
 RUN mkdir -p /app/data /app/uploads/azexbuy
 
