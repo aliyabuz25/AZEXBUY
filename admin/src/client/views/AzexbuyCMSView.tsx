@@ -13,12 +13,26 @@ const OCTO = '';
 const LOCALES = ['EN', 'AZ', 'TR', 'RU', 'AR', 'ES'] as const;
 type Loc = typeof LOCALES[number];
 
+const getToken = () => localStorage.getItem('octotech_admin_jwt') || '';
+
 async function apiGet(path: string) {
-  try { const r = await fetch(`${OCTO}${path}`); return r.ok ? r.json() : null; } catch { return null; }
+  try {
+    const r = await fetch(`${OCTO}${path}`, {
+      headers: { 'Authorization': `Bearer ${getToken()}` }
+    });
+    return r.ok ? r.json() : null;
+  } catch { return null; }
 }
 async function apiPost(path: string, body: any) {
   try {
-    const r = await fetch(`${OCTO}${path}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    const r = await fetch(`${OCTO}${path}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getToken()}`,
+      },
+      body: JSON.stringify(body),
+    });
     return r.ok ? r.json() : null;
   } catch { return null; }
 }
@@ -187,7 +201,11 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
     const fd = new FormData();
     fd.append('image', file);
     try {
-      const r = await fetch(`${OCTO}/api/azexbuy/upload-image`, { method: 'POST', body: fd });
+      const r = await fetch(`${OCTO}/api/azexbuy/upload-image`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${getToken()}` },
+        body: fd,
+      });
       if (r.ok) {
         const { url } = await r.json();
         const updated = { ...content, images: { ...(content.images || {}), [key]: url } };
@@ -782,7 +800,10 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                           URL Kopyala
                         </button>
                         <button onClick={async () => {
-                          await fetch(`${OCTO}/api/azexbuy/images/${img.filename}`, { method: 'DELETE' });
+                          await fetch(`${OCTO}/api/azexbuy/images/${img.filename}`, {
+                            method: 'DELETE',
+                            headers: { 'Authorization': `Bearer ${getToken()}` },
+                          });
                           load();
                         }} className="h-6 px-1.5 text-red-500 hover:bg-red-50 border border-red-200 rounded-sm">
                           <Trash2 className="w-2.5 h-2.5" />

@@ -24,10 +24,20 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.docker.network=edge'
-      - 'traefik.http.routers.azexbuy-api.rule=Host(`beta.azexbuy.com`)'
+
+      # ── API + uploads + admin panel → backend (high priority) ──────────────
+      - 'traefik.http.routers.azexbuy-api.rule=Host(`beta.azexbuy.com`) && (PathPrefix(`/api`) || PathPrefix(`/uploads`) || PathPrefix(`/octo-admin`))'
       - 'traefik.http.routers.azexbuy-api.entrypoints=web,websecure'
       - 'traefik.http.routers.azexbuy-api.tls=true'
+      - 'traefik.http.routers.azexbuy-api.priority=100'
       - 'traefik.http.services.azexbuy-api.loadbalancer.server.port=4320'
+
+      # ── Frontend (SPA) → backend at root (low priority) ────────────────────
+      - 'traefik.http.routers.azexbuy-frontend.rule=Host(`beta.azexbuy.com`)'
+      - 'traefik.http.routers.azexbuy-frontend.entrypoints=web,websecure'
+      - 'traefik.http.routers.azexbuy-frontend.tls=true'
+      - 'traefik.http.routers.azexbuy-frontend.priority=10'
+      - 'traefik.http.services.azexbuy-frontend.loadbalancer.server.port=4320'
 
 networks:
   edge:
