@@ -4,6 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.backend
+      no_cache: true
     image: azexbuy-backend:latest
     pull_policy: build
     restart: unless-stopped
