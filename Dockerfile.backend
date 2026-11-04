@@ -24,7 +24,7 @@ COPY admin/package.json admin/package-lock.json* ./
 RUN npm install --no-audit --no-fund
 
 COPY admin/src ./src
-COPY admin/vite.config.ts admin/tsconfig.json admin/index.html ./
+COPY admin/vite.config.ts admin/tsconfig.json admin/index.html admin/build-server.mjs ./
 
 RUN npm run build
 
