@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Save, Upload, RefreshCw, CheckCircle, ChevronDown, ChevronRight,
-  Trash2, Plus, Eye, X, Image as ImgIcon, AlignLeft, Package,
-  Star, Footprints, Layers, Globe, LayoutTemplate, Menu as MenuIcon,
-  Anchor, HelpCircle, Info, Map, Users, FileText, BookOpen,
+  Trash2, Plus, Eye, X, Image as ImgIcon, Package,
+  Star, Footprints, Layers, LayoutTemplate, Menu as MenuIcon,
+  Anchor, HelpCircle, Info, Map, Users, FileText,
 } from 'lucide-react';
 import { UiLanguage } from '../types';
 
@@ -18,11 +18,12 @@ const getToken = () => localStorage.getItem('octotech_admin_jwt') || '';
 async function apiGet(path: string) {
   try {
     const r = await fetch(`${OCTO}${path}`, {
-      headers: { 'Authorization': `Bearer ${getToken()}` }
+      headers: { 'Authorization': `Bearer ${getToken()}` },
     });
     return r.ok ? r.json() : null;
   } catch { return null; }
 }
+
 async function apiPost(path: string, body: any) {
   try {
     const r = await fetch(`${OCTO}${path}`, {
@@ -37,7 +38,7 @@ async function apiPost(path: string, body: any) {
   } catch { return null; }
 }
 
-// ── Default strings seed (EN + AZ for display, all locales stored in DB) ──────
+// ── Default strings ────────────────────────────────────────────────────────────
 const DEFAULT_STRINGS: Record<string, Record<string, string>> = {
   EN: {
     'nav.home': 'Home', 'nav.forBuyers': 'For Buyers', 'nav.forProducers': 'For Producers',
@@ -101,45 +102,195 @@ const DEFAULT_STRINGS: Record<string, Record<string, string>> = {
   },
 };
 
-// ── CMS page sections definition ──────────────────────────────────────────────
 const CMS_PAGES = [
-  { key: 'images',           label: 'Görseller',              icon: ImgIcon },
-  { key: 'navbar',           label: 'Naviqasiya Menyusu',     icon: MenuIcon },
-  { key: 'hero',             label: 'Hero Bolmesi',           icon: LayoutTemplate },
-  { key: 'why_azexbuy',     label: 'Niye AZEXBUY',           icon: Star },
-  { key: 'audience',         label: 'Alici / Istehsalci',     icon: Users },
-  { key: 'services',         label: 'Xidmetler',              icon: Anchor },
-  { key: 'how_it_works',    label: 'Nece Isleyir',            icon: HelpCircle },
-  { key: 'featured_products',label: 'One Cixan Mehsullar',    icon: FileText },
-  { key: 'why_azerbaijan',  label: 'Niye Azerbaycan',         icon: Map },
-  { key: 'footer',           label: 'Footer',                 icon: Info },
-  { key: 'products_catalog', label: 'Mehsullar Kataloqu',     icon: Package },
-  { key: 'buyer_steps',     label: 'Alici Addimlari',         icon: Footprints },
-  { key: 'producer_steps',  label: 'Istehsalci Addimlari',    icon: Layers },
-  { key: 'media_library',   label: 'Sekil Kitabxanasi',       icon: ImgIcon },
+  { key: 'images',            label: 'Görseller',              icon: ImgIcon },
+  { key: 'navbar',            label: 'Naviqasiya Menyusu',     icon: MenuIcon },
+  { key: 'hero',              label: 'Hero Bolmesi',           icon: LayoutTemplate },
+  { key: 'why_azexbuy',      label: 'Niye AZEXBUY',           icon: Star },
+  { key: 'audience',          label: 'Alici / Istehsalci',     icon: Users },
+  { key: 'services',          label: 'Xidmetler',              icon: Anchor },
+  { key: 'how_it_works',     label: 'Nece Isleyir',            icon: HelpCircle },
+  { key: 'featured_products', label: 'One Cixan Mehsullar',    icon: FileText },
+  { key: 'why_azerbaijan',   label: 'Niye Azerbaycan',         icon: Map },
+  { key: 'footer',            label: 'Footer',                 icon: Info },
+  { key: 'products_catalog',  label: 'Mehsullar Kataloqu',     icon: Package },
+  { key: 'buyer_steps',      label: 'Alici Addimlari',         icon: Footprints },
+  { key: 'producer_steps',   label: 'Istehsalci Addimlari',    icon: Layers },
+  { key: 'media_library',    label: 'Sekil Kitabxanasi',       icon: ImgIcon },
 ] as const;
 type PageKey = typeof CMS_PAGES[number]['key'];
 
 const IMAGE_KEYS = [
-  {
-    key: 'HERO_IMAGE', label: 'Hero Arxa Fon',
-    defaultUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB9ZWqLLmb30gHFdTBf7cfY60pAMzYSTWRn2keRDZ7k8a3eQicd1I5xuOR1U44ux_eyOl79BjhxRaXdEbzovzXexqRo8oDy3gVECJAAKnDsq1DYgw7oR-p-U-VjFeMqmdwPl27SJVIP7hTVWchM1LYBR1EY2hy5C8iSkUcytv0qKVFgxmbifXswWW8UTnyUsQw5XBb81qNG2tremLOg_k5EPGCl-K_AWwSN8UQ3T1EN7HyePk3pvGD9',
-  },
-  {
-    key: 'BUYER_CARD_IMAGE', label: 'Alıcı Kartı Görseli',
-    defaultUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCHfBjlFdQNaNAsP2RbAdqbBzskyL-GFgkaTpjwu0U6iT-t0tvmdQxrsHV7DOVkxLI4TCvj6qWpEawxqKJPqQE9f5GeXtwvTu7-fs3s495aRNM41LY0ardk4_DhtXk2RrKbiZgwssXvlrrI_EThET-4vRXO-9SbspxRcE3KXflGW-LnO8LzAq_bYYS10R-r010CzBLBwMqbd6slv40ntEvn3OyeauJszJaHkxnHTcGCq-0XAIDQmj6_',
-  },
-  {
-    key: 'PRODUCER_CARD_IMAGE', label: 'Istehsalci Karti Görseli',
-    defaultUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDgrvRVBxN_YV05A8C2ZBQC2V2WHmgN9IrmvxhBvoVre7FKYjEbaR95Ew5PqX6-T-FG67u-0fHLCX6KeLtUrAkBIiJfWZGu7t3Ez2RyKvMerWTAHV1ROVLxhP4wE2oqLK-k9t1i6hrPmq-YJ-GDzjbqNDrNf2-SyjbXUmuQAJa5ScuKsRahZQdVKWyzFzRNPNYzxr3XOkiIb2BLWy4KJO-b-RWiNaaRqebQkQINqnQZfyBkDjpvxMId',
-  },
-  {
-    key: 'WHY_AZERBAIJAN_IMAGE', label: 'Niye Azerbaycan Görseli',
-    defaultUrl: 'https://lh3.googleusercontent.com/aida/AEtjO1WtUBR_2hOeUbRABsre_R7H-yW12FldWdxDp_6_abkiZuNwgF3fMTiwxdQCKdfEbdEWa-6CSQc0bQgUbjojei2itk13mAz_e09yOnKuFWP_7AO2BpMiNUQByyYnqtrPMywT0b4g4COdLkLc5_L75NtOsKv5OOgHz7VdAMCF-WDWgmhqccS9HdQKKY8cwD4AeVg_Z5AczT8rfvCVFXyJrgDuQKAsNiyYL54OeN2_HoFxHi9ltf4bUcbHSmM',
-  },
+  { key: 'HERO_IMAGE',          label: 'Hero Arxa Fon',           defaultUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB9ZWqLLmb30gHFdTBf7cfY60pAMzYSTWRn2keRDZ7k8a3eQicd1I5xuOR1U44ux_eyOl79BjhxRaXdEbzovzXexqRo8oDy3gVECJAAKnDsq1DYgw7oR-p-U-VjFeMqmdwPl27SJVIP7hTVWchM1LYBR1EY2hy5C8iSkUcytv0qKVFgxmbifXswWW8UTnyUsQw5XBb81qNG2tremLOg_k5EPGCl-K_AWwSN8UQ3T1EN7HyePk3pvGD9' },
+  { key: 'BUYER_CARD_IMAGE',    label: 'Alıcı Kartı Görseli',     defaultUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCHfBjlFdQNaNAsP2RbAdqbBzskyL-GFgkaTpjwu0U6iT-t0tvmdQxrsHV7DOVkxLI4TCvj6qWpEawxqKJPqQE9f5GeXtwvTu7-fs3s495aRNM41LY0ardk4_DhtXk2RrKbiZgwssXvlrrI_EThET-4vRXO-9SbspxRcE3KXflGW-LnO8LzAq_bYYS10R-r010CzBLBwMqbd6slv40ntEvn3OyeauJszJaHkxnHTcGCq-0XAIDQmj6_' },
+  { key: 'PRODUCER_CARD_IMAGE', label: 'Istehsalci Karti Görseli', defaultUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDgrvRVBxN_YV05A8C2ZBQC2V2WHmgN9IrmvxhBvoVre7FKYjEbaR95Ew5PqX6-T-FG67u-0fHLCX6KeLtUrAkBIiJfWZGu7t3Ez2RyKvMerWTAHV1ROVLxhP4wE2oqLK-k9t1i6hrPmq-YJ-GDzjbqNDrNf2-SyjbXUmuQAJa5ScuKsRahZQdVKWyzFzRNPNYzxr3XOkiIb2BLWy4KJO-b-RWiNaaRqebQkQINqnQZfyBkDjpvxMId' },
+  { key: 'WHY_AZERBAIJAN_IMAGE', label: 'Niye Azerbaycan Görseli', defaultUrl: 'https://lh3.googleusercontent.com/aida/AEtjO1WtUBR_2hOeUbRABsre_R7H-yW12FldWdxDp_6_abkiZuNwgF3fMTiwxdQCKdfEbdEWa-6CSQc0bQgUbjojei2itk13mAz_e09yOnKuFWP_7AO2BpMiNUQByyYnqtrPMywT0b4g4COdLkLc5_L75NtOsKv5OOgHz7VdAMCF-WDWgmhqccS9HdQKKY8cwD4AeVg_Z5AczT8rfvCVFXyJrgDuQKAsNiyYL54OeN2_HoFxHi9ltf4bUcbHSmM' },
 ];
 
-// ── Component ─────────────────────────────────────────────────────────────────
+// ── Standalone field components (defined OUTSIDE main component to prevent remounting) ──
+
+interface FProps {
+  label: string;
+  k: string;
+  multi?: boolean;
+  value: string;
+  onChange: (k: string, val: string) => void;
+}
+const F = React.memo(({ label, k, multi = false, value, onChange }: FProps) => (
+  <div className="bg-white border border-slate-200 rounded p-3">
+    <div className="flex items-center justify-between mb-1.5">
+      <label className="text-[10px] font-bold text-slate-400 font-mono uppercase">{label}</label>
+      <span className="text-[9px] text-slate-300 font-mono">{value.length}c</span>
+    </div>
+    {multi
+      ? <textarea value={value} onChange={e => onChange(k, e.target.value)} rows={3}
+          className="w-full text-xs text-slate-900 bg-slate-50 border border-slate-200 px-2.5 py-2 focus:outline-none focus:border-[#0f3156] resize-none rounded-sm" />
+      : <input value={value} onChange={e => onChange(k, e.target.value)}
+          className="w-full h-8 text-xs text-slate-900 bg-slate-50 border border-slate-200 px-2.5 focus:outline-none focus:border-[#0f3156] rounded-sm" />
+    }
+  </div>
+));
+
+interface MultiLocFProps {
+  label: string;
+  strKey: string;
+  multi?: boolean;
+  locData: Record<string, Record<string, string>>;
+  onChange: (loc: string, k: string, val: string) => void;
+}
+const MultiLocF = React.memo(({ label, strKey, multi = false, locData, onChange }: MultiLocFProps) => (
+  <div className="bg-white border border-slate-200 rounded p-3">
+    <div className="text-[10px] font-bold text-slate-500 uppercase font-mono mb-2">{label}</div>
+    <div className="grid grid-cols-2 gap-2">
+      {LOCALES.map(l => {
+        const val = locData[l]?.[strKey] || DEFAULT_STRINGS[l]?.[strKey] || '';
+        return (
+          <div key={l}>
+            <div className="text-[9px] font-bold text-slate-400 mb-0.5">{l}</div>
+            {multi
+              ? <textarea value={val} onChange={e => onChange(l, strKey, e.target.value)} rows={2}
+                  className="w-full text-xs bg-slate-50 border border-slate-200 px-2 py-1.5 focus:outline-none focus:border-[#0f3156] resize-none rounded-sm" />
+              : <input value={val} onChange={e => onChange(l, strKey, e.target.value)}
+                  className="w-full h-7 text-xs bg-slate-50 border border-slate-200 px-2 focus:outline-none focus:border-[#0f3156] rounded-sm" />
+            }
+          </div>
+        );
+      })}
+    </div>
+  </div>
+));
+
+interface SaveBarProps {
+  onSave: () => void;
+  saving: boolean;
+  saved: boolean;
+}
+const SaveBar = React.memo(({ onSave, saving, saved }: SaveBarProps) => (
+  <div className="flex justify-end pt-4 pb-2 sticky bottom-0 bg-slate-50/90 backdrop-blur-sm border-t border-slate-200 mt-4 px-1">
+    <button onClick={onSave} disabled={saving}
+      className={`h-9 px-6 flex items-center gap-2 text-xs font-bold rounded-sm transition-colors shadow-sm ${saved ? 'bg-emerald-600 text-white' : 'bg-[#0f3156] hover:bg-[#081c33] text-white'} disabled:opacity-60`}>
+      {saving
+        ? <><RefreshCw className="w-3.5 h-3.5 animate-spin" /> Saxlanır...</>
+        : saved
+          ? <><CheckCircle className="w-3.5 h-3.5" /> Saxlandı</>
+          : <><Save className="w-3.5 h-3.5" /> Yadda Saxla</>
+      }
+    </button>
+  </div>
+));
+
+interface LocaleTabsProps {
+  locale: Loc;
+  onSelect: (l: Loc) => void;
+}
+const LocaleTabs = React.memo(({ locale, onSelect }: LocaleTabsProps) => (
+  <div className="flex items-center gap-1 mb-4">
+    {LOCALES.map(l => (
+      <button key={l} onClick={() => onSelect(l)}
+        className={`px-2.5 py-1 text-[10px] font-bold rounded-sm transition-colors ${locale === l ? 'bg-[#0f3156] text-white' : 'text-slate-500 bg-white border border-slate-200 hover:bg-slate-100'}`}>
+        {l}
+      </button>
+    ))}
+  </div>
+));
+
+interface ImageFieldProps {
+  imgKey: string;
+  label: string;
+  content: any;
+  uploading: string | null;
+  onSaveContent: (data: any) => Promise<void>;
+  onTriggerUpload: (key: string) => void;
+  onUpdateImgUrl: (key: string, url: string) => void;
+  onPreview: (url: string) => void;
+  saving: boolean;
+  saved: boolean;
+}
+const ImageField = React.memo(({ imgKey, label, content, uploading, onSaveContent, onTriggerUpload, onUpdateImgUrl, onPreview, saving, saved }: ImageFieldProps) => {
+  const defKey = IMAGE_KEYS.find(k => k.key === imgKey);
+  const customUrl = content.images?.[imgKey];
+  const url = customUrl || defKey?.defaultUrl || '';
+  const proxyUrl = url ? `/api/img-proxy?url=${encodeURIComponent(url)}` : '';
+  const custom = Boolean(customUrl);
+  const inputVal = content.images?.[imgKey] ?? '';
+
+  return (
+    <div className="bg-white border border-slate-200 rounded overflow-hidden">
+      <div className="px-4 py-2.5 border-b border-slate-100 flex items-center justify-between">
+        <span className="text-[10px] font-bold text-slate-500 uppercase font-mono">{label}</span>
+        {custom
+          ? <span className="text-[9px] px-1.5 py-0.5 bg-emerald-50 border border-emerald-200 text-emerald-700 font-bold rounded-sm">OZELLESMIS</span>
+          : <span className="text-[9px] px-1.5 py-0.5 bg-slate-100 border border-slate-200 text-slate-500 font-bold rounded-sm">VARSAYILAN</span>
+        }
+      </div>
+      <div className="relative w-full bg-slate-100 cursor-pointer overflow-hidden" style={{ height: '160px' }}
+        onClick={() => url && onPreview(proxyUrl)}>
+        {proxyUrl
+          ? <img src={proxyUrl} alt={label} className="w-full h-full object-cover" onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+          : <div className="w-full h-full flex items-center justify-center"><ImgIcon className="w-8 h-8 text-slate-300" /></div>
+        }
+        {url && (
+          <div className="absolute inset-0 bg-black/0 hover:bg-black/30 transition-colors flex items-center justify-center opacity-0 hover:opacity-100">
+            <div className="bg-white/90 px-3 py-1.5 flex items-center gap-1.5 text-xs font-bold text-slate-800 rounded-sm">
+              <Eye className="w-3.5 h-3.5" /> Tam Goruntule
+            </div>
+          </div>
+        )}
+      </div>
+      <div className="p-4 space-y-3">
+        <div>
+          <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1.5">Görsel URL</label>
+          <div className="flex gap-2">
+            <input type="text" value={inputVal} onChange={e => onUpdateImgUrl(imgKey, e.target.value)}
+              placeholder={defKey?.defaultUrl || 'https://...'}
+              className="flex-1 h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 focus:outline-none focus:border-[#0f3156] font-mono rounded-sm" />
+            <button onClick={() => onSaveContent(content)} disabled={saving}
+              className={`h-8 px-3 text-xs font-bold rounded-sm flex items-center gap-1.5 shrink-0 ${saved ? 'bg-emerald-600 text-white' : 'bg-[#0f3156] hover:bg-[#081c33] text-white'} disabled:opacity-60`}>
+              <Save className="w-3 h-3" /> Saxla
+            </button>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <button onClick={() => onTriggerUpload(imgKey)} disabled={uploading === imgKey}
+            className="h-7 px-3 flex items-center gap-1.5 text-xs font-bold border border-[#0f3156] text-[#0f3156] hover:bg-[#0f3156] hover:text-white transition-colors rounded-sm">
+            {uploading === imgKey ? <RefreshCw className="w-3 h-3 animate-spin" /> : <Upload className="w-3 h-3" />}
+            {uploading === imgKey ? 'Yüklənir...' : 'Serverdən Yüklə'}
+          </button>
+          {custom && (
+            <button onClick={() => {
+              const updated = { ...content, images: { ...(content.images || {}), [imgKey]: '' } };
+              onSaveContent(updated);
+            }} className="h-7 px-2.5 flex items-center gap-1.5 text-xs text-red-500 border border-red-200 hover:bg-red-50 rounded-sm">
+              <Trash2 className="w-3 h-3" /> Varsayılana Qaytar
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+});
+
+// ── Main Component ─────────────────────────────────────────────────────────────
 export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
   const [page, setPage] = useState<PageKey>('images');
   const [locale, setLocale] = useState<Loc>('EN');
@@ -157,7 +308,6 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
   const fileRef = useRef<HTMLInputElement>(null);
   const [pendingKey, setPendingKey] = useState<string | null>(null);
 
-  // ── Load ────────────────────────────────────────────────────────────────────
   const load = useCallback(async () => {
     const [l, c, imgs] = await Promise.all([
       apiGet('/api/azexbuy/localization'),
@@ -165,7 +315,6 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
       apiGet('/api/azexbuy/images'),
     ]);
     if (l && Object.keys(l).length > 0) {
-      // Merge with defaults
       const merged: Record<string, Record<string, string>> = {};
       for (const loc of LOCALES) {
         merged[loc] = { ...(DEFAULT_STRINGS[loc] || {}), ...(l[loc] || {}) };
@@ -178,24 +327,34 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
 
   useEffect(() => { load(); }, [load]);
 
-  const flash = () => { setSaved(true); setTimeout(() => setSaved(false), 2000); };
+  const flash = () => { setSaved(true); setTimeout(() => setSaved(false), 2500); };
 
-  // ── Save helpers ────────────────────────────────────────────────────────────
-  const saveStrings = async (data: Record<string, Record<string, string>>) => {
+  const saveStrings = useCallback(async (data: Record<string, Record<string, string>>) => {
     setSaving(true);
-    setLocData(data);
     await apiPost('/api/azexbuy/localization', data);
     flash(); setSaving(false);
-  };
+  }, []);
 
-  const saveContent = async (data: any) => {
+  const saveContent = useCallback(async (data: any) => {
     setSaving(true);
     setContent(data);
     await apiPost('/api/azexbuy/content', data);
     flash(); setSaving(false);
-  };
+  }, []);
 
-  // ── Image upload ────────────────────────────────────────────────────────────
+  // Stable string change handler
+  const handleStrChange = useCallback((k: string, val: string) => {
+    setLocData(prev => ({ ...prev, [locale]: { ...(prev[locale] || {}), [k]: val } }));
+  }, [locale]);
+
+  const handleMultiLocChange = useCallback((loc: string, k: string, val: string) => {
+    setLocData(prev => ({ ...prev, [loc]: { ...(prev[loc] || {}), [k]: val } }));
+  }, []);
+
+  const handleUpdateImgUrl = useCallback((key: string, url: string) => {
+    setContent((prev: any) => ({ ...prev, images: { ...(prev.images || {}), [key]: url } }));
+  }, []);
+
   const uploadImage = async (file: File, key: string) => {
     setUploading(key);
     const fd = new FormData();
@@ -216,182 +375,20 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
     setUploading(null); setPendingKey(null);
   };
 
-  const triggerUpload = (key: string) => { setPendingKey(key); fileRef.current?.click(); };
+  const triggerUpload = useCallback((key: string) => { setPendingKey(key); fileRef.current?.click(); }, []);
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && pendingKey) uploadImage(file, pendingKey);
     e.target.value = '';
   };
-  const imgUrl = (key: string) => {
-    if (content.images?.[key]) return content.images[key];
-    const found = IMAGE_KEYS.find(k => k.key === key);
-    return found?.defaultUrl || '';
-  };
-  const isCustomImg = (key: string) => Boolean(content.images?.[key]);
 
-  const updateImgUrl = (key: string, url: string) => {
-    setContent((prev: any) => ({ ...prev, images: { ...(prev.images || {}), [key]: url } }));
-  };
-
-  const resetImg = async (key: string) => {
-    const updated = { ...content, images: { ...(content.images || {}), [key]: '' } };
-    await saveContent(updated);
-  };
-
-  // ── String helpers ──────────────────────────────────────────────────────────
-  const str = (key: string): string => locData[locale]?.[key] || DEFAULT_STRINGS[locale]?.[key] || DEFAULT_STRINGS['EN']?.[key] || '';
-  const setStr = (key: string, val: string) => {
-    setLocData(prev => ({ ...prev, [locale]: { ...(prev[locale] || {}), [key]: val } }));
-  };
-
-  // ── Render atoms ────────────────────────────────────────────────────────────
-  const F = ({ label, k, multi = false }: { label: string; k: string; multi?: boolean }) => (
-    <div className="bg-white border border-slate-200 rounded p-3">
-      <div className="flex items-center justify-between mb-1.5">
-        <label className="text-[10px] font-bold text-slate-400 font-mono uppercase">{label}</label>
-        <span className="text-[9px] text-slate-300 font-mono">{str(k).length}c</span>
-      </div>
-      {multi
-        ? <textarea value={str(k)} onChange={e => setStr(k, e.target.value)} rows={3}
-            className="w-full text-xs text-slate-900 bg-slate-50 border border-slate-200 px-2.5 py-2 focus:outline-none focus:border-[#0f3156] resize-none rounded-sm" />
-        : <input value={str(k)} onChange={e => setStr(k, e.target.value)}
-            className="w-full h-8 text-xs text-slate-900 bg-slate-50 border border-slate-200 px-2.5 focus:outline-none focus:border-[#0f3156] rounded-sm" />
-      }
-    </div>
-  );
-
-  const MultiLocF = ({ label, keyFn, multi = false }: { label: string; keyFn: (l: Loc) => string; multi?: boolean }) => (
-    <div className="bg-white border border-slate-200 rounded p-3">
-      <div className="text-[10px] font-bold text-slate-500 uppercase font-mono mb-2">{label}</div>
-      <div className="grid grid-cols-2 gap-2">
-        {LOCALES.map(l => {
-          const k = keyFn(l);
-          const val = locData[l]?.[k] || DEFAULT_STRINGS[l]?.[k] || '';
-          return (
-            <div key={l}>
-              <div className="text-[9px] font-bold text-slate-400 mb-0.5">{l}</div>
-              {multi
-                ? <textarea value={val} onChange={e => setLocData(prev => ({ ...prev, [l]: { ...(prev[l] || {}), [k]: e.target.value } }))} rows={2}
-                    className="w-full text-xs bg-slate-50 border border-slate-200 px-2 py-1.5 focus:outline-none focus:border-[#0f3156] resize-none rounded-sm" />
-                : <input value={val} onChange={e => setLocData(prev => ({ ...prev, [l]: { ...(prev[l] || {}), [k]: e.target.value } }))}
-                    className="w-full h-7 text-xs bg-slate-50 border border-slate-200 px-2 focus:outline-none focus:border-[#0f3156] rounded-sm" />
-              }
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-
-  const proxyUrl = (url: string) => url ? `/api/img-proxy?url=${encodeURIComponent(url)}` : '';
-
-  const ImageF = ({ imgKey, label }: { imgKey: string; label: string }) => {
-    const url = imgUrl(imgKey);
-    const custom = isCustomImg(imgKey);
-    const inputVal = content.images?.[imgKey] ?? '';
-    const displayUrl = proxyUrl(url);
-
-    return (
-      <div className="bg-white border border-slate-200 rounded overflow-hidden">
-        <div className="px-4 py-2.5 border-b border-slate-100 flex items-center justify-between">
-          <span className="text-[10px] font-bold text-slate-500 uppercase font-mono">{label}</span>
-          {custom
-            ? <span className="text-[9px] px-1.5 py-0.5 bg-emerald-50 border border-emerald-200 text-emerald-700 font-bold rounded-sm">OZELLESMIS</span>
-            : <span className="text-[9px] px-1.5 py-0.5 bg-slate-100 border border-slate-200 text-slate-500 font-bold rounded-sm">VARSAYILAN</span>
-          }
-        </div>
-
-        {/* Full-width preview */}
-        <div
-          className="relative w-full bg-slate-100 cursor-pointer overflow-hidden"
-          style={{ height: '160px' }}
-          onClick={() => url && setPreview(displayUrl)}
-        >
-          {displayUrl
-            ? <img src={displayUrl} alt={label} className="w-full h-full object-cover" onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-            : <div className="w-full h-full flex items-center justify-center"><ImgIcon className="w-8 h-8 text-slate-300" /></div>
-          }
-          {url && (
-            <div className="absolute inset-0 bg-black/0 hover:bg-black/30 transition-colors flex items-center justify-center opacity-0 hover:opacity-100">
-              <div className="bg-white/90 px-3 py-1.5 flex items-center gap-1.5 text-xs font-bold text-slate-800 rounded-sm">
-                <Eye className="w-3.5 h-3.5" /> Tam Goruntule
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="p-4 space-y-3">
-          {/* URL input */}
-          <div>
-            <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1.5">Görsel URL</label>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={inputVal}
-                onChange={e => updateImgUrl(imgKey, e.target.value)}
-                placeholder={imgUrl(imgKey) || 'https://...'}
-                className="flex-1 h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 focus:outline-none focus:border-[#0f3156] font-mono rounded-sm"
-              />
-              <button
-                onClick={() => saveContent(content)}
-                className="h-8 px-3 text-xs font-bold bg-[#0f3156] text-white hover:bg-[#081c33] rounded-sm flex items-center gap-1.5 shrink-0"
-              >
-                <Save className="w-3 h-3" /> Saxla
-              </button>
-            </div>
-          </div>
-
-          {/* Upload button */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => triggerUpload(imgKey)}
-              disabled={uploading === imgKey}
-              className="h-7 px-3 flex items-center gap-1.5 text-xs font-bold border border-[#0f3156] text-[#0f3156] hover:bg-[#0f3156] hover:text-white transition-colors rounded-sm"
-            >
-              {uploading === imgKey ? <RefreshCw className="w-3 h-3 animate-spin" /> : <Upload className="w-3 h-3" />}
-              {uploading === imgKey ? 'Yüklənir...' : 'Serverdən Yüklə'}
-            </button>
-            {custom && (
-              <button
-                onClick={() => resetImg(imgKey)}
-                className="h-7 px-2.5 flex items-center gap-1.5 text-xs text-red-500 border border-red-200 hover:bg-red-50 rounded-sm"
-              >
-                <Trash2 className="w-3 h-3" /> Varsayılana Qaytar
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const SaveBar = ({ onSave }: { onSave: () => void }) => (
-    <div className="flex justify-end pt-2">
-      <button onClick={onSave} disabled={saving}
-        className={`h-8 px-5 flex items-center gap-2 text-xs font-bold rounded-sm transition-colors ${saved ? 'bg-emerald-600 text-white' : 'bg-[#0f3156] hover:bg-[#081c33] text-white'}`}>
-        {saved ? <><CheckCircle className="w-3.5 h-3.5" /> Saxlandı</> : <><Save className="w-3.5 h-3.5" /> Yadda Saxla</>}
-      </button>
-    </div>
-  );
-
-  const LocaleTabs = () => (
-    <div className="flex items-center gap-1 mb-4">
-      {LOCALES.map(l => (
-        <button key={l} onClick={() => setLocale(l)}
-          className={`px-2.5 py-1 text-[10px] font-bold rounded-sm transition-colors ${locale === l ? 'bg-[#0f3156] text-white' : 'text-slate-500 bg-white border border-slate-200 hover:bg-slate-100'}`}>
-          {l}
-        </button>
-      ))}
-    </div>
-  );
+  const str = (k: string) => locData[locale]?.[k] || DEFAULT_STRINGS[locale]?.[k] || DEFAULT_STRINGS['EN']?.[k] || '';
 
   // ═══════════════════════════════════════════════════════════════════════════
   return (
     <div className="flex flex-col h-full bg-slate-50">
-      {/* Hidden file input */}
       <input ref={fileRef} type="file" accept="image/*" onChange={onFileChange} className="hidden" />
 
-      {/* Preview overlay */}
       {preview && (
         <div className="fixed inset-0 z-[9999] bg-black/85 flex items-center justify-center p-6" onClick={() => setPreview(null)}>
           <img src={preview} className="max-w-full max-h-full object-contain rounded shadow-2xl" />
@@ -422,22 +419,21 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
         </div>
 
         {/* Main content */}
-        <div className="flex-1 overflow-y-auto p-5 space-y-4 pb-16">
+        <div className="flex-1 overflow-y-auto p-5 space-y-4 pb-4">
 
           {/* ── IMAGES ── */}
           {page === 'images' && (
             <>
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-sm font-bold text-slate-800">Əsas Görsellər</h2>
-                  <p className="text-xs text-slate-500 mt-0.5">Yüklə düyməsi ilə serverə yükləyin, ya da birbaşa URL yazın. Dəyişiklik 5 saniyədə saytda görünür.</p>
-                </div>
-                <button onClick={load} className="h-7 px-3 flex items-center gap-1.5 text-xs border border-slate-200 hover:bg-slate-100 text-slate-600 rounded-sm">
-                  <RefreshCw className="w-3 h-3" />
-                </button>
-              </div>
+              <h2 className="text-sm font-bold text-slate-800">Əsas Görsellər</h2>
+              <p className="text-xs text-slate-500">URL yazın ya da yükləyin, sonra Saxla düyməsinə basın.</p>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                {IMAGE_KEYS.map(img => <ImageF key={img.key} imgKey={img.key} label={img.label} />)}
+                {IMAGE_KEYS.map(img => (
+                  <ImageField key={img.key} imgKey={img.key} label={img.label}
+                    content={content} uploading={uploading}
+                    onSaveContent={saveContent} onTriggerUpload={triggerUpload}
+                    onUpdateImgUrl={handleUpdateImgUrl} onPreview={setPreview}
+                    saving={saving} saved={saved} />
+                ))}
               </div>
             </>
           )}
@@ -446,13 +442,13 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
           {page === 'navbar' && (
             <>
               <h2 className="text-sm font-bold text-slate-800">Naviqasiya Menyusu</h2>
-              <LocaleTabs />
+              <LocaleTabs locale={locale} onSelect={setLocale} />
               <div className="space-y-2">
                 {['home','forBuyers','forProducers','services','products','howItWorks','aboutUs','insights','contact','requestQuote','dossiers'].map(k => (
-                  <F key={k} label={k} k={`nav.${k}`} />
+                  <F key={k} label={k} k={`nav.${k}`} value={str(`nav.${k}`)} onChange={handleStrChange} />
                 ))}
               </div>
-              <SaveBar onSave={() => saveStrings(locData)} />
+              <SaveBar onSave={() => saveStrings(locData)} saving={saving} saved={saved} />
             </>
           )}
 
@@ -460,17 +456,21 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
           {page === 'hero' && (
             <>
               <h2 className="text-sm font-bold text-slate-800">Hero Bölməsi</h2>
-              <ImageF imgKey="HERO_IMAGE" label="Hero Arxa Fon Şəkli" />
+              <ImageField imgKey="HERO_IMAGE" label="Hero Arxa Fon Şəkli"
+                content={content} uploading={uploading}
+                onSaveContent={saveContent} onTriggerUpload={triggerUpload}
+                onUpdateImgUrl={handleUpdateImgUrl} onPreview={setPreview}
+                saving={saving} saved={saved} />
               <div className="bg-slate-100 px-3 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider rounded mt-2">Başlıqlar — bütün dillər</div>
-              <MultiLocF label="Kicker (üst etiket)" keyFn={l => `hero.kicker`} />
-              <MultiLocF label="Əsas Başlıq" keyFn={l => `hero.title`} multi />
-              <MultiLocF label="Alt Başlıq" keyFn={l => `hero.subtitle`} multi />
+              <MultiLocF label="Kicker (üst etiket)" strKey="hero.kicker" locData={locData} onChange={handleMultiLocChange} />
+              <MultiLocF label="Əsas Başlıq" strKey="hero.title" multi locData={locData} onChange={handleMultiLocChange} />
+              <MultiLocF label="Alt Başlıq" strKey="hero.subtitle" multi locData={locData} onChange={handleMultiLocChange} />
               <div className="bg-slate-100 px-3 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider rounded">CTA Butonları</div>
-              <MultiLocF label="Almaq İstəyirəm — Etiket" keyFn={l => `hero.buyLabel`} />
-              <MultiLocF label="Almaq İstəyirəm — Buton Mətni" keyFn={l => `hero.buyAction`} />
-              <MultiLocF label="İxrac Etmək İstəyirəm — Etiket" keyFn={l => `hero.exportLabel`} />
-              <MultiLocF label="İxrac Etmək İstəyirəm — Buton Mətni" keyFn={l => `hero.exportAction`} />
-              <SaveBar onSave={async () => { await saveContent(content); await saveStrings(locData); }} />
+              <MultiLocF label="Almaq İstəyirəm — Etiket" strKey="hero.buyLabel" locData={locData} onChange={handleMultiLocChange} />
+              <MultiLocF label="Almaq İstəyirəm — Buton Mətni" strKey="hero.buyAction" locData={locData} onChange={handleMultiLocChange} />
+              <MultiLocF label="İxrac Etmək İstəyirəm — Etiket" strKey="hero.exportLabel" locData={locData} onChange={handleMultiLocChange} />
+              <MultiLocF label="İxrac Etmək İstəyirəm — Buton Mətni" strKey="hero.exportAction" locData={locData} onChange={handleMultiLocChange} />
+              <SaveBar onSave={async () => { await saveContent(content); await saveStrings(locData); }} saving={saving} saved={saved} />
             </>
           )}
 
@@ -478,42 +478,50 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
           {page === 'why_azexbuy' && (
             <>
               <h2 className="text-sm font-bold text-slate-800">Niyə AZEXBUY? Bölməsi</h2>
-              <MultiLocF label="Bölmə Başlığı" keyFn={l => `whyAzexbuy.heading`} />
+              <MultiLocF label="Bölmə Başlığı" strKey="whyAzexbuy.heading" locData={locData} onChange={handleMultiLocChange} />
               {[0,1,2,3,4].map(i => (
                 <div key={i} className="bg-slate-100 p-3 rounded space-y-2">
                   <div className="text-[10px] font-bold text-slate-500 uppercase">Kart {i+1}</div>
-                  <MultiLocF label="Başlıq" keyFn={l => `whyAzexbuy.items[${i}].title`} />
-                  <MultiLocF label="Açıqlama" keyFn={l => `whyAzexbuy.items[${i}].desc`} multi />
-                  <MultiLocF label="Metrik" keyFn={l => `whyAzexbuy.items[${i}].metric`} />
+                  <MultiLocF label="Başlıq" strKey={`whyAzexbuy.items[${i}].title`} locData={locData} onChange={handleMultiLocChange} />
+                  <MultiLocF label="Açıqlama" strKey={`whyAzexbuy.items[${i}].desc`} multi locData={locData} onChange={handleMultiLocChange} />
+                  <MultiLocF label="Metrik" strKey={`whyAzexbuy.items[${i}].metric`} locData={locData} onChange={handleMultiLocChange} />
                 </div>
               ))}
-              <SaveBar onSave={() => saveStrings(locData)} />
+              <SaveBar onSave={() => saveStrings(locData)} saving={saving} saved={saved} />
             </>
           )}
 
-          {/* ── AUDIENCE CARDS ── */}
+          {/* ── AUDIENCE ── */}
           {page === 'audience' && (
             <>
               <h2 className="text-sm font-bold text-slate-800">Alıcı / İstehsalçı Kartları</h2>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <div className="bg-slate-100 px-3 py-2 text-[10px] font-bold text-slate-500 uppercase rounded">Alıcı Kartı (Mavi)</div>
-                  <ImageF imgKey="BUYER_CARD_IMAGE" label="Alıcı Kartı Şəkli" />
-                  <MultiLocF label="Etiket" keyFn={l => `bilateral.buyersTag`} />
-                  <MultiLocF label="Başlıq" keyFn={l => `bilateral.buyersTitle`} />
-                  <MultiLocF label="Açıqlama" keyFn={l => `bilateral.buyersDesc`} multi />
-                  <MultiLocF label="Buton Mətni" keyFn={l => `bilateral.buyersBtn`} />
+                  <ImageField imgKey="BUYER_CARD_IMAGE" label="Alıcı Kartı Şəkli"
+                    content={content} uploading={uploading}
+                    onSaveContent={saveContent} onTriggerUpload={triggerUpload}
+                    onUpdateImgUrl={handleUpdateImgUrl} onPreview={setPreview}
+                    saving={saving} saved={saved} />
+                  <MultiLocF label="Etiket" strKey="bilateral.buyersTag" locData={locData} onChange={handleMultiLocChange} />
+                  <MultiLocF label="Başlıq" strKey="bilateral.buyersTitle" locData={locData} onChange={handleMultiLocChange} />
+                  <MultiLocF label="Açıqlama" strKey="bilateral.buyersDesc" multi locData={locData} onChange={handleMultiLocChange} />
+                  <MultiLocF label="Buton Mətni" strKey="bilateral.buyersBtn" locData={locData} onChange={handleMultiLocChange} />
                 </div>
                 <div className="space-y-2">
                   <div className="bg-slate-100 px-3 py-2 text-[10px] font-bold text-slate-500 uppercase rounded">İstehsalçı Kartı (Yaşıl)</div>
-                  <ImageF imgKey="PRODUCER_CARD_IMAGE" label="İstehsalçı Kartı Şəkli" />
-                  <MultiLocF label="Etiket" keyFn={l => `bilateral.producersTag`} />
-                  <MultiLocF label="Başlıq" keyFn={l => `bilateral.producersTitle`} />
-                  <MultiLocF label="Açıqlama" keyFn={l => `bilateral.producersDesc`} multi />
-                  <MultiLocF label="Buton Mətni" keyFn={l => `bilateral.producersBtn`} />
+                  <ImageField imgKey="PRODUCER_CARD_IMAGE" label="İstehsalçı Kartı Şəkli"
+                    content={content} uploading={uploading}
+                    onSaveContent={saveContent} onTriggerUpload={triggerUpload}
+                    onUpdateImgUrl={handleUpdateImgUrl} onPreview={setPreview}
+                    saving={saving} saved={saved} />
+                  <MultiLocF label="Etiket" strKey="bilateral.producersTag" locData={locData} onChange={handleMultiLocChange} />
+                  <MultiLocF label="Başlıq" strKey="bilateral.producersTitle" locData={locData} onChange={handleMultiLocChange} />
+                  <MultiLocF label="Açıqlama" strKey="bilateral.producersDesc" multi locData={locData} onChange={handleMultiLocChange} />
+                  <MultiLocF label="Buton Mətni" strKey="bilateral.producersBtn" locData={locData} onChange={handleMultiLocChange} />
                 </div>
               </div>
-              <SaveBar onSave={() => saveStrings(locData)} />
+              <SaveBar onSave={() => saveStrings(locData)} saving={saving} saved={saved} />
             </>
           )}
 
@@ -521,15 +529,15 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
           {page === 'services' && (
             <>
               <h2 className="text-sm font-bold text-slate-800">Xidmətlər Bölməsi</h2>
-              <MultiLocF label="Bölmə Başlığı" keyFn={l => `services.heading`} />
-              <MultiLocF label="Alt Başlıq" keyFn={l => `services.subheading`} multi />
-              <MultiLocF label='"Ətraflı" Buton Mətni' keyFn={l => `services.learnMore`} />
+              <MultiLocF label="Bölmə Başlığı" strKey="services.heading" locData={locData} onChange={handleMultiLocChange} />
+              <MultiLocF label="Alt Başlıq" strKey="services.subheading" multi locData={locData} onChange={handleMultiLocChange} />
+              <MultiLocF label='"Ətraflı" Buton Mətni' strKey="services.learnMore" locData={locData} onChange={handleMultiLocChange} />
               <div className="bg-slate-100 px-3 py-2 text-[10px] font-bold text-slate-500 uppercase rounded mt-2">Outsourced Export Department Bloku</div>
-              <MultiLocF label="Blok Başlığı" keyFn={l => `services.outsourcedTitle`} multi />
-              <MultiLocF label="Etiket/Badge" keyFn={l => `services.outsourcedBadge`} />
-              <MultiLocF label="Açıqlama" keyFn={l => `services.outsourcedDesc`} multi />
-              <MultiLocF label="CTA Mətni" keyFn={l => `services.outsourcedCta`} />
-              <SaveBar onSave={() => saveStrings(locData)} />
+              <MultiLocF label="Blok Başlığı" strKey="services.outsourcedTitle" multi locData={locData} onChange={handleMultiLocChange} />
+              <MultiLocF label="Etiket/Badge" strKey="services.outsourcedBadge" locData={locData} onChange={handleMultiLocChange} />
+              <MultiLocF label="Açıqlama" strKey="services.outsourcedDesc" multi locData={locData} onChange={handleMultiLocChange} />
+              <MultiLocF label="CTA Mətni" strKey="services.outsourcedCta" locData={locData} onChange={handleMultiLocChange} />
+              <SaveBar onSave={() => saveStrings(locData)} saving={saving} saved={saved} />
             </>
           )}
 
@@ -537,13 +545,13 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
           {page === 'how_it_works' && (
             <>
               <h2 className="text-sm font-bold text-slate-800">Necə İşləyir Bölməsi</h2>
-              <MultiLocF label="Bölmə Başlığı" keyFn={l => `howItWorks.heading`} />
-              <MultiLocF label="Alt Başlıq" keyFn={l => `howItWorks.subheading`} multi />
-              <MultiLocF label='"Tam Prosesə Bax" Butonu' keyFn={l => `howItWorks.seeFullProcess`} />
-              <MultiLocF label="Alıcılar Etiketi" keyFn={l => `howItWorks.forBuyersLabel`} />
-              <MultiLocF label="İstehsalçılar Etiketi" keyFn={l => `howItWorks.forProducersLabel`} />
-              <MultiLocF label="İpucu Mətni" keyFn={l => `howItWorks.clickStepHint`} multi />
-              <SaveBar onSave={() => saveStrings(locData)} />
+              <MultiLocF label="Bölmə Başlığı" strKey="howItWorks.heading" locData={locData} onChange={handleMultiLocChange} />
+              <MultiLocF label="Alt Başlıq" strKey="howItWorks.subheading" multi locData={locData} onChange={handleMultiLocChange} />
+              <MultiLocF label='"Tam Prosesə Bax" Butonu' strKey="howItWorks.seeFullProcess" locData={locData} onChange={handleMultiLocChange} />
+              <MultiLocF label="Alıcılar Etiketi" strKey="howItWorks.forBuyersLabel" locData={locData} onChange={handleMultiLocChange} />
+              <MultiLocF label="İstehsalçılar Etiketi" strKey="howItWorks.forProducersLabel" locData={locData} onChange={handleMultiLocChange} />
+              <MultiLocF label="İpucu Mətni" strKey="howItWorks.clickStepHint" multi locData={locData} onChange={handleMultiLocChange} />
+              <SaveBar onSave={() => saveStrings(locData)} saving={saving} saved={saved} />
             </>
           )}
 
@@ -551,12 +559,12 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
           {page === 'featured_products' && (
             <>
               <h2 className="text-sm font-bold text-slate-800">Öne Çıxan Məhsullar Bölməsi</h2>
-              <MultiLocF label="Başlıq" keyFn={l => `featuredProducts.heading`} />
-              <MultiLocF label="Alt Başlıq" keyFn={l => `featuredProducts.subheading`} multi />
-              <MultiLocF label='"Bütün Məhsullar" Linki' keyFn={l => `featuredProducts.viewAll`} />
-              <MultiLocF label='"Bu Məhsulu Sifariş Et" Butonu' keyFn={l => `featuredProducts.requestProduct`} />
-              <MultiLocF label='"HS Kodu" Etiketi' keyFn={l => `featuredProducts.hsCodeLabel`} />
-              <SaveBar onSave={() => saveStrings(locData)} />
+              <MultiLocF label="Başlıq" strKey="featuredProducts.heading" locData={locData} onChange={handleMultiLocChange} />
+              <MultiLocF label="Alt Başlıq" strKey="featuredProducts.subheading" multi locData={locData} onChange={handleMultiLocChange} />
+              <MultiLocF label='"Bütün Məhsullar" Linki' strKey="featuredProducts.viewAll" locData={locData} onChange={handleMultiLocChange} />
+              <MultiLocF label='"Bu Məhsulu Sifariş Et" Butonu' strKey="featuredProducts.requestProduct" locData={locData} onChange={handleMultiLocChange} />
+              <MultiLocF label='"HS Kodu" Etiketi' strKey="featuredProducts.hsCodeLabel" locData={locData} onChange={handleMultiLocChange} />
+              <SaveBar onSave={() => saveStrings(locData)} saving={saving} saved={saved} />
             </>
           )}
 
@@ -564,19 +572,23 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
           {page === 'why_azerbaijan' && (
             <>
               <h2 className="text-sm font-bold text-slate-800">Niyə Azərbaycan Bölməsi</h2>
-              <ImageF imgKey="WHY_AZERBAIJAN_IMAGE" label="Arxa Fon Şəkli" />
-              <MultiLocF label="Başlıq" keyFn={l => `whyAzerbaijan.heading`} />
-              <MultiLocF label="Açıqlama" keyFn={l => `whyAzerbaijan.desc`} multi />
-              <MultiLocF label='"Ətraflı" Linki' keyFn={l => `whyAzerbaijan.learnMore`} />
+              <ImageField imgKey="WHY_AZERBAIJAN_IMAGE" label="Arxa Fon Şəkli"
+                content={content} uploading={uploading}
+                onSaveContent={saveContent} onTriggerUpload={triggerUpload}
+                onUpdateImgUrl={handleUpdateImgUrl} onPreview={setPreview}
+                saving={saving} saved={saved} />
+              <MultiLocF label="Başlıq" strKey="whyAzerbaijan.heading" locData={locData} onChange={handleMultiLocChange} />
+              <MultiLocF label="Açıqlama" strKey="whyAzerbaijan.desc" multi locData={locData} onChange={handleMultiLocChange} />
+              <MultiLocF label='"Ətraflı" Linki' strKey="whyAzerbaijan.learnMore" locData={locData} onChange={handleMultiLocChange} />
               {[0,1,2,3].map(i => (
                 <div key={i} className="bg-slate-100 p-3 rounded space-y-2">
                   <div className="text-[10px] font-bold text-slate-500 uppercase">Xüsusiyyət {i+1}</div>
-                  <MultiLocF label="Sətir 1" keyFn={l => `whyAzerbaijan.features[${i}].line1`} />
-                  <MultiLocF label="Sətir 2" keyFn={l => `whyAzerbaijan.features[${i}].line2`} />
-                  <MultiLocF label="Detal" keyFn={l => `whyAzerbaijan.features[${i}].detail`} multi />
+                  <MultiLocF label="Sətir 1" strKey={`whyAzerbaijan.features[${i}].line1`} locData={locData} onChange={handleMultiLocChange} />
+                  <MultiLocF label="Sətir 2" strKey={`whyAzerbaijan.features[${i}].line2`} locData={locData} onChange={handleMultiLocChange} />
+                  <MultiLocF label="Detal" strKey={`whyAzerbaijan.features[${i}].detail`} multi locData={locData} onChange={handleMultiLocChange} />
                 </div>
               ))}
-              <SaveBar onSave={async () => { await saveContent(content); await saveStrings(locData); }} />
+              <SaveBar onSave={async () => { await saveContent(content); await saveStrings(locData); }} saving={saving} saved={saved} />
             </>
           )}
 
@@ -584,13 +596,13 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
           {page === 'footer' && (
             <>
               <h2 className="text-sm font-bold text-slate-800">Footer</h2>
-              <MultiLocF label="Açıqlama (Brand mandate)" keyFn={l => `footer.description`} multi />
-              <MultiLocF label="HQ Başlığı" keyFn={l => `footer.hqTitle`} />
-              <MultiLocF label="HQ Ünvanı" keyFn={l => `footer.hqAddress`} multi />
-              <MultiLocF label='"Sürətli Keçidlər" Başlığı' keyFn={l => `footer.quickLinks`} />
-              <MultiLocF label='"Uyğunluq" Başlığı' keyFn={l => `footer.complianceTitle`} />
-              <MultiLocF label="Copyright Mətni" keyFn={l => `footer.rights`} multi />
-              <SaveBar onSave={() => saveStrings(locData)} />
+              <MultiLocF label="Açıqlama (Brand mandate)" strKey="footer.description" multi locData={locData} onChange={handleMultiLocChange} />
+              <MultiLocF label="HQ Başlığı" strKey="footer.hqTitle" locData={locData} onChange={handleMultiLocChange} />
+              <MultiLocF label="HQ Ünvanı" strKey="footer.hqAddress" multi locData={locData} onChange={handleMultiLocChange} />
+              <MultiLocF label='"Sürətli Keçidlər" Başlığı' strKey="footer.quickLinks" locData={locData} onChange={handleMultiLocChange} />
+              <MultiLocF label='"Uyğunluq" Başlığı' strKey="footer.complianceTitle" locData={locData} onChange={handleMultiLocChange} />
+              <MultiLocF label="Copyright Mətni" strKey="footer.rights" multi locData={locData} onChange={handleMultiLocChange} />
+              <SaveBar onSave={() => saveStrings(locData)} saving={saving} saved={saved} />
             </>
           )}
 
@@ -602,7 +614,6 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
               {(content.products || []).length === 0 && (
                 <div className="bg-amber-50 border border-amber-200 px-4 py-3 text-xs text-amber-700 rounded">
                   Məhsul override-ı hələ yoxdur. AZEXBUY saytında default məhsullar göstərilir.
-                  Düzəliş etdikdə avtomatik saxlanır.
                 </div>
               )}
               {(content.products || []).map((prod: any, idx: number) => (
@@ -618,21 +629,6 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                   </button>
                   {expandedId === 'p'+idx && (
                     <div className="border-t border-slate-100 p-4 space-y-3 bg-slate-50/50">
-                      <div className="bg-white border border-slate-200 rounded p-3">
-                        <div className="text-[10px] font-bold text-slate-500 uppercase mb-2">Məhsul Şəkli</div>
-                        <div className="flex items-center gap-3">
-                          {prod.image && <img src={prod.image} className="w-20 h-14 object-cover rounded border cursor-pointer" onClick={() => setPreview(prod.image)} />}
-                          <div className="space-y-1.5">
-                            <input type="text" value={prod.image || ''} onChange={e => {
-                              const p = [...(content.products || [])]; p[idx] = { ...p[idx], image: e.target.value };
-                              setContent((c: any) => ({ ...c, products: p }));
-                            }} placeholder="https://..." className="h-7 w-64 text-xs bg-slate-50 border border-slate-200 px-2 focus:outline-none focus:border-[#0f3156] font-mono rounded-sm" />
-                            <button onClick={() => triggerUpload(`product_${prod.id}_img`)} className="h-7 px-3 flex items-center gap-1.5 text-xs font-bold bg-[#0f3156] text-white hover:bg-[#081c33] rounded-sm">
-                              <Upload className="w-3 h-3" /> Yeni Şəkil
-                            </button>
-                          </div>
-                        </div>
-                      </div>
                       {[['HS Kodu','hsCode'],['Min Sifariş','minOrderQty'],['Yıllık Kapasite','annualCapacity'],['Çatdırılma Müddəti','leadTimeDays']].map(([lbl, fld]) => (
                         <div key={fld} className="bg-white border border-slate-200 rounded p-3">
                           <label className="block text-[10px] font-bold text-slate-400 font-mono mb-1.5 uppercase">{lbl}</label>
@@ -659,7 +655,7 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                           </div>
                         </div>
                       ))}
-                      <SaveBar onSave={() => saveContent(content)} />
+                      <SaveBar onSave={() => saveContent(content)} saving={saving} saved={saved} />
                     </div>
                   )}
                 </div>
@@ -709,7 +705,7 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                           </div>
                         </div>
                       ))}
-                      <SaveBar onSave={() => saveContent(content)} />
+                      <SaveBar onSave={() => saveContent(content)} saving={saving} saved={saved} />
                     </div>
                   )}
                 </div>
@@ -759,7 +755,7 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                           </div>
                         </div>
                       ))}
-                      <SaveBar onSave={() => saveContent(content)} />
+                      <SaveBar onSave={() => saveContent(content)} saving={saving} saved={saved} />
                     </div>
                   )}
                 </div>
