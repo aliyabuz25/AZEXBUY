@@ -25,67 +25,11 @@ interface SidebarProps {
   onSelectTab: (id: string, title: string, icon: string) => void;
   siteName: string;
   uiLang: UiLanguage;
-  onSelectLang: (lang: UiLanguage) => void;
   adminName?: string;
   adminEmail?: string;
   onLogout?: () => void;
   sessionRemainingSeconds?: number;
 }
-
-// ── Inline flag SVGs ──────────────────────────────────────────────────────────
-const FlagAz = () => (
-  <svg viewBox="0 0 512 512" className="w-4 h-4 rounded-full shrink-0">
-    <mask id="s-az"><circle cx="256" cy="256" r="256" fill="#fff"/></mask>
-    <g mask="url(#s-az)">
-      <path fill="#00b5e2" d="M0 0h512v170.7H0z"/>
-      <path fill="#ef3340" d="M0 170.7h512v170.6H0z"/>
-      <path fill="#509e2f" d="M0 341.3h512V512H0z"/>
-      <circle cx="230" cy="256" r="54" fill="#fff"/>
-      <circle cx="242" cy="256" r="44" fill="#ef3340"/>
-      <polygon fill="#fff" points="266,234 272,246 284,244 278,254 286,264 274,264 270,276 264,266 252,270 256,258 248,250 260,250"/>
-    </g>
-  </svg>
-);
-const FlagTr = () => (
-  <svg viewBox="0 0 512 512" className="w-4 h-4 rounded-full shrink-0">
-    <mask id="s-tr"><circle cx="256" cy="256" r="256" fill="#fff"/></mask>
-    <g mask="url(#s-tr)">
-      <circle cx="256" cy="256" r="256" fill="#e30a17"/>
-      <circle cx="206" cy="256" r="82" fill="#fff"/>
-      <circle cx="224" cy="256" r="66" fill="#e30a17"/>
-      <polygon fill="#fff" points="274,226 280,246 300,246 284,258 290,278 274,266 258,278 264,258 248,246 268,246"/>
-    </g>
-  </svg>
-);
-const FlagRu = () => (
-  <svg viewBox="0 0 512 512" className="w-4 h-4 rounded-full shrink-0">
-    <mask id="s-ru"><circle cx="256" cy="256" r="256" fill="#fff"/></mask>
-    <g mask="url(#s-ru)">
-      <path fill="#fff" d="M0 0h512v170.7H0z"/>
-      <path fill="#0039a6" d="M0 170.7h512v170.6H0z"/>
-      <path fill="#d52b1e" d="M0 341.3h512V512H0z"/>
-    </g>
-  </svg>
-);
-const FlagEn = () => (
-  <svg viewBox="0 0 512 512" className="w-4 h-4 rounded-full shrink-0">
-    <mask id="s-gb"><circle cx="256" cy="256" r="256" fill="#fff"/></mask>
-    <g mask="url(#s-gb)">
-      <path fill="#012169" d="M0 0h512v512H0z"/>
-      <path stroke="#fff" strokeWidth="60" d="M0 0l512 512M512 0L0 512"/>
-      <path stroke="#c8102e" strokeWidth="38" d="M0 0l512 512M512 0L0 512"/>
-      <path stroke="#fff" strokeWidth="100" d="M256 0v512M0 256h512"/>
-      <path stroke="#c8102e" strokeWidth="60" d="M256 0v512M0 256h512"/>
-    </g>
-  </svg>
-);
-
-const LANG_OPTIONS: { id: UiLanguage; label: string; Flag: React.FC }[] = [
-  { id: 'az', label: 'Azərbaycan', Flag: FlagAz },
-  { id: 'tr', label: 'Türkçe',     Flag: FlagTr },
-  { id: 'ru', label: 'Русский',    Flag: FlagRu },
-  { id: 'en', label: 'English',    Flag: FlagEn },
-];
 
 // AZEXBUY sub-items
 const AZEXBUY_ITEMS = [
@@ -120,7 +64,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onSelectTab,
   siteName,
   uiLang,
-  onSelectLang,
   adminName = 'Admin',
   adminEmail,
   onLogout,
@@ -349,35 +292,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         )}
       </nav>
-
-      {/* Language Picker */}
-      {!collapsed ? (
-        <div className="border-t border-slate-200/90 bg-white shrink-0 px-2 py-1.5">
-          <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider px-1 mb-1">Panel Dili</div>
-          <div className="flex gap-1">
-            {LANG_OPTIONS.map(({ id, label, Flag }) => (
-              <button key={id} onClick={() => onSelectLang(id)} title={label}
-                className={`flex-1 flex items-center justify-center gap-1 py-1 rounded-sm text-[10px] font-medium transition-colors ${
-                  uiLang === id ? 'bg-[#0f3156] text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
-                }`}>
-                <Flag />
-                <span>{id.toUpperCase()}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      ) : (
-        <div className="border-t border-slate-200/90 bg-white shrink-0 py-1.5 flex flex-col items-center gap-1">
-          {LANG_OPTIONS.map(({ id, label, Flag }) => (
-            <button key={id} onClick={() => onSelectLang(id)} title={label}
-              className={`w-9 h-7 flex items-center justify-center rounded-sm transition-colors ${
-                uiLang === id ? 'bg-[#0f3156]' : 'hover:bg-slate-100'
-              }`}>
-              <Flag />
-            </button>
-          ))}
-        </div>
-      )}
 
       {/* Bottom Profile & Session */}
       {!collapsed ? (
