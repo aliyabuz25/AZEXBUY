@@ -1238,13 +1238,10 @@ app.get('/octo-admin/*', (_req: Request, res: Response) => {
 });
 
 // SPA Fallback — /* → AZEXBUY frontend index.html
-app.get('*', (req: Request, res: Response, next: any) => {
-  if (req.path.startsWith('/api') || req.path.startsWith('/uploads') || req.path.startsWith('/adminer')) {
-    return next();
-  }
+app.get('*', (req: Request, res: Response) => {
   const azexbuyIdx = path.join(azexbuyDist, 'index.html');
   if (fs.existsSync(azexbuyIdx)) return res.sendFile(azexbuyIdx);
-  res.status(404).send('AZEXBUY frontend not built yet. Run: npm run build in AZEXBUY folder.');
+  res.status(404).send('AZEXBUY frontend not built yet.');
 });
 
 app.listen(PORT, () => {

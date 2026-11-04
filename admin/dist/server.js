@@ -1803,13 +1803,10 @@ app.get("/octo-admin/*", (_req, res) => {
   if (fs3.existsSync(idx)) return res.sendFile(idx);
   res.status(404).send("Admin panel not built yet.");
 });
-app.get("*", (req, res, next) => {
-  if (req.path.startsWith("/api") || req.path.startsWith("/uploads") || req.path.startsWith("/adminer")) {
-    return next();
-  }
+app.get("*", (req, res) => {
   const azexbuyIdx = path3.join(azexbuyDist, "index.html");
   if (fs3.existsSync(azexbuyIdx)) return res.sendFile(azexbuyIdx);
-  res.status(404).send("AZEXBUY frontend not built yet. Run: npm run build in AZEXBUY folder.");
+  res.status(404).send("AZEXBUY frontend not built yet.");
 });
 app.listen(PORT, () => {
   console.log(`[Octotech LL. Admin] Server running on http://localhost:${PORT}`);
