@@ -704,6 +704,88 @@ app.use((_req, res, next) => {
   res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
   next();
 });
+var logDb = new BetterSqlite3(":memory:");
+logDb.exec(`
+  CREATE TABLE IF NOT EXISTS logs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ts TEXT NOT NULL,
+    type TEXT NOT NULL,
+    level TEXT NOT NULL DEFAULT 'info',
+    ip TEXT,
+    method TEXT,
+    path TEXT,
+    status INTEGER,
+    duration_ms INTEGER,
+    user_agent TEXT,
+    message TEXT,
+    extra TEXT
+  );
+  CREATE INDEX IF NOT EXISTS idx_logs_type ON logs(type);
+  CREATE INDEX IF NOT EXISTS idx_logs_ts ON logs(ts);
+`);
+function writeLog(type, level, data) {
+  try {
+    logDb.prepare(`INSERT INTO logs (ts,type,level,ip,method,path,status,duration_ms,user_agent,message,extra)
+      VALUES (?,?,?,?,?,?,?,?,?,?,?)`).run(
+      (/* @__PURE__ */ new Date()).toISOString(),
+      type,
+      level,
+      data.ip || null,
+      data.method || null,
+      data.path || null,
+      data.status || null,
+      data.duration_ms || null,
+      data.user_agent ? data.user_agent.substring(0, 200) : null,
+      data.message || null,
+      data.extra ? JSON.stringify(data.extra) : null
+    );
+    logDb.prepare(`DELETE FROM logs WHERE id NOT IN (SELECT id FROM logs ORDER BY id DESC LIMIT 2000)`).run();
+  } catch {
+  }
+}
+app.use((req, res, next) => {
+  const start = Date.now();
+  const ip = req.headers["x-forwarded-for"]?.split(",")[0]?.trim() || req.socket.remoteAddress || "unknown";
+  res.on("finish", () => {
+    const duration = Date.now() - start;
+    const isAdmin = req.path.startsWith("/octo-admin") || req.path.startsWith("/api/");
+    if (req.path.startsWith("/api/auth/session-events")) return;
+    writeLog("http", res.statusCode >= 400 ? "warn" : "info", {
+      ip,
+      method: req.method,
+      path: req.path,
+      status: res.statusCode,
+      duration_ms: duration,
+      user_agent: req.headers["user-agent"]
+    });
+    if (isAdmin || req.path === "/") {
+      writeLog("ip", "info", {
+        ip,
+        method: req.method,
+        path: req.path,
+        status: res.statusCode,
+        user_agent: req.headers["user-agent"],
+        message: `${req.method} ${req.path}`
+      });
+    }
+  });
+  next();
+});
+app.get("/api/logs", requireAuth, (req, res) => {
+  const type = req.query.type || "http";
+  const limit = Math.min(parseInt(req.query.limit) || 200, 500);
+  const rows = logDb.prepare(`SELECT * FROM logs WHERE type = ? ORDER BY id DESC LIMIT ?`).all(type, limit);
+  res.json(rows);
+});
+app.delete("/api/logs", requireAuth, (req, res) => {
+  const type = req.query.type;
+  if (type) {
+    logDb.prepare(`DELETE FROM logs WHERE type = ?`).run(type);
+  } else {
+    logDb.prepare(`DELETE FROM logs`).run();
+  }
+  res.json({ success: true });
+});
 var clientDist = path3.join(ROOT_DIR, "dist", "client");
 var azexbuyDist = path3.join(ROOT_DIR, "dist", "azexbuy");
 if (fs3.existsSync(clientDist)) {
@@ -826,6 +908,8 @@ app.post("/api/auth/login", (req, res) => {
   const isUserValid = inputUser === adminUser || inputUser === adminEmail;
   const isPassValid = password === admin.password;
   if (!isUserValid || !isPassValid) {
+    const failIp = req.headers["x-forwarded-for"]?.split(",")[0]?.trim() || req.socket.remoteAddress || "unknown";
+    writeLog("security", "warn", { ip: failIp, message: `U\u011Fursuz giri\u015F c\u0259hdi: ${username}`, extra: { username } });
     return res.status(401).json({
       success: false,
       error: "\u0130stifad\u0259\xE7i ad\u0131 v\u0259 ya \u015Fifr\u0259 yanl\u0131\u015Fd\u0131r"
@@ -833,6 +917,8 @@ app.post("/api/auth/login", (req, res) => {
   }
   if (activeSessionToken) {
     kickAllClients("Ba\u015Fqa bir cihazdan giri\u015F edildi. Sessiyan\u0131z sonland\u0131r\u0131ld\u0131.");
+    const kickIp = req.headers["x-forwarded-for"]?.split(",")[0]?.trim() || req.socket.remoteAddress || "unknown";
+    writeLog("security", "warn", { ip: kickIp, message: `Yeni giri\u015F - \u0259vv\u0259lki sessiya sonland\u0131r\u0131ld\u0131: ${username}`, extra: { username } });
   }
   const { token, exp, expiresIn } = signJwt({
     username: admin.username || "admin",
@@ -841,6 +927,8 @@ app.post("/api/auth/login", (req, res) => {
     role: admin.role || "Super Admin"
   }, SESSION_DURATION_SECONDS);
   activeSessionToken = token;
+  const loginIp = req.headers["x-forwarded-for"]?.split(",")[0]?.trim() || req.socket.remoteAddress || "unknown";
+  writeLog("security", "info", { ip: loginIp, message: `U\u011Furlu giri\u015F: ${admin.username}`, extra: { username: admin.username } });
   res.json({
     success: true,
     message: "Giri\u015F u\u011Furla t\u0259sdiql\u0259ndi",
@@ -870,7 +958,9 @@ app.get("/api/auth/me", requireAuth, (req, res) => {
     }
   });
 });
-app.post("/api/auth/logout", (_req, res) => {
+app.post("/api/auth/logout", (req, res) => {
+  const logoutIp = req.headers["x-forwarded-for"]?.split(",")[0]?.trim() || req.socket.remoteAddress || "unknown";
+  writeLog("security", "info", { ip: logoutIp, message: "Admin \xE7\u0131x\u0131\u015F etdi" });
   activeSessionToken = null;
   sseClients.clear();
   res.json({ success: true, message: "Sessiya t\u0259hl\xFCk\u0259siz \u015F\u0259kild\u0259 sonland\u0131r\u0131ld\u0131" });

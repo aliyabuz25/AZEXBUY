@@ -32,6 +32,89 @@ app.use((_req, res, next) => {
   next();
 });
 
+// ── Log System ───────────────────────────────────────────────────────────────
+const logDb = new BetterSqlite3(':memory:');
+logDb.exec(`
+  CREATE TABLE IF NOT EXISTS logs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ts TEXT NOT NULL,
+    type TEXT NOT NULL,
+    level TEXT NOT NULL DEFAULT 'info',
+    ip TEXT,
+    method TEXT,
+    path TEXT,
+    status INTEGER,
+    duration_ms INTEGER,
+    user_agent TEXT,
+    message TEXT,
+    extra TEXT
+  );
+  CREATE INDEX IF NOT EXISTS idx_logs_type ON logs(type);
+  CREATE INDEX IF NOT EXISTS idx_logs_ts ON logs(ts);
+`);
+
+function writeLog(type: 'http' | 'ip' | 'security', level: 'info' | 'warn' | 'error', data: {
+  ip?: string; method?: string; path?: string; status?: number;
+  duration_ms?: number; user_agent?: string; message?: string; extra?: any;
+}) {
+  try {
+    logDb.prepare(`INSERT INTO logs (ts,type,level,ip,method,path,status,duration_ms,user_agent,message,extra)
+      VALUES (?,?,?,?,?,?,?,?,?,?,?)`).run(
+      new Date().toISOString(), type, level,
+      data.ip || null, data.method || null, data.path || null,
+      data.status || null, data.duration_ms || null,
+      data.user_agent ? data.user_agent.substring(0, 200) : null,
+      data.message || null,
+      data.extra ? JSON.stringify(data.extra) : null
+    );
+    // Keep only last 2000 logs
+    logDb.prepare(`DELETE FROM logs WHERE id NOT IN (SELECT id FROM logs ORDER BY id DESC LIMIT 2000)`).run();
+  } catch {}
+}
+
+// HTTP + IP log middleware
+app.use((req: Request, res: Response, next: any) => {
+  const start = Date.now();
+  const ip = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || req.socket.remoteAddress || 'unknown';
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    const isAdmin = req.path.startsWith('/octo-admin') || req.path.startsWith('/api/');
+    if (req.path.startsWith('/api/auth/session-events')) return; // SSE spam'i atla
+    writeLog('http', res.statusCode >= 400 ? 'warn' : 'info', {
+      ip, method: req.method, path: req.path,
+      status: res.statusCode, duration_ms: duration,
+      user_agent: req.headers['user-agent'],
+    });
+    // IP erişim logu (sadece anlamlı istekler)
+    if (isAdmin || req.path === '/') {
+      writeLog('ip', 'info', {
+        ip, method: req.method, path: req.path,
+        status: res.statusCode, user_agent: req.headers['user-agent'],
+        message: `${req.method} ${req.path}`,
+      });
+    }
+  });
+  next();
+});
+
+// Log API endpoint
+app.get('/api/logs', requireAuth, (req: Request, res: Response) => {
+  const type = req.query.type as string || 'http';
+  const limit = Math.min(parseInt(req.query.limit as string) || 200, 500);
+  const rows = logDb.prepare(`SELECT * FROM logs WHERE type = ? ORDER BY id DESC LIMIT ?`).all(type, limit);
+  res.json(rows);
+});
+
+app.delete('/api/logs', requireAuth, (req: Request, res: Response) => {
+  const type = req.query.type as string;
+  if (type) {
+    logDb.prepare(`DELETE FROM logs WHERE type = ?`).run(type);
+  } else {
+    logDb.prepare(`DELETE FROM logs`).run();
+  }
+  res.json({ success: true });
+});
+
 // ── Static paths ─────────────────────────────────────────────────────────────
 const clientDist  = path.join(ROOT_DIR, 'dist', 'client');   // admin panel
 const azexbuyDist = path.join(ROOT_DIR, 'dist', 'azexbuy');  // AZEXBUY frontend
@@ -195,6 +278,8 @@ app.post('/api/auth/login', (req: Request, res: Response) => {
   const isPassValid = password === admin.password;
 
   if (!isUserValid || !isPassValid) {
+    const failIp = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || req.socket.remoteAddress || 'unknown';
+    writeLog('security', 'warn', { ip: failIp, message: `Uğursuz giriş cəhdi: ${username}`, extra: { username } });
     return res.status(401).json({
       success: false,
       error: 'İstifadəçi adı və ya şifrə yanlışdır'
@@ -204,6 +289,8 @@ app.post('/api/auth/login', (req: Request, res: Response) => {
   // Kick existing session if any
   if (activeSessionToken) {
     kickAllClients('Başqa bir cihazdan giriş edildi. Sessiyanız sonlandırıldı.');
+    const kickIp = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || req.socket.remoteAddress || 'unknown';
+    writeLog('security', 'warn', { ip: kickIp, message: `Yeni giriş - əvvəlki sessiya sonlandırıldı: ${username}`, extra: { username } });
   }
 
   // Issue 10-minute JWT
@@ -215,6 +302,8 @@ app.post('/api/auth/login', (req: Request, res: Response) => {
   }, SESSION_DURATION_SECONDS);
 
   activeSessionToken = token;
+  const loginIp = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || req.socket.remoteAddress || 'unknown';
+  writeLog('security', 'info', { ip: loginIp, message: `Uğurlu giriş: ${admin.username}`, extra: { username: admin.username } });
 
   res.json({
     success: true,
@@ -247,7 +336,9 @@ app.get('/api/auth/me', requireAuth, (req: Request, res: Response) => {
   });
 });
 
-app.post('/api/auth/logout', (_req: Request, res: Response) => {
+app.post('/api/auth/logout', (req: Request, res: Response) => {
+  const logoutIp = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || req.socket.remoteAddress || 'unknown';
+  writeLog('security', 'info', { ip: logoutIp, message: 'Admin çıxış etdi' });
   activeSessionToken = null;
   sseClients.clear();
   res.json({ success: true, message: 'Sessiya təhlükəsiz şəkildə sonlandırıldı' });

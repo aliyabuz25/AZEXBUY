@@ -14,6 +14,7 @@ import {
   Mail,
   Image as ImageIcon,
   Globe,
+  Activity,
 } from 'lucide-react';
 import { UiLanguage } from '../types';
 import { DICTIONARIES } from '../i18n';
@@ -43,6 +44,7 @@ const PLATFORM_SECTIONS = [
   {
     title: 'İdarəetmə',
     items: [
+      { id: 'logs',            label: 'Sistem Logları',          icon: Activity },
       { id: 'user-management', label: 'İstifadəçi İdarəetməsi', icon: Users },
       { id: 'smtp-settings',   label: 'SMTP E-poçt',            icon: Mail },
       { id: 'settings',        label: 'Sistem Parametrləri',    icon: Settings },

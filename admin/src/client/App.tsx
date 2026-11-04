@@ -33,6 +33,7 @@ import { AzexbuyCMSView } from './views/AzexbuyCMSView';
 import { UserManagementView } from './views/UserManagementView';
 import { InboxView } from './views/InboxView';
 import { SmtpSettingsView } from './views/SmtpSettingsView';
+import { LogsView } from './views/LogsView';
 
 const LANG_STORAGE_KEY = 'octotech_admin_lang';
 const SIDEBAR_STORAGE_KEY = 'octotech_admin_sidebar_collapsed';
@@ -724,6 +725,9 @@ export const App: React.FC = () => {
           )}
           {activeTabId === 'smtp-settings' && (
             <SmtpSettingsView uiLang={uiLang} />
+          )}
+          {activeTabId === 'logs' && (
+            <LogsView uiLang={uiLang} />
           )}
         </div>
       </main>
