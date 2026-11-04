@@ -87,11 +87,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
         if (rr.ok && pr.ok) {
           const rfqs = await rr.json();
           const producers = await pr.json();
-          const rfqUnread = rfqs.filter((r: any) => r.status === 'Pending').length;
-          const prodUnread = producers.filter((p: any) => p.status === 'Pending').length;
+          const rfqUnread = Array.isArray(rfqs) ? rfqs.filter((r: any) => r.status === 'Pending').length : 0;
+          const prodUnread = Array.isArray(producers) ? producers.filter((p: any) => p.status === 'Pending').length : 0;
           setUnreadCounts({ rfqs: rfqUnread, producers: prodUnread });
+        } else {
+          // Auth failed or error — clear badge
+          setUnreadCounts({ rfqs: 0, producers: 0 });
         }
-      } catch {}
+      } catch {
+        setUnreadCounts({ rfqs: 0, producers: 0 });
+      }
     };
     fetchCounts();
     const interval = setInterval(fetchCounts, 15000);
