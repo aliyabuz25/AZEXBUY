@@ -165,7 +165,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     setUpdateLogs(['[1/5] Mövcud məlumat bazası və yüklənmiş fayllar təhlükəsizlik rejimində qorunur...']);
 
     try {
-      const res = await fetch('/api/system/update/apply', { method: 'POST' });
+      const res = await fetch('/api/system/update/apply', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('octotech_admin_jwt') || ''}` },
+      });
       const data = await res.json();
       if (data.success) {
         setUpdateLogs(data.data.logs || [

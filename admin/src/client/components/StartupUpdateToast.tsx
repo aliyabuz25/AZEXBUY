@@ -172,7 +172,10 @@ export const StartupUpdateToast: React.FC<StartupUpdateToastProps> = ({
   const handleApplyUpdate = async () => {
     setPhase('updating');
     try {
-      const res = await fetch('/api/system/update/apply', { method: 'POST' });
+      const res = await fetch('/api/system/update/apply', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('octotech_admin_jwt') || ''}` },
+      });
       const json = await res.json();
       if (json.success) {
         setPhase('updated');
