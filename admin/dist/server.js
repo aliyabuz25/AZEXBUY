@@ -1818,14 +1818,29 @@ app.post("/api/admin-users", requireAuth, (req, res) => {
   res.json({ success: true, id });
 });
 app.patch("/api/admin-users/:id", requireAuth, (req, res) => {
-  const { fullName, email, role, isActive, password } = req.body;
+  const { fullName, username, email, role, isActive, password } = req.body;
   const user = mainDb.prepare("SELECT id FROM admin_users WHERE id = ?").get(req.params.id);
   if (!user) return res.status(404).json({ error: "User not found" });
   if (fullName !== void 0) mainDb.prepare("UPDATE admin_users SET full_name = ? WHERE id = ?").run(fullName, req.params.id);
+  if (username !== void 0 && username.trim().length >= 3) {
+    const conflict = mainDb.prepare("SELECT id FROM admin_users WHERE username = ? AND id != ?").get(username.toLowerCase().trim(), req.params.id);
+    if (conflict) return res.status(409).json({ error: "Bu istifad\u0259\xE7i ad\u0131 art\u0131q m\xF6vcuddur" });
+    mainDb.prepare("UPDATE admin_users SET username = ? WHERE id = ?").run(username.toLowerCase().trim(), req.params.id);
+    if (activeSessionToken) {
+      activeSessionToken = null;
+      kickAllClients("\u0130stifad\u0259\xE7i ad\u0131 d\u0259yi\u015Fdirildi. Z\u0259hm\u0259t olmasa yenid\u0259n daxil olun.");
+    }
+  }
   if (email !== void 0) mainDb.prepare("UPDATE admin_users SET email = ? WHERE id = ?").run(email.toLowerCase().trim(), req.params.id);
   if (role !== void 0) mainDb.prepare("UPDATE admin_users SET role = ? WHERE id = ?").run(role, req.params.id);
   if (isActive !== void 0) mainDb.prepare("UPDATE admin_users SET is_active = ? WHERE id = ?").run(isActive ? 1 : 0, req.params.id);
-  if (password !== void 0 && password.length >= 4) mainDb.prepare("UPDATE admin_users SET password = ? WHERE id = ?").run(password, req.params.id);
+  if (password !== void 0 && password.length >= 4) {
+    mainDb.prepare("UPDATE admin_users SET password = ? WHERE id = ?").run(password, req.params.id);
+    if (activeSessionToken) {
+      activeSessionToken = null;
+      kickAllClients("\u015Eifr\u0259 d\u0259yi\u015Fdirildi. Z\u0259hm\u0259t olmasa yenid\u0259n daxil olun.");
+    }
+  }
   res.json({ success: true });
 });
 app.delete("/api/admin-users/:id", requireAuth, (req, res) => {

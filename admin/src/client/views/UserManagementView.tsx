@@ -99,13 +99,19 @@ export const UserManagementView: React.FC<UserManagementViewProps> = () => {
     if (!editId) return;
     const patch: any = {};
     if (editData.fullName !== undefined) patch.fullName = editData.fullName;
+    if (editData.username !== undefined && editData.username.trim().length >= 3) patch.username = editData.username;
     if (editData.email !== undefined) patch.email = editData.email;
     if (editData.role !== undefined) patch.role = editData.role;
     if (editData.password && editData.password.length >= 4) patch.password = editData.password;
-    await handlePatch(editId, patch);
+    const r = await fetch(`/api/admin-users/${editId}`, {
+      method: 'PATCH', headers: authH(), body: JSON.stringify(patch),
+    });
+    const data = await r.json();
+    if (!r.ok) { flash(data.error || 'Xəta baş verdi.'); return; }
     setEditId(null);
     setEditData({});
     flash('Dəyişikliklər saxlandı.');
+    load();
   };
 
   const fmt = (iso?: string) => {
@@ -242,7 +248,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = () => {
                   <div className="flex items-center gap-1.5 shrink-0">
                     <button onClick={() => {
                       if (editId === u.id) { setEditId(null); setEditData({}); }
-                      else { setEditId(u.id); setEditData({ fullName: u.fullName, email: u.email, role: u.role, password: '' }); }
+                      else { setEditId(u.id); setEditData({ fullName: u.fullName, username: u.username, email: u.email, role: u.role, password: '' }); }
                     }} className="h-7 px-2 flex items-center gap-1 text-xs text-slate-600 border border-slate-200 hover:bg-slate-100 rounded-sm">
                       <Edit2 className="w-3 h-3" /> Düzənlə
                     </button>
@@ -266,10 +272,16 @@ export const UserManagementView: React.FC<UserManagementViewProps> = () => {
                     <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wide flex items-center gap-1.5">
                       <Edit2 className="w-3 h-3" /> Hesabı Düzənlə
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
                       <div>
                         <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Ad Soyad</label>
                         <input value={editData.fullName || ''} onChange={e => setEditData(d => ({ ...d, fullName: e.target.value }))}
+                          className="w-full h-7 text-xs bg-white border border-slate-200 px-2 focus:outline-none focus:border-[#0f3156] rounded-sm" />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">İstifadəçi Adı</label>
+                        <input value={editData.username || ''} onChange={e => setEditData(d => ({ ...d, username: e.target.value }))}
+                          placeholder="min 3 simvol"
                           className="w-full h-7 text-xs bg-white border border-slate-200 px-2 focus:outline-none focus:border-[#0f3156] rounded-sm" />
                       </div>
                       <div>

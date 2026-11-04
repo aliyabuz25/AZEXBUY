@@ -1259,14 +1259,31 @@ app.post('/api/admin-users', requireAuth, (req: Request, res: Response) => {
 });
 
 app.patch('/api/admin-users/:id', requireAuth, (req: Request, res: Response) => {
-  const { fullName, email, role, isActive, password } = req.body;
+  const { fullName, username, email, role, isActive, password } = req.body;
   const user = mainDb.prepare('SELECT id FROM admin_users WHERE id = ?').get(req.params.id) as any;
   if (!user) return res.status(404).json({ error: 'User not found' });
   if (fullName !== undefined) mainDb.prepare('UPDATE admin_users SET full_name = ? WHERE id = ?').run(fullName, req.params.id);
+  if (username !== undefined && username.trim().length >= 3) {
+    const conflict = mainDb.prepare('SELECT id FROM admin_users WHERE username = ? AND id != ?').get(username.toLowerCase().trim(), req.params.id);
+    if (conflict) return res.status(409).json({ error: 'Bu istifadəçi adı artıq mövcuddur' });
+    mainDb.prepare('UPDATE admin_users SET username = ? WHERE id = ?').run(username.toLowerCase().trim(), req.params.id);
+    // If this is the active session user, invalidate session so they must re-login
+    if (activeSessionToken) {
+      activeSessionToken = null;
+      kickAllClients('İstifadəçi adı dəyişdirildi. Zəhmət olmasa yenidən daxil olun.');
+    }
+  }
   if (email !== undefined) mainDb.prepare('UPDATE admin_users SET email = ? WHERE id = ?').run(email.toLowerCase().trim(), req.params.id);
   if (role !== undefined) mainDb.prepare('UPDATE admin_users SET role = ? WHERE id = ?').run(role, req.params.id);
   if (isActive !== undefined) mainDb.prepare('UPDATE admin_users SET is_active = ? WHERE id = ?').run(isActive ? 1 : 0, req.params.id);
-  if (password !== undefined && password.length >= 4) mainDb.prepare('UPDATE admin_users SET password = ? WHERE id = ?').run(password, req.params.id);
+  if (password !== undefined && password.length >= 4) {
+    mainDb.prepare('UPDATE admin_users SET password = ? WHERE id = ?').run(password, req.params.id);
+    // Invalidate session after password change — force re-login
+    if (activeSessionToken) {
+      activeSessionToken = null;
+      kickAllClients('Şifrə dəyişdirildi. Zəhmət olmasa yenidən daxil olun.');
+    }
+  }
   res.json({ success: true });
 });
 
