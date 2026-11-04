@@ -41,13 +41,6 @@ const AZEXBUY_ITEMS = [
 // Top-level nav sections (outside AZEXBUY collapsible)
 const PLATFORM_SECTIONS = [
   {
-    title: 'Məzmun',
-    items: [
-      { id: 'media',        label: 'Media Mərkəzi',   icon: ImageIcon },
-      { id: 'localization', label: 'Lokalizasiya',    icon: Globe },
-    ],
-  },
-  {
     title: 'İdarəetmə',
     items: [
       { id: 'user-management', label: 'İstifadəçi İdarəetməsi', icon: Users },
