@@ -50,7 +50,7 @@ export const InboxView: React.FC<InboxViewProps> = () => {
   const [search, setSearch] = useState('');
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
-  const token = () => localStorage.getItem('octo_token') || sessionStorage.getItem('octo_token') || '';
+  const token = () => localStorage.getItem('octotech_admin_jwt') || sessionStorage.getItem('octotech_admin_jwt') || '';
   const authH = () => ({ Authorization: `Bearer ${token()}` });
 
   const load = useCallback(async () => {
