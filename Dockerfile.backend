@@ -1,46 +1,43 @@
-FROM node:22-alpine AS frontend-builder
+FROM node:22-slim AS frontend-builder
 
 WORKDIR /frontend
 
 COPY package.json package-lock.json ./
-RUN npm ci --no-audit --no-fund 2>&1
+RUN npm ci --no-audit --no-fund
 
 COPY src ./src
 COPY public ./public
 COPY index.html tsconfig.json vite.config.ts ./
 
-RUN ls -la && node --version && npm --version
-RUN cat package.json | grep '"build"'
-RUN ./node_modules/.bin/vite --version
-RUN ./node_modules/.bin/vite build
+RUN npm run build
 
 # ── Admin panel + backend builder ────────────────────────────────
-FROM node:22-alpine AS admin-builder
+FROM node:22-slim AS admin-builder
 
 WORKDIR /admin
 
-RUN apk add --no-cache python3 make g++
+RUN apt-get update && apt-get install -y python3 make g++ && rm -rf /var/lib/apt/lists/*
 
 COPY admin/package.json admin/package-lock.json ./
-RUN npm ci --no-audit --no-fund 2>&1
+RUN npm ci --no-audit --no-fund
 
 COPY admin/src ./src
 COPY admin/vite.config.ts admin/tsconfig.json admin/index.html admin/build-server.mjs ./
 
-RUN ls -la && node --version
-RUN ./node_modules/.bin/vite --version
-RUN ./node_modules/.bin/vite build
-RUN node build-server.mjs
+RUN npm run build
 
 # Copy AZEXBUY frontend into admin dist/azexbuy
 COPY --from=frontend-builder /frontend/dist ./dist/azexbuy
 
 # ── Production runtime ────────────────────────────────────────────
-FROM node:22-alpine
+FROM node:22-slim
 
 WORKDIR /app
 
+# Copy node_modules from builder (already compiled native modules)
 COPY --from=admin-builder /admin/node_modules ./node_modules
+
+# Copy built artifacts
 COPY --from=admin-builder /admin/dist ./dist
 
 RUN mkdir -p /app/data /app/uploads/azexbuy
