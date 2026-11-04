@@ -6,6 +6,8 @@ import {
   Anchor, HelpCircle, Info, Map, Users, FileText,
 } from 'lucide-react';
 import { UiLanguage } from '../types';
+import { flattenStrings } from '../utils/flattenStrings';
+import { UI_STRINGS } from '../../../../src/data/translations';
 
 interface AzexbuyCMSViewProps { uiLang: UiLanguage; }
 
@@ -38,69 +40,15 @@ async function apiPost(path: string, body: any) {
   } catch { return null; }
 }
 
-// ── Default strings ────────────────────────────────────────────────────────────
-const DEFAULT_STRINGS: Record<string, Record<string, string>> = {
-  EN: {
-    'nav.home': 'Home', 'nav.forBuyers': 'For Buyers', 'nav.forProducers': 'For Producers',
-    'nav.services': 'Services', 'nav.products': 'Products', 'nav.howItWorks': 'How It Works',
-    'nav.aboutUs': 'About Us', 'nav.insights': 'Insights', 'nav.contact': 'Contact',
-    'nav.requestQuote': 'Request a Quote', 'nav.dossiers': 'Dossiers',
-    'hero.kicker': 'AZEXBUY',
-    'hero.title': 'Connecting Azerbaijani Products with Global Buyers',
-    'hero.subtitle': 'We help international buyers source high-quality Azerbaijani products and support local producers in reaching global markets.',
-    'hero.buyLabel': 'I WANT TO BUY', 'hero.buyAction': 'Find a Supplier',
-    'hero.exportLabel': 'I WANT TO EXPORT', 'hero.exportAction': 'Find a Buyer',
-    'whyAzexbuy.heading': 'Why AZEXBUY?',
-    'whyAzexbuy.items[0].title': 'Verified Suppliers', 'whyAzexbuy.items[0].desc': 'We work only with trusted Azerbaijani manufacturers.', 'whyAzexbuy.items[0].metric': '250+ Certified Facilities',
-    'whyAzexbuy.items[1].title': 'Global Buyer Access', 'whyAzexbuy.items[1].desc': 'We connect you with international buyers.', 'whyAzexbuy.items[1].metric': '42 Export Destinations',
-    'whyAzexbuy.items[2].title': 'Market Intelligence', 'whyAzexbuy.items[2].desc': 'Data-driven insights for better decisions.', 'whyAzexbuy.items[2].metric': 'HS-6 Tariff & Route Data',
-    'whyAzexbuy.items[3].title': 'End-to-End Export', 'whyAzexbuy.items[3].desc': 'From sourcing to delivery, we manage the process.', 'whyAzexbuy.items[3].metric': 'Incoterms 2020 Desk',
-    'whyAzexbuy.items[4].title': 'International Logistics', 'whyAzexbuy.items[4].desc': 'Reliable and efficient transportation solutions.', 'whyAzexbuy.items[4].metric': 'Middle Corridor Hub',
-    'bilateral.buyersTag': 'FOR BUYERS', 'bilateral.buyersTitle': 'Source From Azerbaijan',
-    'bilateral.buyersDesc': "Tell us what you need. We'll find verified suppliers, compare offers and manage the export process.",
-    'bilateral.buyersBtn': 'Find a Supplier', 'bilateral.producersTag': 'FOR PRODUCERS',
-    'bilateral.producersTitle': 'Take Your Products Global',
-    'bilateral.producersDesc': 'We help Azerbaijani manufacturers find international buyers and manage the export process.',
-    'bilateral.producersBtn': 'Find a Buyer',
-    'services.heading': 'Our Services', 'services.subheading': 'Comprehensive support for your export and sourcing needs.',
-    'services.learnMore': 'Learn More', 'services.outsourcedTitle': 'Outsourced Export Department (Turnkey Trade Desk)',
-    'services.outsourcedBadge': 'INSTITUTIONAL MANDATE',
-    'services.outsourcedDesc': 'For Azerbaijani producers seeking complete international trade representation without establishing expensive foreign branches.',
-    'services.outsourcedCta': 'Appoint AZEXBUY as Your Export Desk',
-    'howItWorks.heading': 'How It Works', 'howItWorks.subheading': 'A simple process from request to delivery.',
-    'howItWorks.seeFullProcess': 'See Full Process', 'howItWorks.forBuyersLabel': 'For Buyers',
-    'howItWorks.forProducersLabel': 'For Producers',
-    'howItWorks.clickStepHint': 'Select any phase number to inspect institutional SLA, required documents, and verification protocol.',
-    'featuredProducts.heading': 'Featured Products', 'featuredProducts.subheading': 'Explore a selection of high-quality Azerbaijani products.',
-    'featuredProducts.viewAll': 'View All Products', 'featuredProducts.requestProduct': 'Request This Product',
-    'featuredProducts.hsCodeLabel': 'HS Code:',
-    'whyAzerbaijan.heading': 'Why Azerbaijan?',
-    'whyAzerbaijan.desc': 'Strategic location, rich resources and growing export potential make Azerbaijan an ideal hub for international trade.',
-    'whyAzerbaijan.learnMore': 'Learn More',
-    'whyAzerbaijan.features[0].line1': 'Strategic', 'whyAzerbaijan.features[0].line2': 'Location', 'whyAzerbaijan.features[0].detail': 'Nexus of the Trans-Caspian Middle Corridor linking Europe, Central Asia, CIS, and MENA via Port of Baku (Alat) and BTK Railway.',
-    'whyAzerbaijan.features[1].line1': 'Diverse', 'whyAzerbaijan.features[1].line2': 'Industries', 'whyAzerbaijan.features[1].detail': '9 climatic zones supporting premium agriculture alongside Sumgayit chemical parks, metallurgy, textiles, and natural stone.',
-    'whyAzerbaijan.features[2].line1': 'Quality', 'whyAzerbaijan.features[2].line2': 'Products', 'whyAzerbaijan.features[2].detail': 'ISO 22000, GLOBALG.A.P., OEKO-TEX, and API-certified manufacturing backed by strict AQTA phytosanitary traceability.',
-    'whyAzerbaijan.features[3].line1': 'Growing', 'whyAzerbaijan.features[3].line2': 'Export Ecosystem', 'whyAzerbaijan.features[3].detail': 'Modern free economic zones (AFEZ), green customs corridors, and preferential trade regimes with CIS, Turkey, and EU GSP+.',
-    'footer.description': 'Sovereign Trade & Sourcing Infrastructure Authority connecting verified Azerbaijani manufacturers with institutional global procurement desks.',
-    'footer.hqTitle': 'Headquarters & Trade Desk',
-    'footer.hqAddress': 'Baku Alliance Business Center, Heydar Aliyev Ave 95, Baku AZ1033, Republic of Azerbaijan',
-    'footer.quickLinks': 'Platform & Portals', 'footer.complianceTitle': 'Trade Standards & Governance',
-    'footer.rights': '© 2026 AZEXBUY Consortium — Azerbaijan Export & Sourcing Facilitation Platform. All rights reserved.',
-  },
-  AZ: {
-    'nav.home': 'Ana Səhifə', 'nav.forBuyers': 'Alıcılar Üçün', 'nav.forProducers': 'İstehsalçılar Üçün',
-    'nav.requestQuote': 'Qiymət Sorğusu', 'hero.kicker': 'AZEXBUY',
-    'hero.title': 'Azərbaycan Məhsullarını Qlobal Alıcılarla Birləşdiririk',
-    'hero.subtitle': 'Biz beynəlxalq alıcılara yüksək keyfiyyətli Azərbaycan məhsullarını tədarük etməkdə kömək edirik.',
-    'hero.buyLabel': 'ALMAQ İSTƏYİRƏM', 'hero.buyAction': 'Təchizatçı Tap',
-    'hero.exportLabel': 'İXRAC ETMƏK İSTƏYİRƏM', 'hero.exportAction': 'Alıcı Tap',
-    'whyAzexbuy.heading': 'Niyə AZEXBUY?',
-    'bilateral.buyersTitle': 'Azərbaycandan Tədarük Edin', 'bilateral.producersTitle': 'Məhsullarınızı Dünyaya Çıxarın',
-    'services.heading': 'Xidmətlərimiz', 'howItWorks.heading': 'Necə İşləyir',
-    'featuredProducts.heading': 'Seçilmiş Məhsullar', 'whyAzerbaijan.heading': 'Niyə Azərbaycan?',
-    'footer.rights': '© 2026 AZEXBUY Konsorsiumu. Bütün hüquqlar qorunur.',
-  },
-};
+// ── Default strings — UI_STRINGS'den flat key formatına çevrilir (tüm 6 dil) ──
+const DEFAULT_STRINGS: Record<string, Record<string, string>> = (() => {
+  const result: Record<string, Record<string, string>> = {};
+  for (const locale of LOCALES) {
+    const nested = (UI_STRINGS as any)[locale];
+    if (nested) result[locale] = flattenStrings(nested);
+  }
+  return result;
+})();
 
 const CMS_PAGES = [
   { key: 'images',            label: 'Görseller',              icon: ImgIcon },
