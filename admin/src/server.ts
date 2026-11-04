@@ -117,7 +117,7 @@ app.delete('/api/logs', requireAuth, (req: Request, res: Response) => {
 
 // ── Static paths ─────────────────────────────────────────────────────────────
 const clientDist  = path.join(ROOT_DIR, 'dist', 'client');   // admin panel
-const azexbuyDist = path.join(ROOT_DIR, 'dist', 'azexbuy');  // AZEXBUY frontend
+const azexbuyDist = path.join(ROOT_DIR, 'dist');              // AZEXBUY frontend
 
 // Admin panel assets at /octo-admin/
 if (fs.existsSync(clientDist)) {
