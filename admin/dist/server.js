@@ -771,21 +771,6 @@ app.use((req, res, next) => {
   });
   next();
 });
-app.get("/api/logs", requireAuth, (req, res) => {
-  const type = req.query.type || "http";
-  const limit = Math.min(parseInt(req.query.limit) || 200, 500);
-  const rows = logDb.prepare(`SELECT * FROM logs WHERE type = ? ORDER BY id DESC LIMIT ?`).all(type, limit);
-  res.json(rows);
-});
-app.delete("/api/logs", requireAuth, (req, res) => {
-  const type = req.query.type;
-  if (type) {
-    logDb.prepare(`DELETE FROM logs WHERE type = ?`).run(type);
-  } else {
-    logDb.prepare(`DELETE FROM logs`).run();
-  }
-  res.json({ success: true });
-});
 var clientDist = path3.join(ROOT_DIR, "dist", "client");
 var azexbuyDist = path3.join(ROOT_DIR, "dist", "azexbuy");
 if (fs3.existsSync(clientDist)) {
@@ -865,6 +850,21 @@ var requireAuth = (req, res, next) => {
   req.user = verification.payload;
   next();
 };
+app.get("/api/logs", requireAuth, (req, res) => {
+  const type = req.query.type || "http";
+  const limit = Math.min(parseInt(req.query.limit) || 200, 500);
+  const rows = logDb.prepare(`SELECT * FROM logs WHERE type = ? ORDER BY id DESC LIMIT ?`).all(type, limit);
+  res.json(rows);
+});
+app.delete("/api/logs", requireAuth, (req, res) => {
+  const type = req.query.type;
+  if (type) {
+    logDb.prepare(`DELETE FROM logs WHERE type = ?`).run(type);
+  } else {
+    logDb.prepare(`DELETE FROM logs`).run();
+  }
+  res.json({ success: true });
+});
 var activeSessionToken = null;
 var sseClients = /* @__PURE__ */ new Set();
 app.get("/api/auth/session-events", (req, res) => {

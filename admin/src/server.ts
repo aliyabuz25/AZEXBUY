@@ -97,24 +97,6 @@ app.use((req: Request, res: Response, next: any) => {
   next();
 });
 
-// Log API endpoint
-app.get('/api/logs', requireAuth, (req: Request, res: Response) => {
-  const type = req.query.type as string || 'http';
-  const limit = Math.min(parseInt(req.query.limit as string) || 200, 500);
-  const rows = logDb.prepare(`SELECT * FROM logs WHERE type = ? ORDER BY id DESC LIMIT ?`).all(type, limit);
-  res.json(rows);
-});
-
-app.delete('/api/logs', requireAuth, (req: Request, res: Response) => {
-  const type = req.query.type as string;
-  if (type) {
-    logDb.prepare(`DELETE FROM logs WHERE type = ?`).run(type);
-  } else {
-    logDb.prepare(`DELETE FROM logs`).run();
-  }
-  res.json({ success: true });
-});
-
 // ── Static paths ─────────────────────────────────────────────────────────────
 const clientDist  = path.join(ROOT_DIR, 'dist', 'client');   // admin panel
 const azexbuyDist = path.join(ROOT_DIR, 'dist', 'azexbuy');  // AZEXBUY frontend
@@ -221,6 +203,24 @@ const requireAuth = (req: Request, res: Response, next: any) => {
   (req as any).user = verification.payload;
   next();
 };
+
+// ── Log API endpoints ─────────────────────────────────────────────────────────
+app.get('/api/logs', requireAuth, (req: Request, res: Response) => {
+  const type = req.query.type as string || 'http';
+  const limit = Math.min(parseInt(req.query.limit as string) || 200, 500);
+  const rows = logDb.prepare(`SELECT * FROM logs WHERE type = ? ORDER BY id DESC LIMIT ?`).all(type, limit);
+  res.json(rows);
+});
+
+app.delete('/api/logs', requireAuth, (req: Request, res: Response) => {
+  const type = req.query.type as string;
+  if (type) {
+    logDb.prepare(`DELETE FROM logs WHERE type = ?`).run(type);
+  } else {
+    logDb.prepare(`DELETE FROM logs`).run();
+  }
+  res.json({ success: true });
+});
 
 // ── Single-session enforcement ────────────────────────────────────────────────
 let activeSessionToken: string | null = null;
