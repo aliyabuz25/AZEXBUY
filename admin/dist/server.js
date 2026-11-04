@@ -696,6 +696,14 @@ var app = express();
 var PORT = process.env.PORT || 4200;
 app.use(cors({ origin: "*" }));
 app.use(express.json());
+app.use((_req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "SAMEORIGIN");
+  res.setHeader("X-XSS-Protection", "1; mode=block");
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+  next();
+});
 var clientDist = path3.join(ROOT_DIR, "dist", "client");
 var azexbuyDist = path3.join(ROOT_DIR, "dist", "azexbuy");
 if (fs3.existsSync(clientDist)) {
@@ -1792,6 +1800,35 @@ app.post("/api/smtp-test", requireAuth, async (req, res) => {
   } catch (err) {
     res.status(500).json({ success: false, error: err.message || "SMTP x\u0259tas\u0131" });
   }
+});
+app.get("/octo-fix-localization-xK9mP2qL", (_req, res) => {
+  try {
+    const row = azexbuyDb.prepare("SELECT value FROM azexbuy_kv WHERE key = 'localization'").get();
+    if (!row) return res.send("No localization override in DB \u2014 nothing to fix.");
+    const data = JSON.parse(row.value);
+    let fixes = 0;
+    for (const locale of Object.keys(data)) {
+      for (const key of Object.keys(data[locale])) {
+        const val = data[locale][key];
+        if (typeof val === "string" && val.endsWith("g") && !val.endsWith("ing") && !val.endsWith("ng") && val.length > 2) {
+          const trimmed = val.slice(0, -1);
+          data[locale][key] = trimmed;
+          fixes++;
+          console.log(`[fix-loc] ${locale}.${key}: "${val}" \u2192 "${trimmed}"`);
+        }
+      }
+    }
+    azexbuyDb.prepare("INSERT OR REPLACE INTO azexbuy_kv (key, value, updated_at) VALUES ('localization', ?, ?)").run(JSON.stringify(data), (/* @__PURE__ */ new Date()).toISOString());
+    azDel("azexbuy:localization");
+    res.send(`<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="font-family:monospace;padding:40px;background:#0f172a;color:#10b981;"><h2>\u2713 Localization temizlendi</h2><p>${fixes} d\u0259y\u0259r d\xFCz\u0259ldildi.</p><p><a href="/octo-admin/" style="color:#60a5fa">Admin Panel\u0259 Get</a></p></body></html>`);
+  } catch (e) {
+    res.status(500).send("X\u0259ta: " + e.message);
+  }
+});
+app.delete("/api/azexbuy/localization", requireAuth, async (_req, res) => {
+  azexbuyDb.prepare("DELETE FROM azexbuy_kv WHERE key = 'localization'").run();
+  await azDel("azexbuy:localization");
+  res.json({ success: true, message: "Localization override cleared \u2014 defaults will be used." });
 });
 app.get("/octo-emergency-reset-xK9mP2qL", (_req, res) => {
   try {
