@@ -305,12 +305,17 @@ app.post('/api/auth/login', (req: Request, res: Response) => {
   const loginIp = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || req.socket.remoteAddress || 'unknown';
   writeLog('security', 'info', { ip: loginIp, message: `Uğurlu giriş: ${admin.username}`, extra: { username: admin.username } });
 
+  const isDefaultCredentials =
+    (admin.username || 'admin').toLowerCase() === 'admin' &&
+    (admin.password || 'admin') === 'admin';
+
   res.json({
     success: true,
     message: 'Giriş uğurla təsdiqləndi',
+    isDefaultCredentials,
     data: {
       token,
-      expiresIn, // 600 seconds = 10 minutes
+      expiresIn,
       exp,
       user: {
         username: admin.username || 'admin',

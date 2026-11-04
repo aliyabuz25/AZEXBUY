@@ -269,7 +269,7 @@ export const App: React.FC = () => {
     return () => clearInterval(timer);
   }, [token]);
 
-  const handleLoginSuccess = (newToken: string, user: any, expiresIn: number) => {
+  const handleLoginSuccess = (newToken: string, user: any, expiresIn: number, isDefaultCredentials?: boolean) => {
     localStorage.setItem(JWT_STORAGE_KEY, newToken);
     setToken(newToken);
     setSessionRemaining(expiresIn || 600);
@@ -282,6 +282,13 @@ export const App: React.FC = () => {
     }
     fetchData();
     showToast('Uğurla daxil oldunuz! 10 dəqiqəlik sessiya başladı.');
+
+    // Default credentials xəbərdarlığı — server flag göndərirsə
+    if (isDefaultCredentials) {
+      setTimeout(() => {
+        showToast('⚠ TƏHLÜKƏSİZLİK: Default "admin/admin" giriş məlumatları dəyişdirilməyib! Parametrlərdən dərhal yeniləyin.');
+      }, 2000);
+    }
   };
 
   const handleLogout = async (msg?: string) => {

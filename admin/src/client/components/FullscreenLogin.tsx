@@ -3,7 +3,7 @@ import { Lock, User, Eye, EyeOff, ArrowRight, AlertCircle } from 'lucide-react';
 import { UiLanguage, AdminUser } from '../types';
 
 interface FullscreenLoginProps {
-  onLoginSuccess: (token: string, user: AdminUser, expiresIn: number) => void;
+  onLoginSuccess: (token: string, user: AdminUser, expiresIn: number, isDefaultCredentials?: boolean) => void;
   uiLang?: UiLanguage;
 }
 
@@ -28,7 +28,7 @@ export const FullscreenLogin: React.FC<FullscreenLoginProps> = ({ onLoginSuccess
       });
       const data = await res.json();
       if (res.ok && data.success && data.data?.token) {
-        onLoginSuccess(data.data.token, data.data.user, data.data.expiresIn || 600);
+        onLoginSuccess(data.data.token, data.data.user, data.data.expiresIn || 600, data.isDefaultCredentials);
       } else {
         setErrorMsg(data.error || 'İstifadəçi adı və ya şifrə yanlışdır');
       }

@@ -929,13 +929,14 @@ app.post("/api/auth/login", (req, res) => {
   activeSessionToken = token;
   const loginIp = req.headers["x-forwarded-for"]?.split(",")[0]?.trim() || req.socket.remoteAddress || "unknown";
   writeLog("security", "info", { ip: loginIp, message: `U\u011Furlu giri\u015F: ${admin.username}`, extra: { username: admin.username } });
+  const isDefaultCredentials = (admin.username || "admin").toLowerCase() === "admin" && (admin.password || "admin") === "admin";
   res.json({
     success: true,
     message: "Giri\u015F u\u011Furla t\u0259sdiql\u0259ndi",
+    isDefaultCredentials,
     data: {
       token,
       expiresIn,
-      // 600 seconds = 10 minutes
       exp,
       user: {
         username: admin.username || "admin",
