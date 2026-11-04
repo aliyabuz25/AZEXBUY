@@ -155,7 +155,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div key={item.id} className="relative group flex justify-center">
           <button
             onClick={() => onSelectTab(item.id, item.label, item.id)}
-            className={`w-10 h-9 flex items-center justify-center rounded-none transition-all relative ${
+            className={`w-10 h-9 flex items-center justify-center rounded-none transition-all relative cursor-pointer ${
               isActive
                 ? 'bg-slate-100 text-slate-900 shadow-xs border border-slate-200/90'
                 : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
@@ -179,7 +179,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <button
         key={item.id}
         onClick={() => onSelectTab(item.id, item.label, item.id)}
-        className={`w-full flex items-center justify-start gap-2 py-1.5 rounded-none text-xs font-medium transition-all group text-left px-2.5 ${
+        className={`w-full flex items-center justify-start gap-2 py-1.5 rounded-none text-xs font-medium transition-all group text-left px-2.5 cursor-pointer ${
           isActive
             ? 'bg-slate-100 text-slate-900 font-semibold shadow-xs border border-slate-200/80'
             : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
@@ -215,7 +215,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
             <button
               onClick={onToggleCollapse}
-              className="p-1 rounded-none text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors shrink-0"
+              className="p-1 rounded-none text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors shrink-0 cursor-pointer"
               title="Sidebarı yığ"
             >
               <ChevronLeft className="w-4 h-4" />
@@ -224,7 +224,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         ) : (
           <button
             onClick={onToggleCollapse}
-            className="w-full h-full flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-50 rounded-none transition-colors"
+            className="w-full h-full flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-50 rounded-none transition-colors cursor-pointer"
             title="Sidebarı genişləndir"
           >
             <Menu className="w-4 h-4" />
@@ -241,7 +241,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             {/* Collapsible header */}
             <button
               onClick={() => setAzexbuyOpen(prev => !prev)}
-              className={`w-full flex items-center justify-start gap-2 px-2.5 py-2 rounded-none text-xs font-bold transition-all group text-left ${
+              className={`w-full flex items-center justify-start gap-2 px-2.5 py-2 rounded-none text-xs font-bold transition-all group text-left cursor-pointer ${
                 anyPlatformActive
                   ? 'text-[#0f3156] bg-blue-50/60 border border-blue-100'
                   : 'text-slate-700 hover:bg-slate-50'
