@@ -127,9 +127,53 @@ const requireAuth = (req: Request, res: Response, next: any) => {
     });
   }
 
+  // Single-session: token aktif session ilə uyğun deyilsə → 401
+  if (activeSessionToken && token !== activeSessionToken) {
+    return res.status(401).json({
+      success: false,
+      error: 'Başqa bir cihazdan aktiv sessiya var. Zəhmət olmasa yenidən daxil olun.'
+    });
+  }
+
   (req as any).user = verification.payload;
   next();
 };
+
+// ── Single-session enforcement ────────────────────────────────────────────────
+let activeSessionToken: string | null = null;
+const sseClients = new Set<Response>();
+
+// SSE endpoint — client bağlanır, kick bildirimi bekler
+// EventSource Authorization header göndərə bilmir — query param token qəbul edirik
+app.get('/api/auth/session-events', (req: Request, res: Response) => {
+  const qToken = req.query.token as string;
+  if (!qToken) return res.status(401).end();
+  const verification = verifyJwt(qToken);
+  if (!verification.valid) return res.status(401).end();
+  if (activeSessionToken && qToken !== activeSessionToken) return res.status(401).end();
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  res.flushHeaders();
+
+  // Ping her 20s
+  const ping = setInterval(() => res.write(':ping\n\n'), 20000);
+
+  sseClients.add(res);
+
+  req.on('close', () => {
+    clearInterval(ping);
+    sseClients.delete(res);
+  });
+});
+
+function kickAllClients(message: string) {
+  const data = JSON.stringify({ type: 'kicked', message });
+  for (const client of sseClients) {
+    client.write(`data: ${data}\n\n`);
+  }
+  sseClients.clear();
+}
 
 // 0. Login & Session Management
 app.post('/api/auth/login', (req: Request, res: Response) => {
@@ -157,6 +201,11 @@ app.post('/api/auth/login', (req: Request, res: Response) => {
     });
   }
 
+  // Kick existing session if any
+  if (activeSessionToken) {
+    kickAllClients('Başqa bir cihazdan giriş edildi. Sessiyanız sonlandırıldı.');
+  }
+
   // Issue 10-minute JWT
   const { token, exp, expiresIn } = signJwt({
     username: admin.username || 'admin',
@@ -164,6 +213,8 @@ app.post('/api/auth/login', (req: Request, res: Response) => {
     email: admin.email || 'admin@octotech.az',
     role: admin.role || 'Super Admin'
   }, SESSION_DURATION_SECONDS);
+
+  activeSessionToken = token;
 
   res.json({
     success: true,
@@ -197,6 +248,8 @@ app.get('/api/auth/me', requireAuth, (req: Request, res: Response) => {
 });
 
 app.post('/api/auth/logout', (_req: Request, res: Response) => {
+  activeSessionToken = null;
+  sseClients.clear();
   res.json({ success: true, message: 'Sessiya təhlükəsiz şəkildə sonlandırıldı' });
 });
 

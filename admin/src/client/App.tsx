@@ -312,6 +312,28 @@ export const App: React.FC = () => {
     handleLogout('Sessiyanın müddəti (10 dəqiqə) bitmişdir. Zəhmət olmasa yenidən daxil olun.');
   };
 
+  // Single-session SSE — başqa cihazdan giriş olduqda kick
+  useEffect(() => {
+    if (!token) return;
+    // EventSource Authorization header dəstəkləmir — token query param ilə göndərilir
+    const es2 = new EventSource(`/api/auth/session-events?token=${encodeURIComponent(token)}`);
+
+    es2.onmessage = (e) => {
+      try {
+        const data = JSON.parse(e.data);
+        if (data.type === 'kicked') {
+          es2.close();
+          localStorage.removeItem('octotech_admin_jwt');
+          setToken(null);
+          setSessionRemaining(600);
+          showToast('⚠ Başqa bir cihazdan giriş edildi. Sessiyanız sonlandırıldı.');
+        }
+      } catch {}
+    };
+    es2.onerror = () => { es2.close(); };
+    return () => { es2.close(); };
+  }, [token]);
+
   // Keyboard shortcut Cmd+K
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

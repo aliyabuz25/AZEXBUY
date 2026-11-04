@@ -774,9 +774,43 @@ var requireAuth = (req, res, next) => {
       error: verification.error || "Sessiyan\u0131n m\xFCdd\u0259ti (10 d\u0259qiq\u0259) bitmi\u015Fdir. Z\u0259hm\u0259t olmasa yenid\u0259n daxil olun."
     });
   }
+  if (activeSessionToken && token !== activeSessionToken) {
+    return res.status(401).json({
+      success: false,
+      error: "Ba\u015Fqa bir cihazdan aktiv sessiya var. Z\u0259hm\u0259t olmasa yenid\u0259n daxil olun."
+    });
+  }
   req.user = verification.payload;
   next();
 };
+var activeSessionToken = null;
+var sseClients = /* @__PURE__ */ new Set();
+app.get("/api/auth/session-events", (req, res) => {
+  const qToken = req.query.token;
+  if (!qToken) return res.status(401).end();
+  const verification = verifyJwt(qToken);
+  if (!verification.valid) return res.status(401).end();
+  if (activeSessionToken && qToken !== activeSessionToken) return res.status(401).end();
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+  res.flushHeaders();
+  const ping = setInterval(() => res.write(":ping\n\n"), 2e4);
+  sseClients.add(res);
+  req.on("close", () => {
+    clearInterval(ping);
+    sseClients.delete(res);
+  });
+});
+function kickAllClients(message) {
+  const data = JSON.stringify({ type: "kicked", message });
+  for (const client of sseClients) {
+    client.write(`data: ${data}
+
+`);
+  }
+  sseClients.clear();
+}
 app.post("/api/auth/login", (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
@@ -797,12 +831,16 @@ app.post("/api/auth/login", (req, res) => {
       error: "\u0130stifad\u0259\xE7i ad\u0131 v\u0259 ya \u015Fifr\u0259 yanl\u0131\u015Fd\u0131r"
     });
   }
+  if (activeSessionToken) {
+    kickAllClients("Ba\u015Fqa bir cihazdan giri\u015F edildi. Sessiyan\u0131z sonland\u0131r\u0131ld\u0131.");
+  }
   const { token, exp, expiresIn } = signJwt({
     username: admin.username || "admin",
     fullName: admin.fullName || "Admin",
     email: admin.email || "admin@octotech.az",
     role: admin.role || "Super Admin"
   }, SESSION_DURATION_SECONDS);
+  activeSessionToken = token;
   res.json({
     success: true,
     message: "Giri\u015F u\u011Furla t\u0259sdiql\u0259ndi",
@@ -833,6 +871,8 @@ app.get("/api/auth/me", requireAuth, (req, res) => {
   });
 });
 app.post("/api/auth/logout", (_req, res) => {
+  activeSessionToken = null;
+  sseClients.clear();
   res.json({ success: true, message: "Sessiya t\u0259hl\xFCk\u0259siz \u015F\u0259kild\u0259 sonland\u0131r\u0131ld\u0131" });
 });
 app.get("/api/site", (_req, res) => {
