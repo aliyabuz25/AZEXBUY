@@ -10,26 +10,8 @@ await build({
   platform: 'node',
   target: 'node22',
   outfile: path.join(__dirname, 'dist/server.js'),
-  external: [
-    'better-sqlite3',
-    'nodemailer',
-    'multer',
-    'express',
-    'cors',
-    'ioredis',
-    'fsevents',
-  ],
+  packages: 'external',
   format: 'esm',
-  banner: {
-    js: `
-import { createRequire as __createRequire } from 'module';
-import { fileURLToPath as __fileURLToPath } from 'url';
-import { dirname as __dirname2 } from 'path';
-const require = __createRequire(import.meta.url);
-const __filename = __fileURLToPath(import.meta.url);
-const __dirname = __dirname2(__filename);
-`.trim(),
-  },
 }).catch(e => { console.error(e); process.exit(1); });
 
 console.log('Server bundled → dist/server.js');
