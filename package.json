@@ -37,5 +37,13 @@
     "tailwindcss": "^4.3.3",
     "tsx": "^4.21.0",
     "typescript": "5.8.3"
+  },
+  "allowScripts": {
+    "@tailwindcss/oxide@4.1.11": true,
+    "esbuild@0.28.2": true,
+    "esbuild@0.25.12": true,
+    "fsevents@2.3.3": true,
+    "protobufjs@7.6.6": true,
+    "@google/genai@2.31.0": true
   }
 }

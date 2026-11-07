@@ -10,6 +10,7 @@ import {
   PRODUCER_CARD_IMAGE as PRODUCER_CARD_DEFAULT,
   WHY_AZERBAIJAN_IMAGE as WHY_AZ_DEFAULT,
 } from '../data/translations';
+import { CmsService } from '../types';
 
 // Same origin — both frontend and API run on the same port
 const OCTO_API_BASE = '';
@@ -62,6 +63,7 @@ type LocalizationContextType = {
   services: typeof SERVICES_DEFAULT;
   buyerSteps: typeof BUYER_STEPS_DEFAULT;
   producerSteps: typeof PRODUCER_STEPS_DEFAULT;
+  cmsServices: CmsService[];
   refresh: () => void;
 };
 
@@ -75,6 +77,7 @@ const LocalizationContext = createContext<LocalizationContextType>({
   services: SERVICES_DEFAULT,
   buyerSteps: BUYER_STEPS_DEFAULT,
   producerSteps: PRODUCER_STEPS_DEFAULT,
+  cmsServices: [],
   refresh: () => {},
 });
 
@@ -109,11 +112,14 @@ export const LocalizationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     return applyContentOverrides({});
   });
 
+  const [cmsServices, setCmsServices] = useState<CmsService[]>([]);
+
   const fetchAndApply = async () => {
     try {
-      const [locRes, contentRes] = await Promise.all([
+      const [locRes, contentRes, srvRes] = await Promise.all([
         fetch(`${OCTO_API_BASE}/api/azexbuy/localization`),
         fetch(`${OCTO_API_BASE}/api/azexbuy/content`),
+        fetch(`${OCTO_API_BASE}/api/azexbuy/services`),
       ]);
       if (locRes.ok) {
         const overrides = await locRes.json();
@@ -124,9 +130,12 @@ export const LocalizationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       }
       if (contentRes.ok) {
         const content = await contentRes.json();
-        // Always apply — even empty object resets to defaults
         localStorage.setItem(CONTENT_CACHE_KEY, JSON.stringify(content || {}));
         setContentOverrides(applyContentOverrides(content || {}));
+      }
+      if (srvRes.ok) {
+        const srvData: CmsService[] = await srvRes.json();
+        setCmsServices(srvData.filter(s => s.isActive));
       }
     } catch {}
   };
@@ -138,7 +147,7 @@ export const LocalizationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   }, []);
 
   return (
-    <LocalizationContext.Provider value={{ strings, ...contentOverrides, refresh: fetchAndApply }}>
+    <LocalizationContext.Provider value={{ strings, ...contentOverrides, cmsServices, refresh: fetchAndApply }}>
       {children}
     </LocalizationContext.Provider>
   );

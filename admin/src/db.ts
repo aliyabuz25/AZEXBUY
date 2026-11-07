@@ -209,6 +209,15 @@ export class Database {
     }
   }
 
+  public static deleteTranslation(key: string): boolean {
+    const data = this.readData();
+    const idx = data.translations.findIndex(t => t.key === key);
+    if (idx === -1) return false;
+    data.translations.splice(idx, 1);
+    this.writeData(data);
+    return true;
+  }
+
   public static getRecords(): ContentRecord[] {
     return this.readData().records;
   }

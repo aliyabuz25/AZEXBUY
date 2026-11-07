@@ -11,6 +11,9 @@ import { SqliteBackupManager } from './sqlite-backup.js';
 import { signJwt, verifyJwt, SESSION_DURATION_SECONDS } from './jwt.js';
 import BetterSqlite3 from 'better-sqlite3';
 import Redis from 'ioredis';
+import bcrypt from 'bcryptjs';
+
+const BCRYPT_ROUNDS = 10;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -224,6 +227,7 @@ app.delete('/api/logs', requireAuth, (req: Request, res: Response) => {
 
 // ── Single-session enforcement ────────────────────────────────────────────────
 let activeSessionToken: string | null = null;
+// Note: activeSessionToken is restored from DB after mainDb is initialized (see below)
 const sseClients = new Set<Response>();
 
 // SSE endpoint — client bağlanır, kick bildirimi bekler
@@ -259,7 +263,7 @@ function kickAllClients(message: string) {
 }
 
 // 0. Login & Session Management
-app.post('/api/auth/login', (req: Request, res: Response) => {
+app.post('/api/auth/login', async (req: Request, res: Response) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
@@ -269,16 +273,15 @@ app.post('/api/auth/login', (req: Request, res: Response) => {
     });
   }
 
-  const admin = Database.getAdmin();
   const inputUser = String(username).trim().toLowerCase();
-  const adminUser = String(admin.username || 'admin').trim().toLowerCase();
-  const adminEmail = String(admin.email || '').trim().toLowerCase();
+  const failIp = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || req.socket.remoteAddress || 'unknown';
 
-  const isUserValid = inputUser === adminUser || inputUser === adminEmail;
-  const isPassValid = password === admin.password;
+  // Look up user in SQLite admin_users table (by username or email)
+  const dbUser = mainDb.prepare(
+    'SELECT * FROM admin_users WHERE (username = ? OR email = ?)'
+  ).get(inputUser, inputUser) as any;
 
-  if (!isUserValid || !isPassValid) {
-    const failIp = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || req.socket.remoteAddress || 'unknown';
+  if (!dbUser) {
     writeLog('security', 'warn', { ip: failIp, message: `Uğursuz giriş cəhdi: ${username}`, extra: { username } });
     return res.status(401).json({
       success: false,
@@ -286,28 +289,58 @@ app.post('/api/auth/login', (req: Request, res: Response) => {
     });
   }
 
+  // Check password — support both bcrypt hashes and legacy plain-text passwords
+  const isLegacyPlain = !dbUser.password.startsWith('$2');
+  const passwordMatch = isLegacyPlain
+    ? dbUser.password === password
+    : await bcrypt.compare(password, dbUser.password);
+
+  if (!passwordMatch) {
+    writeLog('security', 'warn', { ip: failIp, message: `Uğursuz giriş cəhdi: ${username}`, extra: { username } });
+    return res.status(401).json({
+      success: false,
+      error: 'İstifadəçi adı və ya şifrə yanlışdır'
+    });
+  }
+
+  // Migrate legacy plain-text password to bcrypt hash on successful login
+  if (isLegacyPlain) {
+    const hashed = await bcrypt.hash(password, BCRYPT_ROUNDS);
+    mainDb.prepare('UPDATE admin_users SET password = ? WHERE id = ?').run(hashed, dbUser.id);
+  }
+
+  // Check if account is active
+  if (!dbUser.is_active) {
+    writeLog('security', 'warn', { ip: failIp, message: `Deaktiv hesabdan giriş cəhdi: ${username}`, extra: { username } });
+    return res.status(403).json({
+      success: false,
+      error: 'Bu hesab deaktivdir. Administratorla əlaqə saxlayın.'
+    });
+  }
+
   // Kick existing session if any
   if (activeSessionToken) {
     kickAllClients('Başqa bir cihazdan giriş edildi. Sessiyanız sonlandırıldı.');
-    const kickIp = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || req.socket.remoteAddress || 'unknown';
-    writeLog('security', 'warn', { ip: kickIp, message: `Yeni giriş - əvvəlki sessiya sonlandırıldı: ${username}`, extra: { username } });
+    writeLog('security', 'warn', { ip: failIp, message: `Yeni giriş - əvvəlki sessiya sonlandırıldı: ${username}`, extra: { username } });
   }
+
+  // Update last_login timestamp
+  mainDb.prepare('UPDATE admin_users SET last_login = ? WHERE id = ?').run(new Date().toISOString(), dbUser.id);
 
   // Issue 10-minute JWT
   const { token, exp, expiresIn } = signJwt({
-    username: admin.username || 'admin',
-    fullName: admin.fullName || 'Admin',
-    email: admin.email || 'admin@octotech.az',
-    role: admin.role || 'Super Admin'
+    username: dbUser.username,
+    fullName: dbUser.full_name,
+    email: dbUser.email,
+    role: dbUser.role
   }, SESSION_DURATION_SECONDS);
 
   activeSessionToken = token;
-  const loginIp = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || req.socket.remoteAddress || 'unknown';
-  writeLog('security', 'info', { ip: loginIp, message: `Uğurlu giriş: ${admin.username}`, extra: { username: admin.username } });
+  persistSession(token);
+  const loginIp = failIp;
+  writeLog('security', 'info', { ip: loginIp, message: `Uğurlu giriş: ${dbUser.username}`, extra: { username: dbUser.username } });
 
-  const isDefaultCredentials =
-    (admin.username || 'admin').toLowerCase() === 'admin' &&
-    (admin.password || 'admin') === 'admin';
+  const isDefaultCredentials = dbUser.username === 'admin' && isLegacyPlain && dbUser.password === 'admin';
 
   res.json({
     success: true,
@@ -318,10 +351,10 @@ app.post('/api/auth/login', (req: Request, res: Response) => {
       expiresIn,
       exp,
       user: {
-        username: admin.username || 'admin',
-        fullName: admin.fullName || 'Admin',
-        email: admin.email || 'admin@octotech.az',
-        role: admin.role || 'Super Admin'
+        username: dbUser.username,
+        fullName: dbUser.full_name,
+        email: dbUser.email,
+        role: dbUser.role
       }
     }
   });
@@ -345,6 +378,7 @@ app.post('/api/auth/logout', (req: Request, res: Response) => {
   const logoutIp = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || req.socket.remoteAddress || 'unknown';
   writeLog('security', 'info', { ip: logoutIp, message: 'Admin çıxış etdi' });
   activeSessionToken = null;
+  persistSession(null);
   sseClients.clear();
   res.json({ success: true, message: 'Sessiya təhlükəsiz şəkildə sonlandırıldı' });
 });
@@ -412,6 +446,13 @@ app.post('/api/translations', requireAuth, (req: Request, res: Response) => {
   res.json({ success: true, data: updated });
 });
 
+app.delete('/api/translations/:key', requireAuth, (req: Request, res: Response) => {
+  const key = decodeURIComponent(req.params.key);
+  const deleted = Database.deleteTranslation(key);
+  if (!deleted) return res.status(404).json({ success: false, error: 'Translation key not found' });
+  res.json({ success: true });
+});
+
 // 4. Content Records Endpoints
 app.get('/api/records', (_req: Request, res: Response) => {
   const records = Database.getRecords();
@@ -433,21 +474,46 @@ app.post('/api/records', requireAuth, (req: Request, res: Response) => {
 // 5. Live Analytics & Frequency Engine
 app.get('/api/analytics', (_req: Request, res: Response) => {
   const seo = Database.getSeo();
-  let seoScore = 70;
-  if (seo.title) seoScore += 10;
-  if (seo.description) seoScore += 10;
-  if (seo.canonical) seoScore += 5;
-  if (seo.ogTitle) seoScore += 5;
+  let seoScore = 50;
+  if (seo.title && seo.title.length >= 25 && seo.title.length <= 65) seoScore += 20;
+  if (seo.description && seo.description.length >= 60 && seo.description.length <= 165) seoScore += 15;
+  if (seo.canonical && seo.canonical.startsWith('http')) seoScore += 5;
+  if (seo.ogImage) seoScore += 5;
+  if (seo.robotsIndex && seo.robotsFollow) seoScore += 5;
+
+  // Real metrics from in-memory log DB
+  const now = Date.now();
+  const oneMinAgo = new Date(now - 60 * 1000).toISOString();
+  const oneDayAgo = new Date(now - 24 * 60 * 60 * 1000).toISOString();
+
+  const reqPerMin = (logDb.prepare("SELECT COUNT(*) as c FROM logs WHERE type = 'http' AND ts >= ?").get(oneMinAgo) as any).c;
+  const dailyReq = (logDb.prepare("SELECT COUNT(*) as c FROM logs WHERE type = 'http' AND ts >= ?").get(oneDayAgo) as any).c;
+  const errorCount = (logDb.prepare("SELECT COUNT(*) as c FROM logs WHERE type = 'http' AND status >= 500 AND ts >= ?").get(oneDayAgo) as any).c;
+  const avgLatency = (logDb.prepare("SELECT AVG(duration_ms) as avg FROM logs WHERE type = 'http' AND ts >= ?").get(oneDayAgo) as any).avg;
+  const totalReq = (logDb.prepare("SELECT COUNT(*) as c FROM logs WHERE type = 'http'").get() as any).c;
+
+  // Real AZEXBUY counts — available after azexbuyDb is initialized
+  let rfqCount = 0, producerCount = 0, contactCount = 0;
+  try {
+    rfqCount = (azexbuyDb.prepare('SELECT COUNT(*) as c FROM azexbuy_rfqs').get() as any).c;
+    producerCount = (azexbuyDb.prepare('SELECT COUNT(*) as c FROM azexbuy_producers').get() as any).c;
+    contactCount = (azexbuyDb.prepare('SELECT COUNT(*) as c FROM azexbuy_contacts').get() as any).c;
+  } catch { /* azexbuyDb may not be ready */ }
+
+  const uptimePct = totalReq > 0 ? (((totalReq - errorCount) / totalReq) * 100).toFixed(2) + '%' : '100.00%';
 
   res.json({
     success: true,
     data: {
-      siteFrequency: '4,280 req/m',
-      seoScore,
-      dailyReach: '148,920',
-      uptime: '99.99%',
-      latencyMs: 28,
-      status: 'healthy'
+      siteFrequency: `${reqPerMin} req/m`,
+      seoScore: Math.min(100, seoScore),
+      dailyReach: dailyReq.toLocaleString(),
+      uptime: uptimePct,
+      latencyMs: avgLatency ? Math.round(avgLatency) : 0,
+      status: errorCount > 10 ? 'degraded' : 'healthy',
+      rfqCount,
+      producerCount,
+      contactCount,
     }
   });
 });
@@ -543,7 +609,7 @@ app.get('/api/setup', (_req: Request, res: Response) => {
   });
 });
 
-app.post('/api/setup', (req: Request, res: Response) => {
+app.post('/api/setup', async (req: Request, res: Response) => {
   const { site, admin, uploadConfig, industry } = req.body;
   if (!site || !site.name) {
     return res.status(400).json({ success: false, error: 'Marka/Sayt adı tələb olunur' });
@@ -555,6 +621,22 @@ app.post('/api/setup', (req: Request, res: Response) => {
     uploadConfig,
     industry
   });
+
+  // Sync username and password to SQLite admin-root if provided
+  if (admin) {
+    try {
+      const rootUser = mainDb.prepare('SELECT id FROM admin_users WHERE id = ?').get('admin-root');
+      if (rootUser) {
+        if (admin.fullName) mainDb.prepare('UPDATE admin_users SET full_name = ? WHERE id = ?').run(admin.fullName, 'admin-root');
+        if (admin.email) mainDb.prepare('UPDATE admin_users SET email = ? WHERE id = ?').run(admin.email.toLowerCase().trim(), 'admin-root');
+        if (admin.username) mainDb.prepare('UPDATE admin_users SET username = ? WHERE id = ?').run(admin.username.toLowerCase().trim(), 'admin-root');
+        if (admin.password && admin.password.length >= 4) {
+          const hashed = await bcrypt.hash(admin.password, BCRYPT_ROUNDS);
+          mainDb.prepare('UPDATE admin_users SET password = ? WHERE id = ?').run(hashed, 'admin-root');
+        }
+      }
+    } catch (err) { console.warn('[Setup] Failed to sync admin to SQLite:', err); }
+  }
 
   res.json({
     success: true,
@@ -868,6 +950,67 @@ app.use('/adminer', (req: Request, res: Response) => {
 const dataDir = path.join(ROOT_DIR, 'data');
 if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
 
+// ─── Admin Users DB (octo.db) ─────────────────────────────────────────────────
+const mainDb = new BetterSqlite3(path.join(dataDir, 'octo.db'));
+mainDb.pragma('journal_mode = WAL');
+
+try { mainDb.exec(`
+  CREATE TABLE IF NOT EXISTS admin_users (
+    id TEXT PRIMARY KEY,
+    created_at TEXT NOT NULL,
+    full_name TEXT NOT NULL,
+    username TEXT UNIQUE NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    role TEXT NOT NULL DEFAULT 'Editor',
+    is_active INTEGER NOT NULL DEFAULT 1,
+    last_login TEXT
+  );
+  CREATE TABLE IF NOT EXISTS active_session (
+    id INTEGER PRIMARY KEY DEFAULT 1,
+    token TEXT,
+    updated_at TEXT
+  );
+  INSERT OR IGNORE INTO active_session (id, token) VALUES (1, NULL);
+`); } catch (err) { console.error('[DB] admin_users schema init failed:', err); process.exit(1); }
+
+// Session persistence helpers
+function loadPersistedSession(): string | null {
+  try {
+    const row = mainDb.prepare('SELECT token FROM active_session WHERE id = 1').get() as any;
+    if (!row || !row.token) return null;
+    // Verify the loaded token is still valid (not expired)
+    const result = verifyJwt(row.token);
+    return result.valid ? row.token : null;
+  } catch { return null; }
+}
+function persistSession(token: string | null): void {
+  try {
+    mainDb.prepare('UPDATE active_session SET token = ?, updated_at = ? WHERE id = 1').run(token, new Date().toISOString());
+  } catch { /* non-fatal */ }
+}
+
+// Seed super admin from JSON db if no users exist
+const userCount = (mainDb.prepare('SELECT COUNT(*) as c FROM admin_users').get() as any).c;
+if (userCount === 0) {
+  const jsonAdmin = Database.getAdmin();
+  mainDb.prepare(`
+    INSERT OR IGNORE INTO admin_users (id, created_at, full_name, username, email, password, role, is_active)
+    VALUES (?, ?, ?, ?, ?, ?, ?, 1)
+  `).run(
+    'admin-root',
+    new Date().toISOString(),
+    jsonAdmin.fullName || 'Super Admin',
+    jsonAdmin.username || 'admin',
+    jsonAdmin.email || 'admin@octotech.az',
+    jsonAdmin.password || 'admin',
+    'Super Admin'
+  );
+}
+
+// Restore persisted session token after mainDb is ready
+activeSessionToken = loadPersistedSession();
+
 const azexbuyDb = new BetterSqlite3(path.join(dataDir, 'azexbuy.db'));
 azexbuyDb.pragma('journal_mode = WAL');
 
@@ -876,6 +1019,16 @@ try { azexbuyDb.exec(`
     key TEXT PRIMARY KEY,
     value TEXT NOT NULL,
     updated_at TEXT NOT NULL
+  );
+  CREATE TABLE IF NOT EXISTS azexbuy_contacts (
+    id TEXT PRIMARY KEY,
+    created_at TEXT NOT NULL,
+    full_name TEXT NOT NULL,
+    organization TEXT NOT NULL,
+    email TEXT NOT NULL,
+    inquiry_type TEXT NOT NULL,
+    message TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'New'
   );
   CREATE TABLE IF NOT EXISTS azexbuy_rfqs (
     id TEXT PRIMARY KEY,
@@ -891,7 +1044,9 @@ try { azexbuyDb.exec(`
     required_certifications TEXT,
     items TEXT,
     notes TEXT,
-    status TEXT DEFAULT 'Pending'
+    status TEXT DEFAULT 'Pending',
+    assigned_to TEXT,
+    internal_notes TEXT
   );
   CREATE TABLE IF NOT EXISTS azexbuy_producers (
     id TEXT PRIMARY KEY,
@@ -910,9 +1065,106 @@ try { azexbuyDb.exec(`
     target_markets TEXT,
     outsourced_desk INTEGER DEFAULT 0,
     readiness_score INTEGER DEFAULT 0,
-    status TEXT DEFAULT 'Pending'
+    status TEXT DEFAULT 'Pending',
+    assigned_to TEXT,
+    internal_notes TEXT
   );
 `); } catch (err) { console.error('[DB] AZEXBUY schema init failed:', err); process.exit(1); }
+
+// Additive migration: add assigned_to and internal_notes columns if they don't exist yet
+try {
+  const rfqCols = (azexbuyDb.prepare("PRAGMA table_info(azexbuy_rfqs)").all() as any[]).map(c => c.name);
+if (!rfqCols.includes('assigned_to')) azexbuyDb.exec("ALTER TABLE azexbuy_rfqs ADD COLUMN assigned_to TEXT");
+  if (!rfqCols.includes('internal_notes')) azexbuyDb.exec("ALTER TABLE azexbuy_rfqs ADD COLUMN internal_notes TEXT");
+  if (!rfqCols.includes('city')) azexbuyDb.exec("ALTER TABLE azexbuy_rfqs ADD COLUMN city TEXT");
+  const prodCols = (azexbuyDb.prepare("PRAGMA table_info(azexbuy_producers)").all() as any[]).map(c => c.name);
+  if (!prodCols.includes('assigned_to')) azexbuyDb.exec("ALTER TABLE azexbuy_producers ADD COLUMN assigned_to TEXT");
+  if (!prodCols.includes('internal_notes')) azexbuyDb.exec("ALTER TABLE azexbuy_producers ADD COLUMN internal_notes TEXT");
+  if (!prodCols.includes('city')) azexbuyDb.exec("ALTER TABLE azexbuy_producers ADD COLUMN city TEXT");
+  if (!prodCols.includes('products')) azexbuyDb.exec("ALTER TABLE azexbuy_producers ADD COLUMN products TEXT");
+  const contactCols = (azexbuyDb.prepare("PRAGMA table_info(azexbuy_contacts)").all() as any[]).map(c => c.name);
+  if (!contactCols.includes('phone')) azexbuyDb.exec("ALTER TABLE azexbuy_contacts ADD COLUMN phone TEXT");
+} catch (err) { console.warn('[DB] Migration warning (non-fatal):', err); }
+
+// Product catalog + article tables (additive — safe to re-run)
+try { azexbuyDb.exec(`
+  CREATE TABLE IF NOT EXISTS azexbuy_categories (
+    id TEXT PRIMARY KEY,
+    created_at TEXT NOT NULL,
+    name TEXT NOT NULL,
+    slug TEXT UNIQUE NOT NULL,
+    description TEXT,
+    image_url TEXT,
+    sort_order INTEGER NOT NULL DEFAULT 0,
+    is_active INTEGER NOT NULL DEFAULT 1
+  );
+  CREATE TABLE IF NOT EXISTS azexbuy_products (
+    id TEXT PRIMARY KEY,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    category_id TEXT NOT NULL REFERENCES azexbuy_categories(id),
+    name TEXT NOT NULL,
+    slug TEXT UNIQUE NOT NULL,
+    short_description TEXT,
+    description TEXT,
+    technical_specs TEXT,
+    images TEXT,
+    moq TEXT,
+    certificates TEXT,
+    packaging_info TEXT,
+    hs_code TEXT,
+    origin_region TEXT,
+    is_active INTEGER NOT NULL DEFAULT 1,
+    is_featured INTEGER NOT NULL DEFAULT 0,
+    seo_title TEXT,
+    seo_description TEXT
+  );
+  CREATE TABLE IF NOT EXISTS azexbuy_articles (
+    id TEXT PRIMARY KEY,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    title TEXT NOT NULL,
+    slug TEXT UNIQUE NOT NULL,
+    category TEXT NOT NULL DEFAULT 'Export Guides',
+    summary TEXT,
+    content TEXT,
+    cover_image TEXT,
+    seo_title TEXT,
+    seo_description TEXT,
+    is_published INTEGER NOT NULL DEFAULT 0,
+    published_at TEXT,
+    author TEXT DEFAULT 'AZEXBUY'
+  );
+`); } catch (err) { console.error('[DB] Product/Article schema init failed:', err); }
+
+// ── Migration: add is_featured to azexbuy_articles if missing ────────────────
+try {
+  const cols = azexbuyDb.prepare("PRAGMA table_info(azexbuy_articles)").all() as any[];
+  if (!cols.find((c: any) => c.name === 'is_featured')) {
+    azexbuyDb.exec('ALTER TABLE azexbuy_articles ADD COLUMN is_featured INTEGER NOT NULL DEFAULT 0');
+    console.log('[DB] Migration: added is_featured column to azexbuy_articles');
+  }
+  if (!cols.find((c: any) => c.name === 'view_count')) {
+    azexbuyDb.exec('ALTER TABLE azexbuy_articles ADD COLUMN view_count INTEGER NOT NULL DEFAULT 0');
+    console.log('[DB] Migration: added view_count column to azexbuy_articles');
+  }
+} catch (err) { console.error('[DB] Migration failed:', err); }
+
+// Seed default categories if empty
+const catCount = (azexbuyDb.prepare('SELECT COUNT(*) as c FROM azexbuy_categories').get() as any).c;
+if (catCount === 0) {
+  const defaultCats = [
+    { id: 'cat-food', name: 'Food Products', slug: 'food-products', description: 'Natural and processed food products from Azerbaijan', sort_order: 1 },
+    { id: 'cat-agri', name: 'Agriculture', slug: 'agriculture', description: 'Agricultural produce and raw materials', sort_order: 2 },
+    { id: 'cat-construction', name: 'Construction Materials', slug: 'construction-materials', description: 'Building and construction materials', sort_order: 3 },
+    { id: 'cat-packaging', name: 'Packaging', slug: 'packaging', description: 'Industrial and commercial packaging solutions', sort_order: 4 },
+    { id: 'cat-industrial', name: 'Industrial Products', slug: 'industrial-products', description: 'Industrial goods and manufactured products', sort_order: 5 },
+    { id: 'cat-chemicals', name: 'Chemicals', slug: 'chemicals', description: 'Chemical products and compounds', sort_order: 6 },
+  ];
+  const insertCat = azexbuyDb.prepare('INSERT OR IGNORE INTO azexbuy_categories (id, created_at, name, slug, description, sort_order, is_active) VALUES (?, ?, ?, ?, ?, ?, 1)');
+  const now = new Date().toISOString();
+  for (const c of defaultCats) insertCat.run(c.id, now, c.name, c.slug, c.description, c.sort_order);
+}
 
 let azRedis: Redis | null = null;
 try {
@@ -935,6 +1187,304 @@ async function azDel(key: string): Promise<void> {
   try { await azRedis.del(key); } catch {}
 }
 
+// ─── CATEGORIES ──────────────────────────────────────────────────────────────
+app.get('/api/azexbuy/categories', async (_req: Request, res: Response) => {
+  const cached = await azGet('azexbuy:categories');
+  if (cached) return res.json(JSON.parse(cached));
+  const rows = azexbuyDb.prepare('SELECT * FROM azexbuy_categories ORDER BY sort_order ASC').all() as any[];
+  const result = rows.map(r => ({
+    id: r.id, createdAt: r.created_at, name: r.name, slug: r.slug,
+    description: r.description, imageUrl: r.image_url, sortOrder: r.sort_order, isActive: !!r.is_active
+  }));
+  await azSet('azexbuy:categories', JSON.stringify(result));
+  res.json(result);
+});
+
+app.post('/api/azexbuy/categories', requireAuth, (req: Request, res: Response) => {
+  const { name, slug, description, imageUrl, sortOrder } = req.body;
+  if (!name || !slug) return res.status(400).json({ error: 'name and slug are required' });
+  const existing = azexbuyDb.prepare('SELECT id FROM azexbuy_categories WHERE slug = ?').get(slug);
+  if (existing) return res.status(409).json({ error: 'Slug already exists' });
+  const id = `cat-${Date.now()}`;
+  azexbuyDb.prepare('INSERT INTO azexbuy_categories (id, created_at, name, slug, description, image_url, sort_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, 1)')
+    .run(id, new Date().toISOString(), name.trim(), slug.trim().toLowerCase(), description || null, imageUrl || null, sortOrder || 0);
+  azDel('azexbuy:categories');
+  res.status(201).json({ success: true, id });
+});
+
+app.patch('/api/azexbuy/categories/:id', requireAuth, (req: Request, res: Response) => {
+  const { name, slug, description, imageUrl, sortOrder, isActive } = req.body;
+  const cat = azexbuyDb.prepare('SELECT id FROM azexbuy_categories WHERE id = ?').get(req.params.id);
+  if (!cat) return res.status(404).json({ error: 'Category not found' });
+  if (name !== undefined) azexbuyDb.prepare('UPDATE azexbuy_categories SET name = ? WHERE id = ?').run(name, req.params.id);
+  if (slug !== undefined) azexbuyDb.prepare('UPDATE azexbuy_categories SET slug = ? WHERE id = ?').run(slug.toLowerCase().trim(), req.params.id);
+  if (description !== undefined) azexbuyDb.prepare('UPDATE azexbuy_categories SET description = ? WHERE id = ?').run(description, req.params.id);
+  if (imageUrl !== undefined) azexbuyDb.prepare('UPDATE azexbuy_categories SET image_url = ? WHERE id = ?').run(imageUrl, req.params.id);
+  if (sortOrder !== undefined) azexbuyDb.prepare('UPDATE azexbuy_categories SET sort_order = ? WHERE id = ?').run(sortOrder, req.params.id);
+  if (isActive !== undefined) azexbuyDb.prepare('UPDATE azexbuy_categories SET is_active = ? WHERE id = ?').run(isActive ? 1 : 0, req.params.id);
+  azDel('azexbuy:categories');
+  res.json({ success: true });
+});
+
+app.delete('/api/azexbuy/categories/:id', requireAuth, (req: Request, res: Response) => {
+  // Safety: don't delete if products exist in this category
+  const count = (azexbuyDb.prepare('SELECT COUNT(*) as c FROM azexbuy_products WHERE category_id = ?').get(req.params.id) as any).c;
+  if (count > 0) return res.status(409).json({ error: `Cannot delete: ${count} product(s) in this category. Move or delete them first.` });
+  azexbuyDb.prepare('DELETE FROM azexbuy_categories WHERE id = ?').run(req.params.id);
+  azDel('azexbuy:categories');
+  res.json({ success: true });
+});
+
+// ─── PRODUCTS ────────────────────────────────────────────────────────────────
+function mapProduct(r: any) {
+  return {
+    id: r.id, createdAt: r.created_at, updatedAt: r.updated_at,
+    categoryId: r.category_id, name: r.name, slug: r.slug,
+    shortDescription: r.short_description, description: r.description,
+    technicalSpecs: r.technical_specs ? JSON.parse(r.technical_specs) : {},
+    images: r.images ? JSON.parse(r.images) : [],
+    moq: r.moq, certificates: r.certificates ? JSON.parse(r.certificates) : [],
+    packagingInfo: r.packaging_info, hsCode: r.hs_code, originRegion: r.origin_region,
+    isActive: !!r.is_active, isFeatured: !!r.is_featured,
+    seoTitle: r.seo_title, seoDescription: r.seo_description
+  };
+}
+
+// Public: list active products (optionally filtered by category slug)
+app.get('/api/azexbuy/products', async (req: Request, res: Response) => {
+  const { category, featured, limit: lim, offset: off } = req.query as any;
+  const cacheKey = `azexbuy:products:${category || 'all'}:${featured || '0'}:${lim || '50'}:${off || '0'}`;
+  const cached = await azGet(cacheKey);
+  if (cached) return res.json(JSON.parse(cached));
+
+  let query = 'SELECT p.*, c.name as category_name, c.slug as category_slug FROM azexbuy_products p LEFT JOIN azexbuy_categories c ON p.category_id = c.id WHERE p.is_active = 1';
+  const params: any[] = [];
+  if (category) { query += ' AND c.slug = ?'; params.push(category); }
+  if (featured === '1') { query += ' AND p.is_featured = 1'; }
+  query += ' ORDER BY p.created_at DESC LIMIT ? OFFSET ?';
+  params.push(Number(lim) || 50, Number(off) || 0);
+
+  const rows = azexbuyDb.prepare(query).all(...params) as any[];
+  const result = rows.map(r => ({ ...mapProduct(r), categoryName: r.category_name, categorySlug: r.category_slug }));
+  await azSet(cacheKey, JSON.stringify(result));
+  res.json(result);
+});
+
+// Public: single product by slug
+app.get('/api/azexbuy/products/:slug', async (req: Request, res: Response) => {
+  const cacheKey = `azexbuy:product:${req.params.slug}`;
+  const cached = await azGet(cacheKey);
+  if (cached) return res.json(JSON.parse(cached));
+  const r = azexbuyDb.prepare('SELECT p.*, c.name as category_name, c.slug as category_slug FROM azexbuy_products p LEFT JOIN azexbuy_categories c ON p.category_id = c.id WHERE p.slug = ? AND p.is_active = 1').get(req.params.slug) as any;
+  if (!r) return res.status(404).json({ error: 'Product not found' });
+  const result = { ...mapProduct(r), categoryName: r.category_name, categorySlug: r.category_slug };
+  await azSet(cacheKey, JSON.stringify(result));
+  res.json(result);
+});
+
+// Admin: list all products (including inactive)
+app.get('/api/azexbuy/admin/products', requireAuth, async (_req: Request, res: Response) => {
+  const rows = azexbuyDb.prepare('SELECT p.*, c.name as category_name, c.slug as category_slug FROM azexbuy_products p LEFT JOIN azexbuy_categories c ON p.category_id = c.id ORDER BY p.created_at DESC').all() as any[];
+  res.json(rows.map(r => ({ ...mapProduct(r), categoryName: r.category_name, categorySlug: r.category_slug })));
+});
+
+// Admin: create product
+app.post('/api/azexbuy/admin/products', requireAuth, (req: Request, res: Response) => {
+  const { categoryId, name, slug, shortDescription, description, technicalSpecs, images, moq, certificates, packagingInfo, hsCode, originRegion, isFeatured, seoTitle, seoDescription } = req.body;
+  if (!categoryId || !name || !slug) return res.status(400).json({ error: 'categoryId, name and slug are required' });
+  const existing = azexbuyDb.prepare('SELECT id FROM azexbuy_products WHERE slug = ?').get(slug);
+  if (existing) return res.status(409).json({ error: 'Product slug already exists' });
+  const catExists = azexbuyDb.prepare('SELECT id FROM azexbuy_categories WHERE id = ?').get(categoryId);
+  if (!catExists) return res.status(400).json({ error: 'Category not found' });
+  const id = `prod-${Date.now()}`;
+  const now = new Date().toISOString();
+  azexbuyDb.prepare(`INSERT INTO azexbuy_products (id, created_at, updated_at, category_id, name, slug, short_description, description, technical_specs, images, moq, certificates, packaging_info, hs_code, origin_region, is_active, is_featured, seo_title, seo_description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?)`)
+    .run(id, now, now, categoryId, name.trim(), slug.trim().toLowerCase(), shortDescription || null, description || null,
+      JSON.stringify(technicalSpecs || {}), JSON.stringify(images || []), moq || null,
+      JSON.stringify(certificates || []), packagingInfo || null, hsCode || null, originRegion || null,
+      isFeatured ? 1 : 0, seoTitle || null, seoDescription || null);
+  azDel('azexbuy:products:all:0:50:0');
+  res.status(201).json({ success: true, id });
+});
+
+// Admin: update product
+app.patch('/api/azexbuy/admin/products/:id', requireAuth, (req: Request, res: Response) => {
+  const r = azexbuyDb.prepare('SELECT id, slug FROM azexbuy_products WHERE id = ?').get(req.params.id) as any;
+  if (!r) return res.status(404).json({ error: 'Product not found' });
+  const fields = ['categoryId:category_id','name','slug','shortDescription:short_description','description','moq','packagingInfo:packaging_info','hsCode:hs_code','originRegion:origin_region','seoTitle:seo_title','seoDescription:seo_description'];
+  const jsonFields = ['technicalSpecs:technical_specs','images','certificates'];
+  const boolFields = ['isActive:is_active','isFeatured:is_featured'];
+  const body = req.body;
+  const now = new Date().toISOString();
+  azexbuyDb.prepare('UPDATE azexbuy_products SET updated_at = ? WHERE id = ?').run(now, req.params.id);
+  for (const f of fields) {
+    const [jsKey, dbCol] = f.includes(':') ? f.split(':') : [f, f];
+    if (body[jsKey] !== undefined) azexbuyDb.prepare(`UPDATE azexbuy_products SET ${dbCol} = ? WHERE id = ?`).run(body[jsKey], req.params.id);
+  }
+  for (const f of jsonFields) {
+    const [jsKey, dbCol] = f.includes(':') ? f.split(':') : [f, f];
+    if (body[jsKey] !== undefined) azexbuyDb.prepare(`UPDATE azexbuy_products SET ${dbCol} = ? WHERE id = ?`).run(JSON.stringify(body[jsKey]), req.params.id);
+  }
+  for (const f of boolFields) {
+    const [jsKey, dbCol] = f.split(':');
+    if (body[jsKey] !== undefined) azexbuyDb.prepare(`UPDATE azexbuy_products SET ${dbCol} = ? WHERE id = ?`).run(body[jsKey] ? 1 : 0, req.params.id);
+  }
+  // Invalidate cache for this slug and all listing caches
+  azDel(`azexbuy:product:${r.slug}`);
+  res.json({ success: true });
+});
+
+// Admin: delete product
+app.delete('/api/azexbuy/admin/products/:id', requireAuth, (req: Request, res: Response) => {
+  const r = azexbuyDb.prepare('SELECT slug FROM azexbuy_products WHERE id = ?').get(req.params.id) as any;
+  if (!r) return res.status(404).json({ error: 'Product not found' });
+  azexbuyDb.prepare('DELETE FROM azexbuy_products WHERE id = ?').run(req.params.id);
+  azDel(`azexbuy:product:${r.slug}`);
+  res.json({ success: true });
+});
+
+// ─── ARTICLES ────────────────────────────────────────────────────────────────
+const ARTICLE_CATEGORIES = ['Export Guides', 'Market Insights', 'Trade Knowledge', 'Industry Updates'];
+
+function mapArticle(r: any) {
+  return {
+    id: r.id, createdAt: r.created_at, updatedAt: r.updated_at,
+    title: r.title, slug: r.slug, category: r.category,
+    summary: r.summary, content: r.content, coverImage: r.cover_image,
+    seoTitle: r.seo_title, seoDescription: r.seo_description,
+    isPublished: !!r.is_published, publishedAt: r.published_at, author: r.author,
+    isFeatured: !!r.is_featured, viewCount: r.view_count || 0,
+  };
+}
+
+// Public: featured article
+app.get('/api/azexbuy/articles/featured', async (_req: Request, res: Response) => {
+  const cacheKey = 'azexbuy:articles:featured';
+  const cached = await azGet(cacheKey);
+  if (cached) return res.json(JSON.parse(cached));
+  const r = azexbuyDb.prepare('SELECT * FROM azexbuy_articles WHERE is_featured = 1 AND is_published = 1 LIMIT 1').get() as any;
+  if (!r) return res.json(null);
+  const result = mapArticle(r);
+  await azSet(cacheKey, JSON.stringify(result));
+  res.json(result);
+});
+
+// Admin: set featured article (only one at a time)
+app.patch('/api/azexbuy/admin/articles/:id/feature', requireAuth, (req: Request, res: Response) => {
+  const r = azexbuyDb.prepare('SELECT id FROM azexbuy_articles WHERE id = ?').get(req.params.id) as any;
+  if (!r) return res.status(404).json({ error: 'Article not found' });
+  // Unfeature all others first
+  azexbuyDb.prepare('UPDATE azexbuy_articles SET is_featured = 0').run();
+  // Feature this one
+  azexbuyDb.prepare('UPDATE azexbuy_articles SET is_featured = 1 WHERE id = ?').run(req.params.id);
+  azDel('azexbuy:articles:featured');
+  res.json({ success: true });
+});
+
+// Admin: unfeature article
+app.patch('/api/azexbuy/admin/articles/:id/unfeature', requireAuth, (req: Request, res: Response) => {
+  azexbuyDb.prepare('UPDATE azexbuy_articles SET is_featured = 0 WHERE id = ?').run(req.params.id);
+  azDel('azexbuy:articles:featured');
+  res.json({ success: true });
+});
+
+// Public: list published articles
+app.get('/api/azexbuy/articles', async (req: Request, res: Response) => {
+  const { category, limit: lim, offset: off } = req.query as any;
+  const cacheKey = `azexbuy:articles:${category || 'all'}:${lim || '20'}:${off || '0'}`;
+  const cached = await azGet(cacheKey);
+  if (cached) return res.json(JSON.parse(cached));
+  let query = 'SELECT * FROM azexbuy_articles WHERE is_published = 1';
+  const params: any[] = [];
+  if (category) { query += ' AND category = ?'; params.push(category); }
+  query += ' ORDER BY published_at DESC LIMIT ? OFFSET ?';
+  params.push(Number(lim) || 20, Number(off) || 0);
+  const rows = azexbuyDb.prepare(query).all(...params) as any[];
+  const result = rows.map(mapArticle);
+  await azSet(cacheKey, JSON.stringify(result));
+  res.json(result);
+});
+
+// Public: single article by slug (also increments view_count)
+app.get('/api/azexbuy/articles/:slug', async (req: Request, res: Response) => {
+  const r = azexbuyDb.prepare('SELECT * FROM azexbuy_articles WHERE slug = ? AND is_published = 1').get(req.params.slug) as any;
+  if (!r) return res.status(404).json({ error: 'Article not found' });
+  // Increment view count
+  azexbuyDb.prepare('UPDATE azexbuy_articles SET view_count = COALESCE(view_count, 0) + 1 WHERE slug = ?').run(req.params.slug);
+  const updated = azexbuyDb.prepare('SELECT * FROM azexbuy_articles WHERE slug = ?').get(req.params.slug) as any;
+  azDel(`azexbuy:article:${req.params.slug}`);
+  res.json(mapArticle(updated));
+});
+
+// Admin: list all articles (including drafts)
+app.get('/api/azexbuy/admin/articles', requireAuth, async (_req: Request, res: Response) => {
+  const rows = azexbuyDb.prepare('SELECT * FROM azexbuy_articles ORDER BY created_at DESC').all() as any[];
+  res.json(rows.map(mapArticle));
+});
+
+// Admin: create article
+app.post('/api/azexbuy/admin/articles', requireAuth, (req: Request, res: Response) => {
+  const { title, slug, category, summary, content, coverImage, seoTitle, seoDescription, isPublished, publishedAt, author } = req.body;
+  if (!title || !slug) return res.status(400).json({ error: 'title and slug are required' });
+  if (category && !ARTICLE_CATEGORIES.includes(category)) return res.status(400).json({ error: `category must be one of: ${ARTICLE_CATEGORIES.join(', ')}` });
+  const existing = azexbuyDb.prepare('SELECT id FROM azexbuy_articles WHERE slug = ?').get(slug);
+  if (existing) return res.status(409).json({ error: 'Article slug already exists' });
+  const id = `art-${Date.now()}`;
+  const now = new Date().toISOString();
+  const pubAt = isPublished ? (publishedAt || now) : null;
+  azexbuyDb.prepare(`INSERT INTO azexbuy_articles (id, created_at, updated_at, title, slug, category, summary, content, cover_image, seo_title, seo_description, is_published, published_at, author) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+    .run(id, now, now, title.trim(), slug.trim().toLowerCase(), category || 'Export Guides', summary || null, content || null, coverImage || null, seoTitle || null, seoDescription || null, isPublished ? 1 : 0, pubAt, author || 'AZEXBUY');
+  // BUG-5 fix: invalidate list caches on article creation
+  azDel('azexbuy:articles:all:20:0');
+  for (const cat of ARTICLE_CATEGORIES) azDel(`azexbuy:articles:${cat}:20:0`);
+  res.status(201).json({ success: true, id });
+});
+
+// Admin: update article
+app.patch('/api/azexbuy/admin/articles/:id', requireAuth, (req: Request, res: Response) => {
+  // BUG-6 fix: also fetch published_at so we don't overwrite existing publish date
+  const r = azexbuyDb.prepare('SELECT id, slug, published_at, is_featured FROM azexbuy_articles WHERE id = ?').get(req.params.id) as any;
+  if (!r) return res.status(404).json({ error: 'Article not found' });
+  if (req.body.category && !ARTICLE_CATEGORIES.includes(req.body.category)) return res.status(400).json({ error: `Invalid category` });
+  const textFields = ['title','slug','category','summary','content','coverImage:cover_image','seoTitle:seo_title','seoDescription:seo_description','publishedAt:published_at','author'];
+  const now = new Date().toISOString();
+  azexbuyDb.prepare('UPDATE azexbuy_articles SET updated_at = ? WHERE id = ?').run(now, req.params.id);
+  for (const f of textFields) {
+    const [jsKey, dbCol] = f.includes(':') ? f.split(':') : [f, f];
+    if (req.body[jsKey] !== undefined) azexbuyDb.prepare(`UPDATE azexbuy_articles SET ${dbCol} = ? WHERE id = ?`).run(req.body[jsKey], req.params.id);
+  }
+  if (req.body.isPublished !== undefined) {
+    azexbuyDb.prepare('UPDATE azexbuy_articles SET is_published = ? WHERE id = ?').run(req.body.isPublished ? 1 : 0, req.params.id);
+    // BUG-6 fix: only set published_at if not already set
+    if (req.body.isPublished && !r.published_at) azexbuyDb.prepare('UPDATE azexbuy_articles SET published_at = ? WHERE id = ?').run(now, req.params.id);
+  }
+  // BUG-5 fix: invalidate list caches and featured cache on update
+  azDel(`azexbuy:article:${r.slug}`);
+  azDel('azexbuy:articles:all:20:0');
+  azDel('azexbuy:articles:featured');
+  // Also clear any category-specific caches
+  for (const cat of ARTICLE_CATEGORIES) azDel(`azexbuy:articles:${cat}:20:0`);
+  res.json({ success: true });
+});
+
+// Admin: delete article
+app.delete('/api/azexbuy/admin/articles/:id', requireAuth, (req: Request, res: Response) => {
+  const r = azexbuyDb.prepare('SELECT slug, is_featured FROM azexbuy_articles WHERE id = ?').get(req.params.id) as any;
+  if (!r) return res.status(404).json({ error: 'Article not found' });
+  azexbuyDb.prepare('DELETE FROM azexbuy_articles WHERE id = ?').run(req.params.id);
+  // BUG-7 fix: invalidate all related caches including featured
+  azDel(`azexbuy:article:${r.slug}`);
+  azDel('azexbuy:articles:featured');
+  azDel('azexbuy:articles:all:20:0');
+  for (const cat of ARTICLE_CATEGORIES) azDel(`azexbuy:articles:${cat}:20:0`);
+  res.json({ success: true });
+});
+
+// ─── ARTICLE CATEGORIES LIST ─────────────────────────────────────────────────
+app.get('/api/azexbuy/article-categories', (_req: Request, res: Response) => {
+  res.json(ARTICLE_CATEGORIES);
+});
+
 // RFQs
 app.get('/api/azexbuy/rfqs', requireAuth, async (req: Request, res: Response) => {
   const cached = await azGet('azexbuy:rfqs');
@@ -942,11 +1492,12 @@ app.get('/api/azexbuy/rfqs', requireAuth, async (req: Request, res: Response) =>
   const rows = azexbuyDb.prepare('SELECT * FROM azexbuy_rfqs ORDER BY created_at DESC').all() as any[];
   const result = rows.map(r => ({
     id: r.id, createdAt: r.created_at, buyerCompany: r.buyer_company,
-    country: r.country, contactName: r.contact_name, email: r.email,
+    country: r.country, city: r.city || '', contactName: r.contact_name, email: r.email,
     phone: r.phone, incoterm: r.incoterm, destinationPort: r.destination_port,
     corridorRoute: r.corridor_route,
     requiredCertifications: JSON.parse(r.required_certifications || '[]'),
     items: JSON.parse(r.items || '[]'), notes: r.notes, status: r.status,
+    assignedTo: r.assigned_to || '', internalNotes: r.internal_notes || '',
   }));
   await azSet('azexbuy:rfqs', JSON.stringify(result));
   res.json(result);
@@ -956,10 +1507,10 @@ app.post('/api/azexbuy/rfqs', async (req: Request, res: Response) => {
   const d = req.body;
   if (!d.id || !d.buyerCompany || !d.email) return res.status(400).json({ error: 'Missing fields' });
   azexbuyDb.prepare(`INSERT OR REPLACE INTO azexbuy_rfqs
-    (id,created_at,buyer_company,country,contact_name,email,phone,incoterm,destination_port,corridor_route,required_certifications,items,notes,status)
-    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)`)
+    (id,created_at,buyer_company,country,city,contact_name,email,phone,incoterm,destination_port,corridor_route,required_certifications,items,notes,status)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`)
     .run(d.id, d.createdAt || new Date().toISOString(), d.buyerCompany, d.country || '',
-      d.contactName || '', d.email, d.phone || '', d.incoterm || 'CIF',
+      d.city || '', d.contactName || '', d.email, d.phone || '', d.incoterm || 'CIF',
       d.destinationPort || '', d.corridorRoute || '',
       JSON.stringify(d.requiredCertifications || []),
       JSON.stringify(d.items || []), d.notes || '', d.status || 'Pending');
@@ -977,15 +1528,20 @@ app.post('/api/azexbuy/rfqs', async (req: Request, res: Response) => {
        <tr><td style="padding:4px 12px;color:#666">Əlaqə</td><td>${d.contactName} — ${d.email}</td></tr>
        <tr><td style="padding:4px 12px;color:#666">Incoterm</td><td>${d.incoterm} / ${d.destinationPort || '—'}</td></tr>
      </table>
-     <h3 style="margin-top:16px">Mallar</h3><ul>${itemsList}</ul>
-     ${d.notes ? `<p><b>Qeyd:</b> ${d.notes}</p>` : ''}
-     <p style="color:#888;font-size:12px;margin-top:24px">AZEXBUY Admin: <a href="http://localhost:${PORT}/octo-admin">Panelə keç</a></p>`
+<h3 style="margin-top:16px">Mallar</h3><ul>${itemsList}</ul>
+      ${d.notes ? `<p><b>Qeyd:</b> ${d.notes}</p>` : ''}
+      <p style="color:#888;font-size:12px;margin-top:24px">AZEXBUY Admin: <a href="http://localhost:${PORT}/octo-admin">Panelə keç</a></p>`,
+    getSmtpSettings()?.rfq_email || undefined
   );
 });
 
 app.patch('/api/azexbuy/rfqs/:id', requireAuth, async (req: Request, res: Response) => {
-  const { status } = req.body;
-  azexbuyDb.prepare('UPDATE azexbuy_rfqs SET status = ? WHERE id = ?').run(status, req.params.id);
+  const { status, assignedTo, internalNotes } = req.body;
+  const row = azexbuyDb.prepare('SELECT id FROM azexbuy_rfqs WHERE id = ?').get(req.params.id);
+  if (!row) return res.status(404).json({ error: 'RFQ not found' });
+  if (status !== undefined) azexbuyDb.prepare('UPDATE azexbuy_rfqs SET status = ? WHERE id = ?').run(status, req.params.id);
+  if (assignedTo !== undefined) azexbuyDb.prepare('UPDATE azexbuy_rfqs SET assigned_to = ? WHERE id = ?').run(assignedTo, req.params.id);
+  if (internalNotes !== undefined) azexbuyDb.prepare('UPDATE azexbuy_rfqs SET internal_notes = ? WHERE id = ?').run(internalNotes, req.params.id);
   await azDel('azexbuy:rfqs');
   res.json({ success: true });
 });
@@ -1003,14 +1559,16 @@ app.get('/api/azexbuy/producers', requireAuth, async (req: Request, res: Respons
   const rows = azexbuyDb.prepare('SELECT * FROM azexbuy_producers ORDER BY created_at DESC').all() as any[];
   const result = rows.map(r => ({
     id: r.id, createdAt: r.created_at, companyName: r.company_name,
-    voenTin: r.voen_tin, economicRegion: r.economic_region,
+    voenTin: r.voen_tin, economicRegion: r.economic_region, city: r.city || '',
     contactPerson: r.contact_person, email: r.email, phone: r.phone,
     productName: r.product_name, hsCode: r.hs_code, categoryKey: r.category_key,
     monthlyCapacity: r.monthly_capacity,
     certifications: JSON.parse(r.certifications || '[]'),
     targetMarkets: JSON.parse(r.target_markets || '[]'),
+    products: JSON.parse(r.products || '[]'),
     outsourcedDeskRequested: Boolean(r.outsourced_desk),
     readinessScore: r.readiness_score, status: r.status,
+    assignedTo: r.assigned_to || '', internalNotes: r.internal_notes || '',
   }));
   await azSet('azexbuy:producers', JSON.stringify(result));
   res.json(result);
@@ -1020,13 +1578,14 @@ app.post('/api/azexbuy/producers', async (req: Request, res: Response) => {
   const d = req.body;
   if (!d.id || !d.companyName || !d.email) return res.status(400).json({ error: 'Missing fields' });
   azexbuyDb.prepare(`INSERT OR REPLACE INTO azexbuy_producers
-    (id,created_at,company_name,voen_tin,economic_region,contact_person,email,phone,product_name,hs_code,category_key,monthly_capacity,certifications,target_markets,outsourced_desk,readiness_score,status)
-    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`)
+    (id,created_at,company_name,voen_tin,economic_region,city,contact_person,email,phone,product_name,hs_code,category_key,monthly_capacity,certifications,target_markets,outsourced_desk,readiness_score,status,products)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`)
     .run(d.id, d.createdAt || new Date().toISOString(), d.companyName, d.voenTin || '',
-      d.economicRegion || '', d.contactPerson || '', d.email, d.phone || '',
-      d.productName, d.hsCode || '', d.categoryKey || '', d.monthlyCapacity || '',
+      d.economicRegion || '', d.city || '', d.contactPerson || '', d.email, d.phone || '',
+      d.productName || '', d.hsCode || '', d.categoryKey || '', d.monthlyCapacity || '',
       JSON.stringify(d.certifications || []), JSON.stringify(d.targetMarkets || []),
-      d.outsourcedDeskRequested ? 1 : 0, d.readinessScore || 0, d.status || 'Pending');
+      d.outsourcedDeskRequested ? 1 : 0, d.readinessScore || 0, d.status || 'Pending',
+      JSON.stringify(d.products || []));
   await azDel('azexbuy:producers');
   res.json({ success: true, id: d.id });
   // Send email notification (non-blocking)
@@ -1046,13 +1605,18 @@ app.post('/api/azexbuy/producers', async (req: Request, res: Response) => {
        <tr><td style="padding:4px 12px;color:#666">Hədəf Bazarlar</td><td>${markets}</td></tr>
        <tr><td style="padding:4px 12px;color:#666">Outsourced Desk</td><td>${d.outsourcedDeskRequested ? 'Bəli' : 'Xeyr'}</td></tr>
      </table>
-     <p style="color:#888;font-size:12px;margin-top:24px">AZEXBUY Admin: <a href="http://localhost:${PORT}/octo-admin">Panelə keç</a></p>`
+     <p style="color:#888;font-size:12px;margin-top:24px">AZEXBUY Admin: <a href="http://localhost:${PORT}/octo-admin">Panelə keç</a></p>`,
+    getSmtpSettings()?.producer_email || undefined
   );
 });
 
 app.patch('/api/azexbuy/producers/:id', requireAuth, async (req: Request, res: Response) => {
-  const { status } = req.body;
-  azexbuyDb.prepare('UPDATE azexbuy_producers SET status = ? WHERE id = ?').run(status, req.params.id);
+  const { status, assignedTo, internalNotes } = req.body;
+  const row = azexbuyDb.prepare('SELECT id FROM azexbuy_producers WHERE id = ?').get(req.params.id);
+  if (!row) return res.status(404).json({ error: 'Producer not found' });
+  if (status !== undefined) azexbuyDb.prepare('UPDATE azexbuy_producers SET status = ? WHERE id = ?').run(status, req.params.id);
+  if (assignedTo !== undefined) azexbuyDb.prepare('UPDATE azexbuy_producers SET assigned_to = ? WHERE id = ?').run(assignedTo, req.params.id);
+  if (internalNotes !== undefined) azexbuyDb.prepare('UPDATE azexbuy_producers SET internal_notes = ? WHERE id = ?').run(internalNotes, req.params.id);
   await azDel('azexbuy:producers');
   res.json({ success: true });
 });
@@ -1081,12 +1645,81 @@ app.post('/api/azexbuy/localization', requireAuth, async (req: Request, res: Res
   res.json({ success: true });
 });
 
-app.get('/api/azexbuy/stats', async (req: Request, res: Response) => {
+// Shared status enum for RFQ and Producer (spec §16)
+export const APPLICATION_STATUSES = ['New', 'Under Review', 'Awaiting Info', 'Searching', 'Offer Preparing', 'Sent to Client', 'Completed', 'Closed'];
+
+app.get('/api/azexbuy/stats', async (_req: Request, res: Response) => {
   const rfqCount = (azexbuyDb.prepare('SELECT COUNT(*) as c FROM azexbuy_rfqs').get() as any).c;
   const producerCount = (azexbuyDb.prepare('SELECT COUNT(*) as c FROM azexbuy_producers').get() as any).c;
-  const pendingRfqs = (azexbuyDb.prepare("SELECT COUNT(*) as c FROM azexbuy_rfqs WHERE status = 'Pending'").get() as any).c;
-  const activeProducers = (azexbuyDb.prepare("SELECT COUNT(*) as c FROM azexbuy_producers WHERE status != 'Rejected'").get() as any).c;
-  res.json({ rfqCount, producerCount, pendingRfqs, activeProducers, redis: azRedis ? 'connected' : 'unavailable' });
+  const pendingRfqs = (azexbuyDb.prepare("SELECT COUNT(*) as c FROM azexbuy_rfqs WHERE status IN ('Pending','New','Under Review')").get() as any).c;
+  const activeProducers = (azexbuyDb.prepare("SELECT COUNT(*) as c FROM azexbuy_producers WHERE status NOT IN ('Rejected','Closed')").get() as any).c;
+  const categoryCount = (azexbuyDb.prepare('SELECT COUNT(*) as c FROM azexbuy_categories WHERE is_active = 1').get() as any).c;
+  const productCount = (azexbuyDb.prepare('SELECT COUNT(*) as c FROM azexbuy_products WHERE is_active = 1').get() as any).c;
+  const articleCount = (azexbuyDb.prepare('SELECT COUNT(*) as c FROM azexbuy_articles WHERE is_published = 1').get() as any).c;
+  const contactCount = (azexbuyDb.prepare('SELECT COUNT(*) as c FROM azexbuy_contacts').get() as any).c;
+  // Status breakdown for RFQs
+  const rfqByStatus = (azexbuyDb.prepare('SELECT status, COUNT(*) as c FROM azexbuy_rfqs GROUP BY status').all() as any[])
+    .reduce((acc: any, r: any) => { acc[r.status] = r.c; return acc; }, {});
+  res.json({
+    rfqCount, producerCount, pendingRfqs, activeProducers,
+    categoryCount, productCount, articleCount, contactCount,
+    rfqByStatus, statuses: APPLICATION_STATUSES,
+    redis: azRedis ? 'connected' : 'unavailable'
+  });
+});
+
+app.get('/api/azexbuy/statuses', (_req: Request, res: Response) => {
+  res.json(APPLICATION_STATUSES);
+});
+
+// Contacts
+app.get('/api/azexbuy/contacts', requireAuth, async (req: Request, res: Response) => {
+  const rows = azexbuyDb.prepare('SELECT * FROM azexbuy_contacts ORDER BY created_at DESC').all() as any[];
+  res.json(rows.map(r => ({
+    id: r.id, createdAt: r.created_at, fullName: r.full_name,
+    organization: r.organization, email: r.email,
+    inquiryType: r.inquiry_type, message: r.message, status: r.status,
+  })));
+});
+
+app.post('/api/azexbuy/contacts', async (req: Request, res: Response) => {
+  const { fullName, organization, email, inquiryType, message } = req.body;
+  if (!fullName || !organization || !email || !message) {
+    return res.status(400).json({ error: 'fullName, organization, email and message are required' });
+  }
+  const id = `AZX-CNT-${Date.now()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
+  azexbuyDb.prepare(`
+    INSERT INTO azexbuy_contacts (id, created_at, full_name, organization, email, inquiry_type, message, status)
+    VALUES (?, ?, ?, ?, ?, ?, ?, 'New')
+  `).run(id, new Date().toISOString(), fullName.trim(), organization.trim(), email.trim().toLowerCase(), inquiryType || 'Buyer Sourcing Inquiry', message.trim());
+  res.json({ success: true, id });
+  // Send email notification (non-blocking)
+  sendNotificationEmail(
+    `[AZEXBUY] Yeni Əlaqə Sorğusu: ${fullName} — ${organization}`,
+    `<h2>Yeni Əlaqə Sorğusu</h2>
+     <table style="border-collapse:collapse;font-family:sans-serif;font-size:14px">
+       <tr><td style="padding:4px 12px;color:#666">ID</td><td><b>${id}</b></td></tr>
+       <tr><td style="padding:4px 12px;color:#666">Ad</td><td>${fullName}</td></tr>
+       <tr><td style="padding:4px 12px;color:#666">Təşkilat</td><td>${organization}</td></tr>
+       <tr><td style="padding:4px 12px;color:#666">E-poçt</td><td>${email}</td></tr>
+       <tr><td style="padding:4px 12px;color:#666">Sorğu Növü</td><td>${inquiryType || '—'}</td></tr>
+     </table>
+     <h3 style="margin-top:16px">Mesaj</h3>
+     <p style="font-family:sans-serif;font-size:14px">${message}</p>
+     <p style="color:#888;font-size:12px;margin-top:24px">AZEXBUY Admin: <a href="http://localhost:${PORT}/octo-admin">Panelə keç</a></p>`,
+    getSmtpSettings()?.contact_email || undefined
+  );
+});
+
+app.patch('/api/azexbuy/contacts/:id', requireAuth, (req: Request, res: Response) => {
+  const { status } = req.body;
+  azexbuyDb.prepare('UPDATE azexbuy_contacts SET status = ? WHERE id = ?').run(status, req.params.id);
+  res.json({ success: true });
+});
+
+app.delete('/api/azexbuy/contacts/:id', requireAuth, (req: Request, res: Response) => {
+  azexbuyDb.prepare('DELETE FROM azexbuy_contacts WHERE id = ?').run(req.params.id);
+  res.json({ success: true });
 });
 
 // ─── AZEXBUY Content (products, services, steps, hero images) ────────────────
@@ -1196,43 +1829,7 @@ app.get('/api/img-proxy', async (req: Request, res: Response) => {
   }
 });
 
-// ─── Admin Users Module ───────────────────────────────────────────────────────
-// Uses the main azexbuyDb (BetterSqlite3) for simplicity; separate table
-
-const mainDb = new BetterSqlite3(path.join(dataDir, 'octo.db'));
-mainDb.pragma('journal_mode = WAL');
-
-try { mainDb.exec(`
-  CREATE TABLE IF NOT EXISTS admin_users (
-    id TEXT PRIMARY KEY,
-    created_at TEXT NOT NULL,
-    full_name TEXT NOT NULL,
-    username TEXT UNIQUE NOT NULL,
-    email TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL,
-    role TEXT NOT NULL DEFAULT 'Editor',
-    is_active INTEGER NOT NULL DEFAULT 1,
-    last_login TEXT
-  );
-`); } catch (err) { console.error('[DB] admin_users schema init failed:', err); process.exit(1); }
-
-// Seed super admin from JSON db if no users exist
-const userCount = (mainDb.prepare('SELECT COUNT(*) as c FROM admin_users').get() as any).c;
-if (userCount === 0) {
-  const jsonAdmin = Database.getAdmin();
-  mainDb.prepare(`
-    INSERT OR IGNORE INTO admin_users (id, created_at, full_name, username, email, password, role, is_active)
-    VALUES (?, ?, ?, ?, ?, ?, ?, 1)
-  `).run(
-    'admin-root',
-    new Date().toISOString(),
-    jsonAdmin.fullName || 'Super Admin',
-    jsonAdmin.username || 'admin',
-    jsonAdmin.email || 'admin@octotech.az',
-    jsonAdmin.password || 'admin',
-    'Super Admin'
-  );
-}
+// ─── Admin Users Module (routes) ─────────────────────────────────────────────
 
 app.get('/api/admin-users', requireAuth, (req: Request, res: Response) => {
   const rows = mainDb.prepare('SELECT id, created_at, full_name, username, email, role, is_active, last_login FROM admin_users ORDER BY created_at ASC').all();
@@ -1243,7 +1840,7 @@ app.get('/api/admin-users', requireAuth, (req: Request, res: Response) => {
   })));
 });
 
-app.post('/api/admin-users', requireAuth, (req: Request, res: Response) => {
+app.post('/api/admin-users', requireAuth, async (req: Request, res: Response) => {
   const { fullName, username, email, password, role } = req.body;
   if (!fullName || !username || !email || !password) {
     return res.status(400).json({ error: 'fullName, username, email and password are required' });
@@ -1251,14 +1848,15 @@ app.post('/api/admin-users', requireAuth, (req: Request, res: Response) => {
   const existing = mainDb.prepare('SELECT id FROM admin_users WHERE username = ? OR email = ?').get(username, email);
   if (existing) return res.status(409).json({ error: 'Username or email already exists' });
   const id = `admin-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+  const hashedPassword = await bcrypt.hash(password, BCRYPT_ROUNDS);
   mainDb.prepare(`
     INSERT INTO admin_users (id, created_at, full_name, username, email, password, role, is_active)
     VALUES (?, ?, ?, ?, ?, ?, ?, 1)
-  `).run(id, new Date().toISOString(), fullName, username.toLowerCase().trim(), email.toLowerCase().trim(), password, role || 'Editor');
+  `).run(id, new Date().toISOString(), fullName, username.toLowerCase().trim(), email.toLowerCase().trim(), hashedPassword, role || 'Editor');
   res.json({ success: true, id });
 });
 
-app.patch('/api/admin-users/:id', requireAuth, (req: Request, res: Response) => {
+app.patch('/api/admin-users/:id', requireAuth, async (req: Request, res: Response) => {
   const { fullName, username, email, role, isActive, password } = req.body;
   const user = mainDb.prepare('SELECT id FROM admin_users WHERE id = ?').get(req.params.id) as any;
   if (!user) return res.status(404).json({ error: 'User not found' });
@@ -1267,9 +1865,9 @@ app.patch('/api/admin-users/:id', requireAuth, (req: Request, res: Response) => 
     const conflict = mainDb.prepare('SELECT id FROM admin_users WHERE username = ? AND id != ?').get(username.toLowerCase().trim(), req.params.id);
     if (conflict) return res.status(409).json({ error: 'Bu istifadəçi adı artıq mövcuddur' });
     mainDb.prepare('UPDATE admin_users SET username = ? WHERE id = ?').run(username.toLowerCase().trim(), req.params.id);
-    // If this is the active session user, invalidate session so they must re-login
     if (activeSessionToken) {
       activeSessionToken = null;
+      persistSession(null);
       kickAllClients('İstifadəçi adı dəyişdirildi. Zəhmət olmasa yenidən daxil olun.');
     }
   }
@@ -1277,10 +1875,11 @@ app.patch('/api/admin-users/:id', requireAuth, (req: Request, res: Response) => 
   if (role !== undefined) mainDb.prepare('UPDATE admin_users SET role = ? WHERE id = ?').run(role, req.params.id);
   if (isActive !== undefined) mainDb.prepare('UPDATE admin_users SET is_active = ? WHERE id = ?').run(isActive ? 1 : 0, req.params.id);
   if (password !== undefined && password.length >= 4) {
-    mainDb.prepare('UPDATE admin_users SET password = ? WHERE id = ?').run(password, req.params.id);
-    // Invalidate session after password change — force re-login
+    const hashedPassword = await bcrypt.hash(password, BCRYPT_ROUNDS);
+    mainDb.prepare('UPDATE admin_users SET password = ? WHERE id = ?').run(hashedPassword, req.params.id);
     if (activeSessionToken) {
       activeSessionToken = null;
+      persistSession(null);
       kickAllClients('Şifrə dəyişdirildi. Zəhmət olmasa yenidən daxil olun.');
     }
   }
@@ -1308,11 +1907,22 @@ mainDb.exec(`
     from_name TEXT DEFAULT 'AZEXBUY',
     from_email TEXT DEFAULT '',
     notify_email TEXT DEFAULT '',
+    rfq_email TEXT DEFAULT 'procurement@azexbuy.com',
+    producer_email TEXT DEFAULT 'export@azexbuy.com',
+    contact_email TEXT DEFAULT 'info@azexbuy.com',
     enabled INTEGER DEFAULT 0,
     updated_at TEXT
   );
   INSERT OR IGNORE INTO smtp_settings (id) VALUES (1);
 `);
+
+// Additive migration: add routing email columns if missing
+try {
+  const smtpCols = (mainDb.prepare("PRAGMA table_info(smtp_settings)").all() as any[]).map((c: any) => c.name);
+  if (!smtpCols.includes('rfq_email')) mainDb.exec("ALTER TABLE smtp_settings ADD COLUMN rfq_email TEXT DEFAULT 'procurement@azexbuy.com'");
+  if (!smtpCols.includes('producer_email')) mainDb.exec("ALTER TABLE smtp_settings ADD COLUMN producer_email TEXT DEFAULT 'export@azexbuy.com'");
+  if (!smtpCols.includes('contact_email')) mainDb.exec("ALTER TABLE smtp_settings ADD COLUMN contact_email TEXT DEFAULT 'info@azexbuy.com'");
+} catch (err) { console.warn('[DB] SMTP migration warning:', err); }
 
 function getSmtpSettings() {
   return mainDb.prepare('SELECT * FROM smtp_settings WHERE id = 1').get() as any;
@@ -1330,15 +1940,17 @@ async function createTransport() {
   });
 }
 
-async function sendNotificationEmail(subject: string, html: string) {
+async function sendNotificationEmail(subject: string, html: string, toOverride?: string) {
   try {
     const s = getSmtpSettings();
-    if (!s?.enabled || !s?.notify_email) return;
+    if (!s?.enabled) return;
+    const to = toOverride || s?.notify_email;
+    if (!to) return;
     const transporter = await createTransport();
     if (!transporter) return;
     await transporter.sendMail({
       from: `"${s.from_name || 'AZEXBUY'}" <${s.from_email || s.user}>`,
-      to: s.notify_email,
+      to,
       subject,
       html,
     });
@@ -1356,19 +1968,19 @@ app.get('/api/smtp-settings', requireAuth, (_req: Request, res: Response) => {
 
 // SAVE SMTP settings
 app.post('/api/smtp-settings', requireAuth, (req: Request, res: Response) => {
-  const { host, port, secure, user, password, from_name, from_email, notify_email, enabled } = req.body;
+  const { host, port, secure, user, password, from_name, from_email, notify_email, rfq_email, producer_email, contact_email, enabled } = req.body;
   const current = getSmtpSettings();
   const newPass = password && password !== '••••••••' ? password : (current?.password || '');
   mainDb.prepare(`
     UPDATE smtp_settings SET
       host = ?, port = ?, secure = ?, user = ?,
       password = ?, from_name = ?, from_email = ?,
-      notify_email = ?, enabled = ?, updated_at = ?
+      notify_email = ?, rfq_email = ?, producer_email = ?, contact_email = ?, enabled = ?, updated_at = ?
     WHERE id = 1
   `).run(
     host || '', parseInt(port) || 587, secure ? 1 : 0, user || '',
     newPass, from_name || 'AZEXBUY', from_email || '',
-    notify_email || '', enabled ? 1 : 0, new Date().toISOString()
+    notify_email || '', rfq_email || 'procurement@azexbuy.com', producer_email || 'export@azexbuy.com', contact_email || 'info@azexbuy.com', enabled ? 1 : 0, new Date().toISOString()
   );
   res.json({ success: true });
 });
@@ -1457,11 +2069,64 @@ app.get('/octo-admin/*', (_req: Request, res: Response) => {
   res.status(404).send('Admin panel not built yet.');
 });
 
-// SPA Fallback — /* → AZEXBUY frontend index.html
-app.get('*', (req: Request, res: Response) => {
+// SPA Fallback — /* → AZEXBUY frontend index.html with dynamic SEO injection
+app.get('*', (_req: Request, res: Response) => {
   const azexbuyIdx = path.join(azexbuyDist, 'index.html');
-  if (fs.existsSync(azexbuyIdx)) return res.sendFile(azexbuyIdx);
-  res.status(404).send('AZEXBUY frontend not built yet.');
+  if (!fs.existsSync(azexbuyIdx)) return res.status(404).send('AZEXBUY frontend not built yet.');
+
+  try {
+    const seo = Database.getSeo();
+    let html = fs.readFileSync(azexbuyIdx, 'utf-8');
+
+    const title = seo.title || 'AZEXBUY — Connecting Azerbaijani Products with Global Buyers';
+    const description = seo.description || 'Sovereign digital trade gateway connecting international business buyers with vetted Azerbaijani manufacturers, producers, and export suppliers.';
+    const canonical = seo.canonical || '';
+    const ogImage = seo.ogImage || '';
+    const robots = [seo.robotsIndex !== false ? 'index' : 'noindex', seo.robotsFollow !== false ? 'follow' : 'nofollow'].join(', ');
+
+    // Replace title
+    html = html.replace(/<title>[^<]*<\/title>/, `<title>${title}</title>`);
+    // Replace/inject meta description
+    html = html.replace(/<meta name="description"[^>]*>/, `<meta name="description" content="${description}" />`);
+    // Replace/inject OG tags
+    html = html.replace(/<meta property="og:title"[^>]*>/, `<meta property="og:title" content="${title}" />`);
+    html = html.replace(/<meta property="og:description"[^>]*>/, `<meta property="og:description" content="${description}" />`);
+    // Inject robots meta if not present
+    if (!html.includes('name="robots"')) {
+      html = html.replace('</head>', `  <meta name="robots" content="${robots}" />\n  </head>`);
+    } else {
+      html = html.replace(/<meta name="robots"[^>]*>/, `<meta name="robots" content="${robots}" />`);
+    }
+    // Inject canonical if set
+    if (canonical) {
+      if (!html.includes('rel="canonical"')) {
+        html = html.replace('</head>', `  <link rel="canonical" href="${canonical}" />\n  </head>`);
+      } else {
+        html = html.replace(/<link rel="canonical"[^>]*>/, `<link rel="canonical" href="${canonical}" />`);
+      }
+    }
+    // Inject OG image if set
+    if (ogImage) {
+      if (!html.includes('og:image')) {
+        html = html.replace('</head>', `  <meta property="og:image" content="${ogImage}" />\n  </head>`);
+      } else {
+        html = html.replace(/<meta property="og:image"[^>]*>/, `<meta property="og:image" content="${ogImage}" />`);
+      }
+    }
+    // Inject keywords if set
+    if (seo.keywords) {
+      if (!html.includes('name="keywords"')) {
+        html = html.replace('</head>', `  <meta name="keywords" content="${seo.keywords}" />\n  </head>`);
+      } else {
+        html = html.replace(/<meta name="keywords"[^>]*>/, `<meta name="keywords" content="${seo.keywords}" />`);
+      }
+    }
+
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.send(html);
+  } catch {
+    res.sendFile(azexbuyIdx);
+  }
 });
 
 app.listen(PORT, () => {

@@ -11,8 +11,19 @@
   --color-brandGreenLight: #edf9f5;
   --color-brandText: #1f2937;
   --color-brandSubtext: #4b5563;
+  /* SOLEI editorial palette */
+  --color-soleiForest: #00382D;
+  --color-soleiForestDark: #002C23;
+  --color-soleiLime: #B8F46A;
+  --color-soleiLimeLight: #D9F6B5;
+  --color-soleiBg: #F8F8F3;
+  --color-soleiSurface: #FFFFFF;
+  --color-soleiText: #17231D;
+  --color-soleiMuted: #7C857D;
+  --color-soleiBorder: #E8EAE3;
   --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
   --font-body: "Inter", "Plus Jakarta Sans", sans-serif;
+  --font-serif: "Instrument Serif", Georgia, serif;
 }
 
 body {
@@ -22,6 +33,18 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
+
+/* SOLEI editorial serif utility */
+.font-serif { font-family: "Instrument Serif", Georgia, serif; }
+
+/* Insights gradient band */
+.solei-gradient-band {
+  background: linear-gradient(135deg, #B8F46A 0%, #D9F6B5 55%, #eaf7d4 100%);
+}
+
+/* Smooth image aspect ratio helpers */
+.aspect-featured { aspect-ratio: 4/3; }
+.aspect-card-thumb { aspect-ratio: 1/1; }
 
 .custom-container {
   max-width: 1380px;

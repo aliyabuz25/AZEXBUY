@@ -185,10 +185,15 @@ export const MediaView: React.FC<MediaViewProps> = ({
                 <p className="text-xs font-medium text-slate-800 truncate" title={item.originalName}>
                   {item.originalName}
                 </p>
-                <div className="flex items-center justify-between text-[10.5px] text-slate-400">
-                  <span>{formatBytes(item.size)}</span>
-                  <span>{item.mimeType.split('/')[1]?.toUpperCase()}</span>
-                </div>
+<div className="flex items-center justify-between text-[10.5px] text-slate-400">
+                   <span>{formatBytes(item.size)}</span>
+                   <span>{item.mimeType.split('/')[1]?.toUpperCase()}</span>
+                 </div>
+                 {item.uploadedAt && (
+                   <div className="text-[10px] text-slate-300 mt-0.5">
+                     {new Date(item.uploadedAt).toLocaleDateString('az-AZ', { day: '2-digit', month: 'short', year: 'numeric' })}
+                   </div>
+                 )}
               </div>
             </motion.div>
           ))}

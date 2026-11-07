@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Database, Download, Palette, Compass } from 'lucide-react';
 import { 
@@ -21,6 +21,7 @@ import { ThemeSelectorModal } from './components/ThemeSelectorModal';
 import { InteractiveTutorial } from './components/InteractiveTutorial';
 import { StartupUpdateToast } from './components/StartupUpdateToast';
 import { FullscreenLogin } from './components/FullscreenLogin';
+import { FloatingFlagSelector } from './components/FloatingFlagSelector';
 
 import { DashboardView } from './views/DashboardView';
 import { SeoManagerView } from './views/SeoManagerView';
@@ -34,6 +35,9 @@ import { UserManagementView } from './views/UserManagementView';
 import { InboxView } from './views/InboxView';
 import { SmtpSettingsView } from './views/SmtpSettingsView';
 import { LogsView } from './views/LogsView';
+import { ProductCatalogView } from './views/ProductCatalogView';
+import { ArticlesView } from './views/ArticlesView';
+import { ServicesView } from './views/ServicesView';
 
 const LANG_STORAGE_KEY = 'octotech_admin_lang';
 const SIDEBAR_STORAGE_KEY = 'octotech_admin_sidebar_collapsed';
@@ -79,6 +83,8 @@ export const App: React.FC = () => {
   });
   const [authChecking, setAuthChecking] = useState<boolean>(true);
   const [sessionRemaining, setSessionRemaining] = useState<number>(600);
+  const sessionWarnShownRef = useRef(false);
+  const [sessionWarnVisible, setSessionWarnVisible] = useState(false);
 
   // Data states
   const [siteConfig, setSiteConfig] = useState<SiteConfig | null>(null);
@@ -114,13 +120,15 @@ export const App: React.FC = () => {
   const t = DICTIONARIES[uiLang] || DICTIONARIES.az;
 
   const [tabs, setTabs] = useState<TabItem[]>([
-    { id: 'dashboard', title: 'Canlı İcmal', icon: 'dashboard', closable: false },
-    { id: 'azexbuy',          title: 'AZEXBUY',               icon: 'azexbuy',          closable: true },
-    { id: 'azexbuy-cms',      title: 'AZEXBUY CMS',           icon: 'azexbuy-cms',      closable: true },
-    { id: 'inbox',            title: 'Gelen Qutusu',          icon: 'inbox',            closable: true },
-    { id: 'user-management',  title: 'İstifadəçi İdarəetməsi', icon: 'users',           closable: true },
-    { id: 'smtp-settings',    title: 'SMTP E-poçt',           icon: 'mail',             closable: true },
-    { id: 'settings',         title: 'Sistem Parametrləri',   icon: 'settings',         closable: true },
+    { id: 'dashboard',        title: 'Canlı İcmal',            icon: 'dashboard',        closable: false },
+    { id: 'azexbuy',          title: 'AZEXBUY',                icon: 'azexbuy',          closable: true },
+    { id: 'azexbuy-cms',      title: 'AZEXBUY CMS',            icon: 'azexbuy-cms',      closable: true },
+    { id: 'articles',         title: 'Makaleler',              icon: 'articles',         closable: true },
+    { id: 'product-catalog',  title: 'Məhsul Kataloqu',        icon: 'product-catalog',  closable: true },
+    { id: 'inbox',            title: 'Gelen Qutusu',           icon: 'inbox',            closable: true },
+    { id: 'user-management',  title: 'İstifadəçi İdarəetməsi', icon: 'users',            closable: true },
+    { id: 'smtp-settings',    title: 'SMTP E-poçt',            icon: 'mail',             closable: true },
+    { id: 'settings',         title: 'Sistem Parametrləri',    icon: 'settings',         closable: true },
   ]);
 
   const showToast = (msg: string) => {
@@ -256,12 +264,19 @@ export const App: React.FC = () => {
   // Real-time 10-Minute Session Countdown (600 seconds)
   useEffect(() => {
     if (!token) return;
+    sessionWarnShownRef.current = false; // reset on new session
     const timer = setInterval(() => {
       setSessionRemaining(prev => {
         if (prev <= 1) {
           clearInterval(timer);
           handleLogout('Sessiyanın müddəti (10 dəqiqə) bitmişdir. Zəhmət olmasa yenidən daxil olun.');
           return 0;
+        }
+        // Show warning once when 60 seconds remain
+        if (prev === 61 && !sessionWarnShownRef.current) {
+          sessionWarnShownRef.current = true;
+          setSessionWarnVisible(true);
+          setTimeout(() => setSessionWarnVisible(false), 8000);
         }
         return prev - 1;
       });
@@ -447,7 +462,20 @@ export const App: React.FC = () => {
   };
 
   const handleDeleteTranslation = async (key: string) => {
-    // optional delete
+    try {
+      const res = await fetch(`/api/translations/${encodeURIComponent(key)}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+      });
+      if (res.status === 401) return handleUnauthorized();
+      const data = await res.json();
+      if (data.success) {
+        setTranslations(prev => prev.filter(t => t.key !== key));
+        showToast('Açar silindi');
+      }
+    } catch {
+      showToast('Xəta baş verdi');
+    }
   };
 
   const handleUploadMedia = async (file: File): Promise<boolean> => {
@@ -736,6 +764,15 @@ export const App: React.FC = () => {
           {activeTabId === 'logs' && (
             <LogsView uiLang={uiLang} />
           )}
+          {activeTabId === 'product-catalog' && (
+            <ProductCatalogView uiLang={uiLang} />
+          )}
+          {activeTabId === 'articles' && (
+            <ArticlesView uiLang={uiLang} />
+          )}
+          {activeTabId === 'services' && (
+            <ServicesView uiLang={uiLang} />
+          )}
         </div>
       </main>
 
@@ -781,6 +818,35 @@ export const App: React.FC = () => {
         onComplete={handleWizardComplete}
         uiLang={uiLang}
       />
+
+      {/* Floating Language Selector */}
+      <FloatingFlagSelector
+        currentLang={uiLang}
+        onSelectLang={(lang) => {
+          setUiLang(lang);
+          localStorage.setItem(LANG_STORAGE_KEY, lang);
+        }}
+      />
+
+      {/* Session Expiry Warning Banner */}
+      <AnimatePresence>
+        {sessionWarnVisible && (
+          <motion.div
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -16 }}
+            className="fixed top-0 left-0 right-0 z-[200000] bg-amber-500 text-white text-xs font-semibold px-4 py-2.5 flex items-center justify-between shadow-lg"
+          >
+            <span>⚠ Sessiyanızın vaxtı 60 saniyə ərzində bitəcək. Fayl itkisinin qarşısını almaq üçün işinizi yadda saxlayın.</span>
+            <button
+              onClick={() => setSessionWarnVisible(false)}
+              className="ml-4 text-white/80 hover:text-white font-bold text-sm leading-none"
+            >
+              ✕
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Toast Notification */}
       <AnimatePresence>

@@ -39,6 +39,17 @@ export const SeoManagerView: React.FC<SeoManagerViewProps> = ({ seo, onSaveSeo }
   const titleLen = formData.title?.length || 0;
   const descLen = formData.description?.length || 0;
 
+  // Dynamic SEO score — mirrors server.ts logic
+  const computedSeoScore = (() => {
+    let score = 50;
+    if (titleLen >= 25 && titleLen <= 65) score += 20;
+    if (descLen >= 60 && descLen <= 165) score += 15;
+    if (formData.canonical && formData.canonical.startsWith('http')) score += 5;
+    if (formData.ogImage) score += 5;
+    if (formData.robotsIndex && formData.robotsFollow) score += 5;
+    return Math.min(100, score);
+  })();
+
   return (
     <div className="p-6 max-w-6xl mx-auto space-y-6">
       {/* Header */}
@@ -196,6 +207,17 @@ export const SeoManagerView: React.FC<SeoManagerViewProps> = ({ seo, onSaveSeo }
                 />
               </div>
             </div>
+
+            <div>
+              <label className="block text-xs font-medium text-slate-700 mb-1.5">Paylaşım Təsviri (og:description)</label>
+              <textarea
+                rows={2}
+                value={formData.ogDescription || ''}
+                onChange={(e) => handleChange('ogDescription', e.target.value)}
+                placeholder="Sosial şəbəkə paylaşımlarında görünəcək qısa təsvir..."
+                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 text-xs text-slate-900 focus:outline-none focus:border-slate-900 resize-none"
+              />
+            </div>
           </div>
         </div>
 
@@ -227,8 +249,12 @@ export const SeoManagerView: React.FC<SeoManagerViewProps> = ({ seo, onSaveSeo }
               <h3 className="text-xs font-semibold text-slate-700 uppercase tracking-wider">
                 Real-Time SEO Təhlili
               </h3>
-              <span className="text-xs font-semibold text-slate-800 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded">
-                95 / 100
+              <span className={`text-xs font-semibold px-2 py-0.5 rounded border ${
+                computedSeoScore >= 80 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                computedSeoScore >= 60 ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                'bg-red-50 text-red-700 border-red-200'
+              }`}>
+                {computedSeoScore} / 100
               </span>
             </div>
 

@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 // @ts-ignore
 import { DatabaseSync } from 'node:sqlite';
 import { Database, DatabaseSchema } from './db.js';
+import BetterSqlite3 from 'better-sqlite3';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -428,11 +429,28 @@ export class SqliteBackupManager {
       1 + // admin
       1; // setup
 
+    // Count real tables from both DBs dynamically
+    let tablesCount = 9; // fallback
+    try {
+      const dataDir = BACKUP_DIR; // same data directory
+      let count = 0;
+      for (const dbFile of ['octo.db', 'azexbuy.db']) {
+        const dbPath = path.join(dataDir, dbFile);
+        if (fs.existsSync(dbPath)) {
+          const db = new BetterSqlite3(dbPath, { readonly: true });
+          const rows = db.prepare("SELECT COUNT(*) as c FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").get() as any;
+          count += rows?.c || 0;
+          db.close();
+        }
+      }
+      if (count > 0) tablesCount = count;
+    } catch { /* non-fatal, use fallback */ }
+
     return {
       engine: 'SQLite 3 (node:sqlite)',
       version: '2.4.0',
       format: '.sqlite (Binary Relational Database)',
-      tablesCount: 9,
+      tablesCount,
       totalRecords,
       fileSizeBytes,
       lastGenerated

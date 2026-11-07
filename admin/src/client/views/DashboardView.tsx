@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import {
   ShoppingCart, Factory, Clock, TrendingUp,
   CheckCircle2, AlertCircle, MapPin, Package, RefreshCw,
+  Search, Image, Languages, FileText,
 } from 'lucide-react';
 import { UiLanguage } from '../types';
 
@@ -78,9 +79,10 @@ function DonutChart({ pending, total, color }: { pending: number; total: number;
   );
 }
 
-export const DashboardView: React.FC<DashboardViewProps> = ({ uiLang }) => {
+export const DashboardView: React.FC<DashboardViewProps> = ({ records = [], media = [], translations = [], seo, uiLang }) => {
   const [rfqs, setRfqs] = useState<RFQ[]>([]);
   const [producers, setProducers] = useState<Producer[]>([]);
+  const [seoScore, setSeoScore] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
@@ -89,12 +91,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ uiLang }) => {
   const load = async () => {
     setLoading(true);
     try {
-      const [rr, pr] = await Promise.all([
+      const [rr, pr, sr] = await Promise.all([
         fetch('/api/azexbuy/rfqs', { headers: { Authorization: `Bearer ${token()}` } }),
         fetch('/api/azexbuy/producers', { headers: { Authorization: `Bearer ${token()}` } }),
+        fetch('/api/seo'),
       ]);
       if (rr.ok) setRfqs(await rr.json());
       if (pr.ok) setProducers(await pr.json());
+      if (sr.ok) { const sd = await sr.json(); if (sd.computedScore) setSeoScore(sd.computedScore); }
       setLastUpdate(new Date());
     } catch {}
     setLoading(false);
@@ -209,6 +213,59 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ uiLang }) => {
               <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider truncate">{card.label}</div>
               <div className="text-2xl font-bold text-slate-900 mt-0.5">{card.value}</div>
               <div className={`text-xs font-medium mt-0.5 ${card.pending > 0 ? 'text-amber-600' : 'text-slate-400'}`}>{card.sub}</div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Secondary Stat Cards — Records / Media / SEO / Translations */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {[
+          {
+            label: 'İçerik Kayıtları',
+            value: records.length,
+            sub: `${records.filter((r: any) => r.status === 'published').length} yayınlandı`,
+            icon: FileText,
+            color: 'text-sky-600',
+            bg: 'bg-sky-50',
+          },
+          {
+            label: 'Media Faylları',
+            value: media.length,
+            sub: `${(media.reduce((s: number, m: any) => s + (m.size || 0), 0) / 1024 / 1024).toFixed(1)} MB`,
+            icon: Image,
+            color: 'text-pink-600',
+            bg: 'bg-pink-50',
+          },
+          {
+            label: 'SEO Skoru',
+            value: `${seoScore}/100`,
+            sub: seoScore >= 80 ? 'Əla' : seoScore >= 60 ? 'Orta' : 'Zəif',
+            icon: Search,
+            color: seoScore >= 80 ? 'text-emerald-600' : seoScore >= 60 ? 'text-amber-600' : 'text-red-500',
+            bg: seoScore >= 80 ? 'bg-emerald-50' : seoScore >= 60 ? 'bg-amber-50' : 'bg-red-50',
+          },
+          {
+            label: 'Lokalizasiya Açarları',
+            value: translations.length,
+            sub: '4 dil (AZ/TR/RU/EN)',
+            icon: Languages,
+            color: 'text-violet-600',
+            bg: 'bg-violet-50',
+          },
+        ].map((card, i) => (
+          <motion.div key={i}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.28 + i * 0.06 }}
+            className="bg-white rounded-xl border border-slate-200 p-4 flex items-center gap-3">
+            <div className={`w-9 h-9 rounded-lg ${card.bg} flex items-center justify-center shrink-0`}>
+              <card.icon className={`w-4.5 h-4.5 ${card.color}`} />
+            </div>
+            <div className="min-w-0">
+              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider truncate">{card.label}</div>
+              <div className="text-xl font-bold text-slate-900 mt-0.5">{card.value}</div>
+              <div className="text-[11px] text-slate-400 mt-0.5 truncate">{card.sub}</div>
             </div>
           </motion.div>
         ))}

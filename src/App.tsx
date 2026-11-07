@@ -4,6 +4,7 @@ import {
   ProducerApplication,
   ProductItem,
   RFQSubmission,
+  ServiceApplication,
   StepItem,
   ViewMode,
   getLocalizedText,
@@ -23,6 +24,10 @@ import {
   ProductSpecModal,
   SubpagePortalView,
 } from './components/PortalViews';
+import { ArticlesView } from './components/ArticlesView';
+import { AboutView } from './components/AboutView';
+import { InsightsView } from './components/InsightsView';
+import { ServiceApplicationModal } from './components/ServiceApplicationModal';
 
 const SAMPLE_INITIAL_RFQ: RFQSubmission = {
   id: 'AZX-RFQ-2026-4819',
@@ -84,7 +89,7 @@ export default function App() {
   const [locale, setLocale] = useState<Locale>(() => {
     const saved = localStorage.getItem('azexbuy_locale') as Locale | null;
     const valid: Locale[] = ['EN', 'AZ', 'TR', 'RU', 'AR', 'ES'];
-    return saved && valid.includes(saved) ? saved : 'EN';
+    return saved && valid.includes(saved) ? saved : 'AZ';
   });
 
   const [activeView, setActiveView] = useState<ViewMode>('home');
@@ -125,9 +130,11 @@ export default function App() {
   const [activePrintRFQ, setActivePrintRFQ] = useState<RFQSubmission | null>(null);
   const [activePrintProducer, setActivePrintProducer] = useState<ProducerApplication | null>(null);
   const [aiDeskOpen, setAiDeskOpen] = useState(false);
+  const [serviceAppModalOpen, setServiceAppModalOpen] = useState(false);
+  const [serviceAppPreselected, setServiceAppPreselected] = useState<string | undefined>(undefined);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  const toastTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const showToast = useCallback((msg: string) => {
     clearTimeout(toastTimerRef.current);
@@ -266,7 +273,7 @@ export default function App() {
     showToast('Producer record removed from registry.');
   };
 
-  const { strings, heroImage, buyerCardImage, producerCardImage, whyAzImage, products: cmsProducts, services: cmsServices, buyerSteps: cmsBuyerSteps, producerSteps: cmsProducerSteps } = useLocalization();
+  const { strings, heroImage, buyerCardImage, producerCardImage, whyAzImage, products: cmsProducts, services: cmsServicesPillars, buyerSteps: cmsBuyerSteps, producerSteps: cmsProducerSteps, cmsServices } = useLocalization();
   const t = strings[locale];
   const featuredProducts = cmsProducts.filter((p: any) => p.featured);
 
@@ -287,8 +294,8 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-white text-brandText">
-      {/* Main Sticky Header */}
-      <Navbar
+      {/* Main Sticky Header — hidden on insights page */}
+      {activeView !== 'insights' && <Navbar
         locale={locale}
         setLocale={setLocale}
         activeView={activeView}
@@ -298,10 +305,10 @@ export default function App() {
         onOpenAIDesk={() => setAiDeskOpen(true)}
         dossiersCount={rfqSubmissions.length + producerApps.length}
         shortlistCount={shortlistedIds.length}
-      />
+      />}
 
       {/* Breadcrumb bar when inside a dedicated portal view */}
-      {activeView !== 'home' && (
+      {activeView !== 'home' && activeView !== 'insights' && (
         <div className="bg-slate-100 border-b border-slate-200 py-2 no-print">
           <div className="custom-container flex items-center justify-between text-xs">
             <div className="flex items-center gap-2 text-slate-600">
@@ -543,7 +550,7 @@ export default function App() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                  {cmsServices.map((srv) => (
+                  {cmsServicesPillars.map((srv) => (
                     <div
                       key={srv.id}
                       className="border border-gray-200/90 rounded-lg p-5 flex flex-col justify-between hover:shadow-md transition-shadow"
@@ -894,6 +901,11 @@ export default function App() {
           />
         )}
 
+        {activeView === 'articles' && (
+<InsightsView locale={locale} onNavigateHome={() => setActiveView('home')} />
+          
+        )}
+
         {activeView === 'dossiers' && (
           <DossiersView
             rfqList={rfqSubmissions}
@@ -918,7 +930,21 @@ export default function App() {
           />
         )}
 
-        {['buyers', 'producers', 'services', 'how-it-works', 'about', 'insights', 'contact'].includes(
+        {activeView === 'about' && (
+          <AboutView
+            locale={locale}
+            onOpenRFQ={handleOpenGeneralRFQ}
+            onOpenProducer={() => setProducerModalOpen(true)}
+            onNavigate={(v) => setActiveView(v)}
+          />
+        )}
+
+        {activeView === 'insights' && (
+<InsightsView locale={locale} onNavigateHome={() => setActiveView('home')} />
+          
+        )}
+
+        {['buyers', 'producers', 'services', 'how-it-works', 'contact'].includes(
           activeView
         ) && (
           <SubpagePortalView
@@ -926,6 +952,7 @@ export default function App() {
             locale={locale}
             onOpenRFQ={handleOpenGeneralRFQ}
             onOpenProducer={() => setProducerModalOpen(true)}
+            onOpenServiceApp={(serviceId) => { setServiceAppPreselected(serviceId); setServiceAppModalOpen(true); }}
             onNavigate={(v) => setActiveView(v)}
           />
         )}
@@ -998,6 +1025,15 @@ export default function App() {
                     className="hover:text-white cursor-pointer"
                   >
                     {t.nav.services} — Outsourced Export Dept.
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => setActiveView('insights')}
+                    className="hover:text-white cursor-pointer"
+                  >
+                    Articles — Trade Intelligence & Reports
                   </button>
                 </li>
                 <li>
@@ -1103,6 +1139,17 @@ export default function App() {
         }}
       />
 
+      {/* Service Application Modal */}
+      {serviceAppModalOpen && (
+        <ServiceApplicationModal
+          locale={locale}
+          services={cmsServices}
+          preselectedServiceId={serviceAppPreselected}
+          onClose={() => { setServiceAppModalOpen(false); setServiceAppPreselected(undefined); }}
+          onSubmit={() => { setServiceAppModalOpen(false); setServiceAppPreselected(undefined); showToast(locale === 'AZ' ? 'Müraciətiniz göndərildi!' : locale === 'TR' ? 'Başvurunuz gönderildi!' : locale === 'RU' ? 'Заявка отправлена!' : 'Application submitted!'); }}
+        />
+      )}
+
       {/* AI Sovereign Trade & Sourcing Consultant Modal */}
       <AIDeskModal
         isOpen={aiDeskOpen}
@@ -1112,19 +1159,15 @@ export default function App() {
         onOpenProducer={() => setProducerModalOpen(true)}
       />
 
-      {/* Floating AI Trade Desk Trigger Button */}
+      {/* Floating Trade Desk Trigger Button */}
       <button
         type="button"
         onClick={() => setAiDeskOpen(true)}
-        className="fixed bottom-6 right-6 z-40 bg-brandNavy hover:bg-brandNavyDark text-white px-4 py-3 rounded-full shadow-2xl flex items-center gap-2.5 text-xs font-extrabold border-2 border-emerald-400 cursor-pointer transition-transform hover:scale-105 no-print"
-        title="AZEXBUY AI Trade & Tariff Desk"
+        className="fixed bottom-6 right-6 z-40 bg-white hover:bg-slate-50 text-brandNavy px-4 py-2.5 rounded-full shadow-lg flex items-center gap-2 text-xs font-semibold border border-slate-200 cursor-pointer transition-all hover:shadow-md no-print"
+        title="AZEXBUY Trade Desk"
       >
-        <span className="relative flex h-2.5 w-2.5">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-        </span>
-        <i className="fa-solid fa-brain text-emerald-400 text-sm"></i>
-        <span>AI Trade Desk</span>
+        <i className="fa-solid fa-comments text-brandNavy text-xs"></i>
+        <span>Trade Desk</span>
       </button>
 
       {/* Instant Action Feedback Toast */}

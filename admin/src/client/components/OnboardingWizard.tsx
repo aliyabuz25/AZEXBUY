@@ -21,6 +21,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   const [engine, setEngine] = useState('Next.js + Headless Engine');
 
   const [adminName, setAdminName] = useState('Admin');
+  const [adminUsername, setAdminUsername] = useState('admin');
   const [adminEmail, setAdminEmail] = useState('admin@octotech.az');
   const [adminPassword, setAdminPassword] = useState('');
   const [adminRole, setAdminRole] = useState('Super Admin (Tam Səlahiyyət)');
@@ -55,6 +56,10 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
       setErrorMsg('Zəhmət olmasa admin adı və e-poçtunu daxil edin.');
       return;
     }
+    if (!adminUsername.trim() || adminUsername.trim().length < 3) {
+      setErrorMsg('İstifadəçi adı ən az 3 simvol olmalıdır.');
+      return;
+    }
     setErrorMsg('');
     setStep(3);
   };
@@ -71,6 +76,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
       },
       admin: {
         fullName: adminName.trim(),
+        username: adminUsername.trim() || 'admin',
         email: adminEmail.trim(),
         role: adminRole,
         password: adminPassword.trim() || undefined
@@ -191,8 +197,9 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                 <input
                   type="text"
                   value={brandDomain}
-                  readOnly
-                  className="w-full h-10 px-3.5 rounded-lg border border-slate-200 bg-slate-50 text-[12.5px] font-mono text-slate-600 cursor-not-allowed select-none"
+                  onChange={(e) => setBrandDomain(e.target.value)}
+                  placeholder="https://example.com"
+                  className="w-full h-10 px-3.5 rounded-lg border border-slate-200 bg-white text-[12.5px] font-mono text-slate-700 focus:outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900/10 transition-all"
                 />
               </div>
 
@@ -256,7 +263,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
           transition={springTransition}
           className="absolute inset-0 bg-white rounded-3xl border border-slate-200/90 p-8 sm:p-9 flex flex-col justify-between shadow-[0_30px_70px_-15px_rgba(15,23,42,0.11)]"
         >
-          <div>
+          <div className="overflow-y-auto max-h-[340px] pr-1">
             <h2 className="text-[22px] font-semibold text-slate-900 tracking-tight">Admin Hesabını Quraşdıraq</h2>
             <p className="text-[13px] text-slate-500 mt-1">Sistemi idarə edəcək əsas inzibatçını müəyyən edin.</p>
 
@@ -269,6 +276,17 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
                   onChange={(e) => setAdminName(e.target.value)}
                   placeholder="Məs: Əli Əliyev"
                   className="w-full h-10 px-3.5 rounded-lg border border-slate-200 bg-white text-[13px] text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900/10 transition-all"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[12px] font-medium text-slate-700 mb-1.5">İstifadəçi Adı *</label>
+                <input
+                  type="text"
+                  value={adminUsername}
+                  onChange={(e) => setAdminUsername(e.target.value.toLowerCase().replace(/\s/g, ''))}
+                  placeholder="admin"
+                  className="w-full h-10 px-3.5 rounded-lg border border-slate-200 bg-white text-[13px] font-mono text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900/10 transition-all"
                 />
               </div>
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import {
   ShoppingCart, Factory, TrendingUp, Clock, Trash2, RefreshCw,
   CheckCircle, XCircle, ChevronDown, ChevronUp, Wifi, WifiOff,
-  Package, Globe, AlertCircle,
+  Package, Globe, AlertCircle, Mail,
 } from 'lucide-react';
 import { UiLanguage } from '../types';
 
@@ -15,6 +15,7 @@ interface RFQ {
   requiredCertifications: string[];
   items: { productName: string; hsCode: string; quantity: string; unit: string }[];
   notes?: string; status: string;
+  assignedTo?: string; internalNotes?: string;
 }
 
 interface Producer {
@@ -23,6 +24,12 @@ interface Producer {
   productName: string; hsCode?: string; monthlyCapacity?: string;
   certifications: string[]; targetMarkets: string[];
   outsourcedDeskRequested: boolean; readinessScore: number; status: string;
+  assignedTo?: string; internalNotes?: string;
+}
+
+interface Contact {
+  id: string; createdAt: string; fullName: string; organization: string;
+  email: string; inquiryType: string; message: string; status: string;
 }
 
 interface Stats {
@@ -39,30 +46,34 @@ const STATUS_COLORS: Record<string, string> = {
 };
 const STATUS_OPTIONS_RFQ = ['Pending', 'Verified & Routing to Suppliers', 'Under Review', 'Matched with Suppliers', 'Completed', 'Rejected'];
 const STATUS_OPTIONS_PRODUCER = ['Pending', 'Audit Scheduled — Export Desk Assigned', 'Documents Requested', 'Active — Listed', 'Completed', 'Rejected'];
+const STATUS_OPTIONS_CONTACT = ["New", "In Progress", "Responded", "Closed"];
 
 export const AzexbuyView: React.FC<AzexbuyViewProps> = ({ uiLang }) => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'rfqs' | 'producers'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'rfqs' | 'producers' | 'contacts'>('overview');
   const [rfqs, setRfqs] = useState<RFQ[]>([]);
   const [producers, setProducers] = useState<Producer[]>([]);
+  const [contacts, setContacts] = useState<Contact[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [statusEdit, setStatusEdit] = useState<{ id: string; type: 'rfq' | 'producer'; value: string } | null>(null);
+  const [statusEdit, setStatusEdit] = useState<{ id: string; type: 'rfq' | 'producer' | 'contact'; value: string } | null>(null);
   const [searchQ, setSearchQ] = useState('');
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('octo_token') || sessionStorage.getItem('octo_token') || '';
+      const token = localStorage.getItem('octotech_admin_jwt') || '';
       const headers: Record<string, string> = token ? { Authorization: `Bearer ${token}` } : {};
-      const [rfqRes, prodRes, statsRes] = await Promise.all([
+      const [rfqRes, prodRes, statsRes, cntRes] = await Promise.all([
         fetch('/api/azexbuy/rfqs', { headers }),
         fetch('/api/azexbuy/producers', { headers }),
         fetch('/api/azexbuy/stats'),
+        fetch('/api/azexbuy/contacts', { headers }),
       ]);
       if (rfqRes.ok) setRfqs(await rfqRes.json());
       if (prodRes.ok) setProducers(await prodRes.json());
       if (statsRes.ok) setStats(await statsRes.json());
+      if (cntRes.ok) setContacts(await cntRes.json());
     } catch (err) {
       console.error('[AzexbuyView] Fetch error:', err);
     } finally {
@@ -73,7 +84,7 @@ export const AzexbuyView: React.FC<AzexbuyViewProps> = ({ uiLang }) => {
   useEffect(() => { fetchAll(); }, [fetchAll]);
 
   const authHeaders = (): Record<string, string> => {
-    const token = localStorage.getItem('octo_token') || sessionStorage.getItem('octo_token') || '';
+    const token = localStorage.getItem('octotech_admin_jwt') || '';
     return token ? { Authorization: `Bearer ${token}` } : {};
   };
 
@@ -91,12 +102,21 @@ export const AzexbuyView: React.FC<AzexbuyViewProps> = ({ uiLang }) => {
     setProducers(prev => prev.filter(p => p.id !== id));
   };
 
+  const handleDeleteContact = async (id: string) => {
+    if (!confirm('Bu əlaqəni silmək istəyirsiniz?')) return;
+    const res = await fetch(`/api/azexbuy/contacts/${id}`, { method: 'DELETE', headers: authHeaders() });
+    if (!res.ok) { console.error('[AzexbuyView] Delete contact failed'); return; }
+    setContacts(prev => prev.filter(c => c.id !== id));
+  };
+
   const handleStatusSave = async () => {
     if (!statusEdit) return;
     const url = statusEdit.type === 'rfq'
       ? `/api/azexbuy/rfqs/${statusEdit.id}`
-      : `/api/azexbuy/producers/${statusEdit.id}`;
-    const token = localStorage.getItem('octo_token') || sessionStorage.getItem('octo_token') || '';
+      : statusEdit.type === 'producer'
+      ? `/api/azexbuy/producers/${statusEdit.id}`
+      : `/api/azexbuy/contacts/${statusEdit.id}`;
+    const token = localStorage.getItem('octotech_admin_jwt') || '';
     const res = await fetch(url, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
@@ -104,7 +124,8 @@ export const AzexbuyView: React.FC<AzexbuyViewProps> = ({ uiLang }) => {
     });
     if (!res.ok) { console.error('[AzexbuyView] Status update failed'); return; }
     if (statusEdit.type === 'rfq') setRfqs(prev => prev.map(r => r.id === statusEdit.id ? { ...r, status: statusEdit.value } : r));
-    else setProducers(prev => prev.map(p => p.id === statusEdit.id ? { ...p, status: statusEdit.value } : p));
+    else if (statusEdit.type === 'producer') setProducers(prev => prev.map(p => p.id === statusEdit.id ? { ...p, status: statusEdit.value } : p));
+    else setContacts(prev => prev.map(c => c.id === statusEdit.id ? { ...c, status: statusEdit.value } : c));
     setStatusEdit(null);
   };
 
@@ -164,10 +185,10 @@ export const AzexbuyView: React.FC<AzexbuyViewProps> = ({ uiLang }) => {
 
       {/* Tabs */}
       <div className="bg-white border-b border-slate-200/90 px-6 flex items-center shrink-0">
-        {(['overview', 'rfqs', 'producers'] as const).map(tab => (
+        {(['overview', 'rfqs', 'producers', 'contacts'] as const).map(tab => (
           <button key={tab} onClick={() => setActiveTab(tab)}
             className={`px-4 py-2.5 text-xs font-semibold border-b-2 transition-colors ${activeTab === tab ? 'border-[#0f3156] text-[#0f3156]' : 'border-transparent text-slate-500 hover:text-slate-800'}`}>
-            {tab === 'overview' ? 'Icmal' : tab === 'rfqs' ? `RFQ (${rfqs.length})` : `Istehsalcilar (${producers.length})`}
+            {tab === 'overview' ? 'Icmal' : tab === 'rfqs' ? `RFQ (${rfqs.length})` : tab === 'producers' ? `Istehsalcilar (${producers.length})` : `Elaqeler (${contacts.length})`}
           </button>
         ))}
       </div>
@@ -334,6 +355,41 @@ export const AzexbuyView: React.FC<AzexbuyViewProps> = ({ uiLang }) => {
                       </div>
                     )}
 
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <div className="text-[10px] font-bold text-slate-400 uppercase mb-1">Məsul Şəxs</div>
+                        <input
+                          type="text"
+                          defaultValue={r.assignedTo || ''}
+                          placeholder="Ad Soyad..."
+                          onBlur={async e => {
+                            const val = e.target.value;
+                            if (val === (r.assignedTo || '')) return;
+                            const token = localStorage.getItem('octotech_admin_jwt') || '';
+                            await fetch(`/api/azexbuy/rfqs/${r.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) }, body: JSON.stringify({ assignedTo: val }) });
+                            setRfqs(prev => prev.map(x => x.id === r.id ? { ...x, assignedTo: val } : x));
+                          }}
+                          className="w-full h-7 px-2 text-xs border border-slate-300 bg-white text-slate-900 focus:outline-none focus:border-slate-400 rounded-sm"
+                        />
+                      </div>
+                      <div>
+                        <div className="text-[10px] font-bold text-slate-400 uppercase mb-1">Daxili Qeyd</div>
+                        <input
+                          type="text"
+                          defaultValue={r.internalNotes || ''}
+                          placeholder="Qeyd..."
+                          onBlur={async e => {
+                            const val = e.target.value;
+                            if (val === (r.internalNotes || '')) return;
+                            const token = localStorage.getItem('octotech_admin_jwt') || '';
+                            await fetch(`/api/azexbuy/rfqs/${r.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) }, body: JSON.stringify({ internalNotes: val }) });
+                            setRfqs(prev => prev.map(x => x.id === r.id ? { ...x, internalNotes: val } : x));
+                          }}
+                          className="w-full h-7 px-2 text-xs border border-slate-300 bg-white text-slate-900 focus:outline-none focus:border-slate-400 rounded-sm"
+                        />
+                      </div>
+                    </div>
+
                     <div className="flex items-center gap-3 pt-1">
                       <div className="flex items-center gap-2 flex-1">
                         <span className="text-[10px] font-bold text-slate-500 uppercase">Status:</span>
@@ -443,6 +499,41 @@ export const AzexbuyView: React.FC<AzexbuyViewProps> = ({ uiLang }) => {
                       </div>
                     )}
 
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <div className="text-[10px] font-bold text-slate-400 uppercase mb-1">Məsul Şəxs</div>
+                        <input
+                          type="text"
+                          defaultValue={p.assignedTo || ''}
+                          placeholder="Ad Soyad..."
+                          onBlur={async e => {
+                            const val = e.target.value;
+                            if (val === (p.assignedTo || '')) return;
+                            const token = localStorage.getItem('octotech_admin_jwt') || '';
+                            await fetch(`/api/azexbuy/producers/${p.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) }, body: JSON.stringify({ assignedTo: val }) });
+                            setProducers(prev => prev.map(x => x.id === p.id ? { ...x, assignedTo: val } : x));
+                          }}
+                          className="w-full h-7 px-2 text-xs border border-slate-300 bg-white text-slate-900 focus:outline-none focus:border-slate-400 rounded-sm"
+                        />
+                      </div>
+                      <div>
+                        <div className="text-[10px] font-bold text-slate-400 uppercase mb-1">Daxili Qeyd</div>
+                        <input
+                          type="text"
+                          defaultValue={p.internalNotes || ''}
+                          placeholder="Qeyd..."
+                          onBlur={async e => {
+                            const val = e.target.value;
+                            if (val === (p.internalNotes || '')) return;
+                            const token = localStorage.getItem('octotech_admin_jwt') || '';
+                            await fetch(`/api/azexbuy/producers/${p.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) }, body: JSON.stringify({ internalNotes: val }) });
+                            setProducers(prev => prev.map(x => x.id === p.id ? { ...x, internalNotes: val } : x));
+                          }}
+                          className="w-full h-7 px-2 text-xs border border-slate-300 bg-white text-slate-900 focus:outline-none focus:border-slate-400 rounded-sm"
+                        />
+                      </div>
+                    </div>
+
                     <div className="flex items-center gap-3 pt-1">
                       <div className="flex items-center gap-2 flex-1">
                         <span className="text-[10px] font-bold text-slate-500 uppercase">Status:</span>
@@ -467,6 +558,95 @@ export const AzexbuyView: React.FC<AzexbuyViewProps> = ({ uiLang }) => {
                         )}
                       </div>
                       <button onClick={() => handleDeleteProducer(p.id)}
+                        className="h-7 px-2.5 flex items-center gap-1.5 text-xs text-red-600 hover:bg-red-50 border border-red-200 rounded-sm">
+                        <Trash2 className="w-3 h-3" /><span>Sil</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+      {/* CONTACTS */}
+        {activeTab === 'contacts' && (
+          <div className="p-6 space-y-2">
+            {contacts.length === 0 && (
+              <div className="bg-white border border-slate-200/90 px-6 py-12 text-center">
+                <Mail className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+                <p className="text-xs text-slate-400">Heç bir əlaqə sorğusu tapılmadı</p>
+              </div>
+            )}
+            {contacts.filter(c => !searchQ || c.fullName.toLowerCase().includes(searchQ.toLowerCase()) || c.organization.toLowerCase().includes(searchQ.toLowerCase()) || c.email.toLowerCase().includes(searchQ.toLowerCase())).map(c => (
+              <div key={c.id} className="bg-white border border-slate-200/90 overflow-hidden">
+                <div className="px-4 py-3 flex items-center justify-between gap-3">
+                  <button onClick={() => setExpandedId(expandedId === c.id ? null : c.id)}
+                    className="flex items-center gap-3 flex-1 min-w-0 text-left">
+                    <Mail className="w-3.5 h-3.5 text-purple-600 shrink-0" />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-xs font-bold text-slate-900">{c.fullName}</span>
+                        <span className="text-[10px] text-slate-400">·</span>
+                        <span className="text-[10px] text-slate-500">{c.organization}</span>
+                        <span className="text-[10px] font-mono text-slate-400">{c.id}</span>
+                      </div>
+                      <div className="text-[10px] text-slate-500 mt-0.5">{c.inquiryType} · {c.email}</div>
+                    </div>
+                  </button>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className={`inline-flex items-center px-2 py-0.5 text-[10px] font-semibold border rounded-sm ${c.status === 'New' ? 'bg-purple-50 text-purple-700 border-purple-200' : c.status === 'Responded' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : c.status === 'Closed' ? 'bg-slate-100 text-slate-600 border-slate-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>{c.status}</span>
+                    <span className="text-[10px] text-slate-400 hidden sm:block">{new Date(c.createdAt).toLocaleDateString('az-AZ', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+                    <button onClick={() => setExpandedId(expandedId === c.id ? null : c.id)} className="p-1 text-slate-400 hover:text-slate-700">
+                      {expandedId === c.id ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                    </button>
+                  </div>
+                </div>
+
+                {expandedId === c.id && (
+                  <div className="border-t border-slate-100 px-4 py-4 bg-slate-50/50 space-y-4">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+                      {[
+                        { label: 'Ad Soyad', value: c.fullName },
+                        { label: 'Təşkilat', value: c.organization },
+                        { label: 'E-poçt', value: c.email },
+                        { label: 'Sorğu Növü', value: c.inquiryType },
+                        { label: 'ID', value: c.id },
+                      ].map((f, i) => (
+                        <div key={i}>
+                          <div className="text-[10px] font-bold text-slate-400 uppercase mb-0.5">{f.label}</div>
+                          <div className="font-medium text-slate-800">{f.value}</div>
+                        </div>
+                      ))}
+                    </div>
+                    <div>
+                      <div className="text-[10px] font-bold text-slate-400 uppercase mb-1.5">Mesaj</div>
+                      <p className="text-xs text-slate-700 bg-white border border-slate-200 rounded p-3 leading-relaxed">{c.message}</p>
+                    </div>
+                    <div className="flex items-center gap-3 pt-1">
+                      <div className="flex items-center gap-2 flex-1">
+                        <span className="text-[10px] font-bold text-slate-500 uppercase">Status:</span>
+                        {statusEdit?.id === c.id ? (
+                          <>
+                            <select value={statusEdit.value} onChange={e => setStatusEdit({ ...statusEdit, value: e.target.value })}
+                              className="h-7 px-2 text-xs border border-slate-300 bg-white text-slate-900 focus:outline-none rounded-sm">
+                              {STATUS_OPTIONS_CONTACT.map(s => <option key={s}>{s}</option>)}
+                            </select>
+                            <button onClick={handleStatusSave} className="h-7 px-2.5 bg-purple-600 text-white text-xs font-bold hover:bg-purple-700 flex items-center gap-1 rounded-sm">
+                              <CheckCircle className="w-3 h-3" /> Saxla
+                            </button>
+                            <button onClick={() => setStatusEdit(null)} className="h-7 px-2 text-slate-500">
+                              <XCircle className="w-3.5 h-3.5" />
+                            </button>
+                          </>
+                        ) : (
+                          <button onClick={() => setStatusEdit({ id: c.id, type: 'contact', value: c.status })}
+                            className="text-[10px] text-purple-600 hover:underline font-medium">
+                            Dəyiş
+                          </button>
+                        )}
+                      </div>
+                      <button onClick={() => handleDeleteContact(c.id)}
                         className="h-7 px-2.5 flex items-center gap-1.5 text-xs text-red-600 hover:bg-red-50 border border-red-200 rounded-sm">
                         <Trash2 className="w-3 h-3" /><span>Sil</span>
                       </button>

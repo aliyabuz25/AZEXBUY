@@ -15,7 +15,9 @@
     "@editorjs/list": "^2.0.9",
     "@tiptap/react": "^3.32.2",
     "@tiptap/starter-kit": "^3.32.2",
+    "@types/bcryptjs": "^2.4.6",
     "@types/nodemailer": "^8.0.2",
+    "bcryptjs": "^3.0.3",
     "better-sqlite3": "^13.0.3",
     "clsx": "^2.1.1",
     "cors": "^2.8.5",
@@ -46,5 +48,12 @@
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
     "vite": "6.3.5"
+  },
+  "allowScripts": {
+    "fsevents@2.3.3": true,
+    "esbuild@0.27.7": true,
+    "esbuild@0.28.2": true,
+    "esbuild@0.25.12": true,
+    "better-sqlite3@13.0.3": true
   }
 }

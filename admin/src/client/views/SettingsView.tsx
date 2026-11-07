@@ -648,7 +648,9 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
           <div className="p-2.5 rounded-none bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
             <span className="block text-[9.5px] uppercase text-slate-400">Cədvəllər</span>
-            <span className="text-xs font-bold text-slate-800 dark:text-slate-200">9 Cədvəl</span>
+            <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
+              {backupInfo?.tablesCount ? `${backupInfo.tablesCount} Cədvəl` : '— Cədvəl'}
+            </span>
           </div>
 
           <div className="p-2.5 rounded-none bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">

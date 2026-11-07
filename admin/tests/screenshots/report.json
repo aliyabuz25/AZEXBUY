@@ -1,0 +1,56 @@
+{
+  "timestamp": "2026-11-04T13:12:48.366Z",
+  "summary": {
+    "consoleErrors": 1,
+    "networkErrors": 0,
+    "bugs": 4,
+    "screenshots": 35
+  },
+  "consoleErrors": [
+    "[CONSOLE WARN] cdn.tailwindcss.com should not be used in production. To use Tailwind CSS in production, install it as a PostCSS plugin or use the Tailwind CLI: https://tailwindcss.com/docs/installation"
+  ],
+  "networkErrors": [],
+  "bugs": [
+    "NOTE: Media Library not in sidebar — command palette search attempted",
+    "NOTE: Localization tab not in sidebar — command palette search attempted",
+    "BUG: Sidebar collapse/expand failed: locator.click: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button[title=\"Sidebarı genişləndir\"]').first()\u001b[22m\n",
+    "NOTE: FloatingFlagSelector renders as pure CSS flags without detectable text"
+  ],
+  "screenshots": [
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/00-login-form.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/01-after-login.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/01-initial-load.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/01-login-page.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/01b-credentials-filled.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/01c-logged-in-dashboard.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/01c-logged-in.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/02-dashboard.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/02b-dashboard-full.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/02b-dashboard-with-sidebar.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/03-azexbuy-icmal.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/04-azexbuy-cms.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/05-inbox.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/06-user-management.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/07-smtp-settings.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/08-system-settings.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/09-seo-manager.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/10-media-library.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/11-localization.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/12-api-health.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/13-theme-modal-open.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/13b-theme-modal-closed.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/14-command-palette-open.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/15-collapse-failed.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/15-sidebar-collapsed.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/16-full-page-for-flag.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/17-backup-link-visible.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/18-mobile-375px.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/19-before-logout.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/19b-after-logout.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/20-session-timer.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/debug-click-before.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/debug-overlay-1-after-login.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/debug-overlay-2-after-click.png",
+    "/Users/ali_new/Desktop/AZEXBUY/admin/tests/screenshots/debug-sidebar.png"
+  ]
+}

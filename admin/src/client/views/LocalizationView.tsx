@@ -202,7 +202,7 @@ export const LocalizationView: React.FC<LocalizationViewProps> = ({
                 <div className="flex items-start justify-between gap-4">
                   {/* Left: Key & Source AZ */}
                   <div className="space-y-1.5 flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-mono text-[11px] font-medium text-slate-700 bg-slate-100 border border-slate-200/80 px-2 py-0.5 rounded-md">
                         {item.key}
                       </span>
@@ -263,6 +263,19 @@ export const LocalizationView: React.FC<LocalizationViewProps> = ({
                         </span>
                       </div>
                     )}
+                  </div>
+                  {/* Delete button — fixed right column */}
+                  <div className="shrink-0 flex items-start pt-0.5">
+                    <button
+                      onClick={async () => {
+                        if (!confirm(`"${item.key}" açarını silmək istəyirsiniz?`)) return;
+                        await onDeleteTranslation(item.key);
+                      }}
+                      className="p-1 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+                      title="Açarı sil"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
                   </div>
                 </div>
               </motion.div>

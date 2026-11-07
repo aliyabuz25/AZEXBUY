@@ -26,7 +26,7 @@ async function apiGet(path: string) {
   } catch { return null; }
 }
 
-async function apiPost(path: string, body: any) {
+async function apiPost(path: string, body: any): Promise<{ ok: boolean; data: any }> {
   try {
     const r = await fetch(`${OCTO}${path}`, {
       method: 'POST',
@@ -36,8 +36,9 @@ async function apiPost(path: string, body: any) {
       },
       body: JSON.stringify(body),
     });
-    return r.ok ? r.json() : null;
-  } catch { return null; }
+    const data = await r.json().catch(() => null);
+    return { ok: r.ok, data };
+  } catch { return { ok: false, data: null }; }
 }
 
 // ── Default strings — UI_STRINGS'den flat key formatına çevrilir (tüm 6 dil) ──
@@ -279,15 +280,17 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
 
   const saveStrings = useCallback(async (data: Record<string, Record<string, string>>) => {
     setSaving(true);
-    await apiPost('/api/azexbuy/localization', data);
-    flash(); setSaving(false);
+    const result = await apiPost('/api/azexbuy/localization', data);
+    if (result.ok) { flash(); } else { alert('Saxlama xətası. Zəhmət olmasa yenidən cəhd edin.'); }
+    setSaving(false);
   }, []);
 
   const saveContent = useCallback(async (data: any) => {
     setSaving(true);
     setContent(data);
-    await apiPost('/api/azexbuy/content', data);
-    flash(); setSaving(false);
+    const result = await apiPost('/api/azexbuy/content', data);
+    if (result.ok) { flash(); } else { alert('Saxlama xətası. Zəhmət olmasa yenidən cəhd edin.'); }
+    setSaving(false);
   }, []);
 
   // Stable string change handler
@@ -557,8 +560,23 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
           {/* ── PRODUCTS CATALOG ── */}
           {page === 'products_catalog' && (
             <>
-              <h2 className="text-sm font-bold text-slate-800">Məhsullar Kataloqu</h2>
-              <p className="text-xs text-slate-500">Hər məhsulun şəkli, başlıqları, texniki məlumatları bütün dillərdə.</p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-sm font-bold text-slate-800">Məhsullar Kataloqu</h2>
+                  <p className="text-xs text-slate-500">Hər məhsulun şəkli, başlıqları, texniki məlumatları bütün dillərdə.</p>
+                </div>
+                <button
+                  onClick={() => {
+                    const newProd = { id: `prod-${Date.now()}`, hsCode: '', minOrderQty: '', annualCapacity: '', leadTimeDays: '', name: {}, shortDesc: {}, originRegion: {}, packaging: {}, gradeSpecs: {} };
+                    const updated = { ...content, products: [...(content.products || []), newProd] };
+                    setContent(updated);
+                    saveContent(updated);
+                  }}
+                  className="flex items-center gap-1.5 h-8 px-3 bg-[#0f3156] hover:bg-[#081c33] text-white text-xs font-bold rounded-sm"
+                >
+                  <Plus className="w-3.5 h-3.5" /> Yeni Məhsul
+                </button>
+              </div>
               {(content.products || []).length === 0 && (
                 <div className="bg-amber-50 border border-amber-200 px-4 py-3 text-xs text-amber-700 rounded">
                   Məhsul override-ı hələ yoxdur. AZEXBUY saytında default məhsullar göstərilir.
@@ -566,15 +584,24 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
               )}
               {(content.products || []).map((prod: any, idx: number) => (
                 <div key={prod.id || idx} className="bg-white border border-slate-200 rounded overflow-hidden">
-                  <button onClick={() => setExpandedId(expandedId === 'p'+idx ? null : 'p'+idx)}
-                    className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-50">
-                    <div className="flex items-center gap-3">
+                  <div className="px-4 py-3 flex items-center justify-between hover:bg-slate-50">
+                    <button onClick={() => setExpandedId(expandedId === 'p'+idx ? null : 'p'+idx)}
+                      className="flex items-center gap-3 flex-1 text-left">
                       {prod.image && <img src={prod.image} className="w-10 h-7 object-cover border border-slate-200 rounded" />}
                       <span className="text-xs font-bold text-slate-900">{prod.name?.EN || prod.id}</span>
                       <span className="text-[10px] font-mono text-slate-400">HS: {prod.hsCode}</span>
-                    </div>
-                    {expandedId === 'p'+idx ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
-                  </button>
+                      {expandedId === 'p'+idx ? <ChevronDown className="w-4 h-4 text-slate-400 ml-auto" /> : <ChevronRight className="w-4 h-4 text-slate-400 ml-auto" />}
+                    </button>
+                    <button onClick={() => {
+                      if (!confirm('Bu məhsulu silmək istəyirsiniz?')) return;
+                      const p = (content.products || []).filter((_: any, i: number) => i !== idx);
+                      const updated = { ...content, products: p };
+                      setContent(updated);
+                      saveContent(updated);
+                    }} className="ml-2 p-1 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded transition-colors">
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                   {expandedId === 'p'+idx && (
                     <div className="border-t border-slate-100 p-4 space-y-3 bg-slate-50/50">
                       {[['HS Kodu','hsCode'],['Min Sifariş','minOrderQty'],['Yıllık Kapasite','annualCapacity'],['Çatdırılma Müddəti','leadTimeDays']].map(([lbl, fld]) => (
@@ -614,7 +641,21 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
           {/* ── BUYER STEPS ── */}
           {page === 'buyer_steps' && (
             <>
-              <h2 className="text-sm font-bold text-slate-800">Alıcı Addımları (7 Addım)</h2>
+              <div className="flex items-center justify-between">
+                <h2 className="text-sm font-bold text-slate-800">Alıcı Addımları</h2>
+                <button
+                  onClick={() => {
+                    const steps = content.buyer_steps || [];
+                    const newStep = { number: steps.length + 1, sla: '', authority: '', title: {}, detailTitle: {}, description: {}, deliverable: {} };
+                    const updated = { ...content, buyer_steps: [...steps, newStep] };
+                    setContent(updated);
+                    saveContent(updated);
+                  }}
+                  className="flex items-center gap-1.5 h-8 px-3 bg-[#0f3156] hover:bg-[#081c33] text-white text-xs font-bold rounded-sm"
+                >
+                  <Plus className="w-3.5 h-3.5" /> Yeni Addım
+                </button>
+              </div>
               {(content.buyer_steps || []).length === 0 && (
                 <div className="bg-amber-50 border border-amber-200 px-4 py-3 text-xs text-amber-700 rounded">Hələ override yoxdur — default addımlar göstərilir.</div>
               )}
@@ -664,7 +705,21 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
           {/* ── PRODUCER STEPS ── */}
           {page === 'producer_steps' && (
             <>
-              <h2 className="text-sm font-bold text-slate-800">İstehsalçı Addımları (10 Mərhələ)</h2>
+              <div className="flex items-center justify-between">
+                <h2 className="text-sm font-bold text-slate-800">İstehsalçı Mərhələləri</h2>
+                <button
+                  onClick={() => {
+                    const steps = content.producer_steps || [];
+                    const newStep = { number: steps.length + 1, sla: '', authority: '', title: {}, detailTitle: {}, description: {}, deliverable: {} };
+                    const updated = { ...content, producer_steps: [...steps, newStep] };
+                    setContent(updated);
+                    saveContent(updated);
+                  }}
+                  className="flex items-center gap-1.5 h-8 px-3 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-sm"
+                >
+                  <Plus className="w-3.5 h-3.5" /> Yeni Mərhələ
+                </button>
+              </div>
               {(content.producer_steps || []).length === 0 && (
                 <div className="bg-amber-50 border border-amber-200 px-4 py-3 text-xs text-amber-700 rounded">Hələ override yoxdur — default mərhələlər göstərilir.</div>
               )}

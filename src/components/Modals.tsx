@@ -14,6 +14,35 @@ import {
   PRODUCTS_CATALOG,
 } from '../data/translations';
 
+// ── Modal localization strings ─────────────────────────────────────────────
+const ML: Record<string, Record<string, string>> = {
+  // RFQ Modal
+  rfqTitle: { AZ: 'Rəsmi İxrac Qiymət Sorğusu (RFQ)', RU: 'Запрос коммерческого предложения (RFQ)', TR: 'Resmi İhracat Fiyat Teklifi (RFQ)', AR: 'طلب عرض سعر التصدير الرسمي (RFQ)', ES: 'Solicitud de Cotización de Exportación (RFQ)', EN: 'Request an Official Export Quotation (RFQ)' },
+  cancel:   { AZ: 'Ləğv et', RU: 'Отмена', TR: 'İptal', AR: 'إلغاء', ES: 'Cancelar', EN: 'Cancel' },
+  submitRfq: { AZ: 'RFQ Göndər & Sənəd Yarat', RU: 'Отправить RFQ & Создать досье', TR: 'RFQ Gönder & Dosya Oluştur', AR: 'إرسال RFQ وإنشاء الملف', ES: 'Enviar RFQ y Generar Expediente', EN: 'Submit RFQ & Generate Official Dossier' },
+  rfqErrRequired: { AZ: 'Zəhmət olmasa şirkətin adını, təyinat ölkəsini, əlaqə şəxsini və e-poçtu daxil edin.', RU: 'Пожалуйста, укажите название компании, страну назначения, контактное лицо и e-mail.', TR: 'Lütfen şirket adını, varış ülkesini, yetkili kişiyi ve e-postayı girin.', AR: 'يرجى إدخال اسم الشركة والبلد المقصد وجهة الاتصال والبريد الإلكتروني.', ES: 'Por favor ingrese el nombre de la empresa, país de destino, persona de contacto y correo electrónico.', EN: 'Please complete company name, destination country, contact person, and business email.' },
+  rfqErrEmail: { AZ: 'Zəhmət olmasa düzgün e-poçt ünvanı daxil edin.', RU: 'Пожалуйста, введите корректный адрес электронной почты.', TR: 'Lütfen geçerli bir e-posta adresi girin.', AR: 'يرجى إدخال عنوان بريد إلكتروني صحيح.', ES: 'Por favor ingrese un correo electrónico válido.', EN: 'Please enter a valid email address.' },
+  fullNameTitle: { AZ: 'Ad, Soyad & Vəzifə', RU: 'ФИО и должность', TR: 'Ad Soyad & Unvan', AR: 'الاسم الكامل والمسمى الوظيفي', ES: 'Nombre completo y cargo', EN: 'Full Name & Title' },
+  fullNamePlaceholder: { AZ: 'Ad Soyad & Vəzifə', RU: 'Имя Фамилия & Должность', TR: 'Ad Soyad & Unvan', AR: 'الاسم الكامل والمسمى الوظيفي', ES: 'Nombre Apellido & Cargo', EN: 'Full Name & Title' },
+  notesPlaceholder: { AZ: 'Kalibr, özəl etiket qablaşdırması, çatdırılma cədvəli və ya akkreditiv şərtlərini bildirin...', RU: 'Укажите калибр, упаковку под частной маркой, график поставки или условия аккредитива...', TR: 'Kalibraj, özel etiket ambalaj, teslimat takvimi veya akreditif şartlarını belirtin...', AR: 'حدد المعيار والتغليف والجدول الزمني للتسليم أو شروط الاعتماد المستندي...', ES: 'Especifique calibre, embalaje de marca privada, calendario de entrega o términos de carta de crédito...', EN: 'Specify caliber, private label packaging, delivery schedule, or documentary letter of credit terms...' },
+  addCertPlaceholder: { AZ: 'Sertifikat əlavə et (məs. BRC Qida Təhlükəsizliyi)...', RU: 'Добавить сертификат (напр. BRC Food Safety)...', TR: 'Sertifika ekle (ör. BRC Gıda Güvenliği)...', AR: 'إضافة شهادة (مثل BRC لسلامة الغذاء)...', ES: 'Agregar certificado (ej. BRC Seguridad Alimentaria)...', EN: 'Add custom certificate (e.g. BRC Food Safety)...' },
+  removeItem: { AZ: 'Elementi sil', RU: 'Удалить элемент', TR: 'Öğeyi kaldır', AR: 'إزالة العنصر', ES: 'Eliminar elemento', EN: 'Remove item' },
+  // Producer Modal
+  producerTitle: { AZ: 'İstehsalçı İxrac Qeydiyyatı & Alıcı Uyğunlaşdırması', RU: 'Регистрация производителя для экспорта', TR: 'Üretici İhracat Kaydı & Alıcı Eşleştirme', AR: 'تسجيل المصنّع للتصدير ومطابقة المشتري', ES: 'Registro de Productor para Exportación', EN: 'Producer Export Onboarding & Global Buyer Matchmaking' },
+  submitProducer: { AZ: 'İstehsalçı Qeydiyyatı & Sənəd Yarat', RU: 'Зарегистрировать производителя & Создать досье', TR: 'Üreticiyi Kaydet & Dosya Oluştur', AR: 'تسجيل المنتج وإنشاء الملف', ES: 'Registrar Productor e Emitir Expediente', EN: 'Register Producer & Issue Dossier' },
+  prodErrRequired: { AZ: 'Zəhmət olmasa müəssisə adını, VÖEN, əsas ixrac məhsulunu və e-poçtu daxil edin.', RU: 'Пожалуйста, укажите название предприятия, VOEN, основной экспортный продукт и e-mail.', TR: 'Lütfen işletme adını, VÖEN, ana ihracat ürünü ve e-postayı girin.', AR: 'يرجى إدخال اسم الشركة ورقم VOEN والمنتج الرئيسي وعنوان البريد الإلكتروني.', ES: 'Por favor ingrese el nombre de la empresa, VOEN, producto principal de exportación y correo electrónico.', EN: 'Please enter your enterprise name, VOEN tax number, main export product, and email.' },
+  prodErrEmail: { AZ: 'Zəhmət olmasa düzgün e-poçt ünvanı daxil edin.', RU: 'Введите корректный адрес электронной почты.', TR: 'Geçerli bir e-posta adresi girin.', AR: 'أدخل بريدًا إلكترونيًا صحيحًا.', ES: 'Ingrese un correo electrónico válido.', EN: 'Please enter a valid email address.' },
+  exportReadiness: { AZ: 'İxraca Hazırlıq İndeksi:', RU: 'Индекс готовности к экспорту:', TR: 'İhracata Hazırlık İndeksi:', AR: 'مؤشر الاستعداد للتصدير:', ES: 'Índice de Preparación para la Exportación:', EN: 'Export Readiness Index:' },
+  mandateActive: { AZ: 'Mandate Aktiv', RU: 'Мандат активен', TR: 'Yetki Aktif', AR: 'التفويض نشط', ES: 'Mandato Activo', EN: 'Mandate Active' },
+  selectMandate: { AZ: 'Mandate Seç', RU: 'Выбрать мандат', TR: 'Yetki Seç', AR: 'اختر التفويض', ES: 'Seleccionar Mandato', EN: 'Select Mandate' },
+  // Search Modal
+  searchPlaceholder: { AZ: 'Məhsul adı, HS kodu (məs. 080222) və ya bölgə ilə axtar...', RU: 'Поиск по наименованию товара, коду HS или региону...', TR: 'Ürün adı, HS kodu veya bölgeye göre ara...', AR: 'ابحث باسم السلعة أو رمز HS أو المنطقة...', ES: 'Buscar por nombre de producto, código HS o región...', EN: 'Search by commodity name, HS Code (e.g. 080222, 5701, 2515), or region...' },
+  requestBtn: { AZ: 'Sorğu Göndər', RU: 'Запросить', TR: 'Talep Et', ES: 'Solicitar', AR: 'طلب', EN: 'Request' },
+};
+
+const ml = (key: string, locale: string): string =>
+  ML[key]?.[locale] || ML[key]?.['EN'] || key;
+
 interface RFQModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -157,11 +186,11 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!buyerCompany.trim() || !country.trim() || !contactName.trim() || !email.trim()) {
-      setErrorMsg('Please complete company name, destination country, contact person, and business email.');
+      setErrorMsg(ml('rfqErrRequired', locale));
       return;
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email.trim())) { setErrorMsg('Zəhmət olmasa düzgün e-poçt ünvanı daxil edin.'); return; }
+    if (!emailRegex.test(email.trim())) { setErrorMsg(ml('rfqErrEmail', locale)); return; }
     const routeObj = CORRIDOR_ROUTES.find((r) => r.id === corridorRoute) || CORRIDOR_ROUTES[0];
     const newRFQ: RFQSubmission = {
       id: `AZX-RFQ-${Date.now()}-${Math.random().toString(36).slice(2,7).toUpperCase()}`,
@@ -184,34 +213,27 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-900/65 overflow-y-auto no-print"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 no-print"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div className="bg-white border border-slate-200 rounded-t-2xl sm:rounded-xl w-full sm:max-w-3xl sm:mx-4 overflow-hidden shadow-2xl sm:my-8">
+      <div className="bg-white border border-slate-200 rounded-t-2xl sm:rounded-xl w-full sm:max-w-3xl sm:mx-4 shadow-lg sm:my-8 flex flex-col max-h-[92dvh] sm:max-h-[88vh]">
         {/* Header */}
-        <div className="bg-brandNavy text-white px-4 sm:px-6 py-4 flex items-center justify-between">
+        <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-4 flex items-center justify-between shrink-0">
           <div>
-            <span className="text-[11px] font-bold tracking-widest uppercase text-amber-300 block">
-              SOVEREIGN PROCUREMENT DESK · INCOTERMS 2020
-            </span>
-            <h3 className="text-lg sm:text-xl font-extrabold tracking-tight">
-              {locale === 'AZ'
-                ? 'Rəsmi İxrac Qiymət Sorğusu (RFQ)'
-                : locale === 'RU'
-                ? 'Запрос коммерческого предложения (RFQ)'
-                : 'Request an Official Export Quotation (RFQ)'}
+            <h3 className="text-base sm:text-lg font-semibold text-slate-800">
+              {ml('rfqTitle', locale)}
             </h3>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="text-white/80 hover:text-white p-1.5 rounded cursor-pointer"
+            className="text-slate-500 hover:text-slate-800 p-1.5 rounded cursor-pointer"
           >
             <i className="fa-solid fa-xmark text-lg"></i>
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-4 sm:p-6 max-h-[80vh] overflow-y-auto space-y-5">
+        <form id="rfq-form" onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5">
           {errorMsg && (
             <div className="p-3 bg-red-50 border border-red-200 rounded text-xs font-semibold text-red-800">
               {errorMsg}
@@ -221,7 +243,7 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
           {/* Commodity Line Items */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="text-xs font-extrabold uppercase tracking-wider text-brandNavy">
+              <label className="text-xs font-medium text-slate-600">
                 1. Selected Azerbaijani Commodities & HS Codes
               </label>
               <button
@@ -246,12 +268,12 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
                     <button
                       type="button"
                       onClick={() => setItemModes(prev => { const n = [...prev]; n[idx] = 'catalog'; return n; })}
-                      className={`text-[10px] font-bold px-2.5 py-1 rounded cursor-pointer ${mode === 'catalog' ? 'bg-brandNavy text-white' : 'bg-white border border-slate-300 text-slate-600'}`}
+                      className={`text-[10px] font-bold px-2.5 py-1 rounded cursor-pointer ${mode === 'catalog' ? 'bg-slate-800 text-white' : 'bg-white border border-slate-200 text-slate-600'}`}
                     >Catalog</button>
                     <button
                       type="button"
                       onClick={() => setItemModes(prev => { const n = [...prev]; n[idx] = 'custom'; return n; })}
-                      className={`text-[10px] font-bold px-2.5 py-1 rounded cursor-pointer ${mode === 'custom' ? 'bg-brandNavy text-white' : 'bg-white border border-slate-300 text-slate-600'}`}
+                      className={`text-[10px] font-bold px-2.5 py-1 rounded cursor-pointer ${mode === 'custom' ? 'bg-slate-800 text-white' : 'bg-white border border-slate-200 text-slate-600'}`}
                     >Custom Product</button>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-end">
@@ -329,7 +351,7 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
                         type="button"
                         onClick={() => handleRemoveItem(idx)}
                         className="text-slate-400 hover:text-red-600 p-1 cursor-pointer"
-                        title="Remove item"
+                        title={ml('removeItem', locale)}
                       >
                         <i className="fa-solid fa-trash-can text-xs"></i>
                       </button>
@@ -391,7 +413,7 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
 
           {/* Required Certifications */}
           <div>
-            <label className="block text-xs font-extrabold uppercase tracking-wider text-brandNavy mb-2">
+            <label className="block text-xs font-medium text-slate-600 mb-2">
               2. Required Export & Quality Dossier Certificates
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
@@ -437,7 +459,7 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
                 value={customCertInput}
                 onChange={(e) => setCustomCertInput(e.target.value)}
                 onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleAddCustomCert(); }}}
-                placeholder="Add custom certificate (e.g. BRC Food Safety)..."
+                placeholder={ml('addCertPlaceholder', locale)}
                 className="flex-1 h-8 px-3 text-xs bg-white border border-slate-300 rounded text-slate-900"
               />
               <button
@@ -452,7 +474,7 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
 
           {/* Buyer Organization Details */}
           <div>
-            <label className="block text-xs font-extrabold uppercase tracking-wider text-brandNavy mb-2">
+            <label className="block text-xs font-medium text-slate-600 mb-2">
               3. International Buyer / Procurement Officer Credentials
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -484,15 +506,15 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Procurement Officer Full Name *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={contactName}
-                  onChange={(e) => setContactName(e.target.value)}
-                  placeholder="Full Name & Title"
-                  className="w-full h-10 px-3 text-xs bg-white border border-slate-300 rounded text-slate-900"
+{ml('fullNameTitle', locale)} *
+                 </label>
+                 <input
+                   type="text"
+                   required
+                   value={contactName}
+                   onChange={(e) => setContactName(e.target.value)}
+                   placeholder={ml('fullNamePlaceholder', locale)}
+                   className="w-full h-10 px-3 text-xs bg-white border border-slate-300 rounded text-slate-900"
                 />
               </div>
               <div className="grid grid-cols-2 gap-2">
@@ -531,35 +553,38 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
                 rows={2}
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="Specify caliber, private label packaging, delivery schedule, or documentary letter of credit terms..."
+                placeholder={ml('notesPlaceholder', locale)}
                 className="w-full p-3 text-xs bg-white border border-slate-300 rounded text-slate-900"
               />
             </div>
           </div>
 
-          <div className="pt-3 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <span className="text-[11px] text-slate-500">
-              <i className="fa-solid fa-shield-halved text-brandGreen mr-1.5"></i>
-              Target RFQ Match SLA: <strong>&lt; 48 Hours</strong> with 3+ verified Azerbaijani producers.
-            </span>
-            <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
-              <button
-                type="button"
-                onClick={onClose}
-                className="px-4 py-2.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded cursor-pointer"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="px-6 py-2.5 text-xs font-bold text-white bg-brandNavy hover:bg-brandNavyDark rounded cursor-pointer flex items-center gap-2"
-              >
-                <span>Submit RFQ & Generate Official Dossier</span>
-                <i className="fa-solid fa-arrow-right text-[10px]"></i>
-              </button>
-            </div>
+</form>
+        {/* Sticky footer */}
+        <div className="shrink-0 px-4 sm:px-6 py-3 border-t border-slate-200 bg-white flex flex-col sm:flex-row items-center justify-between gap-3">
+          <span className="text-[11px] text-slate-500 hidden sm:block">
+            <i className="fa-solid fa-shield-halved text-brandGreen mr-1.5"></i>
+            Target RFQ Match SLA: <strong>&lt; 48 Hours</strong> with 3+ verified Azerbaijani producers.
+          </span>
+<div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+            <button
+              type="button"
+              form="rfq-form"
+              onClick={onClose}
+              className="px-4 py-2.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded cursor-pointer"
+            >
+              {ml('cancel', locale)}
+            </button>
+            <button
+              type="submit"
+              form="rfq-form"
+              className="flex-1 sm:flex-none px-6 py-2.5 text-xs font-bold text-white bg-brandNavy hover:bg-brandNavyDark rounded cursor-pointer flex items-center justify-center gap-2"
+            >
+              <span>{ml('submitRfq', locale)}</span>
+              <i className="fa-solid fa-arrow-right text-[10px]"></i>
+            </button>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );
@@ -575,6 +600,7 @@ interface ProducerModalProps {
 export const ProducerOnboardingModal: React.FC<ProducerModalProps> = ({
   isOpen,
   onClose,
+  locale,
   onSubmitProducer,
 }) => {
   const [companyName, setCompanyName] = useState('');
@@ -651,7 +677,7 @@ export const ProducerOnboardingModal: React.FC<ProducerModalProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!companyName.trim() || !voenTin.trim() || !productName.trim() || !email.trim()) {
-      setErrorMsg('Please enter your enterprise name, VOEN tax number, main export product, and email.');
+      setErrorMsg(ml('prodErrRequired', locale));
       return;
     }
     const app: ProducerApplication = {
@@ -678,29 +704,26 @@ export const ProducerOnboardingModal: React.FC<ProducerModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-900/65 overflow-y-auto no-print"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 no-print"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div className="bg-white border border-slate-200 rounded-t-2xl sm:rounded-xl w-full sm:max-w-3xl sm:mx-4 overflow-hidden shadow-2xl sm:my-8">
-        <div className="bg-brandGreen text-white px-4 sm:px-6 py-4 flex items-center justify-between">
+      <div className="bg-white border border-slate-200 rounded-t-2xl sm:rounded-xl w-full sm:max-w-3xl sm:mx-4 shadow-lg sm:my-8 flex flex-col max-h-[92dvh] sm:max-h-[88vh]">
+        <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-4 flex items-center justify-between shrink-0">
           <div>
-            <span className="text-[11px] font-bold tracking-widest uppercase text-emerald-100 block">
-              AZERBAIJANI PRODUCER REGISTRY · 10-PHASE PIPELINE
-            </span>
-            <h3 className="text-lg sm:text-xl font-extrabold tracking-tight">
-              Producer Export Onboarding & Global Buyer Matchmaking
+            <h3 className="text-base sm:text-lg font-semibold text-slate-800">
+              {ml('producerTitle', locale)}
             </h3>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="text-white/80 hover:text-white p-1.5 rounded cursor-pointer"
+            className="text-slate-500 hover:text-slate-800 p-1.5 rounded cursor-pointer"
           >
             <i className="fa-solid fa-xmark text-lg"></i>
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-4 sm:p-6 max-h-[80vh] overflow-y-auto space-y-5">
+        <form id="producer-form" onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5">
           {errorMsg && (
             <div className="p-3 bg-red-50 border border-red-200 rounded text-xs font-semibold text-red-800">
               {errorMsg}
@@ -796,7 +819,7 @@ export const ProducerOnboardingModal: React.FC<ProducerModalProps> = ({
           {/* Certifications & Target Markets */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-extrabold uppercase tracking-wider text-brandNavy mb-2">
+              <label className="block text-xs font-medium text-slate-600 mb-2">
                 Active Compliance Certifications
               </label>
               <div className="grid grid-cols-2 gap-1.5">
@@ -830,7 +853,7 @@ export const ProducerOnboardingModal: React.FC<ProducerModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-extrabold uppercase tracking-wider text-brandNavy mb-2">
+              <label className="block text-xs font-medium text-slate-600 mb-2">
                 Priority Export Destinations
               </label>
               <div className="grid grid-cols-2 gap-1.5">
@@ -867,7 +890,7 @@ export const ProducerOnboardingModal: React.FC<ProducerModalProps> = ({
           {/* Outsourced Export Department Toggle */}
           <div className="p-3.5 rounded-lg bg-emerald-50/70 border border-emerald-200 flex items-center justify-between gap-4">
             <div>
-              <span className="text-xs font-extrabold text-brandNavy block">
+              <span className="text-xs font-semibold text-slate-700 block">
                 Appoint AZEXBUY as Your Outsourced Export Department
               </span>
               <span className="text-[11px] text-slate-600">
@@ -883,7 +906,7 @@ export const ProducerOnboardingModal: React.FC<ProducerModalProps> = ({
                   : 'bg-white border border-slate-300 text-slate-700'
               }`}
             >
-              {outsourcedDesk ? 'Mandate Active' : 'Select Mandate'}
+              {outsourcedDesk ? ml('mandateActive', locale) : ml('selectMandate', locale)}
             </button>
           </div>
 
@@ -897,7 +920,7 @@ export const ProducerOnboardingModal: React.FC<ProducerModalProps> = ({
                 type="text"
                 value={contactPerson}
                 onChange={(e) => setContactPerson(e.target.value)}
-                placeholder="Full Name"
+                placeholder={ml('fullNamePlaceholder', locale)}
                 className="w-full h-9 px-3 text-xs bg-white border border-slate-300 rounded"
               />
             </div>
@@ -928,33 +951,33 @@ export const ProducerOnboardingModal: React.FC<ProducerModalProps> = ({
             </div>
           </div>
 
-          <div className="pt-3 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-slate-600">
-                Calculated Export Readiness Index:
-              </span>
-              <span className="text-xs font-extrabold text-brandGreen bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded tabular-nums">
-                {readinessScore} / 100
-              </span>
-            </div>
-            <div className="flex items-center gap-3">
-              <button
-                type="button"
-                onClick={onClose}
-                className="px-4 py-2 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded cursor-pointer"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="px-5 py-2 text-xs font-bold text-white bg-brandGreen hover:bg-brandGreenDark rounded cursor-pointer flex items-center gap-2"
-              >
-                <span>Register Producer & Issue Dossier</span>
-                <i className="fa-solid fa-arrow-right text-[10px]"></i>
-              </button>
-            </div>
+</form>
+        {/* Sticky footer */}
+        <div className="shrink-0 px-4 sm:px-6 py-3 border-t border-slate-200 bg-white flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="hidden sm:flex items-center gap-2">
+            <span className="text-xs text-slate-600">{ml('exportReadiness', locale)}</span>
+            <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded tabular-nums">
+              {readinessScore} / 100
+            </span>
           </div>
-        </form>
+          <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded cursor-pointer"
+            >
+              {ml('cancel', locale)}
+            </button>
+            <button
+              type="submit"
+              form="producer-form"
+              className="flex-1 sm:flex-none px-5 py-2 text-xs font-bold text-white bg-brandGreen hover:bg-brandGreenDark rounded cursor-pointer flex items-center justify-center gap-2"
+            >
+              <span>{ml('submitProducer', locale)}</span>
+              <i className="fa-solid fa-arrow-right text-[10px]"></i>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -990,15 +1013,15 @@ export const PrintableDossierModal: React.FC<DossierPrintModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-900/70 overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div
         id="printable-dossier"
-        className="bg-white border border-slate-300 rounded-t-2xl sm:rounded-xl w-full sm:max-w-3xl sm:mx-4 overflow-hidden shadow-2xl sm:my-8"
+        className="bg-white border border-slate-200 rounded-t-2xl sm:rounded-xl w-full sm:max-w-3xl sm:mx-4 shadow-lg sm:my-8 flex flex-col max-h-[92dvh] sm:max-h-[88vh]"
       >
         {/* Top Action Bar (Hidden in Print) */}
-        <div className="bg-slate-100 border-b border-slate-200 px-4 sm:px-6 py-3 flex items-center justify-between no-print">
+        <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-3 flex items-center justify-between no-print shrink-0">
           <div className="flex items-center gap-2 text-xs font-bold text-brandNavy">
             <i className="fa-solid fa-circle-check text-brandGreen"></i>
             <span>Saved to Local Registry · Official Printable Dossier</span>
@@ -1031,11 +1054,11 @@ export const PrintableDossierModal: React.FC<DossierPrintModalProps> = ({
         </div>
 
         {/* Official Document Body */}
-        <div className="p-4 sm:p-8 space-y-5 max-h-[85vh] overflow-y-auto">
-          <div className="flex items-start justify-between border-b-2 border-brandNavy pb-5">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-8 space-y-5">
+          <div className="flex items-start justify-between border-b border-slate-200 pb-5">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-xl font-extrabold tracking-tight text-brandNavy">
+                <span className="text-lg font-semibold text-slate-800">
                   AZEXBUY
                 </span>
                 <span className="text-xs text-slate-400">·</span>
@@ -1051,7 +1074,7 @@ export const PrintableDossierModal: React.FC<DossierPrintModalProps> = ({
               <span className="block text-[10px] font-bold uppercase tracking-widest text-slate-400">
                 DOCUMENT REFERENCE
               </span>
-              <span className="text-sm font-extrabold text-brandNavy tabular-nums">
+              <span className="text-sm font-semibold text-slate-800 tabular-nums">
                 {rfq ? rfq.id : producerApp?.id}
               </span>
               <span className="block text-[11px] text-slate-500 tabular-nums mt-0.5">
@@ -1094,7 +1117,7 @@ export const PrintableDossierModal: React.FC<DossierPrintModalProps> = ({
               </div>
 
               <div>
-                <h4 className="text-xs font-extrabold uppercase tracking-wider text-brandNavy mb-2">
+                <h4 className="text-xs font-medium text-slate-600 mb-2">
                   Requested Export Commodities & HS Classification
                 </h4>
                 <table className="w-full text-left border-collapse border border-slate-200 text-xs">
@@ -1169,7 +1192,7 @@ export const PrintableDossierModal: React.FC<DossierPrintModalProps> = ({
                   <span className="text-[10px] font-bold uppercase text-slate-500 block">
                     Readiness Score
                   </span>
-                  <span className="font-extrabold text-brandGreen tabular-nums">
+                  <span className="font-semibold text-emerald-700 tabular-nums">
                     {producerApp.readinessScore} / 100
                   </span>
                 </div>
@@ -1274,10 +1297,10 @@ export const GlobalSearchModal: React.FC<SearchModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center bg-slate-900/60 p-4 pt-8 sm:pt-16 overflow-y-auto no-print"
+      className="fixed inset-0 z-50 flex items-end sm:items-start justify-center bg-black/40 p-0 sm:p-4 sm:pt-16 no-print"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div className="bg-white border border-slate-200 rounded-xl w-full max-w-2xl mx-auto overflow-hidden shadow-2xl">
+      <div className="bg-white border border-slate-200 rounded-t-2xl sm:rounded-xl w-full max-w-2xl mx-auto overflow-hidden shadow-md max-h-[85dvh] flex flex-col">
         <div className="p-4 border-b border-slate-200 flex items-center gap-3">
           <i className="fa-solid fa-magnifying-glass text-brandNavy"></i>
           <input
@@ -1285,7 +1308,7 @@ export const GlobalSearchModal: React.FC<SearchModalProps> = ({
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search by commodity name, HS Code (e.g. 080222, 5701, 2515), or region..."
+            placeholder={ml('searchPlaceholder', locale)}
             className="w-full text-sm text-slate-900 focus:outline-none"
           />
           <button
@@ -1297,7 +1320,7 @@ export const GlobalSearchModal: React.FC<SearchModalProps> = ({
           </button>
         </div>
 
-        <div className="max-h-96 overflow-y-auto divide-y divide-slate-100">
+        <div className="flex-1 overflow-y-auto divide-y divide-slate-100">
           {filteredProducts.map((p) => (
             <div
               key={p.id}
@@ -1337,7 +1360,7 @@ export const GlobalSearchModal: React.FC<SearchModalProps> = ({
                 }}
                 className="bg-brandGreen hover:bg-brandGreenDark text-white text-[11px] font-bold px-3 py-1.5 rounded shrink-0 cursor-pointer"
               >
-                Request RFQ
+                {ml('requestBtn', locale)}
               </button>
             </div>
           ))}

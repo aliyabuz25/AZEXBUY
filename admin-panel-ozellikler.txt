@@ -1,0 +1,118 @@
+AZEXBUY ADMİN PANELİ — ÖZELLİKLER
+====================================
+
+1. KİMLİK DOĞRULAMA & OTURUM
+   - Kullanıcı adı veya e-posta ile giriş
+   - JWT oturum süresi (10 dakika)
+   - Oturum süresini gösteren canlı sayaç
+   - Güvenli çıkış
+
+2. GÖSTERGE PANELİ
+   - Toplam, yayınlanan ve senkronize kayıt sayısı
+   - Gerçek zamanlı SEO skoru (100 üzerinden)
+   - Medya kütüphanesi dosya sayısı ve toplam boyutu
+   - Lokalizasyon anahtar sayısı ve dil bilgisi
+   - İçerik ve aktivite grafiği
+   - Son içerik kayıtları listesi
+
+3. RFQ & ÜRETİCİ YÖNETİMİ
+   - RFQ (Fiyat Teklifi Talebi) listesi görüntüleme ve arama
+   - RFQ detay inceleme (firma, ülke, ürünler, incoterm, rota, sertifikalar)
+   - RFQ durum güncelleme (Beklemede / İncelemede / Yönlendirildi / Tamamlandı / Reddedildi)
+   - RFQ silme
+   - Üretici kayıtlarını listeleme ve arama
+   - Üretici detay görüntüleme (VÖEN, kapasite, sertifikalar, hedef pazarlar, hazırlık skoru)
+   - Üretici durum güncelleme
+   - Üretici silme
+   - Genel istatistikler (toplam RFQ, bekleyen, üretici sayısı, aktif üretici)
+   - Redis önbellek durum göstergesi
+
+4. GELEN KUTUSU
+   - Yeni RFQ sorguları (15 saniyede otomatik yenileme)
+   - Yeni üretici kayıtları (15 saniyede otomatik yenileme)
+   - Kayıt detaylarını genişletip inceleme
+   - Arama ve filtreleme
+
+5. İÇERİK YÖNETİMİ (CMS)
+   - Hero arka fon, alıcı kartı, üretici kartı, Neden Azerbaycan görselleri (yükleme veya URL)
+   - Navigasyon menüsü bağlantı metinleri (6 dil: AZ, TR, RU, EN, AR, ES)
+   - Hero bölümü başlık, alt başlık, CTA buton metinleri (6 dilde)
+   - Neden AZEXBUY bölümü ve 5 kart içeriği (6 dilde)
+   - Alıcı / Üretici kartları (görsel, etiket, başlık, açıklama, buton metni — 6 dilde)
+   - Hizmetler bölümü (6 dilde)
+   - Nasıl Çalışır bölümü (6 dilde)
+   - Öne Çıkan Ürünler bölümü (6 dilde)
+   - Neden Azerbaycan bölümü ve 4 özellik kartı (6 dilde)
+   - Footer (açıklama, adres, bağlantılar, telif hakkı — 6 dilde)
+   - Ürün katalogu (görsel, HS kodu, kapasite, teslimat, ad, açıklama, menşei, ambalaj, kalite — 6 dilde)
+   - Alıcı adımları (7 adım — SLA, kurum, başlık, açıklama — 6 dilde)
+   - Üretici adımları (10 aşama — SLA, kurum, başlık, açıklama — 6 dilde)
+   - Şekil kütüphanesi (görsel yükleme, URL kopyalama, silme)
+
+6. SEO YÖNETİMİ
+   - Meta başlık ve açıklama düzenleme (karakter sayacı ile)
+   - Kanonik URL ayarı
+   - Anahtar kelimeler
+   - Robots: Index ve Follow açma/kapama
+   - OpenGraph başlığı ve görseli
+   - Gerçek zamanlı Google arama sonucu önizlemesi
+   - Canlı SEO tanı kontrolü
+
+7. MEDYA KÜTÜPHANESİ
+   - Dosya yükleme
+   - Dosyaları listeleme (isim, boyut, tarih)
+   - Dosya silme
+
+8. LOKALİZASYON & ÇEVİRİ
+   - Çeviri anahtarlarını listeleme ve arama
+   - Modüle göre filtreleme (common, marketing, products, checkout)
+   - Dile göre filtreleme (TR, RU, EN)
+   - Çeviri düzenleme ve kaydetme
+   - Yeni çeviri anahtarı ekleme
+   - Çeviri anahtarı silme
+   - JSON olarak dışa aktarma
+
+9. KULLANICI YÖNETİMİ
+   - Admin hesaplarını listeleme
+   - Yeni admin hesabı oluşturma (ad, kullanıcı adı, e-posta, şifre, rol)
+   - Hesap düzenleme (ad, e-posta, rol, şifre güncelleme)
+   - Hesabı aktif/pasif yapma
+   - Hesap silme (root admin silinemez)
+   - Roller: Super Admin, Admin, Editor, Viewer
+
+10. SMTP & E-POSTA BİLDİRİMLERİ
+    - E-posta bildirimlerini açma/kapama
+    - Hızlı yapılandırma ön ayarları (Gmail, Outlook, Yahoo, Zoho, SendGrid, Mailgun)
+    - SMTP sunucu, port, SSL/TLS ayarları
+    - Gönderici adı ve e-postası
+    - Bildirim alıcı e-postası
+    - Bağlantı testi (test e-postası gönderme)
+
+11. YEDEK & GERİ YÜKLEME
+    - SQLite veritabanı yedeği indirme (.sqlite)
+    - Yedekten geri yükleme
+    - Yedek bilgileri (tablo sayısı, satır sayısı, boyut)
+    - Adminer (SQLite görsel yönetim arayüzü) erişimi
+
+12. SİSTEM AYARLARI
+    - Site adı, domain ve ortam tipi
+    - Dosya yükleme limiti ve izin verilen MIME türleri
+    - 8 renk/tema seçimi (açık ve koyu modlar)
+    - Sistem versiyonu görüntüleme
+    - Güncelleme kontrolü ve güvenli sistem güncelleme
+    - Güncelleme işlem günlüğü
+    - Kurulum sihirbazını yeniden başlatma
+
+13. KURULUM SİHİRBAZI
+    - Marka/site adı, domain, sektör bilgisi girişi
+    - Admin profili oluşturma
+    - Yükleme ayarları yapılandırma
+    - Sihirbazı sıfırlama
+
+14. ARAYÜZ & KULLANIM KOLAYLIĞI
+    - Komut paleti (hızlı navigasyon)
+    - İnteraktif rehber turu (6 aşamalı)
+    - Dil bayrağı seçici (panel arayüz dili)
+    - Sekmeli navigasyon
+    - Karanlık/açık tema desteği (8 tema)
+    - Oturum süresi uyarı bildirimi

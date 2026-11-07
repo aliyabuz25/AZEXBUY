@@ -11,7 +11,24 @@ export type ViewMode =
   | 'insights'
   | 'contact'
   | 'dossiers'
-  | 'ai-desk';
+  | 'ai-desk'
+  | 'articles';
+
+export interface Article {
+  id: string;
+  createdAt: string;
+  updatedAt?: string;
+  title: string;
+  slug: string;
+  summary: string;
+  content: string;
+  coverImage?: string;
+  author: string;
+  category: string;
+  tags: string[];
+  status: 'draft' | 'published';
+  viewCount: number;
+}
 
 export type IncotermCode = 'EXW' | 'FCA' | 'FOB' | 'CIF' | 'DAP' | 'DDP';
 
@@ -102,6 +119,34 @@ export interface RFQSubmission {
   status: string;
   assignedTo?: string;
   internalNotes?: string[];
+}
+
+export interface CmsService {
+  id: string;
+  createdAt: string;
+  updatedAt?: string;
+  title: LocalizedText;
+  description: LocalizedText;
+  scope: { AZ: string[]; EN: string[]; TR: string[]; RU: string[] };
+  targetAudience: LocalizedText;
+  iconClass: string;
+  colorClass: string;
+  serviceType: 'primary' | 'secondary';
+  isActive: boolean;
+  sortOrder: number;
+}
+
+export interface ServiceApplication {
+  id: string;
+  createdAt: string;
+  fullName: string;
+  company: string;
+  country: string;
+  email: string;
+  phone: string;
+  details: string;
+  selectedServices: string[];
+  status: string;
 }
 
 export interface ProducerApplication {

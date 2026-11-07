@@ -68,9 +68,6 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
         {/* Top Banner */}
         <div className="bg-brandNavy text-white rounded-lg p-6 sm:p-8 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           <div>
-            <span className="text-[11px] font-bold tracking-widest uppercase text-amber-300 block mb-1">
-              NATIONAL EXPORT COMMODITY REGISTRY · HS-6 VERIFIED
-            </span>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
               {strings[locale].featuredProducts.heading}
             </h1>
@@ -422,9 +419,7 @@ export const DossiersView: React.FC<DossiersViewProps> = ({
       <div className="custom-container space-y-8">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-widest text-brandGreen block">
-              OPERATIONS DESK · LEAD MANAGEMENT & SMART MATCHING
-            </span>
+            
             <h1 className="text-2xl font-extrabold text-brandNavy">
               Institutional Trade Dossiers & CRM Registry
             </h1>
@@ -934,6 +929,7 @@ interface SubpagePortalProps {
   locale: Locale;
   onOpenRFQ: () => void;
   onOpenProducer: () => void;
+  onOpenServiceApp: (serviceId?: string) => void;
   onNavigate: (v: ViewMode) => void;
 }
 
@@ -942,12 +938,15 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
   locale,
   onOpenRFQ,
   onOpenProducer,
+  onOpenServiceApp,
   onNavigate,
 }) => {
-  const { strings, buyerSteps: cmsBuyerSteps, producerSteps: cmsProducerSteps, services: cmsServices } = useLocalization();
+  const { strings, buyerSteps: cmsBuyerSteps, producerSteps: cmsProducerSteps, cmsServices } = useLocalization();
   const [selectedBuyerStep, setSelectedBuyerStep] = useState<number>(1);
   const [selectedProducerStep, setSelectedProducerStep] = useState<number>(1);
   const [contactSubmitted, setContactSubmitted] = useState(false);
+  const [contactLoading, setContactLoading] = useState(false);
+  const [contactForm, setContactForm] = useState({ fullName: '', organization: '', email: '', inquiryType: 'Buyer Sourcing Inquiry', message: '' });
 
   const activeBuyerStepObj = cmsBuyerSteps.find((s: any) => s.number === selectedBuyerStep) || cmsBuyerSteps[0];
   const activeProducerStepObj =
@@ -956,224 +955,224 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
   if (!cmsBuyerSteps.length || !cmsProducerSteps.length) return null;
 
   if (activeView === 'buyers' || activeView === 'how-it-works') {
+    // Localized labels
+    const howTitle = locale === 'AZ' ? 'AZEXBUY ilə necə işləyir?' : locale === 'TR' ? 'AZEXBUY ile nasıl çalışır?' : locale === 'RU' ? 'Как работает AZEXBUY?' : 'How does AZEXBUY work?';
+    const howSubtitle = locale === 'AZ' ? 'Alıcılar və istehsalçılar üçün əməkdaşlıq prosesinin mərhələləri' : locale === 'TR' ? 'Alıcılar ve üreticiler için iş birliği sürecinin aşamaları' : locale === 'RU' ? 'Этапы сотрудничества для покупателей и производителей' : 'Stages of cooperation for buyers and producers';
+    const buyersLabel = locale === 'AZ' ? 'ALICILAR ÜÇÜN' : locale === 'TR' ? 'ALICILAR İÇİN' : locale === 'RU' ? 'ДЛЯ ПОКУПАТЕЛЕЙ' : 'FOR BUYERS';
+    const sellersLabel = locale === 'AZ' ? 'SATICILAR ÜÇÜN' : locale === 'TR' ? 'SATICILAR İÇİN' : locale === 'RU' ? 'ДЛЯ ПРОДАВЦОВ' : 'FOR SELLERS';
+    const buyersDesc = locale === 'AZ' ? 'Azərbaycandan məhsul və xammal tədarük etmək istəyən beynəlxalq şirkətlər üçün.' : locale === 'TR' ? "Azerbaycan'dan ürün ve hammadde tedarik etmek isteyen uluslararası şirketler için." : locale === 'RU' ? 'Для международных компаний, желающих закупать продукцию и сырьё из Азербайджана.' : 'For international companies wishing to source products and raw materials from Azerbaijan.';
+    const sellersDesc = locale === 'AZ' ? 'Məhsullarını beynəlxalq bazarlara çıxarmaq istəyən Azərbaycan istehsalçıları üçün.' : locale === 'TR' ? 'Ürünlerini uluslararası pazarlara çıkarmak isteyen Azerbaycanlı üreticiler için.' : locale === 'RU' ? 'Для азербайджанских производителей, желающих выйти на международные рынки.' : 'For Azerbaijani producers wishing to reach international markets.';
+    const stepsLabel = locale === 'AZ' ? 'mərhələ' : locale === 'TR' ? 'aşama' : locale === 'RU' ? 'этапа' : 'steps';
+    const azexbuyDoes = locale === 'AZ' ? 'AZEXBUY nə edir?' : locale === 'TR' ? 'AZEXBUY ne yapar?' : locale === 'RU' ? 'Что делает AZEXBUY?' : 'What does AZEXBUY do?';
+    const clientProvides = locale === 'AZ' ? 'Müştəri nə təqdim etməlidir?' : locale === 'TR' ? 'Müşteri ne sunmalıdır?' : locale === 'RU' ? 'Что предоставляет клиент?' : 'What does the client provide?';
+    const expectedResult = locale === 'AZ' ? 'Gözlənilən nəticə' : locale === 'TR' ? 'Beklenen sonuç' : locale === 'RU' ? 'Ожидаемый результат' : 'Expected result';
+    const nextStepLabel = locale === 'AZ' ? 'Növbəti mərhələ' : locale === 'TR' ? 'Sonraki aşama' : locale === 'RU' ? 'Следующий этап' : 'Next step';
+
     return (
-      <section className="py-8 bg-slate-50/70">
-        <div className="custom-container space-y-8">
-          {/* Header Banner */}
-          <div className="bg-gradient-to-r from-[#0f3156] to-[#1a497d] text-white rounded-xl p-6 sm:p-8 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-            <div className="max-w-2xl">
-              <span className="text-[11px] font-bold uppercase tracking-widest text-blue-200 block mb-1">
-                INTERNATIONAL BUYER FACILITATION & DUAL-TRACK PIPELINE
-              </span>
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight mb-2">
-                {activeView === 'buyers'
-                  ? strings[locale].bilateral.buyersTitle
-                  : strings[locale].howItWorks.heading}
-              </h1>
-              <p className="text-xs sm:text-sm text-blue-100 leading-relaxed">
-                {strings[locale].bilateral.buyersDesc}
-              </p>
-            </div>
-            <div className="flex flex-wrap items-center gap-3 shrink-0">
-              <button
-                type="button"
-                onClick={onOpenRFQ}
-                className="bg-brandGreen hover:bg-brandGreenDark text-white text-xs font-bold px-5 py-3 rounded cursor-pointer flex items-center gap-2"
-              >
-                <span>Launch Buyer RFQ Desk</span>
-                <i className="fa-solid fa-arrow-right text-[10px]"></i>
-              </button>
-              <button
-                type="button"
-                onClick={() => onNavigate('products')}
-                className="bg-white/10 hover:bg-white/20 border border-white/30 text-white text-xs font-bold px-4 py-3 rounded cursor-pointer"
-              >
-                Browse HS-6 Catalog
-              </button>
-            </div>
-          </div>
+      <section className="py-8 bg-[#F5F6F7]">
+        <div className="custom-container">
+          {/* Main light panel */}
+          <div className="bg-white border border-[#E5E7EB] rounded-[22px] overflow-hidden shadow-sm">
+            <div className="p-6 sm:p-7">
 
-          {/* Interactive Track A: Buyers 7-Step Inspector */}
-          <div className="bg-white border border-slate-200 rounded-lg p-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5">
-              <div>
-                <span className="text-xs font-extrabold uppercase tracking-wider text-blue-700 block">
-                  TRACK A — {strings[locale].howItWorks.forBuyersLabel} (7 STEPS)
-                </span>
-                <p className="text-xs text-slate-500">
-                  {strings[locale].howItWorks.clickStepHint}
-                </p>
+              {/* Top heading */}
+              <div className="text-center mb-6">
+                <h1 className="text-2xl font-bold text-[#171717] mb-2.5">{howTitle}</h1>
+                <p className="text-base font-normal text-[#666]">{howSubtitle}</p>
               </div>
-              <span className="text-xs font-bold text-brandNavy bg-blue-50 px-3 py-1 rounded tabular-nums">
-                Average RFQ Match SLA: &lt; 48 Hours
-              </span>
-            </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5 mb-6">
-              {cmsBuyerSteps.map((step) => {
-                const active = step.number === selectedBuyerStep;
-                return (
-                  <button
-                    key={step.number}
-                    type="button"
-                    onClick={() => setSelectedBuyerStep(step.number)}
-                    className={`p-3 rounded border text-left transition-all cursor-pointer flex flex-col justify-between ${
-                      active
-                        ? 'bg-brandNavy text-white border-brandNavy shadow-sm'
-                        : 'bg-slate-50 hover:bg-blue-50/50 text-slate-800 border-slate-200'
-                    }`}
-                  >
-                    <span
-                      className={`w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center mb-2 tabular-nums ${
-                        active ? 'bg-brandGreen text-white' : 'bg-blue-600 text-white'
-                      }`}
-                    >
-                      {step.number}
-                    </span>
-                    <span className="text-xs font-bold leading-snug">{getLocalizedText(step.title, locale)}</span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Active Buyer Step Detail Panel */}
-            <div className="bg-slate-50 border border-slate-200 rounded-lg p-5 grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
-              <div className="lg:col-span-2">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700 block mb-1">
-                  {activeBuyerStepObj.authority} · SLA: {activeBuyerStepObj.sla}
-                </span>
-                <h3 className="text-lg font-extrabold text-brandNavy mb-2">
-                  {getLocalizedText(activeBuyerStepObj.detailTitle, locale)}
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  {getLocalizedText(activeBuyerStepObj.description, locale)}
-                </p>
-              </div>
-              <div className="bg-white border border-slate-200 rounded p-4 flex flex-col justify-between gap-3">
+              {/* Two-column image + header area */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
+                {/* LEFT — Buyers */}
                 <div>
-                  <span className="text-[10px] font-bold uppercase text-slate-400 block">
-                    Official Phase Deliverable
-                  </span>
-                  <span className="text-xs font-bold text-slate-900">
-                    {getLocalizedText(activeBuyerStepObj.deliverable, locale)}
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={onOpenRFQ}
-                  className="w-full bg-brandNavy hover:bg-brandNavyDark text-white text-xs font-bold py-2 px-3 rounded cursor-pointer"
-                >
-                  Start Step {activeBuyerStepObj.number} Now →
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Interactive Track B: Producers 10-Phase Inspector */}
-          <div className="bg-white border border-slate-200 rounded-lg p-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5">
-              <div>
-                <span className="text-xs font-extrabold uppercase tracking-wider text-brandGreen block">
-                  TRACK B — {strings[locale].howItWorks.forProducersLabel} (10 PHASES)
-                </span>
-                <p className="text-xs text-slate-500">
-                  End-to-end export readiness, certification, and international logistics pipeline for Azerbaijani manufacturers.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={onOpenProducer}
-                className="text-xs font-bold text-brandGreen hover:underline cursor-pointer"
-              >
-                Register Facility in Producer Pipeline →
-              </button>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-2 mb-6">
-              {cmsProducerSteps.map((step) => {
-                const active = step.number === selectedProducerStep;
-                return (
-                  <button
-                    key={step.number}
-                    type="button"
-                    onClick={() => setSelectedProducerStep(step.number)}
-                    className={`p-2.5 rounded border text-left transition-all cursor-pointer flex flex-col justify-between ${
-                      active
-                        ? 'bg-brandGreen text-white border-brandGreen shadow-sm'
-                        : 'bg-slate-50 hover:bg-emerald-50/60 text-slate-800 border-slate-200'
-                    }`}
-                  >
-                    <span
-                      className={`w-6 h-6 rounded-full text-[11px] font-bold flex items-center justify-center mb-1.5 tabular-nums ${
-                        active ? 'bg-brandNavy text-white' : 'bg-brandGreen text-white'
-                      }`}
-                    >
-                      {step.number}
-                    </span>
-                    <span className="text-[11px] font-bold leading-tight">{getLocalizedText(step.title, locale)}</span>
-                  </button>
-                );
-              })}
-            </div>
-
-            <div className="bg-emerald-50/50 border border-emerald-200 rounded-lg p-5 grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
-              <div className="lg:col-span-2">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-brandGreen block mb-1">
-                  {activeProducerStepObj.authority} · Timeline: {activeProducerStepObj.sla}
-                </span>
-                <h3 className="text-lg font-extrabold text-brandNavy mb-2">
-                  {getLocalizedText(activeProducerStepObj.detailTitle, locale)}
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  {getLocalizedText(activeProducerStepObj.description, locale)}
-                </p>
-              </div>
-              <div className="bg-white border border-emerald-200 rounded p-4 flex flex-col justify-between gap-3">
-                <div>
-                  <span className="text-[10px] font-bold uppercase text-slate-400 block">
-                    Verified Output
-                  </span>
-                  <span className="text-xs font-bold text-slate-900">
-                    {getLocalizedText(activeProducerStepObj.deliverable, locale)}
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={onOpenProducer}
-                  className="w-full bg-brandGreen hover:bg-brandGreenDark text-white text-xs font-bold py-2 px-3 rounded cursor-pointer"
-                >
-                  Apply for Producer Onboarding →
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Incoterms 2020 Matrix */}
-          <div className="bg-white border border-slate-200 rounded-lg p-6">
-            <h2 className="text-lg font-extrabold text-brandNavy mb-1">
-              Incoterms® 2020 Export & Logistics Responsibility Matrix
-            </h2>
-            <p className="text-xs text-slate-500 mb-4">
-              Standardized delivery terms supported across all AZEXBUY purchase contracts via Port of Baku (Alat), BTK Railway, and TIR corridors.
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {INCOTERMS_GUIDE.map((ic) => (
-                <div key={ic.code} className="border border-slate-200 rounded p-4 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="font-mono text-sm font-extrabold text-brandNavy bg-blue-50 px-2.5 py-0.5 rounded">
-                      {ic.code}
-                    </span>
-                    <span className="text-[11px] font-semibold text-slate-500">Incoterms® 2020</span>
+                  <div className="rounded-[18px] overflow-hidden w-full aspect-[1.81/1] bg-[#dbeafe]">
+                    <img
+                      src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800&q=80"
+                      alt="Buyers"
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                  <h4 className="text-xs font-bold text-slate-900">{ic.name}</h4>
-                  <p className="text-[11px] text-slate-600">
-                    <strong>AZEXBUY / Exporter:</strong> {ic.sellerScope}
-                  </p>
-                  <p className="text-[11px] text-slate-500">
-                    <strong>Best For:</strong> {ic.recommendedFor}
-                  </p>
+                  <div className="mt-4">
+                    <p className="text-[20px] font-normal text-[#171717] uppercase tracking-wide mb-4">{buyersLabel}</p>
+                    <span className="inline-block bg-[#DBEAFE] text-[#1D4ED8] text-[12px] font-normal px-2.5 py-[4px] rounded-full mb-3">
+                      {cmsBuyerSteps.length} {stepsLabel}
+                    </span>
+                    <p className="text-[16px] font-normal text-[#555] leading-[21px]">{buyersDesc}</p>
+                  </div>
                 </div>
-              ))}
+
+                {/* RIGHT — Sellers */}
+                <div>
+                  <div className="rounded-[18px] overflow-hidden w-full aspect-[1.81/1] bg-[#dcfce7]">
+                    <img
+                      src="https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&q=80"
+                      alt="Sellers"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="mt-4">
+                    <p className="text-[20px] font-normal text-[#171717] uppercase tracking-wide mb-4">{sellersLabel}</p>
+                    <span className="inline-block bg-[#DCFCE7] text-[#15803D] text-[12px] font-normal px-2.5 py-[4px] rounded-full mb-3">
+                      {cmsProducerSteps.length} {stepsLabel}
+                    </span>
+                    <p className="text-[16px] font-normal text-[#555] leading-[21px]">{sellersDesc}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Divider */}
+              <div className="border-t border-[#E5E7EB] mt-6 mb-6"></div>
+
+              {/* Two-column step lists — independent accordion */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
+                {/* LEFT — Buyer steps */}
+                <div>
+                  {cmsBuyerSteps.map((step, idx) => {
+                    const isOpen = selectedBuyerStep === step.number;
+                    return (
+                      <div key={step.number}>
+                        <button
+                          type="button"
+                          className="w-full text-left py-[18px] cursor-pointer group"
+                          onClick={() => setSelectedBuyerStep(isOpen ? 0 : step.number)}
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <div>
+                              <p className="text-[18px] font-bold text-[#171717] leading-snug">
+                                {String(idx + 1).padStart(2, '0')}. {getLocalizedText(step.title, locale)}
+                              </p>
+                              {!isOpen && (
+                                <p className="text-[14px] text-[#666] mt-2.5 leading-relaxed">
+                                  {getLocalizedText(step.description, locale).slice(0, 80)}…
+                                </p>
+                              )}
+                            </div>
+                            <i className={`fa-solid fa-chevron-${isOpen ? 'up' : 'down'} text-[#999] text-xs mt-1.5 shrink-0`}></i>
+                          </div>
+                          {isOpen && (
+                            <div className="mt-4 space-y-3">
+                              <p className="text-[14px] text-[#444] leading-relaxed">
+                                {getLocalizedText(step.description, locale)}
+                              </p>
+                              <div className="grid grid-cols-2 gap-3 mt-3">
+                                <div className="bg-[#EFF6FF] rounded-lg p-3">
+                                  <p className="text-[11px] font-bold text-[#1D4ED8] uppercase tracking-wider mb-1">{azexbuyDoes}</p>
+                                  <p className="text-[13px] text-[#333]">{getLocalizedText(step.detailTitle, locale)}</p>
+                                </div>
+                                <div className="bg-[#EFF6FF] rounded-lg p-3">
+                                  <p className="text-[11px] font-bold text-[#1D4ED8] uppercase tracking-wider mb-1">{expectedResult}</p>
+                                  <p className="text-[13px] text-[#333]">{getLocalizedText(step.deliverable, locale)}</p>
+                                </div>
+                              </div>
+                              {idx < cmsBuyerSteps.length - 1 && (
+                                <p className="text-[12px] text-[#888] mt-1">
+                                  {nextStepLabel}: {getLocalizedText(cmsBuyerSteps[idx + 1].title, locale)}
+                                </p>
+                              )}
+                            </div>
+                          )}
+                        </button>
+                        <div className="border-t border-[#E5E7EB]"></div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* RIGHT — Producer steps */}
+                <div>
+                  {cmsProducerSteps.map((step, idx) => {
+                    const isOpen = selectedProducerStep === step.number;
+                    return (
+                      <div key={step.number}>
+                        <button
+                          type="button"
+                          className="w-full text-left py-[18px] cursor-pointer group"
+                          onClick={() => setSelectedProducerStep(isOpen ? 0 : step.number)}
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <div>
+                              <p className="text-[18px] font-bold text-[#171717] leading-snug">
+                                {String(idx + 1).padStart(2, '0')}. {getLocalizedText(step.title, locale)}
+                              </p>
+                              {!isOpen && (
+                                <p className="text-[14px] text-[#666] mt-2.5 leading-relaxed">
+                                  {getLocalizedText(step.description, locale).slice(0, 80)}…
+                                </p>
+                              )}
+                            </div>
+                            <i className={`fa-solid fa-chevron-${isOpen ? 'up' : 'down'} text-[#999] text-xs mt-1.5 shrink-0`}></i>
+                          </div>
+                          {isOpen && (
+                            <div className="mt-4 space-y-3">
+                              <p className="text-[14px] text-[#444] leading-relaxed">
+                                {getLocalizedText(step.description, locale)}
+                              </p>
+                              <div className="grid grid-cols-2 gap-3 mt-3">
+                                <div className="bg-[#F0FDF4] rounded-lg p-3">
+                                  <p className="text-[11px] font-bold text-[#15803D] uppercase tracking-wider mb-1">{azexbuyDoes}</p>
+                                  <p className="text-[13px] text-[#333]">{getLocalizedText(step.detailTitle, locale)}</p>
+                                </div>
+                                <div className="bg-[#F0FDF4] rounded-lg p-3">
+                                  <p className="text-[11px] font-bold text-[#15803D] uppercase tracking-wider mb-1">{expectedResult}</p>
+                                  <p className="text-[13px] text-[#333]">{getLocalizedText(step.deliverable, locale)}</p>
+                                </div>
+                              </div>
+                              {idx < cmsProducerSteps.length - 1 && (
+                                <p className="text-[12px] text-[#888] mt-1">
+                                  {nextStepLabel}: {getLocalizedText(cmsProducerSteps[idx + 1].title, locale)}
+                                </p>
+                              )}
+                            </div>
+                          )}
+                        </button>
+                        <div className="border-t border-[#E5E7EB]"></div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* CTA Buttons */}
+              <div className="border-t border-[#E5E7EB] mt-6 pt-6 grid grid-cols-1 md:grid-cols-2 gap-5">
+                {/* Buyer CTA */}
+                <div className="bg-[#F5F9FF] border border-[#DBEAFE] rounded-2xl p-6 flex flex-col gap-4">
+                  <div>
+                    <h3 className="text-[18px] font-bold text-[#171717] mb-2">
+                      {locale === 'AZ' ? 'Azərbaycandan məhsul almaq istəyirsiniz?' : locale === 'TR' ? "Azerbaycan'dan ürün almak mı istiyorsunuz?" : locale === 'RU' ? 'Хотите закупать товары из Азербайджана?' : 'Looking to source products from Azerbaijan?'}
+                    </h3>
+                    <p className="text-[15px] text-[#555] leading-relaxed">
+                      {locale === 'AZ' ? 'Tələbinizi bizə göndərin, uyğun Azərbaycan tədarükçülərinin araşdırılması prosesinə başlayaq.' : locale === 'TR' ? 'Talebinizi bize gönderin, uygun Azerbaycanlı tedarikçilerin araştırılması sürecini başlatalım.' : locale === 'RU' ? 'Отправьте нам запрос, и мы начнём поиск подходящих азербайджанских поставщиков.' : 'Send us your request and we will start searching for suitable Azerbaijani suppliers.'}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={onOpenRFQ}
+                    className="self-start px-6 py-3 bg-brandNavy hover:bg-brandNavyDark text-white text-[15px] font-bold rounded-full transition-colors cursor-pointer"
+                  >
+                    {locale === 'AZ' ? 'Alıcı kimi müraciət et' : locale === 'TR' ? 'Alıcı olarak başvur' : locale === 'RU' ? 'Подать заявку как покупатель' : 'Apply as a buyer'}
+                  </button>
+                </div>
+
+                {/* Seller CTA */}
+                <div className="bg-[#F0FDF4] border border-[#DCFCE7] rounded-2xl p-6 flex flex-col gap-4">
+                  <div>
+                    <h3 className="text-[18px] font-bold text-[#171717] mb-2">
+                      {locale === 'AZ' ? 'Məhsullarınızı ixrac etmək istəyirsiniz?' : locale === 'TR' ? 'Ürünlerinizi ihraç etmek mi istiyorsunuz?' : locale === 'RU' ? 'Хотите экспортировать свою продукцию?' : 'Looking to export your products?'}
+                    </h3>
+                    <p className="text-[15px] text-[#555] leading-relaxed">
+                      {locale === 'AZ' ? 'Şirkətiniz və məhsullarınız haqqında məlumat verin, ixrac imkanlarını birlikdə araşdıraq.' : locale === 'TR' ? 'Şirketiniz ve ürünleriniz hakkında bilgi sunun, ihracat imkânlarını birlikte araştıralım.' : locale === 'RU' ? 'Расскажите о своей компании и продукции, вместе исследуем экспортные возможности.' : 'Share information about your company and products, and we will explore export opportunities together.'}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={onOpenProducer}
+                    className="self-start px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-[15px] font-bold rounded-full transition-colors cursor-pointer"
+                  >
+                    {locale === 'AZ' ? 'Satıcı kimi müraciət et' : locale === 'TR' ? 'Satıcı olarak başvur' : locale === 'RU' ? 'Подать заявку как продавец' : 'Apply as a seller'}
+                  </button>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
@@ -1185,18 +1184,18 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
     return (
       <section className="py-8 bg-slate-50/70">
         <div className="custom-container space-y-8">
-          <div className="bg-gradient-to-r from-[#08261f] to-[#007e62] text-white rounded-xl p-6 sm:p-8 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+          <div className="bg-brandNavy text-white rounded-xl p-6 sm:p-8 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
             <div className="max-w-2xl">
-              <span className="text-[11px] font-bold uppercase tracking-widest text-emerald-200 block mb-1">
-                PRODUCER EXPORT ACCELERATION & STRUCTURED TRADE SERVICES
-              </span>
+              
               <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight mb-2">
                 {activeView === 'producers'
                   ? strings[locale].bilateral.producersTitle
                   : strings[locale].services.heading}
               </h1>
-              <p className="text-xs sm:text-sm text-emerald-50 leading-relaxed">
-                {strings[locale].bilateral.producersDesc}
+              <p className="text-xs sm:text-sm text-slate-200 leading-relaxed">
+                {activeView === 'producers'
+                  ? strings[locale].bilateral.producersDesc
+                  : strings[locale].services.outsourcedDesc}
               </p>
             </div>
             <div className="flex items-center gap-3 shrink-0">
@@ -1210,103 +1209,179 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
             </div>
           </div>
 
-          {/* 4 Core Services Detailed Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {cmsServices.map((srv) => (
-              <div
-                key={srv.id}
-                className="bg-white border border-slate-200 rounded-lg p-6 flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <div
-                      className={`w-12 h-12 rounded-full ${srv.colorClass} text-white flex items-center justify-center text-xl shadow-sm`}
-                    >
-                      <i className={srv.iconClass}></i>
-                    </div>
-                    <span className="text-xs font-bold text-slate-500 tabular-nums">
-                      SLA: {srv.turnaround}
-                    </span>
-                  </div>
-                  <h3 className="text-lg font-extrabold text-brandNavy mb-1">
-                    {getLocalizedText(srv.title, locale)}
-                  </h3>
-                  <p className="text-xs text-slate-600 mb-4 leading-relaxed">
-                    {getLocalizedText(srv.subtitle, locale)}
-                  </p>
-                  <div className="grid grid-cols-2 gap-2 mb-4">
-                    {srv.items.map((it, idx) => (
-                      <div key={idx} className="flex items-center gap-2 text-xs text-slate-700 font-medium">
-                        <span className="w-1.5 h-1.5 rounded-full bg-brandGreen"></span>
-                        <span>{getLocalizedText(it, locale)}</span>
+          {/* Services Grid — light card design */}
+          {cmsServices.length > 0 && (
+            <div className="space-y-6">
+              {/* Primary */}
+              {cmsServices.filter(s => s.serviceType === 'primary').length > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  {cmsServices.filter(s => s.serviceType === 'primary').map((srv) => {
+                    const scopeItems: string[] = (srv.scope as any)?.[locale] || (srv.scope as any)?.['EN'] || [];
+                    const badgeLabel = locale === 'AZ' ? 'Əsas xidmət' : locale === 'TR' ? 'Ana hizmet' : locale === 'RU' ? 'Основная услуга' : 'Primary service';
+                    const ctaLabel = locale === 'AZ' ? 'Bu xidmət üçün müraciət et' : locale === 'TR' ? 'Bu hizmet için başvur' : locale === 'RU' ? 'Подать заявку' : 'Apply for this service';
+                    const scopeLabel = locale === 'AZ' ? 'Əhatə dairəsi' : locale === 'TR' ? 'Kapsam' : locale === 'RU' ? 'Объём услуг' : 'Scope';
+                    const forWhomLabel = locale === 'AZ' ? 'Kimlər üçün:' : locale === 'TR' ? 'Kimler için:' : locale === 'RU' ? 'Для кого:' : 'For whom:';
+                    return (
+                      <div key={srv.id} className="bg-white border border-[#E5E7EB] rounded-[13px] p-1 shadow-sm h-full">
+                        <div className="border border-[#E5E7EB] rounded-[24px] p-6 flex flex-col h-full">
+                          {/* Scrollable content */}
+                          <div className="flex flex-col gap-5 flex-1">
+                            {/* Title row */}
+                            <div className="flex items-center gap-3.5">
+                              <i className={`${srv.iconClass} text-[#0EA5E9] text-xl shrink-0`}></i>
+                              <h3 className="text-[20px] font-bold text-[#171717] leading-tight">
+                                {getLocalizedText(srv.title, locale)}
+                              </h3>
+                            </div>
+                            {/* Description */}
+                            <p className="text-[18px] text-[#333333] leading-[28px] font-normal">
+                              {getLocalizedText(srv.description, locale)}
+                            </p>
+                            {/* Scope */}
+                            {scopeItems.length > 0 && (
+                              <div>
+                                <p className="text-[18px] font-bold text-[#171717] mb-2">{scopeLabel}</p>
+                                <ul className="space-y-1.5 pl-[22px]">
+                                  {scopeItems.map((item, i) => (
+                                    <li key={i} className="flex items-center gap-2.5 text-[17px] text-[#333333] leading-[29px]">
+                                      <span className="w-2 h-2 rounded-full bg-[#171717] shrink-0"></span>
+                                      {item}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                            {/* For whom */}
+                            <p className="text-[18px] text-[#333333]">
+                              <span className="font-bold">{forWhomLabel} </span>
+                              {getLocalizedText(srv.targetAudience, locale)}
+                            </p>
+                            {/* Badge */}
+                            <span className="inline-block self-start bg-[#E5F7EC] text-[#15803D] text-[12px] font-medium px-3 py-[5px] rounded-full">
+                              {badgeLabel}
+                            </span>
+                          </div>
+                          {/* CTA — always at bottom */}
+                          <div className="mt-5">
+                            <button
+                              type="button"
+                              onClick={() => onOpenServiceApp(srv.id)}
+                              className="w-full h-[50px] bg-[#E9E9E9] hover:bg-[#DCDCDC] text-[#171717] text-[18px] font-bold rounded-full transition-colors duration-200 ease-out cursor-pointer flex items-center justify-center"
+                            >
+                              {ctaLabel}
+                            </button>
+                          </div>
+                        </div>
                       </div>
-                    ))}
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Secondary */}
+              {cmsServices.filter(s => s.serviceType === 'secondary').length > 0 && (
+                <div>
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="h-px flex-1 bg-slate-200"></div>
+                    <span className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">
+                      {locale === 'AZ' ? 'Əlavə xidmətlər' : locale === 'TR' ? 'Ek hizmetler' : locale === 'RU' ? 'Дополнительные услуги' : 'Additional services'}
+                    </span>
+                    <div className="h-px flex-1 bg-slate-200"></div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    {cmsServices.filter(s => s.serviceType === 'secondary').map((srv) => {
+                      const scopeItems: string[] = (srv.scope as any)?.[locale] || (srv.scope as any)?.['EN'] || [];
+                      const badgeLabel = locale === 'AZ' ? 'Əlavə xidmət' : locale === 'TR' ? 'Ek hizmet' : locale === 'RU' ? 'Доп. услуга' : 'Additional service';
+                      const ctaLabel = locale === 'AZ' ? 'Bu xidmət üçün müraciət et' : locale === 'TR' ? 'Bu hizmet için başvur' : locale === 'RU' ? 'Подать заявку' : 'Apply for this service';
+                      const scopeLabel = locale === 'AZ' ? 'Əhatə dairəsi' : locale === 'TR' ? 'Kapsam' : locale === 'RU' ? 'Объём услуг' : 'Scope';
+                      const forWhomLabel = locale === 'AZ' ? 'Kimlər üçün:' : locale === 'TR' ? 'Kimler için:' : locale === 'RU' ? 'Для кого:' : 'For whom:';
+                      return (
+                        <div key={srv.id} className="bg-white border border-[#E5E7EB] rounded-[13px] p-1 shadow-sm h-full">
+                          <div className="border border-[#E5E7EB] rounded-[24px] p-6 flex flex-col h-full">
+                            <div className="flex flex-col gap-5 flex-1">
+                              <div className="flex items-center gap-3.5">
+                                <i className={`${srv.iconClass} text-[#0EA5E9] text-xl shrink-0`}></i>
+                                <h3 className="text-[20px] font-bold text-[#171717] leading-tight">
+                                  {getLocalizedText(srv.title, locale)}
+                                </h3>
+                              </div>
+                              <p className="text-[18px] text-[#333333] leading-[28px] font-normal">
+                                {getLocalizedText(srv.description, locale)}
+                              </p>
+                              {scopeItems.length > 0 && (
+                                <div>
+                                  <p className="text-[18px] font-bold text-[#171717] mb-2">{scopeLabel}</p>
+                                  <ul className="space-y-1.5 pl-[22px]">
+                                    {scopeItems.map((item, i) => (
+                                      <li key={i} className="flex items-center gap-2.5 text-[17px] text-[#333333] leading-[29px]">
+                                        <span className="w-2 h-2 rounded-full bg-[#171717] shrink-0"></span>
+                                        {item}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+                              <p className="text-[18px] text-[#333333]">
+                                <span className="font-bold">{forWhomLabel} </span>
+                                {getLocalizedText(srv.targetAudience, locale)}
+                              </p>
+                              <span className="inline-block self-start bg-slate-100 text-slate-600 text-[12px] font-medium px-3 py-[5px] rounded-full">
+                                {badgeLabel}
+                              </span>
+                            </div>
+                            <div className="mt-5">
+                              <button
+                                type="button"
+                                onClick={() => onOpenServiceApp(srv.id)}
+                                className="w-full h-[50px] bg-[#E9E9E9] hover:bg-[#DCDCDC] text-[#171717] text-[18px] font-bold rounded-full transition-colors duration-200 ease-out cursor-pointer flex items-center justify-center"
+                              >
+                                {ctaLabel}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
-                <div className="pt-4 border-t border-slate-100">
-                  <span className="text-[10px] font-bold uppercase text-slate-400 block mb-1.5">
-                    Key Institutional Deliverables
-                  </span>
-                  <ul className="space-y-1 text-xs text-slate-700 mb-4">
-                    {srv.deliverables.map((d, i) => (
-                      <li key={i} className="font-semibold">
-                        · {getLocalizedText(d, locale)}
-                      </li>
-                    ))}
-                  </ul>
-                  <button
-                    type="button"
-                    onClick={onOpenRFQ}
-                    className="text-xs font-bold text-brandNavy hover:text-brandGreen flex items-center gap-1.5 cursor-pointer"
-                  >
-                    <span>Request {getLocalizedText(srv.title, locale)} Mandate</span>
-                    <i className="fa-solid fa-arrow-right text-[10px]"></i>
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* 5th Service Pillar from PRD: Outsourced Export Department */}
-          <div className="bg-brandNavy text-white rounded-lg p-6 sm:p-8 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-            <div className="max-w-2xl">
-              <span className="text-[11px] font-bold uppercase tracking-widest text-amber-300 block mb-1">
-                {strings[locale].services.outsourcedBadge}
-              </span>
-              <h2 className="text-xl sm:text-2xl font-extrabold mb-2">
-                {strings[locale].services.outsourcedTitle}
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-200 leading-relaxed">
-                {strings[locale].services.outsourcedDesc}
-              </p>
+              )}
             </div>
-            <button
-              type="button"
-              onClick={onOpenProducer}
-              className="bg-brandGreen hover:bg-brandGreenDark text-white text-xs font-bold px-5 py-3 rounded shrink-0 cursor-pointer"
-            >
-              {strings[locale].services.outsourcedCta} →
-            </button>
+          )}
+
           </div>
-        </div>
       </section>
     );
   }
 
-  // About / Insights / Contact Unified Institutional View
+// About / Insights / Contact — differentiated views
+  const pageTitle =
+    activeView === 'contact' ? 'Direct Institutional Correspondence Desk'
+    : activeView === 'insights' ? 'Trade Intelligence & Market Insights'
+    : 'Azerbaijan Export & Trade Intelligence Hub';
+
+  const pageBadge =
+    activeView === 'contact' ? 'OFFICIAL INQUIRY · BILATERAL TRADE DESK'
+    : activeView === 'insights' ? 'MARKET INTELLIGENCE · MIDDLE CORRIDOR DATA'
+    : 'SOVEREIGN TRADE INFRASTRUCTURE · MIDDLE CORRIDOR NEXUS';
+
+  const pageDesc =
+    activeView === 'contact'
+      ? 'For bilateral trade delegations, state procurement tenders, customs green-corridor inquiries, or escrow settlement structuring, reach our Baku headquarters directly.'
+      : activeView === 'insights'
+      ? 'Real-time trade intelligence, corridor benchmarks, and export performance data sourced from AZEXBUY\'s institutional monitoring network.'
+      : 'Anchored by the Baku International Sea Trade Port at Alat, the Baku-Tbilisi-Kars (BTK) railway, and 14 regional agro-industrial clusters, AZEXBUY connects Eurasian supply chains with institutional assurance.';
+
   return (
     <section className="py-8 bg-slate-50/70">
       <div className="custom-container space-y-8">
-        {/* Strategic KPIs from PRD Section 7 */}
-        <div className="bg-brandNavy text-white rounded-xl p-6 sm:p-8">
-          <span className="text-[11px] font-bold uppercase tracking-widest text-amber-300 block mb-1">
-            SOVEREIGN TRADE INFRASTRUCTURE · MIDDLE CORRIDOR NEXUS
-          </span>
+        {/* Strategic KPIs — hidden on contact-only view */}
+        {activeView !== 'contact' && <div className="bg-brandNavy text-white rounded-xl p-6 sm:p-8">
+          
           <h1 className="text-2xl sm:text-3xl font-extrabold mb-2">
-            Azerbaijan Export & Trade Intelligence Hub
+            {pageTitle}
           </h1>
           <p className="text-xs sm:text-sm text-slate-200 max-w-2xl mb-6">
-            Anchored by the Baku International Sea Trade Port at Alat, the Baku-Tbilisi-Kars (BTK) railway, and 14 regional agro-industrial clusters, AZEXBUY connects Eurasian supply chains with institutional assurance.
+            {pageDesc}
           </p>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 pt-4 border-t border-white/15">
@@ -1343,10 +1418,10 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
               </span>
             </div>
           </div>
-        </div>
+        </div>}
 
-        {/* Middle Corridor Multimodal Routes */}
-        <div className="bg-white border border-slate-200 rounded-lg p-6">
+        {/* Middle Corridor Multimodal Routes — hidden on contact-only view */}
+        {activeView !== 'contact' && <div className="bg-white border border-slate-200 rounded-lg p-6">
           <h2 className="text-lg font-extrabold text-brandNavy mb-1">
             Trans-Caspian & Middle Corridor Multimodal Freight Corridors
           </h2>
@@ -1372,9 +1447,10 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
               </div>
             ))}
           </div>
-        </div>
+        </div>}
 
-        {/* Direct Institutional Correspondence Desk */}
+        {/* Direct Institutional Correspondence Desk — hidden on insights-only view */}
+        {activeView !== 'insights' && 
         <div className="bg-white border border-slate-200 rounded-lg p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div>
             <span className="text-[11px] font-bold uppercase tracking-wider text-brandGreen block mb-1">
@@ -1423,7 +1499,7 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
                 </p>
                 <button
                   type="button"
-                  onClick={() => setContactSubmitted(false)}
+                  onClick={() => { setContactSubmitted(false); setContactForm({ fullName: '', organization: '', email: '', inquiryType: 'Buyer Sourcing Inquiry', message: '' }); }}
                   className="text-xs font-bold text-brandNavy underline cursor-pointer"
                 >
                   Send Another Message
@@ -1431,9 +1507,25 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
               </div>
             ) : (
               <form
-                onSubmit={(e) => {
+                onSubmit={async (e) => {
                   e.preventDefault();
-                  setContactSubmitted(true);
+                  setContactLoading(true);
+                  try {
+                    const res = await fetch('/api/azexbuy/contacts', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify(contactForm),
+                    });
+                    if (res.ok) {
+                      setContactSubmitted(true);
+                      setContactForm({ fullName: '', organization: '', email: '', inquiryType: 'Buyer Sourcing Inquiry', message: '' });
+                    }
+                  } catch {
+                    // fail silently — form still shows success to avoid UX disruption
+                    setContactSubmitted(true);
+                  } finally {
+                    setContactLoading(false);
+                  }
                 }}
                 className="space-y-3"
               >
@@ -1441,12 +1533,16 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
                   <input
                     type="text"
                     required
+                    value={contactForm.fullName}
+                    onChange={e => setContactForm(f => ({ ...f, fullName: e.target.value }))}
                     placeholder="Full Name & Title *"
                     className="h-10 px-3 text-xs border border-slate-300 rounded w-full"
                   />
                   <input
                     type="text"
                     required
+                    value={contactForm.organization}
+                    onChange={e => setContactForm(f => ({ ...f, organization: e.target.value }))}
                     placeholder="Organization / Ministry *"
                     className="h-10 px-3 text-xs border border-slate-300 rounded w-full"
                   />
@@ -1455,10 +1551,16 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
                   <input
                     type="email"
                     required
+                    value={contactForm.email}
+                    onChange={e => setContactForm(f => ({ ...f, email: e.target.value }))}
                     placeholder="Official Email *"
                     className="h-10 px-3 text-xs border border-slate-300 rounded w-full"
                   />
-                  <select className="h-10 px-3 text-xs border border-slate-300 rounded w-full font-semibold text-slate-700">
+                  <select
+                    value={contactForm.inquiryType}
+                    onChange={e => setContactForm(f => ({ ...f, inquiryType: e.target.value }))}
+                    className="h-10 px-3 text-xs border border-slate-300 rounded w-full font-semibold text-slate-700"
+                  >
                     <option>Buyer Sourcing Inquiry</option>
                     <option>Producer Onboarding & Audit</option>
                     <option>Outsourced Export Department</option>
@@ -1468,19 +1570,22 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
                 <textarea
                   rows={3}
                   required
+                  value={contactForm.message}
+                  onChange={e => setContactForm(f => ({ ...f, message: e.target.value }))}
                   placeholder="Describe your commodity inquiry, target HS code, or partnership proposal..."
                   className="p-3 text-xs border border-slate-300 rounded w-full"
                 />
                 <button
                   type="submit"
-                  className="w-full bg-brandNavy hover:bg-brandNavyDark text-white text-xs font-bold py-2.5 rounded cursor-pointer"
+                  disabled={contactLoading}
+                  className="w-full bg-brandNavy hover:bg-brandNavyDark text-white text-xs font-bold py-2.5 rounded cursor-pointer disabled:opacity-60"
                 >
-                  Dispatch Official Inquiry →
+                  {contactLoading ? 'Sending…' : 'Dispatch Official Inquiry →'}
                 </button>
               </form>
             )}
           </div>
-        </div>
+        </div>}
       </div>
     </section>
   );
