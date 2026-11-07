@@ -653,7 +653,7 @@ var SqliteBackupManager = class {
 // src/jwt.ts
 import crypto from "node:crypto";
 var JWT_SECRET = process.env.JWT_SECRET || "octotech-universal-admin-secret-key-2026-secure-jwt";
-var SESSION_DURATION_SECONDS = 10 * 60;
+var SESSION_DURATION_SECONDS = 24 * 60 * 60;
 function signJwt(payload, expiresInSeconds = SESSION_DURATION_SECONDS) {
   const header = { alg: "HS256", typ: "JWT" };
   const iat = Math.floor(Date.now() / 1e3);
@@ -700,7 +700,7 @@ function verifyJwt(token) {
     if (payload.exp && payload.exp < now) {
       return {
         valid: false,
-        error: "Sessiyan\u0131n m\xFCdd\u0259ti (10 d\u0259qiq\u0259) bitmi\u015Fdir",
+        error: "Sessiyan\u0131n m\xFCdd\u0259ti bitmi\u015Fdir, yenid\u0259n daxil olun",
         payload
       };
     }

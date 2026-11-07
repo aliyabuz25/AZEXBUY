@@ -3,8 +3,8 @@ import crypto from 'node:crypto';
 // Secret key for JWT HMAC-SHA256 signature
 const JWT_SECRET = process.env.JWT_SECRET || 'octotech-universal-admin-secret-key-2026-secure-jwt';
 
-// 10 minutes session duration as strictly required by user
-export const SESSION_DURATION_SECONDS = 10 * 60; // 600 seconds
+// 24 hours session duration
+export const SESSION_DURATION_SECONDS = 24 * 60 * 60; // 86400 seconds
 
 export interface JwtPayload {
   sub: string;
@@ -86,7 +86,7 @@ export function verifyJwt(token: string): { valid: boolean; payload?: JwtPayload
     if (payload.exp && payload.exp < now) {
       return { 
         valid: false, 
-        error: 'Sessiyanın müddəti (10 dəqiqə) bitmişdir', 
+        error: 'Sessiyanın müddəti bitmişdir, yenidən daxil olun', 
         payload 
       };
     }

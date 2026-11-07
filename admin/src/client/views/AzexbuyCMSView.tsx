@@ -137,9 +137,15 @@ interface SaveBarProps {
   saved: boolean;
 }
 const SaveBar = React.memo(({ onSave, saving, saved }: SaveBarProps) => (
-  <div className="flex justify-end pt-4 pb-2 sticky bottom-0 bg-slate-50/90 backdrop-blur-sm border-t border-slate-200 mt-4 px-1">
+  <div className="flex items-center justify-between pt-4 pb-2 sticky bottom-0 bg-slate-50/90 backdrop-blur-sm border-t border-slate-200 mt-4 px-1">
+    {saved
+      ? <div className="flex items-center gap-1.5 text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-sm">
+          <CheckCircle className="w-3.5 h-3.5" /> Dəyişikliklər uğurla saxlandı
+        </div>
+      : <div />
+    }
     <button onClick={onSave} disabled={saving}
-      className={`h-9 px-6 flex items-center gap-2 text-xs font-bold rounded-sm transition-colors shadow-sm ${saved ? 'bg-emerald-600 text-white' : 'bg-[#0f3156] hover:bg-[#081c33] text-white'} disabled:opacity-60`}>
+      className={`h-9 px-6 flex items-center gap-2 text-xs font-bold rounded-sm transition-all shadow-sm ${saved ? 'bg-emerald-600 text-white' : 'bg-[#0f3156] hover:bg-[#081c33] text-white'} disabled:opacity-60`}>
       {saving
         ? <><RefreshCw className="w-3.5 h-3.5 animate-spin" /> Saxlanır...</>
         : saved

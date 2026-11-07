@@ -799,7 +799,10 @@ export const App: React.FC = () => {
       {/* Azerbaijani Interactive Step-by-Step Tutorial */}
       <InteractiveTutorial
         isOpen={tutorialOpen}
-        onClose={() => setTutorialOpen(false)}
+        onClose={() => {
+          setTutorialOpen(false);
+          localStorage.setItem('octotech_tutorial_completed', 'true');
+        }}
         uiLang={uiLang}
       />
 
