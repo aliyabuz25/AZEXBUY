@@ -1,28 +1,17 @@
 import type BetterSqlite3 from 'better-sqlite3';
 
-export function seedAzexbuyData(db: BetterSqlite3.Database) {
-  const now = new Date().toISOString();
+// ── 1. Categories ────────────────────────────────────────────────────────────
+export const SEED_CATEGORIES = [
+  { id: 'cat-food', name: 'Food Products', slug: 'food-products', description: 'Natural and processed organic food products from Azerbaijan', sort_order: 1 },
+  { id: 'cat-agri', name: 'Agriculture & Fresh Produce', slug: 'agriculture', description: 'Fresh fruits, nuts, grains, and agricultural raw materials', sort_order: 2 },
+  { id: 'cat-industrial', name: 'Industrial & Textiles', slug: 'industrial-products', description: 'Raw silk, cotton yarn, metals, and industrial materials', sort_order: 3 },
+  { id: 'cat-chemicals', name: 'Chemicals & Extracts', slug: 'chemicals', description: 'Herbal extracts, licorice, saffron derivatives, and compounds', sort_order: 4 },
+  { id: 'cat-construction', name: 'Construction Materials', slug: 'construction-materials', description: 'High-purity gypsum, bentonite, natural stone, and cement', sort_order: 5 },
+  { id: 'cat-packaging', name: 'Packaging & Bulk Bags', slug: 'packaging', description: 'Industrial polypropylene sacks, FIBC big bags, and containers', sort_order: 6 },
+];
 
-  // ── 1. Categories ────────────────────────────────────────────────────────────
-  const categories = [
-    { id: 'cat-food', name: 'Food Products', slug: 'food-products', description: 'Natural and processed organic food products from Azerbaijan', sort_order: 1 },
-    { id: 'cat-agri', name: 'Agriculture & Fresh Produce', slug: 'agriculture', description: 'Fresh fruits, nuts, grains, and agricultural raw materials', sort_order: 2 },
-    { id: 'cat-industrial', name: 'Industrial & Textiles', slug: 'industrial-products', description: 'Raw silk, cotton yarn, metals, and industrial materials', sort_order: 3 },
-    { id: 'cat-chemicals', name: 'Chemicals & Extracts', slug: 'chemicals', description: 'Herbal extracts, licorice, saffron derivatives, and compounds', sort_order: 4 },
-    { id: 'cat-construction', name: 'Construction Materials', slug: 'construction-materials', description: 'High-purity gypsum, bentonite, natural stone, and cement', sort_order: 5 },
-    { id: 'cat-packaging', name: 'Packaging & Bulk Bags', slug: 'packaging', description: 'Industrial polypropylene sacks, FIBC big bags, and containers', sort_order: 6 },
-  ];
-
-  const insertCat = db.prepare(`
-    INSERT OR REPLACE INTO azexbuy_categories (id, created_at, name, slug, description, sort_order, is_active)
-    VALUES (?, ?, ?, ?, ?, ?, 1)
-  `);
-  for (const c of categories) {
-    insertCat.run(c.id, now, c.name, c.slug, c.description, c.sort_order);
-  }
-
-  // ── 2. Products ──────────────────────────────────────────────────────────────
-  const products = [
+// ── 2. Products ──────────────────────────────────────────────────────────────
+export const SEED_PRODUCTS = [
     {
       id: 'prod-hazelnut-atababa',
       categoryId: 'cat-agri',
@@ -287,25 +276,10 @@ export function seedAzexbuyData(db: BetterSqlite3.Database) {
       seoTitle: 'FIBC Big Bags & Woven PP Sacks Manufacturer Azerbaijan',
       seoDescription: 'Direct manufacturer export of industrial FIBC big bags and woven polypropylene sacks from Sumgayit, Azerbaijan.'
     }
-  ];
+];
 
-  const insertProd = db.prepare(`
-    INSERT OR REPLACE INTO azexbuy_products
-    (id, created_at, updated_at, category_id, name, slug, short_description, description, technical_specs, images, moq, certificates, packaging_info, hs_code, origin_region, is_active, is_featured, seo_title, seo_description)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?)
-  `);
-
-  for (const p of products) {
-    insertProd.run(
-      p.id, now, now, p.categoryId, p.name, p.slug, p.shortDescription, p.description,
-      JSON.stringify(p.technicalSpecs), JSON.stringify(p.images), p.moq,
-      JSON.stringify(p.certificates), p.packagingInfo, p.hsCode, p.originRegion,
-      p.isFeatured, p.seoTitle, p.seoDescription
-    );
-  }
-
-  // ── 3. Services ──────────────────────────────────────────────────────────────
-  const services = [
+// ── 3. Services ──────────────────────────────────────────────────────────────
+export const SEED_SERVICES = [
     {
       id: 'srv-market-access',
       title: {
@@ -702,32 +676,15 @@ export function seedAzexbuyData(db: BetterSqlite3.Database) {
       sortOrder: 6,
       isActive: 1
     }
-  ];
+];
 
-  const insertService = db.prepare(`
-    INSERT OR REPLACE INTO azexbuy_services
-    (id, created_at, updated_at, title, description, scope, target_audience, icon_class, color_class, service_type, is_active, sort_order)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `);
-
-  for (const s of services) {
-    insertService.run(
-      s.id, now, now,
-      JSON.stringify(s.title),
-      JSON.stringify(s.description),
-      JSON.stringify(s.scope),
-      JSON.stringify(s.targetAudience),
-      s.iconClass, s.colorClass, s.serviceType, s.isActive, s.sortOrder
-    );
-  }
-
-  // ── 4. Articles ──────────────────────────────────────────────────────────────
-  const articles = [
+// ── 4. Articles ──────────────────────────────────────────────────────────────
+export const SEED_ARTICLES = [
     {
       id: 'art-001',
       title: "Azerbaijan's Middle Corridor (TITR): Strategic Transit Gateway Connecting Asia and Europe in 2026",
       slug: 'azerbaijan-middle-corridor-new-silk-road',
-      category: 'Market Trends',
+      category: 'Market Insights',
       summary: 'How the Trans-Caspian International Transport Route (TITR) offers 12-day transit between China, Central Asia, Azerbaijan, and the European Union with unprecedented tariff predictability.',
       coverImage: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=1200&q=80',
       seoTitle: 'Middle Corridor Logistics Gateway — Azerbaijan TITR Rail & Port of Baku',
@@ -805,7 +762,7 @@ To guarantee compliance with European Union Regulation (EU) 2023/915:
       id: 'art-003',
       title: 'The Sovereign Export Compliance Stack: How AQTA, Form CT-1, EUR.1 and ISO 22000 Unlock Zero-Tariff Access',
       slug: 'azerbaijan-export-certifications-guide',
-      category: 'Regulatory',
+      category: 'Trade Knowledge',
       summary: 'A step-by-step institutional overview of trade documentation required for zero-duty clearance into the CIS, European Union, and Gulf Cooperation Council (GCC) markets.',
       coverImage: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1200&q=80',
       seoTitle: 'Azerbaijan Export Certifications Guide — AQTA, EUR.1, CT-1 and ISO Stack',
@@ -839,7 +796,7 @@ Every commercial food consignment dispatched via AZEXBUY includes:
       id: 'art-004',
       title: 'Goychay Pomegranate (PGI): Seasonal Windows, NFC Juice Processing and Gulf Market Expansion',
       slug: 'pomegranate-goychay-pgi-export-2026',
-      category: 'Commodity Insights',
+      category: 'Industry Updates',
       summary: 'Analyzing the commercial dynamics of Azerbaijan’s iconic ruby pomegranate harvest, cold-pressed processing capabilities, and burgeoning GCC retail demand.',
       coverImage: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=1200&q=80',
       seoTitle: 'Goychay Pomegranate Export 2026 — Fresh Fruit & NFC Juice B2B Guide',
@@ -859,31 +816,10 @@ Situated at the intersection of four climatic zones in the Shirvan plain, the Go
 * **Peak Harvest (Guleysha Red & Bala Mursal):** October 15 – November 25. Large heavy fruits (400g–650g) with deep ruby arils, optimized for sea reefer and cold-chain road transit.
 * **Cold Storage Window:** November 25 – February 28. Stored in modern Controlled Atmosphere (CA) cold storage facilities at 5°C and 90% relative humidity.`
     }
-  ];
+];
 
-  const insertArticle = db.prepare(`
-    INSERT OR REPLACE INTO azexbuy_articles
-    (id, created_at, updated_at, title, slug, category, summary, content, cover_image, seo_title, seo_description, is_published, is_featured, published_at, author)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `);
-
-  for (const a of articles) {
-    insertArticle.run(
-      a.id, now, now, a.title, a.slug, a.category, a.summary, a.content, a.coverImage,
-      a.seoTitle, a.seoDescription, a.isPublished, a.isFeatured, now, a.author
-    );
-  }
-
-  // ── 5. CMS Content for Homepage Carousel ────────────────────────────────────
-  const existingKv = db.prepare("SELECT value FROM azexbuy_kv WHERE key = 'content'").get() as any;
-  let cmsContent: any = {};
-  if (existingKv) {
-    try { cmsContent = JSON.parse(existingKv.value); } catch {}
-  }
-
-  // Populate CMS products if empty or has fewer than 4 items
-  if (!cmsContent.products || cmsContent.products.length < 4) {
-    cmsContent.products = [
+// ── 5. CMS Carousel Products ─────────────────────────────────────────────────
+export const SEED_CMS_PRODUCTS = [
       {
         id: 'hazelnut-080222',
         featured: true,
@@ -1129,16 +1065,82 @@ Situated at the intersection of four climatic zones in the Shirvan plain, the Go
         }
       }
     ];
+
+// ── 6. Seeding Function ──────────────────────────────────────────────────────
+export function seedAzexbuyData(db: BetterSqlite3.Database) {
+  const now = new Date().toISOString();
+
+  // 1. Categories
+  const insertCat = db.prepare(`
+    INSERT OR REPLACE INTO azexbuy_categories (id, created_at, name, slug, description, sort_order, is_active)
+    VALUES (?, ?, ?, ?, ?, ?, 1)
+  `);
+  for (const c of SEED_CATEGORIES) {
+    insertCat.run(c.id, now, c.name, c.slug, c.description, c.sort_order);
   }
 
+  // 2. Products
+  const insertProd = db.prepare(`
+    INSERT OR REPLACE INTO azexbuy_products
+    (id, created_at, updated_at, category_id, name, slug, short_description, description, technical_specs, images, moq, certificates, packaging_info, hs_code, origin_region, is_active, is_featured, seo_title, seo_description)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?)
+  `);
+  for (const p of SEED_PRODUCTS) {
+    insertProd.run(
+      p.id, now, now, p.categoryId, p.name, p.slug, p.shortDescription, p.description,
+      JSON.stringify(p.technicalSpecs), JSON.stringify(p.images), p.moq,
+      JSON.stringify(p.certificates), p.packagingInfo, p.hsCode, p.originRegion,
+      p.isFeatured, p.seoTitle, p.seoDescription
+    );
+  }
+
+  // 3. Services
+  const insertService = db.prepare(`
+    INSERT OR REPLACE INTO azexbuy_services
+    (id, created_at, updated_at, title, description, scope, target_audience, icon_class, color_class, service_type, is_active, sort_order)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `);
+  for (const s of SEED_SERVICES) {
+    insertService.run(
+      s.id, now, now,
+      JSON.stringify(s.title),
+      JSON.stringify(s.description),
+      JSON.stringify(s.scope),
+      JSON.stringify(s.targetAudience),
+      s.iconClass, s.colorClass, s.serviceType, s.isActive, s.sortOrder
+    );
+  }
+
+  // 4. Articles
+  const insertArticle = db.prepare(`
+    INSERT OR REPLACE INTO azexbuy_articles
+    (id, created_at, updated_at, title, slug, category, summary, content, cover_image, seo_title, seo_description, is_published, is_featured, published_at, author)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `);
+  for (const a of SEED_ARTICLES) {
+    insertArticle.run(
+      a.id, now, now, a.title, a.slug, a.category, a.summary, a.content, a.coverImage,
+      a.seoTitle, a.seoDescription, a.isPublished, a.isFeatured, now, a.author
+    );
+  }
+
+  // 5. CMS Content for Homepage Carousel
+  const existingKv = db.prepare("SELECT value FROM azexbuy_kv WHERE key = 'content'").get() as any;
+  let cmsContent: any = {};
+  if (existingKv) {
+    try { cmsContent = JSON.parse(existingKv.value); } catch {}
+  }
+  if (!cmsContent.products || cmsContent.products.length < 4) {
+    cmsContent.products = SEED_CMS_PRODUCTS;
+  }
   db.prepare("INSERT OR REPLACE INTO azexbuy_kv (key, value, updated_at) VALUES ('content', ?, ?)")
     .run(JSON.stringify(cmsContent), now);
 
   return {
-    categoriesCount: categories.length,
-    productsCount: products.length,
-    servicesCount: services.length,
-    articlesCount: articles.length,
-    cmsProductsCount: cmsContent.products.length
+    categoriesCount: SEED_CATEGORIES.length,
+    productsCount: SEED_PRODUCTS.length,
+    servicesCount: SEED_SERVICES.length,
+    articlesCount: SEED_ARTICLES.length,
+    cmsProductsCount: (cmsContent.products || []).length
   };
 }
