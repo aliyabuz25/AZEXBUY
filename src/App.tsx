@@ -92,7 +92,25 @@ export default function App() {
     return saved && valid.includes(saved) ? saved : 'AZ';
   });
 
-  const [activeView, setActiveView] = useState<ViewMode>('home');
+  const VALID_VIEWS: ViewMode[] = ['home','buyers','producers','services','products','how-it-works','about','insights','contact','dossiers','ai-desk','articles'];
+
+  const getViewFromHash = (): ViewMode => {
+    const hash = window.location.hash.replace('#/', '').replace('#', '') as ViewMode;
+    return VALID_VIEWS.includes(hash) ? hash : 'home';
+  };
+
+  const [activeView, setActiveViewState] = useState<ViewMode>(getViewFromHash);
+
+  const setActiveView = (view: ViewMode) => {
+    setActiveViewState(view);
+    window.location.hash = view === 'home' ? '' : `/${view}`;
+  };
+
+  useEffect(() => {
+    const onHashChange = () => setActiveViewState(getViewFromHash());
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
 
   const [rfqSubmissions, setRfqSubmissions] = useState<RFQSubmission[]>(() => {
     try {
