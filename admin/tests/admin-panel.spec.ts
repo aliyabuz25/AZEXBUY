@@ -173,7 +173,7 @@ test.describe('AZEXBUY Admin Panel — Comprehensive Tests', () => {
     collectErrors(page);
     await login(page);
 
-    const ok = await clickSidebar(page, 'Gelen Qutusu');
+    const ok = await clickSidebar(page, 'Gələn Qutusu') || await clickSidebar(page, 'Gelen Qutusu');
     await ss(page, '05-inbox');
 
     const body = await page.textContent('body') ?? '';
@@ -189,7 +189,7 @@ test.describe('AZEXBUY Admin Panel — Comprehensive Tests', () => {
     collectErrors(page);
     await login(page);
 
-    const ok = await clickSidebar(page, 'İstifadəçi İdarəetməsi');
+    const ok = await clickSidebar(page, 'İstifadəçilər') || await clickSidebar(page, 'İstifadəçi İdarəetməsi');
     await page.waitForTimeout(1000);
     await ss(page, '06-user-management');
 
@@ -223,7 +223,7 @@ test.describe('AZEXBUY Admin Panel — Comprehensive Tests', () => {
     collectErrors(page);
     await login(page);
 
-    const ok = await clickSidebar(page, 'Sistem Parametrləri');
+    const ok = await clickSidebar(page, 'Parametrlər') || await clickSidebar(page, 'Sistem Parametrləri');
     await page.waitForTimeout(1000);
     await ss(page, '08-system-settings');
 
@@ -443,13 +443,13 @@ test.describe('AZEXBUY Admin Panel — Comprehensive Tests', () => {
     await login(page);
 
     // Force-click to bypass overlay
-    const collapseBtn = page.locator('button[title="Sidebarı yığ"]').first();
+    const collapseBtn = page.locator('button[title="Yığ"], button[title="Sidebarı yığ"]').first();
     try {
       await collapseBtn.click({ force: true, timeout: 5000 });
       await page.waitForTimeout(500);
       await ss(page, '15-sidebar-collapsed');
 
-      const expandBtn = page.locator('button[title="Sidebarı genişləndir"]').first();
+      const expandBtn = page.locator('button[title="Genişləndir"], button[title="Sidebarı genişləndir"]').first();
       await expandBtn.click({ force: true, timeout: 5000 });
       await page.waitForTimeout(500);
       await ss(page, '15b-sidebar-expanded');
@@ -538,7 +538,7 @@ test.describe('AZEXBUY Admin Panel — Comprehensive Tests', () => {
     await ss(page, '19-before-logout');
 
     // Force click the logout button to bypass overlay
-    const logoutBtn = page.locator('button[title="Sessiyadan Çıxış"]').first();
+    const logoutBtn = page.locator('button[title="Çıxış"], button[title="Sessiyadan Çıxış"]').first();
     try {
       await logoutBtn.click({ force: true, timeout: 5000 });
       await page.waitForTimeout(2000);
