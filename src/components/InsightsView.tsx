@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Locale } from '../types';
+import { MarkdownRenderer } from '../utils/markdownRenderer';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 interface AzArticle {
@@ -78,17 +79,10 @@ function exc(text: string, max = 110) {
   return c.length > max ? c.slice(0, max).trimEnd() + '…' : c;
 }
 
-// ─── BBCode renderer ──────────────────────────────────────────────────────────
+// ─── BBCode & Markdown renderer ──────────────────────────────────────────────
 function renderBBCode(text: string): React.ReactNode {
   if (!text) return null;
-  return text.split('\n\n').map((para, i) => {
-    const parts = para.split(/(\[b\].*?\[\/b\]|\[i\].*?\[\/i\])/gi).map((seg, j) => {
-      if (/^\[b\].*\[\/b\]$/i.test(seg)) return <strong key={j}>{seg.replace(/\[\/?(b)\]/gi, '')}</strong>;
-      if (/^\[i\].*\[\/i\]$/i.test(seg)) return <em key={j}>{seg.replace(/\[\/?(i)\]/gi, '')}</em>;
-      return <span key={j}>{seg}</span>;
-    });
-    return <p key={i} className="mb-4 leading-relaxed" style={{ fontSize: '15px', color: 'rgba(23,35,29,0.8)' }}>{parts}</p>;
-  });
+  return <MarkdownRenderer content={text} />;
 }
 
 // ─── Share Modal ──────────────────────────────────────────────────────────────

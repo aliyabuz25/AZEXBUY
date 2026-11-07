@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Article, Locale } from '../types';
+import { MarkdownRenderer } from '../utils/markdownRenderer';
 
 const BACKEND = '';
 
@@ -182,22 +183,9 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, onShare 
   const formatDate = (iso: string) =>
     new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 
-  // Render content: treat \n\n as paragraph breaks, **bold** as bold
+  // Render markdown & BBCode content
   const renderContent = (text: string) => {
-    return text.split('\n\n').map((para, i) => {
-      // Handle **bold** markers
-      const parts = para.split(/(\*\*[^*]+\*\*)/g);
-      return (
-        <p key={i} className="text-sm text-gray-700 leading-relaxed mb-4">
-          {parts.map((part, j) => {
-            if (part.startsWith('**') && part.endsWith('**')) {
-              return <strong key={j} className="font-bold text-gray-900">{part.slice(2, -2)}</strong>;
-            }
-            return <span key={j}>{part}</span>;
-          })}
-        </p>
-      );
-    });
+    return <MarkdownRenderer content={text} />;
   };
 
   return (
