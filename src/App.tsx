@@ -1,4 +1,36 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, ReactNode } from 'react';
+
+function PageTransition({ viewKey, children }: { viewKey: string; children: ReactNode }) {
+  const [displayed, setDisplayed] = useState<ReactNode>(() => children);
+  const [animating, setAnimating] = useState(false);
+  const prevKey = useRef(viewKey);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  useEffect(() => {
+    if (viewKey !== prevKey.current) {
+      setAnimating(true);
+      timerRef.current = setTimeout(() => {
+        setDisplayed(children);
+        prevKey.current = viewKey;
+        setAnimating(false);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 160);
+    } else {
+      setDisplayed(children);
+    }
+    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+  }, [viewKey, children]);
+
+  return (
+    <div style={{
+      opacity: animating ? 0 : 1,
+      transform: animating ? 'translateY(10px)' : 'translateY(0)',
+      transition: 'opacity 0.16s ease, transform 0.16s ease',
+    }}>
+      {displayed}
+    </div>
+  );
+}
 import {
   Locale,
   ProducerApplication,
@@ -356,6 +388,7 @@ export default function App() {
 
       {/* Main Content Switcher */}
       <main className="flex-1">
+        <PageTransition viewKey={activeView}>
         {activeView === 'home' && (
           <>
             {/* BEGIN: HeroSection */}
@@ -974,6 +1007,7 @@ export default function App() {
             onNavigate={(v) => setActiveView(v)}
           />
         )}
+        </PageTransition>
       </main>
 
       {/* Institutional Footer */}
