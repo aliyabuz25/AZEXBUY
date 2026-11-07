@@ -941,7 +941,7 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
   onOpenServiceApp,
   onNavigate,
 }) => {
-  const { strings, buyerSteps: cmsBuyerSteps, producerSteps: cmsProducerSteps, cmsServices } = useLocalization();
+  const { strings, buyerSteps: cmsBuyerSteps, producerSteps: cmsProducerSteps, cmsServices, howItWorksBuyersImage, howItWorksSellersImage } = useLocalization();
   const [selectedBuyerStep, setSelectedBuyerStep] = useState<number>(1);
   const [selectedProducerStep, setSelectedProducerStep] = useState<number>(1);
   const [contactSubmitted, setContactSubmitted] = useState(false);
@@ -987,7 +987,7 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
                 <div>
                   <div className="rounded-[18px] overflow-hidden w-full aspect-[1.81/1] bg-[#dbeafe]">
                     <img
-                      src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800&q=80"
+                      src={howItWorksBuyersImage}
                       alt="Buyers"
                       className="w-full h-full object-cover"
                     />
@@ -1005,7 +1005,7 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
                 <div>
                   <div className="rounded-[18px] overflow-hidden w-full aspect-[1.81/1] bg-[#dcfce7]">
                     <img
-                      src="https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&q=80"
+                      src={howItWorksSellersImage}
                       alt="Sellers"
                       className="w-full h-full object-cover"
                     />

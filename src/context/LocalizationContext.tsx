@@ -9,6 +9,8 @@ import {
   BUYER_CARD_IMAGE as BUYER_CARD_DEFAULT,
   PRODUCER_CARD_IMAGE as PRODUCER_CARD_DEFAULT,
   WHY_AZERBAIJAN_IMAGE as WHY_AZ_DEFAULT,
+  HOW_IT_WORKS_BUYERS_IMAGE as HOW_BUYERS_DEFAULT,
+  HOW_IT_WORKS_SELLERS_IMAGE as HOW_SELLERS_DEFAULT,
 } from '../data/translations';
 import { CmsService } from '../types';
 
@@ -16,6 +18,17 @@ import { CmsService } from '../types';
 const OCTO_API_BASE = '';
 const LOC_CACHE_KEY = 'azexbuy_loc_override';
 const CONTENT_CACHE_KEY = 'azexbuy_content_override';
+const CACHE_VERSION = 'v3';
+const CACHE_VERSION_KEY = 'azexbuy_cache_ver';
+
+// Clear stale cache on version mismatch
+try {
+  if (localStorage.getItem(CACHE_VERSION_KEY) !== CACHE_VERSION) {
+    localStorage.removeItem(LOC_CACHE_KEY);
+    localStorage.removeItem(CONTENT_CACHE_KEY);
+    localStorage.setItem(CACHE_VERSION_KEY, CACHE_VERSION);
+  }
+} catch {}
 
 function applyFlatOverrides(base: any, flat: Record<string, string>): any {
   if (!flat || Object.keys(flat).length === 0) return base;
@@ -59,6 +72,8 @@ type LocalizationContextType = {
   buyerCardImage: string;
   producerCardImage: string;
   whyAzImage: string;
+  howItWorksBuyersImage: string;
+  howItWorksSellersImage: string;
   products: typeof PRODUCTS_DEFAULT;
   services: typeof SERVICES_DEFAULT;
   buyerSteps: typeof BUYER_STEPS_DEFAULT;
@@ -73,6 +88,8 @@ const LocalizationContext = createContext<LocalizationContextType>({
   buyerCardImage: BUYER_CARD_DEFAULT,
   producerCardImage: PRODUCER_CARD_DEFAULT,
   whyAzImage: WHY_AZ_DEFAULT,
+  howItWorksBuyersImage: HOW_BUYERS_DEFAULT,
+  howItWorksSellersImage: HOW_SELLERS_DEFAULT,
   products: PRODUCTS_DEFAULT,
   services: SERVICES_DEFAULT,
   buyerSteps: BUYER_STEPS_DEFAULT,
@@ -88,6 +105,8 @@ function applyContentOverrides(content: any) {
     buyerCardImage: images['BUYER_CARD_IMAGE'] || BUYER_CARD_DEFAULT,
     producerCardImage: images['PRODUCER_CARD_IMAGE'] || PRODUCER_CARD_DEFAULT,
     whyAzImage: images['WHY_AZERBAIJAN_IMAGE'] || WHY_AZ_DEFAULT,
+    howItWorksBuyersImage: images['HOW_IT_WORKS_BUYERS_IMAGE'] || HOW_BUYERS_DEFAULT,
+    howItWorksSellersImage: images['HOW_IT_WORKS_SELLERS_IMAGE'] || HOW_SELLERS_DEFAULT,
     products: content?.products?.length ? content.products : PRODUCTS_DEFAULT,
     services: content?.services?.length ? content.services : SERVICES_DEFAULT,
     buyerSteps: content?.buyer_steps?.length ? content.buyer_steps : BUYER_STEPS_DEFAULT,
@@ -99,16 +118,30 @@ export const LocalizationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const [strings, setStrings] = useState<typeof UI_STRINGS_DEFAULT>(() => {
     try {
       const cached = localStorage.getItem(LOC_CACHE_KEY);
-      if (cached) return buildMergedStrings(JSON.parse(cached)) as typeof UI_STRINGS_DEFAULT;
-    } catch {}
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed && typeof parsed === 'object') {
+          return buildMergedStrings(parsed) as typeof UI_STRINGS_DEFAULT;
+        }
+        localStorage.removeItem(LOC_CACHE_KEY);
+      }
+    } catch { localStorage.removeItem(LOC_CACHE_KEY); }
     return UI_STRINGS_DEFAULT;
   });
 
   const [contentOverrides, setContentOverrides] = useState(() => {
     try {
       const cached = localStorage.getItem(CONTENT_CACHE_KEY);
-      if (cached) return applyContentOverrides(JSON.parse(cached));
-    } catch {}
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        // Sanity check — products must have valid name objects
+        if (parsed?.products?.some((p: any) => !p?.name || typeof p.name !== 'object')) {
+          localStorage.removeItem(CONTENT_CACHE_KEY);
+          return applyContentOverrides({});
+        }
+        return applyContentOverrides(parsed);
+      }
+    } catch { localStorage.removeItem(CONTENT_CACHE_KEY); }
     return applyContentOverrides({});
   });
 

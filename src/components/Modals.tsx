@@ -1287,10 +1287,10 @@ export const GlobalSearchModal: React.FC<SearchModalProps> = ({
   const filteredProducts = PRODUCTS_CATALOG.filter(
     (p) =>
       !q ||
-      p.name.EN.toLowerCase().includes(q) ||
-      p.name.AZ.toLowerCase().includes(q) ||
-      p.name.RU.toLowerCase().includes(q) ||
-      p.hsCode.includes(q) ||
+      (p.name?.EN || '').toLowerCase().includes(q) ||
+      (p.name?.AZ || '').toLowerCase().includes(q) ||
+      (p.name?.RU || '').toLowerCase().includes(q) ||
+      (p.hsCode || '').includes(q) ||
       getLocalizedText(p.originRegion, locale).toLowerCase().includes(q) ||
       getLocalizedText(p.categoryLabel, locale).toLowerCase().includes(q)
   );

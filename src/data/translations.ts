@@ -12,6 +12,12 @@ export const PRODUCER_CARD_IMAGE =
 export const WHY_AZERBAIJAN_IMAGE =
   'https://lh3.googleusercontent.com/aida/AEtjO1WtUBR_2hOeUbRABsre_R7H-yW12FldWdxDp_6_abkiZuNwgF3fMTiwxdQCKdfEbdEWa-6CSQc0bQgUbjojei2itk13mAz_e09yOnKuFWP_7AO2BpMiNUQByyYnqtrPMywT0b4g4COdLkLc5_L75NtOsKv5OOgHz7VdAMCF-WDWgmhqccS9HdQKKY8cwD4AeVg_Z5AczT8rfvCVFXyJrgDuQKAsNiyYL54OeN2_HoFxHi9ltf4bUcbHSmM';
 
+export const HOW_IT_WORKS_BUYERS_IMAGE =
+  'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800&q=80';
+
+export const HOW_IT_WORKS_SELLERS_IMAGE =
+  'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&q=80';
+
 export const PRODUCTS_CATALOG: ProductItem[] = [
   {
     id: 'hazelnut-080222',

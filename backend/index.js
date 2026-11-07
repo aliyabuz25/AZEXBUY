@@ -14,6 +14,17 @@ app.use(express.json());
 // ─── SQLite Setup ────────────────────────────────────────────────
 const db = new Database(path.join(__dirname, 'azexbuy.db'));
 
+// Admin DB — localization & content buradan okunur/yazılır
+const adminDbPath = '/Users/ali_new/Desktop/AZEXBUY/admin/data/azexbuy.db';
+let adminDb = null;
+let adminDbRw = null;
+try {
+  adminDb = new Database(adminDbPath, { readonly: true });
+  adminDbRw = new Database(adminDbPath);
+} catch (e) {
+  console.warn('Admin DB açılamadı:', e.message);
+}
+
 db.exec(`
   CREATE TABLE IF NOT EXISTS services (
     id TEXT PRIMARY KEY,
@@ -652,12 +663,42 @@ if (existingServices.cnt === 0) {
 }
 
 // ─── Localization & Content Routes ───────────────────────────────
-app.get('/api/azexbuy/localization', (req, res) => {
-  res.json({});
+app.get("/api/azexbuy/localization", (req, res) => {
+  try {
+    if (!adminDb) return res.json({});
+    const row = adminDb.prepare("SELECT value FROM azexbuy_kv WHERE key = 'localization'").get();
+    if (!row || !row.value) return res.json({});
+    res.json(JSON.parse(row.value));
+  } catch (e) { console.error("localization read error:", e.message); res.json({}); }
 });
 
-app.get('/api/azexbuy/content', (req, res) => {
-  res.json({});
+app.get("/api/azexbuy/content", (req, res) => {
+  try {
+    if (!adminDb) return res.json({});
+    const row = adminDb.prepare("SELECT value FROM azexbuy_kv WHERE key = 'content'").get();
+    if (!row || !row.value) return res.json({});
+    res.json(JSON.parse(row.value));
+  } catch (e) { console.error("content read error:", e.message); res.json({}); }
+});
+
+app.post("/api/azexbuy/content", (req, res) => {
+  try {
+    if (!adminDbRw) return res.status(503).json({ error: 'DB unavailable' });
+    const data = req.body;
+    adminDbRw.prepare("INSERT OR REPLACE INTO azexbuy_kv (key, value, updated_at) VALUES ('content', ?, ?)")
+      .run(JSON.stringify(data), new Date().toISOString());
+    res.json({ success: true });
+  } catch (e) { console.error("content write error:", e.message); res.status(500).json({ error: e.message }); }
+});
+
+app.post("/api/azexbuy/localization", (req, res) => {
+  try {
+    if (!adminDbRw) return res.status(503).json({ error: 'DB unavailable' });
+    const data = req.body;
+    adminDbRw.prepare("INSERT OR REPLACE INTO azexbuy_kv (key, value, updated_at) VALUES ('localization', ?, ?)")
+      .run(JSON.stringify(data), new Date().toISOString());
+    res.json({ success: true });
+  } catch (e) { console.error("localization write error:", e.message); res.status(500).json({ error: e.message }); }
 });
 
 // ─── AZEXBUY Articles Alias ──────────────────────────────────────

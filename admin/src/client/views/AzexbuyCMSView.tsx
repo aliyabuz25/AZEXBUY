@@ -11,7 +11,9 @@ import { UI_STRINGS } from '../../../../src/data/translations';
 
 interface AzexbuyCMSViewProps { uiLang: UiLanguage; }
 
+// CMS verileri frontend backend'ine yazılır (port 3500) — token gerektirmez
 const OCTO = '';
+const FRONTEND_API = 'http://localhost:3500';
 const LOCALES = ['EN', 'AZ', 'TR', 'RU', 'AR', 'ES'] as const;
 type Loc = typeof LOCALES[number];
 
@@ -27,15 +29,13 @@ async function apiGet(path: string) {
 }
 
 async function apiPost(path: string, body: any): Promise<{ ok: boolean; data: any }> {
+  // content ve localization frontend backend'ine (3500) yazılır — token gerektirmez
+  const isCmsWrite = path === '/api/azexbuy/content' || path === '/api/azexbuy/localization';
+  const base = isCmsWrite ? FRONTEND_API : OCTO;
   try {
-    const r = await fetch(`${OCTO}${path}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${getToken()}`,
-      },
-      body: JSON.stringify(body),
-    });
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (!isCmsWrite) headers['Authorization'] = `Bearer ${getToken()}`;
+    const r = await fetch(`${base}${path}`, { method: 'POST', headers, body: JSON.stringify(body) });
     const data = await r.json().catch(() => null);
     return { ok: r.ok, data };
   } catch { return { ok: false, data: null }; }
@@ -70,10 +70,12 @@ const CMS_PAGES = [
 type PageKey = typeof CMS_PAGES[number]['key'];
 
 const IMAGE_KEYS = [
-  { key: 'HERO_IMAGE',          label: 'Hero Arxa Fon',           defaultUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB9ZWqLLmb30gHFdTBf7cfY60pAMzYSTWRn2keRDZ7k8a3eQicd1I5xuOR1U44ux_eyOl79BjhxRaXdEbzovzXexqRo8oDy3gVECJAAKnDsq1DYgw7oR-p-U-VjFeMqmdwPl27SJVIP7hTVWchM1LYBR1EY2hy5C8iSkUcytv0qKVFgxmbifXswWW8UTnyUsQw5XBb81qNG2tremLOg_k5EPGCl-K_AWwSN8UQ3T1EN7HyePk3pvGD9' },
-  { key: 'BUYER_CARD_IMAGE',    label: 'Alıcı Kartı Görseli',     defaultUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCHfBjlFdQNaNAsP2RbAdqbBzskyL-GFgkaTpjwu0U6iT-t0tvmdQxrsHV7DOVkxLI4TCvj6qWpEawxqKJPqQE9f5GeXtwvTu7-fs3s495aRNM41LY0ardk4_DhtXk2RrKbiZgwssXvlrrI_EThET-4vRXO-9SbspxRcE3KXflGW-LnO8LzAq_bYYS10R-r010CzBLBwMqbd6slv40ntEvn3OyeauJszJaHkxnHTcGCq-0XAIDQmj6_' },
-  { key: 'PRODUCER_CARD_IMAGE', label: 'Istehsalci Karti Görseli', defaultUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDgrvRVBxN_YV05A8C2ZBQC2V2WHmgN9IrmvxhBvoVre7FKYjEbaR95Ew5PqX6-T-FG67u-0fHLCX6KeLtUrAkBIiJfWZGu7t3Ez2RyKvMerWTAHV1ROVLxhP4wE2oqLK-k9t1i6hrPmq-YJ-GDzjbqNDrNf2-SyjbXUmuQAJa5ScuKsRahZQdVKWyzFzRNPNYzxr3XOkiIb2BLWy4KJO-b-RWiNaaRqebQkQINqnQZfyBkDjpvxMId' },
-  { key: 'WHY_AZERBAIJAN_IMAGE', label: 'Niye Azerbaycan Görseli', defaultUrl: 'https://lh3.googleusercontent.com/aida/AEtjO1WtUBR_2hOeUbRABsre_R7H-yW12FldWdxDp_6_abkiZuNwgF3fMTiwxdQCKdfEbdEWa-6CSQc0bQgUbjojei2itk13mAz_e09yOnKuFWP_7AO2BpMiNUQByyYnqtrPMywT0b4g4COdLkLc5_L75NtOsKv5OOgHz7VdAMCF-WDWgmhqccS9HdQKKY8cwD4AeVg_Z5AczT8rfvCVFXyJrgDuQKAsNiyYL54OeN2_HoFxHi9ltf4bUcbHSmM' },
+  { key: 'HERO_IMAGE',                   label: 'Hero Arxa Fon',                    defaultUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB9ZWqLLmb30gHFdTBf7cfY60pAMzYSTWRn2keRDZ7k8a3eQicd1I5xuOR1U44ux_eyOl79BjhxRaXdEbzovzXexqRo8oDy3gVECJAAKnDsq1DYgw7oR-p-U-VjFeMqmdwPl27SJVIP7hTVWchM1LYBR1EY2hy5C8iSkUcytv0qKVFgxmbifXswWW8UTnyUsQw5XBb81qNG2tremLOg_k5EPGCl-K_AWwSN8UQ3T1EN7HyePk3pvGD9' },
+  { key: 'BUYER_CARD_IMAGE',             label: 'Alıcı Kartı Görseli',              defaultUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCHfBjlFdQNaNAsP2RbAdqbBzskyL-GFgkaTpjwu0U6iT-t0tvmdQxrsHV7DOVkxLI4TCvj6qWpEawxqKJPqQE9f5GeXtwvTu7-fs3s495aRNM41LY0ardk4_DhtXk2RrKbiZgwssXvlrrI_EThET-4vRXO-9SbspxRcE3KXflGW-LnO8LzAq_bYYS10R-r010CzBLBwMqbd6slv40ntEvn3OyeauJszJaHkxnHTcGCq-0XAIDQmj6_' },
+  { key: 'PRODUCER_CARD_IMAGE',          label: 'İstehsalçı Kartı Görseli',         defaultUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDgrvRVBxN_YV05A8C2ZBQC2V2WHmgN9IrmvxhBvoVre7FKYjEbaR95Ew5PqX6-T-FG67u-0fHLCX6KeLtUrAkBIiJfWZGu7t3Ez2RyKvMerWTAHV1ROVLxhP4wE2oqLK-k9t1i6hrPmq-YJ-GDzjbqNDrNf2-SyjbXUmuQAJa5ScuKsRahZQdVKWyzFzRNPNYzxr3XOkiIb2BLWy4KJO-b-RWiNaaRqebQkQINqnQZfyBkDjpvxMId' },
+  { key: 'WHY_AZERBAIJAN_IMAGE',         label: 'Niyə Azərbaycan Görseli',          defaultUrl: 'https://lh3.googleusercontent.com/aida/AEtjO1WtUBR_2hOeUbRABsre_R7H-yW12FldWdxDp_6_abkiZuNwgF3fMTiwxdQCKdfEbdEWa-6CSQc0bQgUbjojei2itk13mAz_e09yOnKuFWP_7AO2BpMiNUQByyYnqtrPMywT0b4g4COdLkLc5_L75NtOsKv5OOgHz7VdAMCF-WDWgmhqccS9HdQKKY8cwD4AeVg_Z5AczT8rfvCVFXyJrgDuQKAsNiyYL54OeN2_HoFxHi9ltf4bUcbHSmM' },
+  { key: 'HOW_IT_WORKS_BUYERS_IMAGE',    label: 'Necə İşləyir — Alıcılar Görseli',  defaultUrl: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800&q=80' },
+  { key: 'HOW_IT_WORKS_SELLERS_IMAGE',   label: 'Necə İşləyir — Satıcılar Görseli', defaultUrl: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&q=80' },
 ];
 
 // ── Standalone field components (defined OUTSIDE main component to prevent remounting) ──
@@ -496,13 +498,29 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
           {page === 'how_it_works' && (
             <>
               <h2 className="text-sm font-bold text-slate-800">Necə İşləyir Bölməsi</h2>
+
+              <div className="bg-slate-100 px-3 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider rounded">Görsellər</div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <ImageField imgKey="HOW_IT_WORKS_BUYERS_IMAGE" label="Alıcılar Görseli"
+                  content={content} uploading={uploading}
+                  onSaveContent={saveContent} onTriggerUpload={triggerUpload}
+                  onUpdateImgUrl={handleUpdateImgUrl} onPreview={setPreview}
+                  saving={saving} saved={saved} />
+                <ImageField imgKey="HOW_IT_WORKS_SELLERS_IMAGE" label="Satıcılar Görseli"
+                  content={content} uploading={uploading}
+                  onSaveContent={saveContent} onTriggerUpload={triggerUpload}
+                  onUpdateImgUrl={handleUpdateImgUrl} onPreview={setPreview}
+                  saving={saving} saved={saved} />
+              </div>
+
+              <div className="bg-slate-100 px-3 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider rounded mt-2">Mətnlər</div>
               <MultiLocF label="Bölmə Başlığı" strKey="howItWorks.heading" locData={locData} onChange={handleMultiLocChange} />
               <MultiLocF label="Alt Başlıq" strKey="howItWorks.subheading" multi locData={locData} onChange={handleMultiLocChange} />
               <MultiLocF label='"Tam Prosesə Bax" Butonu' strKey="howItWorks.seeFullProcess" locData={locData} onChange={handleMultiLocChange} />
               <MultiLocF label="Alıcılar Etiketi" strKey="howItWorks.forBuyersLabel" locData={locData} onChange={handleMultiLocChange} />
               <MultiLocF label="İstehsalçılar Etiketi" strKey="howItWorks.forProducersLabel" locData={locData} onChange={handleMultiLocChange} />
               <MultiLocF label="İpucu Mətni" strKey="howItWorks.clickStepHint" multi locData={locData} onChange={handleMultiLocChange} />
-              <SaveBar onSave={() => saveStrings(locData)} saving={saving} saved={saved} />
+              <SaveBar onSave={async () => { await saveContent(content); await saveStrings(locData); }} saving={saving} saved={saved} />
             </>
           )}
 
