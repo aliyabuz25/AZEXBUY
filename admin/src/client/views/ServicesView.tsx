@@ -4,6 +4,7 @@ import {
   CheckCircle, Eye, EyeOff, ChevronDown, ChevronRight, ToggleLeft, ToggleRight,
 } from 'lucide-react';
 import { UiLanguage } from '../types';
+import { SEED_SERVICES } from '../../seed';
 
 interface ServicesViewProps { uiLang: UiLanguage; }
 
@@ -100,15 +101,48 @@ export const ServicesView: React.FC<ServicesViewProps> = () => {
   const loadServices = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await authFetch('/api/azexbuy/services');
-      if (res.ok) setServices(await res.json());
+      let loaded: any[] = [];
+      // 1. Try /api/azexbuy/services
+      try {
+        const res = await authFetch('/api/azexbuy/services');
+        if (res.ok) {
+          const text = await res.text();
+          if (text.startsWith('[') || text.startsWith('{')) {
+            const data = JSON.parse(text);
+            if (Array.isArray(data) && data.length > 0) {
+              loaded = data;
+            }
+          }
+        }
+      } catch {}
+
+      // 2. Fallback: /api/azexbuy/content (cmsServices)
+      if (loaded.length === 0) {
+        try {
+          const contentRes = await fetch('/api/azexbuy/content');
+          if (contentRes.ok) {
+            const content = await contentRes.json();
+            if (Array.isArray(content.cmsServices) && content.cmsServices.length > 0) {
+              loaded = content.cmsServices;
+            }
+          }
+        } catch {}
+      }
+
+      setServices(loaded);
     } finally { setLoading(false); }
   }, []);
 
   const loadApplications = useCallback(async () => {
     try {
       const res = await authFetch('/api/azexbuy/service-applications');
-      if (res.ok) setApplications(await res.json());
+      if (res.ok) {
+        const text = await res.text();
+        if (text.startsWith('[') || text.startsWith('{')) {
+          const data = JSON.parse(text);
+          if (Array.isArray(data)) setApplications(data);
+        }
+      }
     } catch {}
   }, []);
 
@@ -117,7 +151,19 @@ export const ServicesView: React.FC<ServicesViewProps> = () => {
   const handleSave = async (id: string) => {
     setSaving(true);
     try {
-      await authFetch(`/api/azexbuy/services/${id}`, { method: 'PATCH', body: JSON.stringify(editData) });
+      try {
+        await authFetch(`/api/azexbuy/services/${id}`, { method: 'PATCH', body: JSON.stringify(editData) });
+      } catch {}
+
+      try {
+        const contentRes = await fetch('/api/azexbuy/content');
+        const content = contentRes.ok ? await contentRes.json() : {};
+        if (Array.isArray(content.cmsServices)) {
+          content.cmsServices = content.cmsServices.map((s: any) => s.id === id ? { ...s, ...editData, updatedAt: new Date().toISOString() } : s);
+          await authFetch('/api/azexbuy/content', { method: 'POST', body: JSON.stringify(content) });
+        }
+      } catch {}
+
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
       setEditingId(null);
@@ -130,7 +176,25 @@ export const ServicesView: React.FC<ServicesViewProps> = () => {
     setSaving(true);
     try {
       const id = `srv-${Date.now()}`;
-      await authFetch('/api/azexbuy/services', { method: 'POST', body: JSON.stringify({ ...newSrv, id, createdAt: new Date().toISOString() }) });
+      const createdItem = {
+        ...newSrv,
+        id,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
+      try {
+        await authFetch('/api/azexbuy/services', { method: 'POST', body: JSON.stringify(createdItem) });
+      } catch {}
+
+      try {
+        const contentRes = await fetch('/api/azexbuy/content');
+        const content = contentRes.ok ? await contentRes.json() : {};
+        const existingList = Array.isArray(content.cmsServices) ? content.cmsServices : [...services];
+        content.cmsServices = [createdItem, ...existingList.filter((s: any) => s.id !== id)];
+        await authFetch('/api/azexbuy/content', { method: 'POST', body: JSON.stringify(content) });
+      } catch {}
+
       setShowNew(false);
       setNewSrv({ ...BLANK_SERVICE });
       await loadServices();
@@ -139,13 +203,67 @@ export const ServicesView: React.FC<ServicesViewProps> = () => {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Bu xidməti silmək istədiyinizə əminsiniz?')) return;
-    await authFetch(`/api/azexbuy/services/${id}`, { method: 'DELETE' });
+    try {
+      await authFetch(`/api/azexbuy/services/${id}`, { method: 'DELETE' });
+    } catch {}
+
+    try {
+      const contentRes = await fetch('/api/azexbuy/content');
+      const content = contentRes.ok ? await contentRes.json() : {};
+      if (Array.isArray(content.cmsServices)) {
+        content.cmsServices = content.cmsServices.filter((s: any) => s.id !== id);
+        await authFetch('/api/azexbuy/content', { method: 'POST', body: JSON.stringify(content) });
+      }
+    } catch {}
+
     await loadServices();
   };
 
   const handleToggleActive = async (srv: any) => {
-    await authFetch(`/api/azexbuy/services/${srv.id}`, { method: 'PATCH', body: JSON.stringify({ isActive: !srv.isActive }) });
+    const updatedStatus = !srv.isActive;
+    try {
+      await authFetch(`/api/azexbuy/services/${srv.id}`, { method: 'PATCH', body: JSON.stringify({ isActive: updatedStatus }) });
+    } catch {}
+
+    try {
+      const contentRes = await fetch('/api/azexbuy/content');
+      const content = contentRes.ok ? await contentRes.json() : {};
+      if (Array.isArray(content.cmsServices)) {
+        content.cmsServices = content.cmsServices.map((s: any) => s.id === srv.id ? { ...s, isActive: updatedStatus, updatedAt: new Date().toISOString() } : s);
+        await authFetch('/api/azexbuy/content', { method: 'POST', body: JSON.stringify(content) });
+      }
+    } catch {}
+
     await loadServices();
+  };
+
+  const handleSeedDefaults = async () => {
+    if (!confirm('Varsayılan 6 ixrac xidmətini panelə yükləmək istəyirsiniz?')) return;
+    setSaving(true);
+    try {
+      // 1. Try server seed endpoint
+      try { await authFetch('/api/azexbuy/seed'); } catch {}
+
+      // 2. Also ensure cmsServices in content is populated
+      const contentRes = await fetch('/api/azexbuy/content');
+      const content = contentRes.ok ? await contentRes.json() : {};
+      content.cmsServices = SEED_SERVICES.map(s => ({
+        id: s.id,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        title: s.title,
+        description: s.description,
+        scope: s.scope,
+        targetAudience: s.targetAudience,
+        iconClass: s.iconClass,
+        colorClass: s.colorClass,
+        serviceType: s.serviceType,
+        isActive: Boolean(s.isActive),
+        sortOrder: s.sortOrder,
+      }));
+      await authFetch('/api/azexbuy/content', { method: 'POST', body: JSON.stringify(content) });
+      await loadServices();
+    } finally { setSaving(false); }
   };
 
   const handleAppStatus = async (id: string, status: string) => {
@@ -213,13 +331,24 @@ export const ServicesView: React.FC<ServicesViewProps> = () => {
                 </button>
               ))}
             </div>
-            <button
-              onClick={() => setShowNew(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0f3156] text-white text-xs font-bold rounded cursor-pointer hover:bg-[#1a4a7a]"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              Yeni Xidmət
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleSeedDefaults}
+                disabled={saving}
+                title="Sistemdəki varsayılan 6 ixrac xidmətini bərpa et"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs font-semibold rounded cursor-pointer transition-colors disabled:opacity-60"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${saving ? 'animate-spin' : ''}`} />
+                Varsayılanları Yüklə
+              </button>
+              <button
+                onClick={() => setShowNew(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0f3156] text-white text-xs font-bold rounded cursor-pointer hover:bg-[#1a4a7a]"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                Yeni Xidmət
+              </button>
+            </div>
           </div>
 
           {/* New Service Form */}
@@ -310,9 +439,17 @@ export const ServicesView: React.FC<ServicesViewProps> = () => {
           {loading ? (
             <div className="text-center py-10 text-slate-400 text-xs">Yüklənir...</div>
           ) : filtered.length === 0 ? (
-            <div className="text-center py-10 text-slate-400 text-xs flex flex-col items-center gap-2">
-              <Briefcase className="w-8 h-8" />
-              <span>Xidmət tapılmadı</span>
+            <div className="text-center py-12 text-slate-400 text-xs flex flex-col items-center gap-3 bg-white border border-dashed border-slate-200 rounded-lg">
+              <Briefcase className="w-10 h-10 text-slate-300" />
+              <span className="font-medium text-slate-600">Hələ heç bir xidmət əlavə edilməyib</span>
+              <button
+                onClick={handleSeedDefaults}
+                disabled={saving}
+                className="mt-1 px-4 py-2 bg-[#0f3156] text-white text-xs font-bold rounded-lg cursor-pointer hover:bg-[#1a4a7a] flex items-center gap-2 shadow-sm disabled:opacity-60"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${saving ? 'animate-spin' : ''}`} />
+                Varsayılan 6 İxrac Xidmətini Yüklə
+              </button>
             </div>
           ) : (
             <div className="space-y-2">

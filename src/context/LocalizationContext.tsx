@@ -165,10 +165,17 @@ export const LocalizationProvider: React.FC<{ children: React.ReactNode }> = ({ 
         const content = await contentRes.json();
         localStorage.setItem(CONTENT_CACHE_KEY, JSON.stringify(content || {}));
         setContentOverrides(applyContentOverrides(content || {}));
+        if (Array.isArray(content?.cmsServices) && content.cmsServices.length > 0) {
+          setCmsServices(content.cmsServices.filter((s: CmsService) => s.isActive));
+        }
       }
       if (srvRes.ok) {
-        const srvData: CmsService[] = await srvRes.json();
-        setCmsServices(srvData.filter(s => s.isActive));
+        try {
+          const srvData: CmsService[] = await srvRes.json();
+          if (Array.isArray(srvData) && srvData.length > 0) {
+            setCmsServices(srvData.filter(s => s.isActive));
+          }
+        } catch {}
       }
     } catch {}
   };
