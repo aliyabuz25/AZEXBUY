@@ -710,6 +710,1164 @@ function verifyJwt(token) {
   }
 }
 
+// src/seed.ts
+function seedAzexbuyData(db) {
+  const now = (/* @__PURE__ */ new Date()).toISOString();
+  const categories = [
+    { id: "cat-food", name: "Food Products", slug: "food-products", description: "Natural and processed organic food products from Azerbaijan", sort_order: 1 },
+    { id: "cat-agri", name: "Agriculture & Fresh Produce", slug: "agriculture", description: "Fresh fruits, nuts, grains, and agricultural raw materials", sort_order: 2 },
+    { id: "cat-industrial", name: "Industrial & Textiles", slug: "industrial-products", description: "Raw silk, cotton yarn, metals, and industrial materials", sort_order: 3 },
+    { id: "cat-chemicals", name: "Chemicals & Extracts", slug: "chemicals", description: "Herbal extracts, licorice, saffron derivatives, and compounds", sort_order: 4 },
+    { id: "cat-construction", name: "Construction Materials", slug: "construction-materials", description: "High-purity gypsum, bentonite, natural stone, and cement", sort_order: 5 },
+    { id: "cat-packaging", name: "Packaging & Bulk Bags", slug: "packaging", description: "Industrial polypropylene sacks, FIBC big bags, and containers", sort_order: 6 }
+  ];
+  const insertCat = db.prepare(`
+    INSERT OR REPLACE INTO azexbuy_categories (id, created_at, name, slug, description, sort_order, is_active)
+    VALUES (?, ?, ?, ?, ?, ?, 1)
+  `);
+  for (const c of categories) {
+    insertCat.run(c.id, now, c.name, c.slug, c.description, c.sort_order);
+  }
+  const products = [
+    {
+      id: "prod-hazelnut-atababa",
+      categoryId: "cat-agri",
+      name: "Ata-Baba Shelled Hazelnuts (Extra Grade)",
+      slug: "ata-baba-shelled-hazelnuts",
+      shortDescription: "Extra-grade shelled natural & roasted Ata-Baba hazelnuts from Zaqatala-Sheki certified orchards.",
+      description: "Azerbaijan ranks among the top global producers of hazelnuts. Our Ata-Baba variety is cultivated in the mineral-rich soils of the Greater Caucasus foothills (Zaqatala-Sheki region). Renowned for high oleic oil content (over 65%), delicate aroma, and crunchy bite. Available natural, blanched, roasted, and diced.",
+      technicalSpecs: {
+        "Variety": "Ata-Baba (Local Endemic)",
+        "Caliber (Sizes)": "11\u201313mm, 13\u201315mm, 15+mm",
+        "Moisture Content": "< 5.0% (EU Export Standard)",
+        "Fat / Oil Content": "64% \u2013 68% high oleic",
+        "Aflatoxin B1": "< 2 ppb (Strict EU compliant)",
+        "Purity": "99.9% Sortex optical sorted"
+      },
+      images: [
+        "https://lh3.googleusercontent.com/aida-public/AB6AXuD6iP6ACTY6rFPAXNJlK_W-AfkWR_1OBE8I3wLkCwVMAlQIyNvxAXxK1kYe6-itoVecrpqtsSok0_wQ1QnYyWcn40Hikz269v2ag3TbKrY9lfqw3mEVtR-I0GvclcQXFDi0q_xVPYMdzpIFMaXwgeJEs4gwsCpcf-Dn7Df8QGIeKoSael0DxSBY2ZpmoWYe8Ynhio_Q0dONzHarqS9Kp31IStn01T44xVmJ90B5TY2WFQr7mOmo4Ucq"
+      ],
+      moq: "20 Metric Tons (1x 20ft FCL)",
+      certificates: ["ISO 22000:2018", "FSSC 22000", "AQTA Phytosanitary", "EUR.1 / CT-1", "Halal Food Compliance"],
+      packagingInfo: "25kg multi-layer vacuum foil bags in corrugated export cartons, or 800kg jumbo big-bags on Euro-pallets.",
+      hsCode: "080222",
+      originRegion: "Zaqatala \u2013 \u015E\u0259ki \u0130qtisadi Rayonu",
+      isFeatured: 1,
+      seoTitle: "Azerbaijani Ata-Baba Shelled Hazelnuts \u2014 Bulk Wholesale Export",
+      seoDescription: "Direct supplier of premium grade Ata-Baba shelled hazelnuts from Zaqatala-Sheki, Azerbaijan. EU-compliant low aflatoxin, 20 MT MOQ."
+    },
+    {
+      id: "prod-pomegranate-goychay",
+      categoryId: "cat-agri",
+      name: "Goychay Fresh Pomegranates & 100% NFC Juice",
+      slug: "goychay-fresh-pomegranates-nfc-juice",
+      shortDescription: "Protected Geographical Indication (PGI) Goychay ruby pomegranates (Guleysha) and cold-pressed NFC pure juice.",
+      description: "Goychay pomegranate is celebrated globally for its balanced Brix (sugar content), deep crimson arils, and exceptional antioxidant polyphenols. Sourced directly from modern certified orchards in Central Aran. Available as fresh fruit in protective cell-trays and as 100% Not-From-Concentrate (NFC) cold-pressed aseptic bulk juice.",
+      technicalSpecs: {
+        "Cultivar": "Guleysha Red & Pink (PGI Goychay)",
+        "Caliber (Fresh)": "300g \u2013 550g per fruit",
+        "Brix Level": "16.5\xB0 \u2013 18.0\xB0 natural sweetness",
+        "Acidity": "1.2% \u2013 1.6% citric equivalent",
+        "Processing (Juice)": "Aseptic cold press, zero added sugar/water",
+        "Shelf Life": "Fresh: 90 days at 5\xB0C / Juice: 18 months aseptic"
+      },
+      images: [
+        "https://lh3.googleusercontent.com/aida-public/AB6AXuDHo5g8iKevybJcG4jlFPGTNzuPMU2721wxSfNRS3s0FmbZeA3YW4AxkdXtyhH_55x-4s5Uh_5-S2-S3LVPexC1O1ahPg_Hgeeion6snYi_eyi7MNDXh5coR3k9acztB4DSA_PV9JjS_JAitpfDEAmO4UUbAUjAs0VuwpjvFbKeEaRXeqGiJ2JKU_vHqlhTa6Meil6iamn-3I_33E-Y7Tii2hclP8mfc_jBNp_gJSQpmbKniKtPJu5s"
+      ],
+      moq: "18 Metric Tons (Reefer 40ft container)",
+      certificates: ["GlobalG.A.P.", "ISO 22000", "AQTA Phytosanitary", "EUR.1 / CT-1", "Kosher / Halal"],
+      packagingInfo: "Fresh: 4.5kg open-top telescopic display cartons with food-grade plastic cell dividers. Juice: 200L aseptic drums.",
+      hsCode: "081090",
+      originRegion: "M\u0259rk\u0259zi Aran (G\xF6y\xE7ay) \u0130qtisadi Rayonu",
+      isFeatured: 1,
+      seoTitle: "Goychay Pomegranates & Pure NFC Juice Bulk Export Azerbaijan",
+      seoDescription: "B2B export of certified Goychay pomegranates and 100% cold-pressed NFC juice. Controlled atmosphere reefer shipping."
+    },
+    {
+      id: "prod-saffron-absheron",
+      categoryId: "cat-food",
+      name: "Absheron Royal Saffron Threads (Category I ISO 3632)",
+      slug: "absheron-royal-saffron-threads",
+      shortDescription: "Certified ISO 3632 Category I pure all-red Sargol saffron hand-harvested in the semi-arid soils of Absheron.",
+      description: "Absheron saffron is historical heritage dating back over eight centuries. Grown in the unique microclimate of the Absheron peninsula near Bilgah. Featuring deep carmine-red stigmas with safranal concentration delivering potent aroma and rich natural crocin coloring strength (>240).",
+      technicalSpecs: {
+        "Grade": "Category I (Super Negin / Pure Sargol)",
+        "Crocin (Coloring Strength)": "> 240 units (ISO 3632)",
+        "Safranal (Aroma)": "35 \u2013 45 units",
+        "Picrocrocin (Flavor)": "> 85 units",
+        "Moisture Content": "< 7.5%",
+        "Foreign Matter": "< 0.1% zero artificial coloring"
+      },
+      images: [
+        "https://lh3.googleusercontent.com/aida-public/AB6AXuDtNJYRxE2w63MPzGdjf8CPD9AEFm8HRgiA_8S4bLzI4JlWkzMSr7mOrBFN0clACdJ8Z4fdPmTxcUeQZoVHwM8X0BSrp3Ge5V1rjnXGei5GwaARNkgff5T_0xspZitbC-LuPEjlYnoFGRTUx9-xnXkSS6296Qbk6OBMxFoPcu45Ph_IWPgxe8ghwkwSRb4DFc747hiqPs4hl6mD0u0fkbzXC86IW3Go3l5Gt49vsGvyFE6w27cyqJpi"
+      ],
+      moq: "5 Kilograms (Air Cargo with secure courier dispatch)",
+      certificates: ["ISO 3632-1:2011 Grade I", "AQTA Export Certificate", "EUR.1", "CoA Spectrophotometry"],
+      packagingInfo: "100g, 250g, and 500g nitrogen-flushed sealed tin caddies and food-grade glass jars in tamper-evident wooden master chests.",
+      hsCode: "091020",
+      originRegion: "Ab\u015Feron \u2013 X\u0131z\u0131 \u0130qtisadi Rayonu",
+      isFeatured: 1,
+      seoTitle: "Pure Absheron Saffron Threads ISO 3632 Grade I Wholesale",
+      seoDescription: "Direct producer export of genuine Absheron saffron. ISO 3632 Category 1, high crocin coloring strength."
+    },
+    {
+      id: "prod-sheki-silk-yarn",
+      categoryId: "cat-industrial",
+      name: "Sheki 100% Mulberry Raw Silk Yarn & Woven Fabric",
+      slug: "sheki-mulberry-raw-silk-yarn",
+      shortDescription: "Heritage 20/22D mulberry raw silk yarn and natural degummed habotai fabric from Sheki Silk processing plant.",
+      description: "Sheki has been the silk capital of the Caucasus on the Great Silk Road since the 14th century. Produced from Bombyx mori silkworms fed on local white mulberry leaves. Highly sought after by luxury textile mills in Italy, Turkey, and Japan for high tensile strength, exceptional dye affinity, and natural luster.",
+      technicalSpecs: {
+        "Composition": "100% Bombyx Mori Mulberry Raw Silk",
+        "Denier Yarn Count": "20/22D, 28/32D and 40/44D",
+        "Grade Standard": "4A / 5A international raw silk grade",
+        "Evenness Deviation": "< 85%",
+        "Elongation at Break": "18% \u2013 22%",
+        "Moisture Regain": "11.0% commercial allowance"
+      },
+      images: [
+        "https://lh3.googleusercontent.com/aida-public/AB6AXuD03XXHtlryKOF4P13Jsyapcx1cJC4md04R7W4OmhEOlilzH3GXC84pohKdFeZC2E26PSlasR8hsE1ZhUMI_m0G3EvLUmCLYXAFuMf-8fVmPxAaSz6rXZE5DhZfy_GWTdrnj6b_8WD4Q3Rrvlu3AYTUq_hrwc41KTaORWxIqz41fZ3sVhVp_icHS5yhXQKuIuOFb0jjF16nF7IcXL9rWJ5SplYRdK1DWGo-wlLK2UlgnkEWl6JIaR20"
+      ],
+      moq: "500 Kilograms (1 Pallet)",
+      certificates: ["OEKO-TEX Standard 100 Class I", "Certificate of Origin Form EUR.1", "ISO 9001:2015"],
+      packagingInfo: "Silk hanks wrapped in protective polythene and packed in 50kg export wooden cases or heavy corrugated cartons.",
+      hsCode: "500200",
+      originRegion: "\u015E\u0259ki \u2013 Zaqatala \u0130qtisadi Rayonu",
+      isFeatured: 1,
+      seoTitle: "Sheki Raw Mulberry Silk Yarn 20/22D Bulk B2B Export",
+      seoDescription: "Premium grade 4A/5A Azerbaijani mulberry raw silk from the historic Sheki mill. Certified export documentation."
+    },
+    {
+      id: "prod-cotton-lint-yarn",
+      categoryId: "cat-industrial",
+      name: "Mughan Combed Ring-Spun Cotton Yarn (Ne 20/1 \u2013 40/1)",
+      slug: "mughan-combed-cotton-yarn",
+      shortDescription: "100% natural virgin cotton lint and ring-spun carded/combed knitting and weaving yarns from the Mughan valley.",
+      description: "Manufactured in state-of-the-art spinning mills in Shirvan and Sabirabad using hand-picked medium-staple upland cotton. Low hairiness, high breaking tenacity, and strict Uster statistics compliance for high-speed circular knitting machines.",
+      technicalSpecs: {
+        "Yarn Counts": "Ne 20/1, Ne 30/1, Ne 40/1 (Carded & Combed)",
+        "Staple Length": "28.5mm \u2013 29.5mm",
+        "Tenacity": "17.5 \u2013 19.5 cN/tex",
+        "Twist Factor": "3.8 \u2013 4.2 alfa (TM)",
+        "Uster IPI (Imperfections)": "Top 10% \u2013 15% worldwide Uster benchmark"
+      },
+      images: [
+        "https://lh3.googleusercontent.com/aida-public/AB6AXuC5UBl6ky2E1o6RbrVtIlz6xdPHcSBD7sd8H309gALUQoxK5e7r7Jx8q159V1clhGMbdLSh4P9jCngmrLKo1SRNMt8pOyjcZAA6ESFVNV4ezFkDuGcGpnQTuFuS1mN_y1GCw0fUeMaghixWmXvDOKyonKRvDbft5TQiqBmLD-rRRmW-WA8ynGJG10G8Glm_TPlhHHVb7hRwLDWJ8xhd-hOjeMKGIxnS1XfZVRCXaB1IDAY3cUYFZPhn"
+      ],
+      moq: "20 Metric Tons (1x 40ft HQ FCL)",
+      certificates: ["BCI (Better Cotton Initiative)", "OEKO-TEX Standard 100", "ISO 9001", "EUR.1 / CT-1"],
+      packagingInfo: "1.89kg paper cones wrapped in shrink film, 24 cones per export carton box on heat-treated ISPM-15 pallets.",
+      hsCode: "520512",
+      originRegion: "\u015Eirvan \u2013 Salyan \u0130qtisadi Rayonu",
+      isFeatured: 0,
+      seoTitle: "Azerbaijani 100% Combed Cotton Yarn Wholesale Supply",
+      seoDescription: "Manufacturer direct supply of Ne 20\u201340 ring-spun cotton yarn from Azerbaijan Mughan region. BCI certified."
+    },
+    {
+      id: "prod-licorice-root-extract",
+      categoryId: "cat-chemicals",
+      name: "Wild Azerbaijani Licorice Root & Spray-Dried Extract Powder",
+      slug: "wild-azerbaijani-licorice-root-extract",
+      shortDescription: "High-glycyrrhizin wild Glycyrrhiza glabra licorice root baled and spray-dried extract powder for pharma and food.",
+      description: "The floodplains of the Kura and Aras rivers provide ideal wild growth conditions for Glycyrrhiza glabra. Hand-harvested, sun-cured, and processed into de-dusted pressed bales and spray-dried water-soluble powder containing 18% to 26% glycyrrhizic acid.",
+      technicalSpecs: {
+        "Active Substance": "Glycyrrhizic Acid (Glycyrrhizin) 18% \u2013 26% (HPLC)",
+        "Moisture Content": "< 6.0%",
+        "Total Ash": "< 8.0%",
+        "Water Solubility": "> 98.5% instant dissolve",
+        "Pesticide Residues": "Compliant with European Pharmacopoeia (EP 10.0)"
+      },
+      images: [
+        "https://lh3.googleusercontent.com/aida-public/AB6AXuDGgRuRr9uJiYiCy0AeiN7FvX1CWCTQLdRAG2TJXnfii1yXyI2WeKI6wMo6E8nydnbcUg27wH11AYMDuRy4WLTd0MRbPlzPT3f1Wzw2BN132jDlE2KhDZ_BpSyUWXlgaEpX1_ukFt7IpSBL9Cnc3ILMPL8scPCgkSNob0PCSAa30dUKuSc0TBkoYnhfmiO58w10Zuz4eKBXbVNTk92SLbvxAconUj8wUxkDU7y1H7Ks3do6--khlfP"
+      ],
+      moq: "10 Metric Tons (Baled Root) / 2 Metric Tons (Extract)",
+      certificates: ["Ph. Eur. Compliance", "GMP Pharma Facility", "AQTA Phytosanitary", "EUR.1 / CT-1", "Halal / Kosher"],
+      packagingInfo: "Root: 100kg hydraulic pressed bales bound with galvanized steel wire. Extract: 25kg multi-wall paper bags with PE inner liner.",
+      hsCode: "121190",
+      originRegion: "M\u0259rk\u0259zi Aran (Ucar \u2013 K\xFCrd\u0259mir) \u0130qtisadi Rayonu",
+      isFeatured: 0,
+      seoTitle: "Wild Licorice Root & Glycyrrhizin Extract Powder Azerbaijan",
+      seoDescription: "B2B export of pharmaceutical grade Glycyrrhiza glabra licorice root and spray-dried extract from Azerbaijan."
+    },
+    {
+      id: "prod-absheron-olive-oil",
+      categoryId: "cat-food",
+      name: "Absheron Cold-Pressed Extra Virgin Olive Oil (EVOO)",
+      slug: "absheron-extra-virgin-olive-oil",
+      shortDescription: "Ultra-low acidity (<0.3%) single-estate Extra Virgin Olive Oil cold-extracted within 4 hours of tree harvest.",
+      description: "Cultivated in the sun-drenched, maritime-breeze groves of Zira and Gala on the Absheron peninsula. Cultivars include Azerbaijani endemic Bak\u0131 Zeytunu, Arbequina, and Arbosana. Cold-extracted below 24\xB0C in state-of-the-art inert nitrogen centrifugation systems.",
+      technicalSpecs: {
+        "Free Fatty Acidity": "< 0.30% (IOC Extra Virgin Standard)",
+        "Peroxide Value": "< 6.5 meq O2/kg",
+        "Total Polyphenols": "> 380 mg/kg (High Antioxidant)",
+        "Extraction Temperature": "< 24\xB0C Cold Pressed",
+        "Flavor Profile": "Fresh green grass, green almond, tomato leaf, balanced peppery finish"
+      },
+      images: [
+        "https://lh3.googleusercontent.com/aida-public/AB6AXuDHo5g8iKevybJcG4jlFPGTNzuPMU2721wxSfNRS3s0FmbZeA3YW4AxkdXtyhH_55x-4s5Uh_5-S2-S3LVPexC1O1ahPg_Hgeeion6snYi_eyi7MNDXh5coR3k9acztB4DSA_PV9JjS_JAitpfDEAmO4UUbAUjAs0VuwpjvFbKeEaRXeqGiJ2JKU_vHqlhTa6Meil6iamn-3I_33E-Y7Tii2hclP8mfc_jBNp_gJSQpmbKniKtPJu5s"
+      ],
+      moq: "5,000 Liters (Flexitank or bottled private label)",
+      certificates: ["IOC (International Olive Council) Standards", "ISO 22000", "AQTA Health Certificate", "EUR.1 / CT-1"],
+      packagingInfo: "Retail: 500ml and 750ml dark marasca glass bottles / 5L metal tins. Bulk: 1,000L IBC totes or 24,000L food-grade flexitanks.",
+      hsCode: "150920",
+      originRegion: "Ab\u015Feron \u2013 X\u0131z\u0131 (Zir\u0259) \u0130qtisadi Rayonu",
+      isFeatured: 1,
+      seoTitle: "Absheron Extra Virgin Olive Oil Bulk Export Azerbaijan",
+      seoDescription: "Single-estate premium extra virgin olive oil with acidity <0.3%. Bulk IBC totes and private label bottled supply."
+    },
+    {
+      id: "prod-goygol-alpine-honey",
+      categoryId: "cat-food",
+      name: "Lesser Caucasus Mountain Floral Honey (G\xF6yg\xF6l Alpine)",
+      slug: "goygol-alpine-mountain-honey",
+      shortDescription: "100% raw unpasteurized multi-floral mountain honey gathered at 1,600m \u2013 2,200m altitude in G\xF6yg\xF6l National Park.",
+      description: "Produced by native Caucasian grey mountain bees (Apis mellifera caucasica) feeding on wild sub-alpine wildflowers, wild thyme, and linden. Free from synthetic pesticides, antibiotics, and commercial syrup adulteration.",
+      technicalSpecs: {
+        "Diastase Activity": "> 22 Schade units (High enzymatic vitality)",
+        "HMF (Hydroxymethylfurfural)": "< 8 mg/kg (Freshness marker)",
+        "Moisture Content": "16.2% \u2013 17.5%",
+        "Reducing Sugars (Fructose+Glucose)": "> 72%",
+        "Pollen Spectrum": "Wild thyme, origanum, melilotus, trifolium"
+      },
+      images: [
+        "https://lh3.googleusercontent.com/aida-public/AB6AXuD6iP6ACTY6rFPAXNJlK_W-AfkWR_1OBE8I3wLkCwVMAlQIyNvxAXxK1kYe6-itoVecrpqtsSok0_wQ1QnYyWcn40Hikz269v2ag3TbKrY9lfqw3mEVtR-I0GvclcQXFDi0q_xVPYMdzpIFMaXwgeJEs4gwsCpcf-Dn7Df8QGIeKoSael0DxSBY2ZpmoWYe8Ynhio_Q0dONzHarqS9Kp31IStn01T44xVmJ90B5TY2WFQr7mOmo4Ucq"
+      ],
+      moq: "3 Metric Tons (B2B bulk drums or retail glass)",
+      certificates: ["AQTA Veterinary Export Approval", "ISO 22000", "Intertek / QSI Bremen Lab Analysis", "EUR.1 / CT-1"],
+      packagingInfo: "Bulk: 290kg food-grade lacquered steel drums. Retail: 400g and 900g hexagonal glass jars in 12-pack cartons.",
+      hsCode: "040900",
+      originRegion: "G\u0259nc\u0259 \u2013 Da\u015Fk\u0259s\u0259n (G\xF6yg\xF6l) \u0130qtisadi Rayonu",
+      isFeatured: 0,
+      seoTitle: "Raw Caucasian Mountain Honey Bulk B2B Export Azerbaijan",
+      seoDescription: "Direct export of raw unpasteurized multi-floral alpine honey from G\xF6yg\xF6l, Azerbaijan. Lab tested EU compliant."
+    },
+    {
+      id: "prod-bentonite-clay-agstafa",
+      categoryId: "cat-industrial",
+      name: "Agstafa Sodium-Activated Bentonite Clay (API Spec 13A)",
+      slug: "agstafa-bentonite-clay-api-grade",
+      shortDescription: "Premium montmorillonite swelling bentonite clay for oil/gas drilling fluids, foundry casting, and civil engineering.",
+      description: "Mined from the renowned deposits in Agstafa district. Naturally high in montmorillonite content (>80%) with exceptional thixotropic gel strength, high swelling index, and low water loss under pressure. Meets API 13A and OCMA standards.",
+      technicalSpecs: {
+        "Montmorillonite Content": "> 82% (XRD analysis)",
+        "Viscometer 600 RPM": "> 30 (API Spec 13A)",
+        "Yield Point / Plastic Viscosity Ratio": "< 3.0",
+        "Filtrate Volume (Fluid Loss)": "< 15.0 cm\xB3",
+        "Swell Volume": "> 28 ml / 2g"
+      },
+      images: [
+        "https://lh3.googleusercontent.com/aida-public/AB6AXuDtNJYRxE2w63MPzGdjf8CPD9AEFm8HRgiA_8S4bLzI4JlWkzMSr7mOrBFN0clACdJ8Z4fdPmTxcUeQZoVHwM8X0BSrp3Ge5V1rjnXGei5GwaARNkgff5T_0xspZitbC-LuPEjlYnoFGRTUx9-xnXkSS6296Qbk6OBMxFoPcu45Ph_IWPgxe8ghwkwSRb4DFc747hiqPs4hl6mD0u0fkbzXC86IW3Go3l5Gt49vsGvyFE6w27cyqJpi"
+      ],
+      moq: "44 Metric Tons (2x 20ft Containers or bulk rail wagons)",
+      certificates: ["API Spec 13A Certified", "ISO 9001:2015", "Certificate of Origin Form CT-1 / EUR.1"],
+      packagingInfo: "1,000kg weather-resistant polypropylene big-bags with discharge spouts, or 25kg multi-ply paper valve bags.",
+      hsCode: "250810",
+      originRegion: "Qazax \u2013 Tovuz (A\u011Fstafa) \u0130qtisadi Rayonu",
+      isFeatured: 0,
+      seoTitle: "Azerbaijan Bentonite Clay API Spec 13A Drilling Grade Export",
+      seoDescription: "High montmorillonite sodium-activated bentonite clay for drilling mud and civil engineering. B2B bulk supply."
+    },
+    {
+      id: "prod-polypropylene-big-bags",
+      categoryId: "cat-packaging",
+      name: "Heavy-Duty FIBC Big Bags & Polypropylene Woven Sacks",
+      slug: "fibc-big-bags-polypropylene-sacks",
+      shortDescription: "Industrial UV-stabilized 4-loop flexible bulk containers (FIBC) and laminated woven PP bags from Sumgayit chemical park.",
+      description: "Manufactured utilizing virgin polymer pellets from SOCAR Polymer petrochemical complex. Engineered for safe working loads (SWL) from 500kg up to 2,000kg with 5:1 and 6:1 safety factors for international multi-modal hazardous and non-hazardous bulk shipping.",
+      technicalSpecs: {
+        "Fabric Weight": "140 g/m\xB2 \u2013 220 g/m\xB2 UV Stabilized",
+        "Safe Working Load (SWL)": "1,000 kg \u2013 2,000 kg",
+        "Safety Factor (SF)": "5:1 (Single trip) / 6:1 (Multi-trip UN Certified)",
+        "Construction Types": "Circular / U-panel / 4-panel with PE liner",
+        "Printing": "Up to 4 colors flexographic branding"
+      },
+      images: [
+        "https://lh3.googleusercontent.com/aida-public/AB6AXuC5UBl6ky2E1o6RbrVtIlz6xdPHcSBD7sd8H309gALUQoxK5e7r7Jx8q159V1clhGMbdLSh4P9jCngmrLKo1SRNMt8pOyjcZAA6ESFVNV4ezFkDuGcGpnQTuFuS1mN_y1GCw0fUeMaghixWmXvDOKyonKRvDbft5TQiqBmLD-rRRmW-WA8ynGJG10G8Glm_TPlhHHVb7hRwLDWJ8xhd-hOjeMKGIxnS1XfZVRCXaB1IDAY3cUYFZPhn"
+      ],
+      moq: "5,000 Units (LCL or FCL container loads)",
+      certificates: ["ISO 9001:2015", "Labordata Testing Compliance", "UN Certified Packaging for Dangerous Goods"],
+      packagingInfo: "Baled in bundles of 50 or 100 units strapped with heavy polyester cords on wooden pallets.",
+      hsCode: "630532",
+      originRegion: "Ab\u015Feron \u2013 X\u0131z\u0131 (Sumqay\u0131t) \u0130qtisadi Rayonu",
+      isFeatured: 0,
+      seoTitle: "FIBC Big Bags & Woven PP Sacks Manufacturer Azerbaijan",
+      seoDescription: "Direct manufacturer export of industrial FIBC big bags and woven polypropylene sacks from Sumgayit, Azerbaijan."
+    }
+  ];
+  const insertProd = db.prepare(`
+    INSERT OR REPLACE INTO azexbuy_products
+    (id, created_at, updated_at, category_id, name, slug, short_description, description, technical_specs, images, moq, certificates, packaging_info, hs_code, origin_region, is_active, is_featured, seo_title, seo_description)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?)
+  `);
+  for (const p of products) {
+    insertProd.run(
+      p.id,
+      now,
+      now,
+      p.categoryId,
+      p.name,
+      p.slug,
+      p.shortDescription,
+      p.description,
+      JSON.stringify(p.technicalSpecs),
+      JSON.stringify(p.images),
+      p.moq,
+      JSON.stringify(p.certificates),
+      p.packagingInfo,
+      p.hsCode,
+      p.originRegion,
+      p.isFeatured,
+      p.seoTitle,
+      p.seoDescription
+    );
+  }
+  const services = [
+    {
+      id: "srv-market-access",
+      title: {
+        AZ: "Beyn\u0259lxalq Bazar Ara\u015Fd\u0131rmas\u0131 & Al\u0131c\u0131 Axtar\u0131\u015F\u0131",
+        EN: "Global Market Intelligence & Buyer Sourcing",
+        TR: "Uluslararas\u0131 Pazar Ara\u015Ft\u0131rmas\u0131 & Al\u0131c\u0131 Temini",
+        RU: "\u0418\u0441\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u043D\u0438\u044F \u0433\u043B\u043E\u0431\u0430\u043B\u044C\u043D\u044B\u0445 \u0440\u044B\u043D\u043A\u043E\u0432 \u0438 \u043F\u043E\u0438\u0441\u043A \u043F\u043E\u043A\u0443\u043F\u0430\u0442\u0435\u043B\u0435\u0439",
+        AR: "\u0623\u0628\u062D\u0627\u062B \u0627\u0644\u0633\u0648\u0642 \u0627\u0644\u0639\u0627\u0644\u0645\u064A\u0629 \u0648\u0627\u0633\u062A\u0642\u0637\u0627\u0628 \u0627\u0644\u0645\u0634\u062A\u0631\u064A\u0646",
+        ES: "Inteligencia de Mercado Global y B\xFAsqueda de Compradores"
+      },
+      description: {
+        AZ: "M\u0259hsullar\u0131n\u0131z \xFC\xE7\xFCn A\u0130, K\xF6rf\u0259z (GCC), MDB v\u0259 Asiya bazarlar\u0131nda birba\u015Fa B2B idxal\xE7\u0131lar v\u0259 distribyutorlar \u015F\u0259b\u0259k\u0259sinin formala\u015Fd\u0131r\u0131lmas\u0131.",
+        EN: "Establishing qualified B2B importer and distributor networks across EU, GCC, CIS and Asian priority trade corridors with verified buyers.",
+        TR: "\xDCr\xFCnleriniz i\xE7in AB, K\xF6rfez (GCC), BDT ve Asya pazarlar\u0131nda do\u011Frudan B2B ithalat\xE7\u0131 ve distrib\xFCt\xF6r a\u011Flar\u0131n\u0131n kurulmas\u0131.",
+        RU: "\u0424\u043E\u0440\u043C\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u043F\u0440\u043E\u0432\u0435\u0440\u0435\u043D\u043D\u044B\u0445 \u0441\u0435\u0442\u0435\u0439 \u0438\u043C\u043F\u043E\u0440\u0442\u0435\u0440\u043E\u0432 \u0438 \u0434\u0438\u0441\u0442\u0440\u0438\u0431\u044C\u044E\u0442\u043E\u0440\u043E\u0432 \u0432 \u0415\u0421, \u0441\u0442\u0440\u0430\u043D\u0430\u0445 \u041F\u0435\u0440\u0441\u0438\u0434\u0441\u043A\u043E\u0433\u043E \u0437\u0430\u043B\u0438\u0432\u0430, \u0421\u041D\u0413 \u0438 \u0410\u0437\u0438\u0438 \u0441 \u0432\u0435\u0440\u0438\u0444\u0438\u0446\u0438\u0440\u043E\u0432\u0430\u043D\u043D\u044B\u043C\u0438 \u043A\u043E\u043D\u0442\u0440\u0430\u0433\u0435\u043D\u0442\u0430\u043C\u0438.",
+        AR: "\u062A\u0623\u0633\u064A\u0633 \u0634\u0628\u0643\u0627\u062A \u0645\u0648\u062B\u0648\u0642\u0629 \u0645\u0646 \u0627\u0644\u0645\u0633\u062A\u0648\u0631\u062F\u064A\u0646 \u0648\u0627\u0644\u0645\u0648\u0632\u0639\u064A\u0646 \u0641\u064A \u0627\u0644\u0627\u062A\u062D\u0627\u062F \u0627\u0644\u0623\u0648\u0631\u0648\u0628\u064A \u0648\u062F\u0648\u0644 \u0627\u0644\u062E\u0644\u064A\u062C \u0648\u0622\u0633\u064A\u0627.",
+        ES: "Establecimiento de redes cualificadas de importadores y distribuidores en mercados prioritarios con compradores verificados."
+      },
+      scope: {
+        AZ: [
+          "H\u0259d\u0259f bazar idxal tarifl\u0259rinin v\u0259 g\xF6mr\xFCk t\u0259l\u0259bl\u0259rinin analizi",
+          "T\u0259sdiql\u0259nmi\u015F kommersiya al\u0131c\u0131lar\u0131n\u0131n q\u0131sa siyah\u0131s\u0131n\u0131n (shortlist) haz\u0131rlanmas\u0131",
+          "Birba\u015Fa ikit\u0259r\u0259fli B2B dan\u0131\u015F\u0131qlar\u0131n t\u0259\u015Fkili v\u0259 t\u0259qibi",
+          "R\u0259qib qiym\u0259t analizi v\u0259 daxilolma strategiyas\u0131n\u0131n qurulmas\u0131"
+        ],
+        EN: [
+          "Customs tariff & import regulation feasibility analysis in target markets",
+          "Vetted B2B commercial buyer shortlisting and KYC compliance check",
+          "Direct buyer-supplier negotiation scheduling & structured follow-up",
+          "Competitive price benchmarking and landed-cost modeling"
+        ],
+        TR: [
+          "Hedef pazar g\xFCmr\xFCk tarifleri ve mevzuat analizi",
+          "Onayl\u0131 ticari al\u0131c\u0131 e\u015Fle\u015Ftirmesi ve g\xFCvenilirlik incelemesi",
+          "B2B g\xF6r\xFC\u015Fme koordinasyonu ve m\xFCzakere deste\u011Fi",
+          "Piyasa fiyat analizi ve maliyet sim\xFClasyonu"
+        ],
+        RU: [
+          "\u0410\u043D\u0430\u043B\u0438\u0437 \u0442\u0430\u043C\u043E\u0436\u0435\u043D\u043D\u044B\u0445 \u0442\u0430\u0440\u0438\u0444\u043E\u0432 \u0438 \u0440\u0435\u0433\u0443\u043B\u044F\u0442\u043E\u0440\u043D\u044B\u0445 \u0442\u0440\u0435\u0431\u043E\u0432\u0430\u043D\u0438\u0439 \u0446\u0435\u043B\u0435\u0432\u043E\u0433\u043E \u0440\u044B\u043D\u043A\u0430",
+          "\u0428\u043E\u0440\u0442-\u043B\u0438\u0441\u0442 \u043F\u0440\u043E\u0432\u0435\u0440\u0435\u043D\u043D\u044B\u0445 \u043A\u043E\u043C\u043C\u0435\u0440\u0447\u0435\u0441\u043A\u0438\u0445 \u043F\u043E\u043A\u0443\u043F\u0430\u0442\u0435\u043B\u0435\u0439 \u0438 \u043F\u0440\u043E\u0432\u0435\u0440\u043A\u0430 \u0431\u043B\u0430\u0433\u043E\u043D\u0430\u0434\u0435\u0436\u043D\u043E\u0441\u0442\u0438",
+          "\u041E\u0440\u0433\u0430\u043D\u0438\u0437\u0430\u0446\u0438\u044F \u0438 \u0441\u043E\u043F\u0440\u043E\u0432\u043E\u0436\u0434\u0435\u043D\u0438\u0435 \u043F\u0440\u044F\u043C\u044B\u0445 \u043F\u0435\u0440\u0435\u0433\u043E\u0432\u043E\u0440\u043E\u0432 B2B",
+          "\u0410\u043D\u0430\u043B\u0438\u0437 \u0446\u0435\u043D \u043A\u043E\u043D\u043A\u0443\u0440\u0435\u043D\u0442\u043E\u0432 \u0438 \u0440\u0430\u0441\u0447\u0435\u0442 \u0441\u0435\u0431\u0435\u0441\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u0438 \u0441 \u0434\u043E\u0441\u0442\u0430\u0432\u043A\u043E\u0439"
+        ],
+        AR: [
+          "\u062A\u062D\u0644\u064A\u0644 \u0627\u0644\u0631\u0633\u0648\u0645 \u0627\u0644\u062C\u0645\u0631\u0643\u064A\u0629 \u0648\u0627\u0644\u0644\u0648\u0627\u0626\u062D \u0627\u0644\u062A\u0646\u0638\u064A\u0645\u064A\u0629 \u0641\u064A \u0627\u0644\u0623\u0633\u0648\u0627\u0642 \u0627\u0644\u0645\u0633\u062A\u0647\u062F\u0641\u0629",
+          "\u0625\u0639\u062F\u0627\u062F \u0642\u0648\u0627\u0626\u0645 \u0627\u0644\u0645\u0634\u062A\u0631\u064A\u0646 \u0627\u0644\u062A\u062C\u0627\u0631\u064A\u064A\u0646 \u0627\u0644\u0645\u0639\u062A\u0645\u062F\u064A\u0646 \u0648\u0627\u0644\u0645\u0648\u062B\u0648\u0642\u064A\u0646",
+          "\u062A\u0646\u0633\u064A\u0642 \u0648\u062C\u062F\u0648\u0644\u0629 \u0645\u0641\u0627\u0648\u0636\u0627\u062A \u0627\u0644\u062A\u062C\u0627\u0631\u0629 \u0627\u0644\u0645\u0628\u0627\u0634\u0631\u0629 \u0628\u064A\u0646 \u0627\u0644\u0623\u0637\u0631\u0627\u0641",
+          "\u062F\u0631\u0627\u0633\u0629 \u0627\u0644\u0623\u0633\u0639\u0627\u0631 \u0627\u0644\u0645\u0646\u0627\u0641\u0633\u0629 \u0648\u062D\u0633\u0627\u0628 \u0627\u0644\u062A\u0643\u0644\u0641\u0629 \u0627\u0644\u0625\u062C\u0645\u0627\u0644\u064A\u0629"
+        ],
+        ES: [
+          "An\xE1lisis arancelario y de normativas de importaci\xF3n en destino",
+          "Selecci\xF3n de compradores B2B verificados y evaluaci\xF3n de solvencia",
+          "Coordinaci\xF3n de reuniones comerciales y seguimiento de acuerdos",
+          "Estudio comparativo de precios y c\xE1lculo de costes landed"
+        ]
+      },
+      targetAudience: {
+        AZ: "M\u0259hsulunu xarici bazarlara \xE7\u0131xarmaq ist\u0259y\u0259n yerli istehsal\xE7\u0131lar v\u0259 fermer t\u0259s\u0259rr\xFCfatlar\u0131",
+        EN: "Azerbaijani agricultural, industrial and chemical producers targeting global export markets",
+        TR: "D\u0131\u015F pazarlara a\xE7\u0131lmak isteyen Azerbaycanl\u0131 \xFCreticiler ve sanayi kurulu\u015Flar\u0131",
+        RU: "\u0410\u0437\u0435\u0440\u0431\u0430\u0439\u0434\u0436\u0430\u043D\u0441\u043A\u0438\u0435 \u043F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0438\u0442\u0435\u043B\u0438 \u043F\u0438\u0449\u0435\u0432\u043E\u0439, \u0430\u0433\u0440\u0430\u0440\u043D\u043E\u0439 \u0438 \u043F\u0440\u043E\u043C\u044B\u0448\u043B\u0435\u043D\u043D\u043E\u0439 \u043F\u0440\u043E\u0434\u0443\u043A\u0446\u0438\u0438",
+        AR: "\u0627\u0644\u0634\u0631\u0643\u0627\u062A \u0627\u0644\u0645\u0635\u0646\u0639\u0629 \u0641\u064A \u0623\u0630\u0631\u0628\u064A\u062C\u0627\u0646 \u0627\u0644\u0631\u0627\u063A\u0628\u0629 \u0641\u064A \u0627\u0644\u062A\u0635\u062F\u064A\u0631 \u0644\u0644\u0623\u0633\u0648\u0627\u0642 \u0627\u0644\u0639\u0627\u0644\u0645\u064A\u0629",
+        ES: "Fabricantes azerbaiyanos que buscan expandir sus ventas en mercados internacionales"
+      },
+      iconClass: "fa-solid fa-chart-line",
+      colorClass: "bg-brandNavy",
+      serviceType: "primary",
+      sortOrder: 1,
+      isActive: 1
+    },
+    {
+      id: "srv-contracts-legal",
+      title: {
+        AZ: "\u0130xrac M\xFCqavil\u0259l\u0259ri, Escrow & H\xFCquqi T\u0259minat",
+        EN: "Export Contracting, Escrow & Arbitration Support",
+        TR: "\u0130hracat S\xF6zle\u015Fmeleri, Escrow & Hukuki Destek",
+        RU: "\u042D\u043A\u0441\u043F\u043E\u0440\u0442\u043D\u044B\u0435 \u043A\u043E\u043D\u0442\u0440\u0430\u043A\u0442\u044B, \u042D\u0441\u043A\u0440\u043E\u0443 \u0438 \u043F\u0440\u0430\u0432\u043E\u0432\u0430\u044F \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0430",
+        AR: "\u0639\u0642\u0648\u062F \u0627\u0644\u062A\u0635\u062F\u064A\u0631 \u0648\u062E\u062F\u0645\u0627\u062A \u0627\u0644\u0636\u0645\u0627\u0646 \u0627\u0644\u0645\u0627\u0644\u064A \u0648\u0627\u0644\u062A\u062D\u0643\u064A\u0645",
+        ES: "Contratos de Exportaci\xF3n, Garant\xEDa Escrow y Arbitraje"
+      },
+      description: {
+        AZ: "Incoterms\xAE 2020 standartlar\u0131na uy\u011Fun ikidilli ixrac m\xFCqavil\u0259l\u0259rinin t\u0259rtibi, akkreditiv (L/C) v\u0259 beyn\u0259lxalq arbitraj d\u0259st\u0259yi.",
+        EN: "Bilingual export contracts under Incoterms\xAE 2020 standards, Letter of Credit (L/C) review, and Baku International Arbitration protocols.",
+        TR: "Incoterms\xAE 2020 standartlar\u0131nda \xE7ift dilli s\xF6zle\u015Fmeler, Akreditif (L/C) ve uluslararas\u0131 tahkim mekanizmalar\u0131.",
+        RU: "\u0414\u0432\u0443\u044F\u0437\u044B\u0447\u043D\u044B\u0435 \u044D\u043A\u0441\u043F\u043E\u0440\u0442\u043D\u044B\u0435 \u043A\u043E\u043D\u0442\u0440\u0430\u043A\u0442\u044B \u043F\u043E \u0441\u0442\u0430\u043D\u0434\u0430\u0440\u0442\u0430\u043C Incoterms\xAE 2020, \u0430\u043A\u043A\u0440\u0435\u0434\u0438\u0442\u0438\u0432\u044B (L/C) \u0438 \u0430\u0440\u0431\u0438\u0442\u0440\u0430\u0436.",
+        AR: "\u0635\u064A\u0627\u063A\u0629 \u0639\u0642\u0648\u062F \u062A\u0635\u062F\u064A\u0631 \u0645\u062A\u0648\u0627\u0641\u0642\u0629 \u0645\u0639 \u0634\u0631\u0648\u0637 Incoterms\xAE 2020 \u0648\u0627\u0644\u0627\u0639\u062A\u0645\u0627\u062F\u0627\u062A \u0627\u0644\u0645\u0633\u062A\u0646\u062F\u064A\u0629.",
+        ES: "Contratos biling\xFCes seg\xFAn Incoterms\xAE 2020, cartas de cr\xE9dito y arbitraje comercial."
+      },
+      scope: {
+        AZ: [
+          "Incoterms\xAE 2020 (FOB, CIF, DAP, FCA) \xFCzr\u0259 h\xFCquqi m\xFCqavil\u0259 t\u0259rtibi",
+          "Bank akkreditivl\u0259rinin (L/C) v\u0259 qarantiya m\u0259ktublar\u0131n\u0131n h\xFCquqi ekspertizas\u0131",
+          "Beyn\u0259lxalq ticar\u0259t m\xFCbahis\u0259l\u0259rinin m\u0259hk\u0259m\u0259d\u0259nk\u0259nar t\u0259nziml\u0259nm\u0259si v\u0259 arbitraj d\u0259st\u0259yi"
+        ],
+        EN: [
+          "Drafting legally binding export agreements compliant with Incoterms\xAE 2020",
+          "Letter of Credit (L/C) and bank performance guarantee review",
+          "Dispute mitigation and arbitration clauses under ICC & Baku Arbitration standards"
+        ],
+        TR: [
+          "Incoterms\xAE 2020 uyumlu uluslararas\u0131 sat\u0131\u015F s\xF6zle\u015Fmelerinin haz\u0131rlanmas\u0131",
+          "Akreditif \u015Fartlar\u0131n\u0131n risk denetimi ve bankac\u0131l\u0131k uyumu",
+          "Uluslararas\u0131 ticari uyu\u015Fmazl\u0131klarda tahkim ve uzla\u015Fma deste\u011Fi"
+        ],
+        RU: [
+          "\u0420\u0430\u0437\u0440\u0430\u0431\u043E\u0442\u043A\u0430 \u044D\u043A\u0441\u043F\u043E\u0440\u0442\u043D\u044B\u0445 \u0434\u043E\u0433\u043E\u0432\u043E\u0440\u043E\u0432 \u043F\u043E \u043F\u0440\u0430\u0432\u0438\u043B\u0430\u043C Incoterms\xAE 2020",
+          "\u042D\u043A\u0441\u043F\u0435\u0440\u0442\u0438\u0437\u0430 \u0443\u0441\u043B\u043E\u0432\u0438\u0439 \u0430\u043A\u043A\u0440\u0435\u0434\u0438\u0442\u0438\u0432\u043E\u0432 \u0438 \u0431\u0430\u043D\u043A\u043E\u0432\u0441\u043A\u0438\u0445 \u0433\u0430\u0440\u0430\u043D\u0442\u0438\u0439",
+          "\u042E\u0440\u0438\u0434\u0438\u0447\u0435\u0441\u043A\u043E\u0435 \u0441\u043E\u043F\u0440\u043E\u0432\u043E\u0436\u0434\u0435\u043D\u0438\u0435 \u0441\u043F\u043E\u0440\u043E\u0432 \u0432 \u043C\u0435\u0436\u0434\u0443\u043D\u0430\u0440\u043E\u0434\u043D\u043E\u043C \u0430\u0440\u0431\u0438\u0442\u0440\u0430\u0436\u0435"
+        ],
+        AR: [
+          "\u0635\u064A\u0627\u063A\u0629 \u0639\u0642\u0648\u062F \u062A\u062C\u0627\u0631\u064A\u0629 \u0645\u0644\u0632\u0645\u0629 \u0648\u0641\u0642 \u0642\u0648\u0627\u0639\u062F Incoterms\xAE 2020",
+          "\u0645\u0631\u0627\u062C\u0639\u0629 \u0628\u0646\u0648\u062F \u062E\u0637\u0627\u0628\u0627\u062A \u0627\u0644\u0627\u0639\u062A\u0645\u0627\u062F \u0627\u0644\u0645\u0635\u0631\u0641\u064A\u0629 \u0648\u0627\u0644\u0636\u0645\u0627\u0646\u0627\u062A \u0627\u0644\u0628\u0646\u0643\u064A\u0629",
+          "\u062A\u0642\u062F\u064A\u0645 \u0627\u0644\u062F\u0639\u0645 \u0627\u0644\u0642\u0627\u0646\u0648\u0646\u064A \u0648\u0627\u0644\u062A\u062D\u0643\u064A\u0645 \u0627\u0644\u062F\u0648\u0644\u064A \u0641\u064A \u0627\u0644\u0646\u0632\u0627\u0639\u0627\u062A \u0627\u0644\u062A\u062C\u0627\u0631\u064A\u0629"
+        ],
+        ES: [
+          "Redacci\xF3n de contratos de compraventa internacional bajo Incoterms\xAE 2020",
+          "Auditor\xEDa y verificaci\xF3n de cartas de cr\xE9dito bancarias",
+          "Soporte en resoluci\xF3n de disputas y cl\xE1usulas de arbitraje comercial"
+        ]
+      },
+      targetAudience: {
+        AZ: "H\xFCquqi v\u0259 maliyy\u0259 riskl\u0259rini s\u0131f\u0131ra endirm\u0259k ist\u0259y\u0259n ixracat\xE7\u0131lar v\u0259 xarici al\u0131c\u0131lar",
+        EN: "Exporters and global buyers seeking secure legal framework and trade finance protection",
+        TR: "Hukuki ve finansal risklerini s\u0131f\u0131rlamak isteyen ihracat\xE7\u0131lar ve ithalat\xE7\u0131lar",
+        RU: "\u042D\u043A\u0441\u043F\u043E\u0440\u0442\u0435\u0440\u044B \u0438 \u0438\u043C\u043F\u043E\u0440\u0442\u0435\u0440\u044B, \u0437\u0430\u0438\u043D\u0442\u0435\u0440\u0435\u0441\u043E\u0432\u0430\u043D\u043D\u044B\u0435 \u0432 \u0437\u0430\u0449\u0438\u0442\u0435 \u043A\u043E\u043C\u043C\u0435\u0440\u0447\u0435\u0441\u043A\u0438\u0445 \u0438\u043D\u0442\u0435\u0440\u0435\u0441\u043E\u0432",
+        AR: "\u0627\u0644\u0645\u0635\u062F\u0631\u0648\u0646 \u0648\u0627\u0644\u0645\u0633\u062A\u0648\u0631\u062F\u0648\u0646 \u0627\u0644\u0628\u0627\u062D\u062B\u0648\u0646 \u0639\u0646 \u062D\u0645\u0627\u064A\u0629 \u0642\u0627\u0646\u0648\u0646\u064A\u0629 \u0648\u0645\u0627\u0644\u064A\u0629 \u0634\u0627\u0645\u0644\u0629",
+        ES: "Empresas exportadoras e importadoras que requieren total seguridad jur\xEDdica y financiera"
+      },
+      iconClass: "fa-solid fa-file-contract",
+      colorClass: "bg-emerald-600",
+      serviceType: "primary",
+      sortOrder: 2,
+      isActive: 1
+    },
+    {
+      id: "srv-cert-phytosanitary",
+      title: {
+        AZ: "AQTA, FSSC & M\u0259n\u015F\u0259 Sertifikatla\u015Fd\u0131r\u0131lmas\u0131",
+        EN: "AQTA, FSSC, Halal & Origin Certification Stack",
+        TR: "AQTA, FSSC, Helal & Men\u015Fe Belgelendirme",
+        RU: "\u0421\u0435\u0440\u0442\u0438\u0444\u0438\u043A\u0430\u0446\u0438\u044F AQTA, FSSC, \u0425\u0430\u043B\u044F\u043B\u044C \u0438 \u043F\u0440\u043E\u0438\u0441\u0445\u043E\u0436\u0434\u0435\u043D\u0438\u044F",
+        AR: "\u0634\u0647\u0627\u062F\u0627\u062A AQTA \u0648\u0633\u0644\u0627\u0645\u0629 \u0627\u0644\u063A\u0630\u0627\u0621 \u0648\u0634\u0647\u0627\u062F\u0629 \u0627\u0644\u0645\u0646\u0634\u0623",
+        ES: "Certificaciones Fitosanitarias, AQTA, Halal y Origen"
+      },
+      description: {
+        AZ: "EUR.1, CT-1, AQTA fitosanitar, ISO 22000, FSSC v\u0259 Halal sertifikatlar\u0131n\u0131n tam m\xFC\u015Fayi\u0259tl\u0259 operativ r\u0259smil\u0259\u015Fdirilm\u0259si.",
+        EN: "Full-stack support for EUR.1, Form CT-1, AQTA Phytosanitary, ISO 22000, FSSC 22000, and accredited Halal trade certificates.",
+        TR: "EUR.1, Form CT-1, AQTA bitki sa\u011Fl\u0131\u011F\u0131, ISO 22000, FSSC 22000 ve Helal sertifikasyon s\xFCre\xE7lerinin u\xE7tan uca y\xF6netimi.",
+        RU: "\u041E\u0444\u043E\u0440\u043C\u043B\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0442\u0438\u0444\u0438\u043A\u0430\u0442\u043E\u0432 EUR.1, \u0421\u0422-1, \u0444\u0438\u0442\u043E\u0441\u0430\u043D\u0438\u0442\u0430\u0440\u043D\u044B\u0445 \u0441\u0435\u0440\u0442\u0438\u0444\u0438\u043A\u0430\u0442\u043E\u0432 AQTA, ISO 22000 \u0438 \u0425\u0430\u043B\u044F\u043B\u044C.",
+        AR: "\u0627\u0633\u062A\u062E\u0631\u0627\u062C \u0634\u0647\u0627\u062F\u0627\u062A EUR.1 \u0648 CT-1 \u0648\u0627\u0644\u0634\u0647\u0627\u062F\u0627\u062A \u0627\u0644\u0635\u062D\u064A\u0629 \u0648\u0627\u0644\u0627\u0645\u062A\u062B\u0627\u0644 \u0644\u0633\u0644\u0627\u0645\u0629 \u0627\u0644\u0623\u063A\u0630\u064A\u0629.",
+        ES: "Tramitaci\xF3n integral de certificados EUR.1, CT-1, fitosanitarios y de calidad alimentaria."
+      },
+      scope: {
+        AZ: [
+          "AQTA Qida T\u0259hl\xFCk\u0259sizliyi Qeydiyyat\u0131 v\u0259 Fitosanitar/Baytarl\u0131q sertifikatlar\u0131",
+          "EUR.1 v\u0259 Forma CT-1 g\xF6mr\xFCk m\u0259n\u015F\u0259 sertifikatlar\u0131n\u0131n al\u0131nmas\u0131 (0% g\xF6mr\xFCk r\xFCsumu \xFCst\xFCnl\xFCy\xFC)",
+          "Beyn\u0259lxalq akkredit\u0259 olunmu\u015F laboratoriya analiz protokollar\u0131 (CoA)"
+        ],
+        EN: [
+          "AQTA Food Safety System registration, Phytosanitary and Veterinary clearance",
+          "EUR.1 and Form CT-1 Certificate of Origin for preferential zero-duty customs access",
+          "Accredited third-party laboratory Certificate of Analysis (CoA) protocol fulfillment"
+        ],
+        TR: [
+          "AQTA G\u0131da G\xFCvenli\u011Fi ve Bitki Sa\u011Fl\u0131\u011F\u0131/Veterinerlik ihra\xE7 belgeleri temini",
+          "EUR.1 ve Form CT-1 men\u015Fe belgeleri ile g\xFCmr\xFCks\xFCz ticaret avantaj\u0131",
+          "Uluslararas\u0131 akredite laboratuvar analiz raporlar\u0131n\u0131n (CoA) haz\u0131rlanmas\u0131"
+        ],
+        RU: [
+          "\u0420\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u044F \u0432 AQTA \u0438 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u0435 \u0444\u0438\u0442\u043E\u0441\u0430\u043D\u0438\u0442\u0430\u0440\u043D\u044B\u0445/\u0432\u0435\u0442\u0435\u0440\u0438\u043D\u0430\u0440\u043D\u044B\u0445 \u0441\u0435\u0440\u0442\u0438\u0444\u0438\u043A\u0430\u0442\u043E\u0432",
+          "\u0421\u0435\u0440\u0442\u0438\u0444\u0438\u043A\u0430\u0442\u044B \u043F\u0440\u043E\u0438\u0441\u0445\u043E\u0436\u0434\u0435\u043D\u0438\u044F EUR.1 \u0438 \u0421\u0422-1 \u0434\u043B\u044F \u0431\u0435\u0441\u043F\u043E\u0448\u043B\u0438\u043D\u043D\u043E\u0433\u043E \u0432\u0432\u043E\u0437\u0430",
+          "\u041E\u0440\u0433\u0430\u043D\u0438\u0437\u0430\u0446\u0438\u044F \u0438\u0441\u043F\u044B\u0442\u0430\u043D\u0438\u0439 \u0432 \u0430\u043A\u043A\u0440\u0435\u0434\u0438\u0442\u043E\u0432\u0430\u043D\u043D\u044B\u0445 \u043B\u0430\u0431\u043E\u0440\u0430\u0442\u043E\u0440\u0438\u044F\u0445 (CoA)"
+        ],
+        AR: [
+          "\u0627\u0644\u062A\u0633\u062C\u064A\u0644 \u0641\u064A \u0647\u064A\u0626\u0629 \u0633\u0644\u0627\u0645\u0629 \u0627\u0644\u063A\u0630\u0627\u0621 AQTA \u0648\u0627\u0633\u062A\u062E\u0631\u0627\u062C \u0627\u0644\u0634\u0647\u0627\u062F\u0627\u062A \u0627\u0644\u0635\u062D\u064A\u0629 \u0627\u0644\u0641\u064A\u062A\u0648\u0633\u0627\u0646\u064A\u062A\u0627\u0631\u064A\u0629",
+          "\u0627\u0633\u062A\u062E\u0631\u0627\u062C \u0634\u0647\u0627\u062F\u0627\u062A \u0627\u0644\u0645\u0646\u0634\u0623 EUR.1 \u0648 CT-1 \u0644\u0644\u0627\u0633\u062A\u0641\u0627\u062F\u0629 \u0645\u0646 \u0627\u0644\u0625\u0639\u0641\u0627\u0621\u0627\u062A \u0627\u0644\u062C\u0645\u0631\u0643\u064A\u0629",
+          "\u0625\u062C\u0631\u0627\u0621 \u0627\u0644\u062A\u062D\u0627\u0644\u064A\u0644 \u0627\u0644\u0645\u062E\u0628\u0631\u064A\u0629 \u0627\u0644\u0645\u0639\u062A\u0645\u062F\u0629 \u062F\u0648\u0644\u064A\u0627\u064B \u0648\u0634\u0647\u0627\u062F\u0627\u062A \u0627\u0644\u062C\u0648\u062F\u0629 (CoA)"
+        ],
+        ES: [
+          "Registro en AQTA y obtenci\xF3n de certificados fitosanitarios y veterinarios",
+          "Gesti\xF3n de certificados de origen EUR.1 y Formulario CT-1 para arancel cero",
+          "Informes anal\xEDticos en laboratorios acreditados de control de calidad (CoA)"
+        ]
+      },
+      targetAudience: {
+        AZ: "K\u0259nd t\u0259s\u0259rr\xFCfat\u0131, qida v\u0259 kimya s\u0259nayesi istehsal\xE7\u0131lar\u0131",
+        EN: "Food processors, agricultural producers and chemical manufacturers requiring trade accreditation",
+        TR: "Tar\u0131m, g\u0131da ve kimya sekt\xF6r\xFCnde faaliyet g\xF6steren ihracat\xE7\u0131 i\u015Fletmeler",
+        RU: "\u0421\u0435\u043B\u044C\u0441\u043A\u043E\u0445\u043E\u0437\u044F\u0439\u0441\u0442\u0432\u0435\u043D\u043D\u044B\u0435 \u0438 \u043F\u0438\u0449\u0435\u0432\u044B\u0435 \u043F\u0440\u0435\u0434\u043F\u0440\u0438\u044F\u0442\u0438\u044F, \u043F\u043B\u0430\u043D\u0438\u0440\u0443\u044E\u0449\u0438\u0435 \u044D\u043A\u0441\u043F\u043E\u0440\u0442",
+        AR: "\u0645\u0646\u062A\u062C\u0648 \u0627\u0644\u0623\u063A\u0630\u064A\u0629 \u0648\u0627\u0644\u0633\u0644\u0639 \u0627\u0644\u0632\u0631\u0627\u0639\u064A\u0629 \u0627\u0644\u0633\u0627\u0639\u0648\u0646 \u0644\u0644\u0627\u0645\u062A\u062B\u0627\u0644 \u0644\u0644\u0645\u0639\u0627\u064A\u064A\u0631 \u0627\u0644\u062F\u0648\u0644\u064A\u0629",
+        ES: "Productores agroalimentarios e industriales con requisitos de certificaci\xF3n internacional"
+      },
+      iconClass: "fa-solid fa-stamp",
+      colorClass: "bg-sky-600",
+      serviceType: "primary",
+      sortOrder: 3,
+      isActive: 1
+    },
+    {
+      id: "srv-logistics-corridor",
+      title: {
+        AZ: "Orta D\u0259hliz Logistikas\u0131 & Multimodal N\u0259qliyyat",
+        EN: "Middle Corridor Multimodal Logistics & Freight",
+        TR: "Orta Koridor Multimodal Lojistik & Ta\u015F\u0131mac\u0131l\u0131k",
+        RU: "\u041B\u043E\u0433\u0438\u0441\u0442\u0438\u043A\u0430 \u0421\u0440\u0435\u0434\u043D\u0435\u0433\u043E \u043A\u043E\u0440\u0438\u0434\u043E\u0440\u0430 \u0438 \u043C\u0443\u043B\u044C\u0442\u0438\u043C\u043E\u0434\u0430\u043B\u044C\u043D\u044B\u0435 \u043F\u0435\u0440\u0435\u0432\u043E\u0437\u043A\u0438",
+        AR: "\u0627\u0644\u062E\u062F\u0645\u0627\u062A \u0627\u0644\u0644\u0648\u062C\u0633\u062A\u064A\u0629 \u0639\u0628\u0631 \u0627\u0644\u0645\u0645\u0631 \u0627\u0644\u0623\u0648\u0633\u0637 \u0648\u0627\u0644\u0646\u0642\u0644 \u0645\u062A\u0639\u062F\u062F \u0627\u0644\u0648\u0633\u0627\u0626\u0637",
+        ES: "Log\xEDstica Multimodal y Transporte por el Corredor Medio"
+      },
+      description: {
+        AZ: "Bak\u0131 Beyn\u0259lxalq D\u0259niz Ticar\u0259t Liman\u0131 (\u018Fl\u0259t), BTQ d\u0259miryolu v\u0259 multimodal quru yollar\u0131 \xFCzr\u0259 optimal tarifl\u0259r v\u0259 konteyner rezervasiyas\u0131.",
+        EN: "Port of Baku (Alat Hub), Baku-Tbilisi-Kars railway routing, multimodal road/rail bookings, and refrigerated reefer container solutions.",
+        TR: "Bak\xFC Uluslararas\u0131 Deniz Ticaret Liman\u0131 (Alat), BTK demiryolu ve karayolu rotalar\u0131nda rekabet\xE7i navlun ve konteyner tahsisi.",
+        RU: "\u041C\u0430\u0440\u0448\u0440\u0443\u0442\u044B \u0447\u0435\u0440\u0435\u0437 \u043F\u043E\u0440\u0442 \u0411\u0430\u043A\u0443 (\u0410\u043B\u044F\u0442), \u0436/\u0434 \u0411\u0430\u043A\u0443-\u0422\u0431\u0438\u043B\u0438\u0441\u0438-\u041A\u0430\u0440\u0441, \u043A\u043E\u043D\u0442\u0435\u0439\u043D\u0435\u0440\u043D\u044B\u0435 \u0438 \u0440\u0435\u0444\u0440\u0438\u0436\u0435\u0440\u0430\u0442\u043E\u0440\u043D\u044B\u0435 \u043F\u0435\u0440\u0435\u0432\u043E\u0437\u043A\u0438.",
+        AR: "\u062D\u0644\u0648\u0644 \u0627\u0644\u0634\u062D\u0646 \u0639\u0628\u0631 \u0645\u064A\u0646\u0627\u0621 \u0628\u0627\u0643\u0648 (\u0623\u0644\u0627\u062A) \u0648\u0627\u0644\u0633\u0643\u0643 \u0627\u0644\u062D\u062F\u064A\u062F\u064A\u0629 \u0648\u0634\u0627\u062D\u0646\u0627\u062A \u0627\u0644\u062A\u0628\u0631\u064A\u062F.",
+        ES: "Rutas log\xEDsticas v\xEDa Puerto de Bak\xFA, ferrocarril BTK y flete multimodal consolidado."
+      },
+      scope: {
+        AZ: [
+          "Bak\u0131 Liman\u0131 (\u018Fl\u0259t) vasit\u0259sil\u0259 X\u0259z\u0259r d\u0259nizi fider da\u015F\u0131malar\u0131",
+          "Bak\u0131-Tbilisi-Qars (BTQ) x\u0259tti il\u0259 Avropaya v\u0259 T\xFCrkiy\u0259y\u0259 birba\u015Fa d\u0259miryol karvanlar\u0131",
+          "Temperatur n\u0259zar\u0259tli (reefer) soyuduculu y\xFCkda\u015F\u0131malar v\u0259 GPS monitorinq"
+        ],
+        EN: [
+          "Trans-Caspian feeder vessel shipping via Port of Baku (Alat Maritime Hub)",
+          "Direct block-train bookings via Baku-Tbilisi-Kars (BTK) railway to Europe & Turkey",
+          "Cold-chain reefer container logistics with live 24/7 telemetric GPS tracking"
+        ],
+        TR: [
+          "Bak\xFC Liman\u0131 (Alat) \xFCzerinden Hazar Denizi besleme gemisi ta\u015F\u0131mac\u0131l\u0131\u011F\u0131",
+          "Bak\xFC-Tiflis-Kars (BTK) demiryolu ile Avrupa ve T\xFCrkiye ba\u011Flant\u0131l\u0131 blok trenler",
+          "S\u0131cakl\u0131k kontroll\xFC frigorifik (reefer) konteynerler ve anl\u0131k uydu takibi"
+        ],
+        RU: [
+          "\u0422\u0440\u0430\u043D\u0441\u043A\u0430\u0441\u043F\u0438\u0439\u0441\u043A\u0438\u0435 \u043F\u0435\u0440\u0435\u0432\u043E\u0437\u043A\u0438 \u0447\u0435\u0440\u0435\u0437 \u043F\u043E\u0440\u0442 \u0411\u0430\u043A\u0443 (\u0410\u043B\u044F\u0442\u0441\u043A\u0438\u0439 \u043B\u043E\u0433\u0438\u0441\u0442\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0445\u0430\u0431)",
+          "\u0411\u043B\u043E\u043A-\u043F\u043E\u0435\u0437\u0434\u0430 \u043F\u043E \u0436\u0435\u043B\u0435\u0437\u043D\u043E\u0439 \u0434\u043E\u0440\u043E\u0433\u0435 \u0411\u0430\u043A\u0443-\u0422\u0431\u0438\u043B\u0438\u0441\u0438-\u041A\u0430\u0440\u0441 (\u0411\u0422\u041A) \u0432 \u0422\u0443\u0440\u0446\u0438\u044E \u0438 \u0415\u0432\u0440\u043E\u043F\u0443",
+          "\u0420\u0435\u0444\u0440\u0438\u0436\u0435\u0440\u0430\u0442\u043E\u0440\u043D\u044B\u0435 \u043F\u0435\u0440\u0435\u0432\u043E\u0437\u043A\u0438 \u0441 \u043A\u0440\u0443\u0433\u043B\u043E\u0441\u0443\u0442\u043E\u0447\u043D\u044B\u043C \u0442\u0435\u043C\u043F\u0435\u0440\u0430\u0442\u0443\u0440\u043D\u044B\u043C \u043C\u043E\u043D\u0438\u0442\u043E\u0440\u0438\u043D\u0433\u043E\u043C"
+        ],
+        AR: [
+          "\u0627\u0644\u0646\u0642\u0644 \u0627\u0644\u0628\u062D\u0631\u064A \u0639\u0628\u0631 \u0645\u064A\u0646\u0627\u0621 \u0628\u0627\u0643\u0648 (\u0623\u0644\u0627\u062A) \u0641\u064A \u0628\u062D\u0631 \u0642\u0632\u0648\u064A\u0646",
+          "\u0634\u062D\u0646 \u0627\u0644\u0642\u0637\u0627\u0631\u0627\u062A \u0627\u0644\u0645\u0628\u0627\u0634\u0631 \u0639\u0628\u0631 \u062E\u0637 \u0628\u0627\u0643\u0648 - \u062A\u0628\u0644\u064A\u0633\u064A - \u0643\u0627\u0631\u0633 \u0646\u062D\u0648 \u062A\u0631\u0643\u064A\u0627 \u0648\u0623\u0648\u0631\u0648\u0628\u0627",
+          "\u062D\u0627\u0648\u064A\u0627\u062A \u0645\u0628\u0631\u062F\u0629 \u0644\u0644\u062D\u0641\u0627\u0638 \u0639\u0644\u0649 \u0633\u0644\u0633\u0644\u0629 \u0627\u0644\u062A\u0628\u0631\u064A\u062F \u0645\u0639 \u062A\u062A\u0628\u0639 \u0641\u0648\u0631\u064A \u0639\u0628\u0631 \u0627\u0644\u0623\u0642\u0645\u0627\u0631 \u0627\u0644\u0635\u0646\u0627\u0639\u064A\u0629"
+        ],
+        ES: [
+          "Transporte mar\xEDtimo por el mar Caspio a trav\xE9s del Puerto de Bak\xFA (Alat)",
+          "Rutas en trenes bloque v\xEDa ferrocarril Bak\xFA-Tiflis-Kars hacia Turqu\xEDa y la UE",
+          "Contenedores reefer con control t\xE9rmico y seguimiento GPS 24/7"
+        ]
+      },
+      targetAudience: {
+        AZ: "Tez v\u0259 t\u0259hl\xFCk\u0259siz y\xFCk \xE7atd\u0131r\u0131lmas\u0131 t\u0259l\u0259b ed\u0259n beyn\u0259lxalq ticar\u0259t i\u015Ftirak\xE7\u0131lar\u0131",
+        EN: "International commercial buyers and export producers requiring predictable transit timeframes",
+        TR: "H\u0131zl\u0131 ve g\xFCvenli teslimat isteyen uluslararas\u0131 ticaret \u015Firketleri",
+        RU: "\u041A\u043E\u043C\u043F\u0430\u043D\u0438\u0438, \u0437\u0430\u0438\u043D\u0442\u0435\u0440\u0435\u0441\u043E\u0432\u0430\u043D\u043D\u044B\u0435 \u0432 \u043E\u043F\u0442\u0438\u043C\u0438\u0437\u0430\u0446\u0438\u0438 \u0441\u0440\u043E\u043A\u043E\u0432 \u0438 \u0441\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u0438 \u0442\u0440\u0430\u043D\u0437\u0438\u0442\u0430",
+        AR: "\u0627\u0644\u0634\u0631\u0643\u0627\u062A \u0627\u0644\u062A\u062C\u0627\u0631\u064A\u0629 \u0627\u0644\u0628\u0627\u062D\u062B\u0629 \u0639\u0646 \u0633\u0631\u0639\u0629 \u0648\u0623\u0645\u0627\u0646 \u0646\u0642\u0644 \u0627\u0644\u0634\u062D\u0646\u0627\u062A \u0627\u0644\u062F\u0648\u0644\u064A\u0629",
+        ES: "Operadores comerciales que buscan plazos fiables y costes competitivos de flete"
+      },
+      iconClass: "fa-solid fa-truck-fast",
+      colorClass: "bg-purple-600",
+      serviceType: "primary",
+      sortOrder: 4,
+      isActive: 1
+    },
+    {
+      id: "srv-outsourced-export",
+      title: {
+        AZ: "K\u0259narla\u015Fd\u0131r\u0131lm\u0131\u015F (Outsourced) \u0130xrac Departamenti",
+        EN: "Outsourced Export Department as a Service",
+        TR: "D\u0131\u015F Kaynakl\u0131 (Outsourced) \u0130hracat Departman\u0131",
+        RU: "\u0410\u0443\u0442\u0441\u043E\u0440\u0441\u0438\u043D\u0433 \u044D\u043A\u0441\u043F\u043E\u0440\u0442\u043D\u043E\u0433\u043E \u043E\u0442\u0434\u0435\u043B\u0430 (Turnkey Export)",
+        AR: "\u0625\u062F\u0627\u0631\u0629 \u0642\u0633\u0645 \u0627\u0644\u062A\u0635\u062F\u064A\u0631 \u0627\u0644\u062E\u0627\u0631\u062C\u064A \u0627\u0644\u0645\u062A\u0643\u0627\u0645\u0644 \u0644\u0644\u0634\u0631\u0643\u0627\u062A",
+        ES: "Departamento de Exportaci\xF3n Externo (Outsourced)"
+      },
+      description: {
+        AZ: "Yerli istehsal\xE7\u0131 \xFC\xE7\xFCn s\u0131f\u0131rdan xarici ticar\u0259t komandas\u0131n\u0131n qurulmas\u0131: beyn\u0259lxalq yaz\u0131\u015Fmalar, qiym\u0259t kalkulyasiyas\u0131, RFP/RFQ cavabland\u0131rma v\u0259 logistik idar\u0259etm\u0259.",
+        EN: "Turnkey institutional export department for Azerbaijani manufacturers: international client correspondence, landed cost modeling, and end-to-end deal closing.",
+        TR: "Azerbaycanl\u0131 \xFCreticiler i\xE7in anahtar teslim d\u0131\u015F ticaret y\xF6netimi: uluslararas\u0131 teklifler, maliyet hesaplar\u0131 ve sevkiyat takibi.",
+        RU: "\u041F\u043E\u043B\u043D\u043E\u0435 \u0432\u0435\u0434\u0435\u043D\u0438\u0435 \u044D\u043A\u0441\u043F\u043E\u0440\u0442\u043D\u044B\u0445 \u043E\u043F\u0435\u0440\u0430\u0446\u0438\u0439 \u043F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0438\u0442\u0435\u043B\u044F: \u043C\u0435\u0436\u0434\u0443\u043D\u0430\u0440\u043E\u0434\u043D\u0430\u044F \u043F\u0435\u0440\u0435\u043F\u0438\u0441\u043A\u0430, \u0440\u0430\u0441\u0447\u0435\u0442 \u0446\u0435\u043D \u0438 \u0437\u0430\u043A\u0440\u044B\u0442\u0438\u0435 \u0441\u0434\u0435\u043B\u043E\u043A.",
+        AR: "\u0625\u062F\u0627\u0631\u0629 \u0639\u0645\u0644\u064A\u0627\u062A \u0627\u0644\u062A\u0635\u062F\u064A\u0631 \u0628\u0627\u0644\u0643\u0627\u0645\u0644 \u0645\u0646 \u062A\u0642\u062F\u064A\u0645 \u0627\u0644\u0639\u0631\u0648\u0636 \u062D\u062A\u0649 \u0625\u062A\u0645\u0627\u0645 \u0627\u0644\u0635\u0641\u0642\u0627\u062A \u0648\u062A\u062A\u0628\u0639 \u0627\u0644\u0634\u062D\u0646.",
+        ES: "Gesti\xF3n externalizada integral del departamento de comercio exterior para fabricantes."
+      },
+      scope: {
+        AZ: [
+          "\u0130ngilis, Rus v\u0259 \u018Fr\u0259b dill\u0259rind\u0259 professional xarici ticar\u0259t yaz\u0131\u015Fmalar\u0131 v\u0259 dan\u0131\u015F\u0131qlar",
+          "M\u0259hsulun beyn\u0259lxalq standartlara uy\u011Fun texniki m\u0259lumat v\u0259r\u0259qinin (TDS/MSDS) haz\u0131rlanmas\u0131",
+          "Daimi B2B sor\u011Fular\u0131n (RFQ) emal\u0131, qiym\u0259t t\u0259klifl\u0259rinin g\xF6nd\u0259rilm\u0259si v\u0259 s\xF6vd\u0259l\u0259\u015Fm\u0259l\u0259rin ba\u011Flanmas\u0131",
+          "B\xFCt\xFCn g\xF6mr\xFCk v\u0259 logistika prosesl\u0259rinin a\xE7ar-t\u0259hvil idar\u0259 edilm\u0259si"
+        ],
+        EN: [
+          "Multilingual export desk operating in English, Russian, Arabic, and Turkish",
+          "Technical Data Sheet (TDS) and Material Safety Data Sheet (MSDS) localization",
+          "Continuous inbound/outbound RFQ commercial proposal handling & closing",
+          "End-to-end customs broker and shipping line coordination"
+        ],
+        TR: [
+          "\u0130ngilizce, Rus\xE7a, Arap\xE7a ve T\xFCrk\xE7e dillerinde tam kapsaml\u0131 ihracat y\xF6netimi",
+          "Uluslararas\u0131 standartlarda teknik veri f\xF6yleri (TDS) ve katalog haz\u0131rl\u0131\u011F\u0131",
+          "Gelen ticari taleplerin (RFQ) de\u011Ferlendirilmesi ve sat\u0131\u015Fa d\xF6n\xFC\u015Ft\xFCr\xFClmesi",
+          "G\xFCmr\xFCk, nakliye ve tahsilat s\xFCre\xE7lerinin u\xE7tan uca y\xFCr\xFCt\xFClmesi"
+        ],
+        RU: [
+          "\u0412\u0435\u0434\u0435\u043D\u0438\u0435 \u0432\u043D\u0435\u0448\u043D\u0435\u0439 \u0442\u043E\u0440\u0433\u043E\u0432\u043B\u0438 \u043D\u0430 \u0430\u043D\u0433\u043B\u0438\u0439\u0441\u043A\u043E\u043C, \u0440\u0443\u0441\u0441\u043A\u043E\u043C, \u0430\u0440\u0430\u0431\u0441\u043A\u043E\u043C \u0438 \u0442\u0443\u0440\u0435\u0446\u043A\u043E\u043C \u044F\u0437\u044B\u043A\u0430\u0445",
+          "\u0420\u0430\u0437\u0440\u0430\u0431\u043E\u0442\u043A\u0430 \u0442\u0435\u0445\u043D\u0438\u0447\u0435\u0441\u043A\u0438\u0445 \u043F\u0430\u0441\u043F\u043E\u0440\u0442\u043E\u0432 (TDS) \u0438 \u043A\u0430\u0442\u0430\u043B\u043E\u0433\u043E\u0432 \u043F\u043E \u043C\u0438\u0440\u043E\u0432\u044B\u043C \u0441\u0442\u0430\u043D\u0434\u0430\u0440\u0442\u0430\u043C",
+          "\u041E\u0431\u0440\u0430\u0431\u043E\u0442\u043A\u0430 \u0432\u0445\u043E\u0434\u044F\u0449\u0438\u0445 \u0437\u0430\u043F\u0440\u043E\u0441\u043E\u0432 (RFQ), \u0440\u0430\u0441\u0447\u0435\u0442 \u043A\u043E\u0442\u0438\u0440\u043E\u0432\u043E\u043A \u0438 \u0437\u0430\u043A\u043B\u044E\u0447\u0435\u043D\u0438\u0435 \u0441\u0434\u0435\u043B\u043E\u043A",
+          "\u041F\u043E\u043B\u043D\u043E\u0435 \u0441\u043E\u043F\u0440\u043E\u0432\u043E\u0436\u0434\u0435\u043D\u0438\u0435 \u0442\u0430\u043C\u043E\u0436\u0435\u043D\u043D\u044B\u0445 \u0438 \u0442\u0440\u0430\u043D\u0441\u043F\u043E\u0440\u0442\u043D\u044B\u0445 \u043F\u0440\u043E\u0446\u0435\u0434\u0443\u0440"
+        ],
+        AR: [
+          "\u0625\u062F\u0627\u0631\u0629 \u0627\u062A\u0635\u0627\u0644\u0627\u062A \u0627\u0644\u062A\u062C\u0627\u0631\u0629 \u0627\u0644\u062E\u0627\u0631\u062C\u064A\u0629 \u0645\u062A\u0639\u062F\u062F\u0629 \u0627\u0644\u0644\u063A\u0627\u062A (\u0627\u0644\u0625\u0646\u062C\u0644\u064A\u0632\u064A\u0629\u060C \u0627\u0644\u0631\u0648\u0633\u064A\u0629\u060C \u0627\u0644\u0639\u0631\u0628\u064A\u0629\u060C \u0627\u0644\u062A\u0631\u0643\u064A\u0629)",
+          "\u0625\u0639\u062F\u0627\u062F \u0627\u0644\u0645\u0648\u0627\u0635\u0641\u0627\u062A \u0627\u0644\u0641\u0646\u064A\u0629 \u0644\u0644\u0633\u0644\u0639 (TDS) \u0648\u0627\u0644\u0643\u062A\u0627\u0644\u0648\u062C\u0627\u062A \u0627\u0644\u062A\u0635\u062F\u064A\u0631\u064A\u0629 \u0627\u0644\u0627\u062D\u062A\u0631\u0627\u0641\u064A\u0629",
+          "\u0645\u0639\u0627\u0644\u062C\u0629 \u0627\u0633\u062A\u0641\u0633\u0627\u0631\u0627\u062A \u0648\u0639\u0631\u0648\u0636 \u0627\u0644\u0634\u0631\u0627\u0621 (RFQ) \u0648\u0625\u062A\u0645\u0627\u0645 \u0627\u0644\u062A\u0639\u0627\u0642\u062F\u0627\u062A \u0627\u0644\u062A\u062C\u0627\u0631\u064A\u0629",
+          "\u0625\u062F\u0627\u0631\u0629 \u0627\u0644\u0639\u0645\u0644\u064A\u0627\u062A \u0627\u0644\u062C\u0645\u0631\u0643\u064A\u0629 \u0648\u0627\u0644\u0644\u0648\u062C\u0633\u062A\u064A\u0629 \u0645\u0646 \u0627\u0644\u0628\u062F\u0627\u064A\u0629 \u0648\u062D\u062A\u0649 \u0627\u0644\u062A\u0633\u0644\u064A\u0645"
+        ],
+        ES: [
+          "Mesa de exportaci\xF3n multiling\xFCe en ingl\xE9s, ruso, \xE1rabe y turco",
+          "Fichas t\xE9cnicas de producto (TDS) y cat\xE1logos comerciales adaptados",
+          "Gesti\xF3n activa de solicitudes de cotizaci\xF3n (RFQ) y cierre de acuerdos",
+          "Supervisi\xF3n completa de aduanas, transporte y documentaci\xF3n de embarque"
+        ]
+      },
+      targetAudience: {
+        AZ: "\u015Etat\u0131nda xarici ticar\u0259t m\xFCt\u0259x\u0259ssisi olmayan, lakin qlobal bazara \xE7\u0131xmaq ist\u0259y\u0259n istehsal\xE7\u0131lar",
+        EN: "Manufacturers with strong production capacity but lacking an internal institutional export division",
+        TR: "Kendi b\xFCnyesinde d\u0131\u015F ticaret ekibi kurmadan profesyonelce ihracat yapmak isteyen firmalar",
+        RU: "\u041F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0441\u0442\u0432\u0435\u043D\u043D\u044B\u0435 \u043A\u043E\u043C\u043F\u0430\u043D\u0438\u0438, \u0436\u0435\u043B\u0430\u044E\u0449\u0438\u0435 \u044D\u043A\u0441\u043F\u043E\u0440\u0442\u0438\u0440\u043E\u0432\u0430\u0442\u044C \u0431\u0435\u0437 \u0437\u0430\u0442\u0440\u0430\u0442 \u043D\u0430 \u0441\u043E\u0431\u0441\u0442\u0432\u0435\u043D\u043D\u044B\u0439 \u0448\u0442\u0430\u0442 \u0412\u042D\u0414",
+        AR: "\u0627\u0644\u0634\u0631\u0643\u0627\u062A \u0627\u0644\u0645\u0635\u0646\u0639\u0629 \u0630\u0627\u062A \u0627\u0644\u0642\u062F\u0631\u0627\u062A \u0627\u0644\u0625\u0646\u062A\u0627\u062C\u064A\u0629 \u0627\u0644\u0631\u0627\u063A\u0628\u0629 \u0641\u064A \u0627\u0644\u062A\u0635\u062F\u064A\u0631 \u062F\u0648\u0646 \u062A\u0643\u0627\u0644\u064A\u0641 \u062A\u0623\u0633\u064A\u0633 \u0642\u0633\u0645 \u062F\u0627\u062E\u0644\u064A",
+        ES: "Empresas con capacidad productiva que prefieren externalizar la operativa de comercio exterior"
+      },
+      iconClass: "fa-solid fa-briefcase",
+      colorClass: "bg-rose-600",
+      serviceType: "secondary",
+      sortOrder: 5,
+      isActive: 1
+    },
+    {
+      id: "srv-trade-fairs",
+      title: {
+        AZ: "Beyn\u0259lxalq S\u0259rgil\u0259rd\u0259 T\u0259msil\xE7ilik & B2B Missiyalar",
+        EN: "International Trade Exhibitions & B2B Matchmaking",
+        TR: "Uluslararas\u0131 Fuarlarda Temsil & B2B Ticaret Heyetleri",
+        RU: "\u041F\u0440\u0435\u0434\u0441\u0442\u0430\u0432\u0438\u0442\u0435\u043B\u044C\u0441\u0442\u0432\u043E \u043D\u0430 \u043C\u0435\u0436\u0434\u0443\u043D\u0430\u0440\u043E\u0434\u043D\u044B\u0445 \u0432\u044B\u0441\u0442\u0430\u0432\u043A\u0430\u0445 \u0438 B2B \u043C\u0438\u0441\u0441\u0438\u0438",
+        AR: "\u0627\u0644\u062A\u0645\u062B\u064A\u0644 \u0641\u064A \u0627\u0644\u0645\u0639\u0627\u0631\u0636 \u0627\u0644\u062A\u062C\u0627\u0631\u064A\u0629 \u0627\u0644\u062F\u0648\u0644\u064A\u0629 \u0648\u0628\u0639\u062B\u0627\u062A B2B",
+        ES: "Representaci\xF3n en Ferias Comerciales Internacionales y Misiones B2B"
+      },
+      description: {
+        AZ: "Gulfood, SIAL, Anuga v\u0259 dig\u0259r apar\u0131c\u0131 qlobal s\u0259rgil\u0259rd\u0259 Az\u0259rbaycan m\u0259hsullar\u0131n\u0131n t\u0259msil\xE7iliyi v\u0259 f\u0259rdi B2B g\xF6r\xFC\u015Fl\u0259rin t\u0259\u015Fkili.",
+        EN: "Professional showcase and deal negotiation at premier global trade platforms including Gulfood (Dubai), SIAL (Paris), and Anuga (Cologne).",
+        TR: "Gulfood (Dubai), SIAL (Paris), Anuga (K\xF6ln) gibi k\xFCresel fuarlarda temsil ve ikili i\u015F g\xF6r\xFC\u015Fmeleri organizasyonu.",
+        RU: "\u0423\u0447\u0430\u0441\u0442\u0438\u0435 \u0438 \u043F\u0440\u043E\u0432\u0435\u0434\u0435\u043D\u0438\u0435 \u043F\u0435\u0440\u0435\u0433\u043E\u0432\u043E\u0440\u043E\u0432 \u043D\u0430 \u043A\u043B\u044E\u0447\u0435\u0432\u044B\u0445 \u0432\u044B\u0441\u0442\u0430\u0432\u043A\u0430\u0445: Gulfood (\u0414\u0443\u0431\u0430\u0439), SIAL (\u041F\u0430\u0440\u0438\u0436), Anuga (\u041A\u0435\u043B\u044C\u043D).",
+        AR: "\u0627\u0644\u062A\u0645\u062B\u064A\u0644 \u0641\u064A \u0627\u0644\u0645\u0639\u0627\u0631\u0636 \u0627\u0644\u0639\u0627\u0644\u0645\u064A\u0629 \u0627\u0644\u0643\u0628\u0631\u0649 \u0645\u062B\u0644 Gulfood \u0648 SIAL \u0648\u062A\u0646\u0638\u064A\u0645 \u0627\u0644\u0644\u0642\u0627\u0621\u0627\u062A \u0627\u0644\u062B\u0646\u0627\u0626\u064A\u0629 \u0645\u0639 \u0627\u0644\u0645\u0634\u062A\u0631\u064A\u0646 \u0627\u0644\u062F\u0648\u0644\u064A\u064A\u0646.",
+        ES: "Presencia en plataformas globales como Gulfood, SIAL y Anuga con agendas B2B cerradas."
+      },
+      scope: {
+        AZ: [
+          "Apar\u0131c\u0131 qlobal s\u0259rgil\u0259rd\u0259 vahid stend alt\u0131nda n\xFCmayi\u015F v\u0259 numun\u0259l\u0259rin t\u0259qdimat\u0131",
+          "\u018Fvv\u0259lc\u0259d\u0259n raz\u0131la\u015Fd\u0131r\u0131lm\u0131\u015F f\u0259rdi B2B g\xF6r\xFC\u015Fl\u0259r c\u0259dv\u0259li (matchmaking)",
+          "S\u0259rgi sonras\u0131 \u0259laq\u0259l\u0259rin sistemli t\u0259qibi v\u0259 m\xFCqavil\u0259l\u0259rin ba\u011Flanmas\u0131 d\u0259st\u0259yi"
+        ],
+        EN: [
+          "Product sampling and commercial booth representation at premier global expos",
+          "Pre-scheduled curated one-on-one B2B matchmaking agendas with top buyers",
+          "Post-exhibition CRM lead nurturing and direct order conversion support"
+        ],
+        TR: [
+          "Prestijli uluslararas\u0131 fuarlarda stant temsili ve \xFCr\xFCn numunesi tan\u0131t\u0131m\u0131",
+          "B\xFCy\xFCk sat\u0131n almac\u0131larla \xF6nceden planlanm\u0131\u015F B2B ikili i\u015F g\xF6r\xFC\u015Fmeleri",
+          "Fuar sonras\u0131 m\xFC\u015Fteri takibi ve sipari\u015Flerin s\xF6zle\u015Fmeye d\xF6n\xFC\u015Ft\xFCr\xFClmesi"
+        ],
+        RU: [
+          "\u041F\u0440\u0435\u0437\u0435\u043D\u0442\u0430\u0446\u0438\u044F \u043E\u0431\u0440\u0430\u0437\u0446\u043E\u0432 \u043F\u0440\u043E\u0434\u0443\u043A\u0446\u0438\u0438 \u043D\u0430 \u0432\u0435\u0434\u0443\u0449\u0438\u0445 \u043E\u0442\u0440\u0430\u0441\u043B\u0435\u0432\u044B\u0445 \u0432\u044B\u0441\u0442\u0430\u0432\u043A\u0430\u0445",
+          "\u041E\u0440\u0433\u0430\u043D\u0438\u0437\u0430\u0446\u0438\u044F \u0438\u043D\u0434\u0438\u0432\u0438\u0434\u0443\u0430\u043B\u044C\u043D\u044B\u0445 B2B \u0432\u0441\u0442\u0440\u0435\u0447 \u0441 \u043A\u0440\u0443\u043F\u043D\u044B\u043C\u0438 \u0431\u0430\u0439\u0435\u0440\u0430\u043C\u0438",
+          "\u041F\u043E\u0441\u0442\u0432\u044B\u0441\u0442\u0430\u0432\u043E\u0447\u043D\u0430\u044F \u0440\u0430\u0431\u043E\u0442\u0430 \u0441 \u043B\u0438\u0434\u0430\u043C\u0438 \u0438 \u0437\u0430\u043A\u043B\u044E\u0447\u0435\u043D\u0438\u0435 \u043A\u043E\u043D\u0442\u0440\u0430\u043A\u0442\u043E\u0432"
+        ],
+        AR: [
+          "\u0639\u0631\u0636 \u0627\u0644\u0639\u064A\u0646\u0627\u062A \u0648\u0627\u0644\u062A\u0645\u062B\u064A\u0644 \u0641\u064A \u0623\u062C\u0646\u062D\u0629 \u0643\u0628\u0631\u0649 \u0627\u0644\u0645\u0639\u0627\u0631\u0636 \u0627\u0644\u0635\u0646\u0627\u0639\u064A\u0629 \u0648\u0627\u0644\u063A\u0630\u0627\u0626\u064A\u0629 \u0627\u0644\u062F\u0648\u0644\u064A\u0629",
+          "\u062C\u062F\u0648\u0644\u0629 \u0627\u062C\u062A\u0645\u0627\u0639\u0627\u062A \u0639\u0645\u0644 \u062B\u0646\u0627\u0626\u064A\u0629 B2B \u0645\u0639 \u0643\u0628\u0627\u0631 \u0627\u0644\u0645\u0634\u062A\u0631\u064A\u0646 \u0648\u0633\u0644\u0627\u0633\u0644 \u0627\u0644\u062A\u0648\u0631\u064A\u062F",
+          "\u0645\u062A\u0627\u0628\u0639\u0629 \u0627\u0644\u0639\u0645\u0644\u0627\u0621 \u0627\u0644\u0645\u062D\u062A\u0645\u0644\u064A\u0646 \u0628\u0639\u062F \u0627\u0644\u0645\u0639\u0631\u0636 \u0648\u062A\u062D\u0648\u064A\u0644 \u0627\u0644\u0641\u0631\u0635 \u0625\u0644\u0649 \u0639\u0642\u0648\u062F \u062A\u0648\u0631\u064A\u062F"
+        ],
+        ES: [
+          "Exhibici\xF3n de muestras de producto en las principales ferias del sector",
+          "Agendas personalizadas de reuniones B2B con compradores estrat\xE9gicos",
+          "Seguimiento post-feria para la conversi\xF3n de contactos en contratos en firme"
+        ]
+      },
+      targetAudience: {
+        AZ: "Brendini qlobal arenada tan\u0131tmaq v\u0259 birba\u015Fa iri p\u0259rak\u0259nd\u0259 \u015F\u0259b\u0259k\u0259l\u0259ri il\u0259 \u0259laq\u0259 qurmaq ist\u0259y\u0259n istehsal\xE7\u0131lar",
+        EN: "Producers ready for international retail, supermarket and wholesale distributor exposure",
+        TR: "Markas\u0131n\u0131 k\xFCresel vitrine \xE7\u0131karmak isteyen ve b\xFCy\xFCk al\u0131c\u0131 a\u011Flar\u0131yla bulu\u015Fmay\u0131 hedefleyen firmalar",
+        RU: "\u041F\u0440\u0435\u0434\u043F\u0440\u0438\u044F\u0442\u0438\u044F, \u043D\u0430\u0446\u0435\u043B\u0435\u043D\u043D\u044B\u0435 \u043D\u0430 \u0432\u044B\u0445\u043E\u0434 \u0432 \u043C\u0435\u0436\u0434\u0443\u043D\u0430\u0440\u043E\u0434\u043D\u044B\u0435 \u0442\u043E\u0440\u0433\u043E\u0432\u044B\u0435 \u0441\u0435\u0442\u0438 \u0438 \u0434\u0438\u0441\u0442\u0440\u0438\u0431\u044C\u044E\u0442\u043E\u0440\u0441\u043A\u0438\u0435 \u043A\u0430\u043D\u0430\u043B\u044B",
+        AR: "\u0627\u0644\u0634\u0631\u0643\u0627\u062A \u0627\u0644\u0631\u0627\u063A\u0628\u0629 \u0641\u064A \u062A\u0633\u0648\u064A\u0642 \u0639\u0644\u0627\u0645\u062A\u0647\u0627 \u0627\u0644\u062A\u062C\u0627\u0631\u064A\u0629 \u0648\u0627\u0644\u0648\u0635\u0648\u0644 \u0644\u0633\u0644\u0627\u0633\u0644 \u0627\u0644\u062A\u062C\u0632\u0626\u0629 \u0648\u0627\u0644\u0645\u0648\u0632\u0639\u064A\u0646 \u0627\u0644\u0643\u0628\u0627\u0631",
+        ES: "Empresas con potencial de exportaci\xF3n interesadas en contactar con grandes distribuidores y cadenas"
+      },
+      iconClass: "fa-solid fa-handshake",
+      colorClass: "bg-emerald-600",
+      serviceType: "secondary",
+      sortOrder: 6,
+      isActive: 1
+    }
+  ];
+  const insertService = db.prepare(`
+    INSERT OR REPLACE INTO azexbuy_services
+    (id, created_at, updated_at, title, description, scope, target_audience, icon_class, color_class, service_type, is_active, sort_order)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `);
+  for (const s of services) {
+    insertService.run(
+      s.id,
+      now,
+      now,
+      JSON.stringify(s.title),
+      JSON.stringify(s.description),
+      JSON.stringify(s.scope),
+      JSON.stringify(s.targetAudience),
+      s.iconClass,
+      s.colorClass,
+      s.serviceType,
+      s.isActive,
+      s.sortOrder
+    );
+  }
+  const articles = [
+    {
+      id: "art-001",
+      title: "Azerbaijan's Middle Corridor (TITR): Strategic Transit Gateway Connecting Asia and Europe in 2026",
+      slug: "azerbaijan-middle-corridor-new-silk-road",
+      category: "Market Trends",
+      summary: "How the Trans-Caspian International Transport Route (TITR) offers 12-day transit between China, Central Asia, Azerbaijan, and the European Union with unprecedented tariff predictability.",
+      coverImage: "https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=1200&q=80",
+      seoTitle: "Middle Corridor Logistics Gateway \u2014 Azerbaijan TITR Rail & Port of Baku",
+      seoDescription: "Strategic analysis of the Trans-Caspian Middle Corridor routing via Port of Baku and Baku-Tbilisi-Kars railway for Eurasian container shipping.",
+      isFeatured: 1,
+      isPublished: 1,
+      author: "AZEXBUY Logistics Desk",
+      content: `### Executive Overview: The Trans-Caspian Advantage
+
+The **Trans-Caspian International Transport Route (TITR)**, commonly designated as the **Middle Corridor**, has emerged as the premier geostrategic artery linking East Asian manufacturing hubs and Central Asian commodity basins with Western Europe.
+
+Passing directly through the **Port of Baku at Alat**, the Middle Corridor eliminates congested maritime bottlenecks while bypassing northern transit routes subject to international sanctions and volatility.
+
+---
+
+### Key Infrastructure Pillars
+
+1. **Port of Baku (Alat Logistics Hub):**
+   * Annual cargo throughput capacity exceeding 15 million tons and 100,000 TEU containers in Phase 1, expanding to 25 million tons and 500,000 TEU in Phase 2.
+   * Direct intermodal connection to standard and broad gauge railway networks.
+   * Free Economic Zone (AFEZ) privileges with 0% corporate tax, 0% VAT, and free repatriation of capital.
+
+2. **Baku\u2013Tbilisi\u2013Kars (BTK) Railway:**
+   * Modernized rail corridor providing direct uninterrupted rail freight connectivity through Georgia and Turkey into the European standard gauge network.
+   * Transit times from Baku to Turkish Mediterranean and Aegean ports reduced to just 48\u201372 hours.
+
+3. **Digital Single Window & Unified Transit Tariffs:**
+   * Elimination of redundant customs checks through harmonized electronic CIM/SMGS consignment notes.
+   * Block-train tracking via synchronized GPS telematics across all participating Caspian littoral operators.
+
+---
+
+### Commercial Implications for Exporters and Buyers
+
+International procurement desks sourcing Azerbaijani hazelnuts, pomegranates, petrochemicals, and mineral commodities benefit directly from guaranteed **door-to-door transit timeframes of 7\u201312 days** into Southern and Central Europe.
+
+AZEXBUY provides integrated multimodal booking, container allocation, and transit insurance across all Middle Corridor segments.`
+    },
+    {
+      id: "art-002",
+      title: "Azerbaijani Hazelnut Export: 2026 Harvest Outlook, Calibration Standards and EU Compliance",
+      slug: "azerbaijan-hazelnut-export-2026-season",
+      category: "Export Guides",
+      summary: "Comprehensive B2B buyer guide on Ata-Baba hazelnut grading, aflatoxin control protocols, and preferential zero-tariff access under the EU-Azerbaijan partnership.",
+      coverImage: "https://images.unsplash.com/photo-1543257580-7269da773bf5?w=1200&q=80",
+      seoTitle: "Azerbaijani Hazelnut Export Guide 2026 \u2014 Ata-Baba Caliber & EU Standards",
+      seoDescription: "In-depth commercial guide for bulk buyers of Azerbaijani shelled and roasted hazelnuts. Quality grades, laboratory certification and packaging.",
+      isFeatured: 1,
+      isPublished: 1,
+      author: "AZEXBUY Agro Desk",
+      content: `### Global Footprint of Azerbaijani Hazelnut
+
+Azerbaijan consistently ranks within the **top four global exporters of premium shelled hazelnuts**, yielding over 50,000 metric tons of in-shell nuts annually. Cultivated predominantly in the fertile microclimates of Zaqatala, Balakan, Qakh, and Sheki, the endemic **Ata-Baba** cultivar represents over 85% of commercial export production.
+
+---
+
+### Critical Quality Parameters for Confectionery Buyers
+
+* **Fat & Oleic Acid Composition:** Ata-Baba kernels feature 64%\u201368% natural oil content, imparting a naturally buttery, sweet profile ideal for chocolate, praline, and paste processing.
+* **Caliber Classification:**
+  * 11\u201313 mm: Preferred for whole-nut inclusions in milk and dark chocolate bars.
+  * 13\u201315 mm: Premium retail snack packing and high-end dragees.
+  * 9\u201311 mm: Optimal for roasting, dicing, and industrial hazelnut butter milling.
+
+---
+
+### Strict Aflatoxin and Microbiological Controls
+
+To guarantee compliance with European Union Regulation (EU) 2023/915:
+1. Every export consignment undergoes double Sortex optical laser sorting followed by manual inspection tables.
+2. Official AQTA (Food Safety Agency of Azerbaijan) sampling verifies total Aflatoxin < 4.0 ppb and Aflatoxin B1 < 2.0 ppb.
+3. Consignments are packed in food-grade multi-ply vacuum foil sacks flushed with nitrogen to suppress mold sporulation during ocean and rail transit.`
+    },
+    {
+      id: "art-003",
+      title: "The Sovereign Export Compliance Stack: How AQTA, Form CT-1, EUR.1 and ISO 22000 Unlock Zero-Tariff Access",
+      slug: "azerbaijan-export-certifications-guide",
+      category: "Regulatory",
+      summary: "A step-by-step institutional overview of trade documentation required for zero-duty clearance into the CIS, European Union, and Gulf Cooperation Council (GCC) markets.",
+      coverImage: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1200&q=80",
+      seoTitle: "Azerbaijan Export Certifications Guide \u2014 AQTA, EUR.1, CT-1 and ISO Stack",
+      seoDescription: "Complete roadmap to trade certifications for Azerbaijani products. Preferential customs treatment, sanitary protocols, and international validity.",
+      isFeatured: 0,
+      isPublished: 1,
+      author: "AZEXBUY Legal & Compliance",
+      content: `### Navigating the Azerbaijani Export Regulatory Landscape
+
+For international buyers and local manufacturers alike, documentation integrity is the single most critical factor in guaranteeing frictionless border clearance.
+
+---
+
+### 1. Proof of Preferential Origin
+
+* **Form CT-1:** Issued for trade within the Commonwealth of Independent States (CIS) Free Trade Agreement. Grants **0% import tariff** on all qualifying Azerbaijani agricultural and manufactured goods.
+* **Movement Certificate EUR.1:** Issued under bilateral trade agreements with the EU, EFTA, and partner nations. Certifies that goods have undergone substantial transformation in Azerbaijan.
+
+---
+
+### 2. Sanitary and Phytosanitary Governance: AQTA
+
+The **Food Safety Agency of the Republic of Azerbaijan (AQTA)** operates in direct alignment with Codex Alimentarius, the World Organisation for Animal Health (WOAH), and IPPC standards.
+
+Every commercial food consignment dispatched via AZEXBUY includes:
+* International Phytosanitary Certificate (Plant products)
+* International Veterinary Health Certificate (Animal products & honey)
+* Food Safety Certificate verifying absence of heavy metals, pesticides, and radionuclide contamination.`
+    },
+    {
+      id: "art-004",
+      title: "Goychay Pomegranate (PGI): Seasonal Windows, NFC Juice Processing and Gulf Market Expansion",
+      slug: "pomegranate-goychay-pgi-export-2026",
+      category: "Commodity Insights",
+      summary: "Analyzing the commercial dynamics of Azerbaijan\u2019s iconic ruby pomegranate harvest, cold-pressed processing capabilities, and burgeoning GCC retail demand.",
+      coverImage: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=1200&q=80",
+      seoTitle: "Goychay Pomegranate Export 2026 \u2014 Fresh Fruit & NFC Juice B2B Guide",
+      seoDescription: "Market dynamics of Goychay PGI pomegranates. Harvest calendars, cold chain logistics to Dubai, Doha and Riyadh, and bulk juice procurement.",
+      isFeatured: 1,
+      isPublished: 1,
+      author: "AZEXBUY Agricultural Desk",
+      content: `### The Unique Terroir of Goychay
+
+Situated at the intersection of four climatic zones in the Shirvan plain, the Goychay district possesses alluvial soils rich in calcium carbonate, combined with scorching summer heat and crisp autumn nights. This produces pomegranates with **unrivaled sugar-acid balance (16.5\xB0\u201318\xB0 Brix)** and thin, pliable rinds that resist splitting during packing.
+
+---
+
+### Harvest Calendar and Export Shipping Windows
+
+* **Early Harvest (Guleysha Pink):** September 25 \u2013 October 15. Ideal for early airfreight into premium supermarket programs in the UAE and Qatar.
+* **Peak Harvest (Guleysha Red & Bala Mursal):** October 15 \u2013 November 25. Large heavy fruits (400g\u2013650g) with deep ruby arils, optimized for sea reefer and cold-chain road transit.
+* **Cold Storage Window:** November 25 \u2013 February 28. Stored in modern Controlled Atmosphere (CA) cold storage facilities at 5\xB0C and 90% relative humidity.`
+    }
+  ];
+  const insertArticle = db.prepare(`
+    INSERT OR REPLACE INTO azexbuy_articles
+    (id, created_at, updated_at, title, slug, category, summary, content, cover_image, seo_title, seo_description, is_published, is_featured, published_at, author)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `);
+  for (const a of articles) {
+    insertArticle.run(
+      a.id,
+      now,
+      now,
+      a.title,
+      a.slug,
+      a.category,
+      a.summary,
+      a.content,
+      a.coverImage,
+      a.seoTitle,
+      a.seoDescription,
+      a.isPublished,
+      a.isFeatured,
+      now,
+      a.author
+    );
+  }
+  const existingKv = db.prepare("SELECT value FROM azexbuy_kv WHERE key = 'content'").get();
+  let cmsContent = {};
+  if (existingKv) {
+    try {
+      cmsContent = JSON.parse(existingKv.value);
+    } catch {
+    }
+  }
+  if (!cmsContent.products || cmsContent.products.length < 4) {
+    cmsContent.products = [
+      {
+        id: "hazelnut-080222",
+        featured: true,
+        hsCode: "080222",
+        categoryKey: "agro",
+        name: {
+          EN: "Ata-Baba Shelled Hazelnuts",
+          AZ: "Ata-Baba F\u0131nd\u0131q L\u0259p\u0259si",
+          TR: "Ata-Baba F\u0131nd\u0131k \u0130\xE7i",
+          RU: "\u0424\u0443\u043D\u0434\u0443\u043A \u043E\u0447\u0438\u0449\u0435\u043D\u043D\u044B\u0439 \u0410\u0442\u0430-\u0411\u0430\u0431\u0430",
+          AR: "\u0628\u0646\u062F\u0642 \u0623\u062A\u0627-\u0628\u0627\u0628\u0627 \u0645\u0642\u0634\u0631 \u0641\u0627\u062E\u0631",
+          ES: "Avellanas Peladas Ata-Baba"
+        },
+        categoryLabel: {
+          EN: "Agriculture & Food",
+          AZ: "K\u0259nd T\u0259s\u0259rr\xFCfat\u0131 v\u0259 Qida",
+          TR: "Tar\u0131m ve G\u0131da",
+          RU: "\u0421\u0435\u043B\u044C\u0441\u043A\u043E\u0435 \u0445\u043E\u0437\u044F\u0439\u0441\u0442\u0432\u043E \u0438 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u044B",
+          AR: "\u0627\u0644\u0632\u0631\u0627\u0639\u0629 \u0648\u0627\u0644\u0623\u063A\u0630\u064A\u0629",
+          ES: "Agricultura y Alimentos"
+        },
+        shortDesc: {
+          EN: "Extra-grade shelled natural & roasted Ata-Baba hazelnuts from Zaqatala-Sheki orchards.",
+          AZ: "Zaqatala-\u015E\u0259ki ba\u011Flar\u0131ndan ekstra n\xF6vl\xFC t\u0259bii v\u0259 qovrulmu\u015F Ata-Baba f\u0131nd\u0131q l\u0259p\u0259si.",
+          TR: "Zakatala-\u015Eeki bah\xE7elerinden ekstra kalite do\u011Fal ve kavrulmu\u015F Ata-Baba f\u0131nd\u0131k i\xE7i.",
+          RU: "\u041E\u0447\u0438\u0449\u0435\u043D\u043D\u044B\u0439 \u043D\u0430\u0442\u0443\u0440\u0430\u043B\u044C\u043D\u044B\u0439 \u0438 \u043E\u0431\u0436\u0430\u0440\u0435\u043D\u043D\u044B\u0439 \u0444\u0443\u043D\u0434\u0443\u043A \u0441\u043E\u0440\u0442\u0430 \u0410\u0442\u0430-\u0411\u0430\u0431\u0430 \u0432\u044B\u0441\u0448\u0435\u0433\u043E \u043A\u0430\u0447\u0435\u0441\u0442\u0432\u0430 \u0438\u0437 \u0417\u0430\u0433\u0430\u0442\u0430\u043B\u044B.",
+          AR: "\u0628\u0646\u062F\u0642 \u0637\u0628\u064A\u0639\u064A \u0648\u0645\u062D\u0645\u0635 \u0645\u0646 \u0627\u0644\u062F\u0631\u062C\u0629 \u0627\u0644\u0623\u0648\u0644\u0649 \u0645\u0646 \u0628\u0633\u0627\u062A\u064A\u0646 \u0632\u0627\u0642\u0627\u062A\u0627\u0644\u0627 \u0648\u0634\u0643\u064A \u0627\u0644\u0623\u0630\u0631\u0628\u064A\u062C\u0627\u0646\u064A\u0629.",
+          ES: "Avellanas naturales y tostadas de calidad extra de los huertos de Zaqatala-Sheki."
+        },
+        originRegion: {
+          EN: "Zaqatala \u2013 Sheki Economic Region",
+          AZ: "Zaqatala \u2013 \u015E\u0259ki \u0130qtisadi Rayonu",
+          TR: "Zakatala \u2013 \u015Eeki Ekonomik B\xF6lgesi",
+          RU: "\u0417\u0430\u0433\u0430\u0442\u0430\u043B\u043E-\u0428\u0435\u043A\u0438\u043D\u0441\u043A\u0438\u0439 \u044D\u043A\u043E\u043D\u043E\u043C\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0440\u0430\u0439\u043E\u043D",
+          AR: "\u0645\u0646\u0637\u0642\u0629 \u0632\u0627\u0642\u0627\u062A\u0627\u0644\u0627 - \u0634\u0643\u064A \u0627\u0644\u0627\u0642\u062A\u0635\u0627\u062F\u064A\u0629",
+          ES: "Regi\xF3n Econ\xF3mica de Zaqatala \u2013 Sheki"
+        },
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuD6iP6ACTY6rFPAXNJlK_W-AfkWR_1OBE8I3wLkCwVMAlQIyNvxAXxK1kYe6-itoVecrpqtsSok0_wQ1QnYyWcn40Hikz269v2ag3TbKrY9lfqw3mEVtR-I0GvclcQXFDi0q_xVPYMdzpIFMaXwgeJEs4gwsCpcf-Dn7Df8QGIeKoSael0DxSBY2ZpmoWYe8Ynhio_Q0dONzHarqS9Kp31IStn01T44xVmJ90B5TY2WFQr7mOmo4Ucq",
+        minOrderQty: "20 MT (1x 20ft FCL)",
+        annualCapacity: "24,000 MT",
+        verifiedSuppliersCount: 38,
+        incoterms: ["FCA", "FOB", "CIF", "DAP"],
+        certifications: ["ISO 22000", "FSSC 22000", "AQTA Phytosanitary", "EUR.1 / CT-1", "Halal"],
+        leadTimeDays: "7\u201312 Days",
+        packaging: {
+          EN: "25kg / 50kg vacuum foil bags in corrugated cartons or 800kg big-bags",
+          AZ: "25kq / 50kq vakuum folqa kis\u0259l\u0259r v\u0259 ya 800kq biq-b\u0259ql\u0259r",
+          TR: "25kg / 50kg vakumlu folyo torbalarda veya 800kg big-bag",
+          RU: "\u0412\u0430\u043A\u0443\u0443\u043C\u043D\u044B\u0435 \u043F\u0430\u043A\u0435\u0442\u044B \u043F\u043E 25/50 \u043A\u0433 \u0432 \u043A\u0430\u0440\u0442\u043E\u043D\u043D\u044B\u0445 \u043A\u043E\u0440\u043E\u0431\u0430\u0445 \u0438\u043B\u0438 \u0431\u0438\u0433-\u0431\u044D\u0433\u0438 \u043F\u043E 800 \u043A\u0433",
+          AR: "\u0623\u0643\u064A\u0627\u0633 \u0631\u0642\u0627\u0626\u0642 \u0645\u0641\u0631\u063A\u0629 \u0645\u0646 \u0627\u0644\u0647\u0648\u0627\u0621 \u0633\u0639\u0629 25/50 \u0643\u062C\u0645 \u0623\u0648 \u0623\u0643\u064A\u0627\u0633 \u0643\u0628\u064A\u0631\u0629 \u0633\u0639\u0629 800 \u0643\u062C\u0645",
+          ES: "Bolsas de vac\xEDo de 25/50 kg en cajas de cart\xF3n o big-bags de 800 kg"
+        },
+        gradeSpecs: {
+          EN: "Caliber 11\u201313mm, 13\u201315mm | Moisture < 5.0% | Aflatoxin B1 < 2ppb (EU Standard)",
+          AZ: "Kalibr 11\u201313mm, 13\u201315mm | N\u0259mlik < 5.0% | Aflatoksin B1 < 2ppb (A\u0130 Standart\u0131)",
+          TR: "Kalibre 11\u201313mm, 13\u201315mm | Nem < %5.0 | Aflatoksin B1 < 2ppb (AB Standard\u0131)",
+          RU: "\u041A\u0430\u043B\u0438\u0431\u0440 11\u201313\u043C\u043C, 13\u201315\u043C\u043C | \u0412\u043B\u0430\u0436\u043D\u043E\u0441\u0442\u044C < 5.0% | \u0410\u0444\u043B\u0430\u0442\u043E\u043A\u0441\u0438\u043D B1 < 2ppb (\u0421\u0442\u0430\u043D\u0434\u0430\u0440\u0442 \u0415\u0421)",
+          AR: "\u0627\u0644\u0639\u064A\u0627\u0631 11-13 \u0645\u0645\u060C 13-15 \u0645\u0645 | \u0627\u0644\u0631\u0637\u0648\u0628\u0629 < 5% | \u0627\u0644\u0623\u0641\u0644\u0627\u062A\u0648\u0643\u0633\u064A\u0646 B1 < 2 \u062C\u0632\u0621 \u0641\u064A \u0627\u0644\u0645\u0644\u064A\u0627\u0631",
+          ES: "Calibre 11\u201313mm, 13\u201315mm | Humedad < 5.0% | Aflatoxina B1 < 2ppb (Norma UE)"
+        }
+      },
+      {
+        id: "pomegranate-081090",
+        featured: true,
+        hsCode: "081090",
+        categoryKey: "agro",
+        name: {
+          EN: "Goychay Pomegranate & 100% NFC Juice",
+          AZ: "G\xF6y\xE7ay Nar\u0131 v\u0259 100% T\u0259bii Nar \u015Eir\u0259si",
+          TR: "G\xF6y\xE7ay Nar\u0131 ve %100 Do\u011Fal Nar Suyu",
+          RU: "\u0413\u0440\u0430\u043D\u0430\u0442 \u0413\u0451\u0439\u0447\u0430\u0439 \u0438 100% \u0441\u043E\u043A \u043F\u0440\u044F\u043C\u043E\u0433\u043E \u043E\u0442\u0436\u0438\u043C\u0430",
+          AR: "\u0631\u0645\u0627\u0646 \u063A\u0648\u064A\u062A\u0634\u0627\u064A \u0627\u0644\u0634\u0647\u064A\u0631 \u0648\u0639\u0635\u064A\u0631 \u0637\u0628\u064A\u0639\u064A 100%",
+          ES: "Granadas de Goychay y Zumo 100% Natural NFC"
+        },
+        categoryLabel: {
+          EN: "Agriculture & Food",
+          AZ: "K\u0259nd T\u0259s\u0259rr\xFCfat\u0131 v\u0259 Qida",
+          TR: "Tar\u0131m ve G\u0131da",
+          RU: "\u0421\u0435\u043B\u044C\u0441\u043A\u043E\u0435 \u0445\u043E\u0437\u044F\u0439\u0441\u0442\u0432\u043E \u0438 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u044B",
+          AR: "\u0627\u0644\u0632\u0631\u0627\u0639\u0629 \u0648\u0627\u0644\u0623\u063A\u0630\u064A\u0629",
+          ES: "Agricultura y Alimentos"
+        },
+        shortDesc: {
+          EN: "Protected Geographical Indication (PGI) Goychay red ruby pomegranates and cold-pressed NFC pure juice.",
+          AZ: "Co\u011Frafi g\xF6st\u0259ricili (PGI) G\xF6y\xE7ay yaqut narlar\u0131 v\u0259 soyuq s\u0131x\u0131m 100% t\u0259bii nar \u015Fir\u0259si.",
+          TR: "Co\u011Frafi i\u015Faretli (PGI) G\xF6y\xE7ay yakut narlar\u0131 ve so\u011Fuk s\u0131k\u0131m %100 do\u011Fal nar suyu.",
+          RU: "\u0413\u0435\u043E\u0433\u0440\u0430\u0444\u0438\u0447\u0435\u0441\u043A\u0438 \u0437\u0430\u0449\u0438\u0449\u0435\u043D\u043D\u044B\u0439 \u0433\u0451\u0439\u0447\u0430\u0439\u0441\u043A\u0438\u0439 \u0440\u0443\u0431\u0438\u043D\u043E\u0432\u044B\u0439 \u0433\u0440\u0430\u043D\u0430\u0442 \u0438 100% \u0441\u043E\u043A \u043F\u0440\u044F\u043C\u043E\u0433\u043E \u043E\u0442\u0436\u0438\u043C\u0430.",
+          AR: "\u0631\u0645\u0627\u0646 \u063A\u0648\u064A\u062A\u0634\u0627\u064A \u0630\u0648 \u0627\u0644\u0645\u0624\u0634\u0631 \u0627\u0644\u062C\u063A\u0631\u0627\u0641\u064A \u0627\u0644\u0645\u062D\u0645\u064A \u0648\u0639\u0635\u064A\u0631 \u0627\u0644\u0631\u0645\u0627\u0646 \u0627\u0644\u0637\u0628\u064A\u0639\u064A \u0627\u0644\u0645\u0639\u0635\u0648\u0631 \u0639\u0644\u0649 \u0627\u0644\u0628\u0627\u0631\u062F.",
+          ES: "Granadas rub\xED de Goychay con Indicaci\xF3n Geogr\xE1fica Protegida y zumo puro prensado en fr\xEDo."
+        },
+        originRegion: {
+          EN: "Central Aran (Goychay) Economic Region",
+          AZ: "M\u0259rk\u0259zi Aran (G\xF6y\xE7ay) \u0130qtisadi Rayonu",
+          TR: "Merkezi Aran (G\xF6y\xE7ay) Ekonomik B\xF6lgesi",
+          RU: "\u0426\u0435\u043D\u0442\u0440\u0430\u043B\u044C\u043D\u043E-\u0410\u0440\u0430\u043D\u0441\u043A\u0438\u0439 (\u0413\u0451\u0439\u0447\u0430\u0439) \u044D\u043A\u043E\u043D\u043E\u043C\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0440\u0430\u0439\u043E\u043D",
+          AR: "\u0645\u0646\u0637\u0642\u0629 \u0623\u0631\u0627\u0646 \u0627\u0644\u0648\u0633\u0637\u0649 (\u063A\u0648\u064A\u062A\u0634\u0627\u064A) \u0627\u0644\u0627\u0642\u062A\u0635\u0627\u062F\u064A\u0629",
+          ES: "Regi\xF3n Econ\xF3mica de Aran Central (Goychay)"
+        },
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDHo5g8iKevybJcG4jlFPGTNzuPMU2721wxSfNRS3s0FmbZeA3YW4AxkdXtyhH_55x-4s5Uh_5-S2-S3LVPexC1O1ahPg_Hgeeion6snYi_eyi7MNDXh5coR3k9acztB4DSA_PV9JjS_JAitpfDEAmO4UUbAUjAs0VuwpjvFbKeEaRXeqGiJ2JKU_vHqlhTa6Meil6iamn-3I_33E-Y7Tii2hclP8mfc_jBNp_gJSQpmbKniKtPJu5s",
+        minOrderQty: "18 MT (1x 40ft Reefer FCL)",
+        annualCapacity: "40,000 MT",
+        verifiedSuppliersCount: 42,
+        incoterms: ["FCA", "FOB", "CIF", "CIP"],
+        certifications: ["GlobalG.A.P.", "ISO 22000", "AQTA Phytosanitary", "EUR.1 / CT-1", "Halal"],
+        leadTimeDays: "5\u201310 Days",
+        packaging: {
+          EN: "Fresh: 4.5kg open-top cartons with cell dividers. Juice: 200L aseptic drums / 1L glass bottles",
+          AZ: "T\u0259z\u0259: 4.5kq x\xFCsusi karton qutular. \u015Eir\u0259: 200L aseptik \xE7\u0259ll\u0259kl\u0259r / 1L \u015F\xFC\u015F\u0259 butulkalar",
+          TR: "Taze: 4.5kg viyoll\xFC a\xE7\u0131k karton kutular. Meyve suyu: 200L aseptik variller / 1L cam \u015Fi\u015Feler",
+          RU: "\u0421\u0432\u0435\u0436\u0438\u0439: \u043A\u0430\u0440\u0442\u043E\u043D\u043D\u044B\u0435 \u043A\u043E\u0440\u043E\u0431\u043A\u0438 4.5 \u043A\u0433 \u0441 \u044F\u0447\u0435\u0439\u043A\u0430\u043C\u0438. \u0421\u043E\u043A: \u0430\u0441\u0435\u043F\u0442\u0438\u0447\u0435\u0441\u043A\u0438\u0435 \u0431\u043E\u0447\u043A\u0438 200 \u043B / \u0441\u0442\u0435\u043A\u043B\u043E 1 \u043B",
+          AR: "\u0637\u0627\u0632\u062C: \u0643\u0631\u0627\u062A\u064A\u0646 4.5 \u0643\u062C\u0645 \u0645\u0639 \u0641\u0648\u0627\u0635\u0644. \u0639\u0635\u064A\u0631: \u0628\u0631\u0627\u0645\u064A\u0644 \u0645\u0639\u0642\u0645\u0629 \u0633\u0639\u0629 200 \u0644\u062A\u0631 \u0623\u0648 \u0632\u062C\u0627\u062C\u0627\u062A \u0633\u0639\u0629 1 \u0644\u062A\u0631",
+          ES: "Fresco: cajas de 4.5 kg con alv\xE9olos. Zumo: bidones as\xE9pticos de 200L / botellas de 1L"
+        },
+        gradeSpecs: {
+          EN: "Brix 16.5\xB0\u201318.0\xB0 | Weight 300g\u2013550g | Cold-Chain Reefer 5\xB0C with controlled atmosphere",
+          AZ: "Briks 16.5\xB0\u201318.0\xB0 | \xC7\u0259ki 300q\u2013550q | 5\xB0C d\u0259r\u0259c\u0259d\u0259 idar\u0259olunan soyuducu z\u0259ncir",
+          TR: "Brix %16.5\u2013%18.0 | A\u011F\u0131rl\u0131k 300g\u2013550g | 5\xB0C kontroll\xFC atmosferli so\u011Fuk zincir",
+          RU: "\u0411\u0440\u0438\u043A\u0441 16.5\xB0\u201318.0\xB0 | \u0412\u0435\u0441 300\u2013550 \u0433 | \u0420\u0435\u0444\u0440\u0438\u0436\u0435\u0440\u0430\u0442\u043E\u0440\u043D\u0430\u044F \u0446\u0435\u043F\u043E\u0447\u043A\u0430 5\xB0C \u0441 \u043A\u043E\u043D\u0442\u0440\u043E\u043B\u0435\u043C \u0441\u0440\u0435\u0434\u044B",
+          AR: "\u0628\u0631\u064A\u0643\u0633 16.5\xB0 - 18.0\xB0 | \u0627\u0644\u0648\u0632\u0646 300 - 550 \u062C\u0645 | \u0646\u0642\u0644 \u0645\u0628\u0631\u062F \u0628\u062F\u0631\u062C\u0629 \u062D\u0631\u0627\u0631\u0629 5 \u0645\u0626\u0648\u064A\u0629",
+          ES: "Brix 16.5\xB0\u201318.0\xB0 | Peso 300g\u2013550g | Cadena de fr\xEDo a 5\xB0C en atm\xF3sfera controlada"
+        }
+      },
+      {
+        id: "saffron-091020",
+        featured: true,
+        hsCode: "091020",
+        categoryKey: "agro",
+        name: {
+          EN: "Absheron Royal Saffron Threads",
+          AZ: "Ab\u015Feron \u015Eah Z\u0259f\u0259ran L\u0259\xE7\u0259kl\u0259ri",
+          TR: "Ab\u015Feron \u015Eah Safran Telleri",
+          RU: "\u0410\u0431\u0448\u0435\u0440\u043E\u043D\u0441\u043A\u0438\u0439 \u0446\u0430\u0440\u0441\u043A\u0438\u0439 \u0448\u0430\u0444\u0440\u0430\u043D (\u043D\u0438\u0442\u0438)",
+          AR: "\u062E\u064A\u0648\u0637 \u0632\u0639\u0641\u0631\u0627\u0646 \u0623\u0628\u0634\u064A\u0631\u0648\u0646 \u0627\u0644\u0645\u0644\u0643\u064A \u0627\u0644\u0646\u0642\u064A",
+          ES: "Hebras de Azafr\xE1n Real de Absheron"
+        },
+        categoryLabel: {
+          EN: "Specialty Crops & Spices",
+          AZ: "X\xFCsusi Bitkil\u0259r v\u0259 \u018Fdviyyatlar",
+          TR: "\xD6zel Mahsuller ve Baharatlar",
+          RU: "\u0421\u043F\u0435\u0446\u0438\u0438 \u0438 \u043E\u0441\u043E\u0431\u044B\u0435 \u043A\u0443\u043B\u044C\u0442\u0443\u0440\u044B",
+          AR: "\u0627\u0644\u0645\u062D\u0627\u0635\u064A\u0644 \u0627\u0644\u062E\u0627\u0635\u0629 \u0648\u0627\u0644\u062A\u0648\u0627\u0628\u0644",
+          ES: "Especias y Cultivos Especiales"
+        },
+        shortDesc: {
+          EN: "ISO 3632 Category I pure all-red Sargol saffron hand-harvested in Bilgah, Absheron.",
+          AZ: "Bilg\u0259h k\u0259ndind\u0259 \u0259ll\u0259 y\u0131\u011F\u0131lm\u0131\u015F ISO 3632 Kateqoriya I t\u0259miz q\u0131rm\u0131z\u0131 \u015Eah z\u0259f\u0259ran.",
+          TR: "Bilgah k\xF6y\xFCnde elle toplanm\u0131\u015F ISO 3632 Kategori I saf k\u0131rm\u0131z\u0131 \u015Eah safran\u0131.",
+          RU: "\u0427\u0438\u0441\u0442\u044B\u0439 \u043A\u0440\u0430\u0441\u043D\u044B\u0439 \u0448\u0430\u0444\u0440\u0430\u043D \u0432\u044B\u0441\u0448\u0435\u0439 \u043A\u0430\u0442\u0435\u0433\u043E\u0440\u0438\u0438 ISO 3632 I, \u0441\u043E\u0431\u0440\u0430\u043D\u043D\u044B\u0439 \u0432\u0440\u0443\u0447\u043D\u0443\u044E \u0432 \u0411\u0438\u043B\u044C\u0433\u044F.",
+          AR: "\u0632\u0639\u0641\u0631\u0627\u0646 \u0633\u0627\u0631\u062C\u0648\u0644 \u0623\u062D\u0645\u0631 \u0646\u0642\u064A \u0645\u0642\u0637\u0648\u0641 \u064A\u062F\u0648\u064A\u0627\u064B \u0648\u0641\u0642 \u0645\u0639\u0627\u064A\u064A\u0631 ISO 3632 \u0627\u0644\u0641\u0626\u0629 \u0627\u0644\u0623\u0648\u0644\u0649.",
+          ES: "Azafr\xE1n puro Sargol Categor\xEDa I ISO 3632 cosechado a mano en Bilgah, Absheron."
+        },
+        originRegion: {
+          EN: "Absheron \u2013 Khizi (Bilgah) Economic Region",
+          AZ: "Ab\u015Feron \u2013 X\u0131z\u0131 (Bilg\u0259h) \u0130qtisadi Rayonu",
+          TR: "Ab\u015Feron \u2013 H\u0131z\u0131 (Bilgah) Ekonomik B\xF6lgesi",
+          RU: "\u0410\u0431\u0448\u0435\u0440\u043E\u043D-\u0425\u044B\u0437\u044B\u043D\u0441\u043A\u0438\u0439 (\u0411\u0438\u043B\u044C\u0433\u044F) \u044D\u043A\u043E\u043D\u043E\u043C\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0440\u0430\u0439\u043E\u043D",
+          AR: "\u0645\u0646\u0637\u0642\u0629 \u0623\u0628\u0634\u064A\u0631\u0648\u0646 - \u062E\u064A\u0632\u064A (\u0628\u064A\u0644\u063A\u0627\u0647) \u0627\u0644\u0627\u0642\u062A\u0635\u0627\u062F\u064A\u0629",
+          ES: "Regi\xF3n Econ\xF3mica de Absheron \u2013 Khizi (Bilgah)"
+        },
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDtNJYRxE2w63MPzGdjf8CPD9AEFm8HRgiA_8S4bLzI4JlWkzMSr7mOrBFN0clACdJ8Z4fdPmTxcUeQZoVHwM8X0BSrp3Ge5V1rjnXGei5GwaARNkgff5T_0xspZitbC-LuPEjlYnoFGRTUx9-xnXkSS6296Qbk6OBMxFoPcu45Ph_IWPgxe8ghwkwSRb4DFc747hiqPs4hl6mD0u0fkbzXC86IW3Go3l5Gt49vsGvyFE6w27cyqJpi",
+        minOrderQty: "5 kg (Express Air Freight)",
+        annualCapacity: "1,500 kg",
+        verifiedSuppliersCount: 14,
+        incoterms: ["FCA", "CIP", "DAP"],
+        certifications: ["ISO 3632-1 Cat I", "AQTA Health Certificate", "EUR.1 / CT-1", "CoA Lab Test"],
+        leadTimeDays: "3\u20137 Days",
+        packaging: {
+          EN: "100g, 250g, 500g nitrogen-sealed tins or glass jars in luxury master cartons",
+          AZ: "100q, 250q, 500q azotla qorunan metal bankalar v\u0259 ya \u015F\xFC\u015F\u0259 qablar",
+          TR: "100g, 250g, 500g azot korumal\u0131 metal kutularda veya cam kavanozlarda",
+          RU: "\u0410\u0437\u043E\u0442\u043E\u043D\u0430\u043F\u043E\u043B\u043D\u0435\u043D\u043D\u044B\u0435 \u043C\u0435\u0442\u0430\u043B\u043B\u0438\u0447\u0435\u0441\u043A\u0438\u0435 \u0431\u0430\u043D\u043A\u0438 100/250/500 \u0433 \u0438\u043B\u0438 \u0441\u0442\u0435\u043A\u043B\u043E \u0432 \u043F\u043E\u0434\u0430\u0440\u043E\u0447\u043D\u044B\u0445 \u043A\u043E\u0440\u043E\u0431\u0430\u0445",
+          AR: "\u0639\u0644\u0628 \u0645\u0639\u062F\u0646\u064A\u0629 \u0645\u062D\u0643\u0645\u0629 \u0645\u062D\u0642\u0648\u0646\u0629 \u0628\u0627\u0644\u0646\u064A\u062A\u0631\u0648\u062C\u064A\u0646 \u0633\u0639\u0629 100 \u0648 250 \u0648 500 \u062C\u0645 \u0623\u0648 \u0639\u0628\u0648\u0627\u062A \u0632\u062C\u0627\u062C\u064A\u0629",
+          ES: "Latas selladas con nitr\xF3geno de 100g, 250g, 500g o frascos de vidrio"
+        },
+        gradeSpecs: {
+          EN: "Crocin (Coloring Strength) > 240 | Safranal (Aroma) 35\u201345 | Picrocrocin > 85",
+          AZ: "Krosin (R\u0259ng g\xFCc\xFC) > 240 | Safranal (\u018Ftir) 35\u201345 | Pikrokrosin > 85",
+          TR: "Krosin (Renk g\xFCc\xFC) > 240 | Safranal (Aroma) 35\u201345 | Pikrokrosin > 85",
+          RU: "\u041A\u0440\u043E\u0446\u0438\u043D (\u043A\u0440\u0430\u0441\u044F\u0449\u0430\u044F \u0441\u0438\u043B\u0430) > 240 | \u0421\u0430\u0444\u0440\u0430\u043D\u0430\u043B (\u0430\u0440\u043E\u043C\u0430\u0442) 35\u201345 | \u041F\u0438\u043A\u0440\u043E\u043A\u0440\u043E\u0446\u0438\u043D > 85",
+          AR: "\u0642\u0648\u0629 \u0627\u0644\u062A\u0644\u0648\u064A\u0646 \u0643\u0631\u0648\u0633\u064A\u0646 > 240 | \u0627\u0644\u0631\u0627\u0626\u062D\u0629 \u0633\u0627\u0641\u0631\u0627\u0646\u0627\u0644 35-45 | \u0627\u0644\u0645\u0630\u0627\u0642 \u0628\u064A\u0643\u0631\u0648\u0643\u0631\u0648\u0633\u064A\u0646 > 85",
+          ES: "Crocin (Fuerza colorante) > 240 | Safranal (Aroma) 35\u201345 | Picrocrocin > 85"
+        }
+      },
+      {
+        id: "silk-500200",
+        featured: true,
+        hsCode: "500200",
+        categoryKey: "industrial",
+        name: {
+          EN: "Sheki 100% Mulberry Raw Silk Yarn (20/22D)",
+          AZ: "\u015E\u0259ki 100% Barama Xam \u0130p\u0259k \u0130pliyi (20/22D)",
+          TR: "\u015Eeki %100 Do\u011Fal Ham \u0130pek \u0130pli\u011Fi (20/22D)",
+          RU: "\u0428\u0435\u043A\u0438\u043D\u0441\u043A\u0438\u0439 100% \u0448\u0435\u043B\u043A-\u0441\u044B\u0440\u0435\u0446 \u0438\u0437 \u043A\u043E\u043A\u043E\u043D\u043E\u0432 \u0448\u0435\u043B\u043A\u043E\u043F\u0440\u044F\u0434\u0430 (20/22D)",
+          AR: "\u062E\u064A\u0648\u0637 \u062D\u0631\u064A\u0631 \u0627\u0644\u062A\u0648\u062A \u0627\u0644\u0637\u0628\u064A\u0639\u064A \u0627\u0644\u062E\u0627\u0645 \u0645\u0646 \u0634\u0643\u064A (20/22D)",
+          ES: "Hilos de Seda Cruda 100% de Morera de Sheki (20/22D)"
+        },
+        categoryLabel: {
+          EN: "Industrial Materials & Textiles",
+          AZ: "S\u0259naye Materiallar\u0131 v\u0259 Tekstil",
+          TR: "Sanayi Malzemeleri ve Tekstil",
+          RU: "\u041F\u0440\u043E\u043C\u044B\u0448\u043B\u0435\u043D\u043D\u044B\u0435 \u043C\u0430\u0442\u0435\u0440\u0438\u0430\u043B\u044B \u0438 \u0442\u0435\u043A\u0441\u0442\u0438\u043B\u044C",
+          AR: "\u0627\u0644\u0645\u0648\u0627\u062F \u0627\u0644\u0635\u0646\u0627\u0639\u064A\u0629 \u0648\u0627\u0644\u0645\u0646\u0633\u0648\u062C\u0627\u062A",
+          ES: "Materiales Industriales y Textiles"
+        },
+        shortDesc: {
+          EN: "Premium 4A/5A grade white mulberry raw silk yarn reeled at the historic Sheki Silk mill.",
+          AZ: "Tarixi \u015E\u0259ki \u0130p\u0259k kombinat\u0131nda istehsal edilmi\u015F 4A/5A n\xF6vl\xFC a\u011F tut ip\u0259k ipliyi.",
+          TR: "Tarihi \u015Eeki \u0130pek fabrikas\u0131nda \xFCretilen 4A/5A kalite beyaz dut ham ipek ipli\u011Fi.",
+          RU: "\u0411\u0435\u043B\u044B\u0439 \u0448\u0435\u043B\u043A-\u0441\u044B\u0440\u0435\u0446 \u0432\u044B\u0441\u0448\u0435\u0433\u043E \u0441\u043E\u0440\u0442\u0430 4A/5A \u0441 \u0438\u0441\u0442\u043E\u0440\u0438\u0447\u0435\u0441\u043A\u043E\u0433\u043E \u0428\u0435\u043A\u0438\u043D\u0441\u043A\u043E\u0433\u043E \u0448\u0435\u043B\u043A\u043E\u0432\u043E\u0433\u043E \u043A\u043E\u043C\u0431\u0438\u043D\u0430\u0442\u0430.",
+          AR: "\u062E\u064A\u0648\u0637 \u062D\u0631\u064A\u0631 \u0627\u0644\u062A\u0648\u062A \u0627\u0644\u0623\u0628\u064A\u0636 \u0627\u0644\u0637\u0628\u064A\u0639\u064A \u0627\u0644\u0641\u0627\u062E\u0631 \u0641\u0626\u0629 4A/5A \u0645\u0646 \u0645\u0635\u0627\u0646\u0639 \u0634\u0643\u064A \u0627\u0644\u062A\u0627\u0631\u064A\u062E\u064A\u0629.",
+          ES: "Seda cruda blanca de morera de grado 4A/5A hilada en la f\xE1brica hist\xF3rica de Sheki."
+        },
+        originRegion: {
+          EN: "Sheki \u2013 Zaqatala Economic Region",
+          AZ: "\u015E\u0259ki \u2013 Zaqatala \u0130qtisadi Rayonu",
+          TR: "\u015Eeki \u2013 Zakatala Ekonomik B\xF6lgesi",
+          RU: "\u0428\u0435\u043A\u0438-\u0417\u0430\u0433\u0430\u0442\u0430\u043B\u044C\u0441\u043A\u0438\u0439 \u044D\u043A\u043E\u043D\u043E\u043C\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0440\u0430\u0439\u043E\u043D",
+          AR: "\u0645\u0646\u0637\u0642\u0629 \u0634\u0643\u064A - \u0632\u0627\u0642\u0627\u062A\u0627\u0644\u0627 \u0627\u0644\u0627\u0642\u062A\u0635\u0627\u062F\u064A\u0629",
+          ES: "Regi\xF3n Econ\xF3mica de Sheki \u2013 Zaqatala"
+        },
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuD03XXHtlryKOF4P13Jsyapcx1cJC4md04R7W4OmhEOlilzH3GXC84pohKdFeZC2E26PSlasR8hsE1ZhUMI_m0G3EvLUmCLYXAFuMf-8fVmPxAaSz6rXZE5DhZfy_GWTdrnj6b_8WD4Q3Rrvlu3AYTUq_hrwc41KTaORWxIqz41fZ3sVhVp_icHS5yhXQKuIuOFb0jjF16nF7IcXL9rWJ5SplYRdK1DWGo-wlLK2UlgnkEWl6JIaR20",
+        minOrderQty: "500 kg (1 Pallet)",
+        annualCapacity: "120 MT",
+        verifiedSuppliersCount: 6,
+        incoterms: ["FCA", "FOB", "CIF", "CIP"],
+        certifications: ["OEKO-TEX Standard 100", "ISO 9001:2015", "EUR.1 / CT-1"],
+        leadTimeDays: "10\u201318 Days",
+        packaging: {
+          EN: "50kg export wooden cases or heavy corrugated cartons, hanks wrapped in protective polyethylene",
+          AZ: "50kq ixrac taxta ye\u015Fikl\u0259ri v\u0259 ya polietilenl\u0259 qorunan qal\u0131n karton qutular",
+          TR: "50kg ah\u015Fap sand\u0131klarda veya polietilen korumal\u0131 mukavva kolilerde",
+          RU: "\u0414\u0435\u0440\u0435\u0432\u044F\u043D\u043D\u044B\u0435 \u044F\u0449\u0438\u043A\u0438 \u043F\u043E 50 \u043A\u0433 \u0438\u043B\u0438 \u043F\u043B\u043E\u0442\u043D\u044B\u0439 \u043A\u0430\u0440\u0442\u043E\u043D \u0441 \u043F\u043E\u043B\u0438\u044D\u0442\u0438\u043B\u0435\u043D\u043E\u0432\u043E\u0439 \u0437\u0430\u0449\u0438\u0442\u043E\u0439 \u043C\u043E\u0442\u043A\u043E\u0432",
+          AR: "\u0635\u0646\u0627\u062F\u064A\u0642 \u062E\u0634\u0628\u064A\u0629 \u0633\u0639\u0629 50 \u0643\u062C\u0645 \u0623\u0648 \u0643\u0631\u0627\u062A\u064A\u0646 \u0645\u0642\u0648\u0627\u0629 \u0645\u0639 \u062A\u063A\u0644\u064A\u0641 \u0639\u0627\u0632\u0644 \u0644\u0644\u0631\u0637\u0648\u0628\u0629",
+          ES: "Cajas de madera de exportaci\xF3n de 50 kg o cart\xF3n grueso con protecci\xF3n de polietileno"
+        },
+        gradeSpecs: {
+          EN: "Grade 4A/5A | Denier 20/22D | Elongation 18%\u201322% | Evenness Deviation < 85%",
+          AZ: "N\xF6v 4A/5A | Denye 20/22D | Uzama 18%\u201322% | B\u0259rab\u0259rlik sapmas\u0131 < 85%",
+          TR: "Kalite 4A/5A | Denye 20/22D | Uzama %18\u2013%22 | D\xFCzg\xFCnl\xFCk sapmas\u0131 < %85",
+          RU: "\u0421\u043E\u0440\u0442 4A/5A | \u0414\u0435\u043D\u044C\u0435 20/22D | \u0423\u0434\u043B\u0438\u043D\u0435\u043D\u0438\u0435 18%\u201322% | \u041E\u0442\u043A\u043B\u043E\u043D\u0435\u043D\u0438\u0435 \u0440\u0430\u0432\u043D\u043E\u043C\u0435\u0440\u043D\u043E\u0441\u0442\u0438 < 85%",
+          AR: "\u062F\u0631\u062C\u0629 \u0627\u0644\u062C\u0648\u062F\u0629 4A/5A | \u0627\u0644\u0639\u064A\u0627\u0631 20/22D | \u0627\u0644\u0627\u0633\u062A\u0637\u0627\u0644\u0629 18% - 22% | \u0627\u0646\u062A\u0638\u0627\u0645 \u0627\u0644\u062E\u064A\u0637 < 85%",
+          ES: "Grado 4A/5A | Denier 20/22D | Elongaci\xF3n 18%\u201322% | Desviaci\xF3n de uniformidad < 85%"
+        }
+      }
+    ];
+  }
+  db.prepare("INSERT OR REPLACE INTO azexbuy_kv (key, value, updated_at) VALUES ('content', ?, ?)").run(JSON.stringify(cmsContent), now);
+  return {
+    categoriesCount: categories.length,
+    productsCount: products.length,
+    servicesCount: services.length,
+    articlesCount: articles.length,
+    cmsProductsCount: cmsContent.products.length
+  };
+}
+
 // src/server.ts
 import BetterSqlite32 from "better-sqlite3";
 import Redis from "ioredis";
@@ -1683,9 +2841,35 @@ try {
     published_at TEXT,
     author TEXT DEFAULT 'AZEXBUY'
   );
+  CREATE TABLE IF NOT EXISTS azexbuy_services (
+    id TEXT PRIMARY KEY,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    scope TEXT NOT NULL,
+    target_audience TEXT NOT NULL,
+    icon_class TEXT DEFAULT 'fa-solid fa-briefcase',
+    color_class TEXT DEFAULT 'bg-brandNavy',
+    service_type TEXT DEFAULT 'primary',
+    is_active INTEGER DEFAULT 1,
+    sort_order INTEGER DEFAULT 0
+  );
+  CREATE TABLE IF NOT EXISTS azexbuy_service_applications (
+    id TEXT PRIMARY KEY,
+    created_at TEXT NOT NULL,
+    full_name TEXT NOT NULL,
+    company TEXT NOT NULL,
+    country TEXT NOT NULL,
+    email TEXT NOT NULL,
+    phone TEXT DEFAULT '',
+    details TEXT DEFAULT '',
+    selected_services TEXT DEFAULT '[]',
+    status TEXT DEFAULT 'Pending'
+  );
 `);
 } catch (err) {
-  console.error("[DB] Product/Article schema init failed:", err);
+  console.error("[DB] Product/Article/Services schema init failed:", err);
 }
 try {
   const cols = azexbuyDb.prepare("PRAGMA table_info(azexbuy_articles)").all();
@@ -1713,6 +2897,17 @@ if (catCount === 0) {
   const insertCat = azexbuyDb.prepare("INSERT OR IGNORE INTO azexbuy_categories (id, created_at, name, slug, description, sort_order, is_active) VALUES (?, ?, ?, ?, ?, ?, 1)");
   const now = (/* @__PURE__ */ new Date()).toISOString();
   for (const c of defaultCats) insertCat.run(c.id, now, c.name, c.slug, c.description, c.sort_order);
+}
+try {
+  const prodCount = azexbuyDb.prepare("SELECT COUNT(*) as c FROM azexbuy_products").get().c;
+  const srvCount = azexbuyDb.prepare("SELECT COUNT(*) as c FROM azexbuy_services").get().c;
+  if (prodCount === 0 || srvCount === 0) {
+    console.log("[Seed] Auto-seeding initial AZEXBUY catalog, services & articles...");
+    seedAzexbuyData(azexbuyDb);
+    console.log("[Seed] Auto-seeding completed.");
+  }
+} catch (seedErr) {
+  console.error("[Seed] Initial check/seed error:", seedErr);
 }
 var azRedis = null;
 try {
@@ -2360,6 +3555,183 @@ app.delete("/api/azexbuy/images/:filename", requireAuth, (req, res) => {
   const filePath = path3.join(azexbuyUploadDir, req.params.filename);
   if (fs3.existsSync(filePath)) fs3.unlinkSync(filePath);
   res.json({ success: true });
+});
+app.get("/api/azexbuy/services", async (_req, res) => {
+  const cached = await azGet("azexbuy:services");
+  if (cached) return res.json(JSON.parse(cached));
+  const rows = azexbuyDb.prepare("SELECT * FROM azexbuy_services ORDER BY sort_order ASC, created_at ASC").all();
+  const result = rows.map((r) => {
+    let title = {};
+    let description = {};
+    let scope = { AZ: [], EN: [], TR: [], RU: [], AR: [], ES: [] };
+    let targetAudience = {};
+    try {
+      title = typeof r.title === "string" ? JSON.parse(r.title) : r.title || {};
+    } catch {
+      title = { AZ: r.title, EN: r.title };
+    }
+    try {
+      description = typeof r.description === "string" ? JSON.parse(r.description) : r.description || {};
+    } catch {
+      description = { AZ: r.description, EN: r.description };
+    }
+    try {
+      scope = typeof r.scope === "string" ? JSON.parse(r.scope) : r.scope || {};
+    } catch {
+      scope = { AZ: [], EN: [], TR: [], RU: [], AR: [], ES: [] };
+    }
+    try {
+      targetAudience = typeof r.target_audience === "string" ? JSON.parse(r.target_audience) : r.target_audience || {};
+    } catch {
+      targetAudience = { AZ: r.target_audience, EN: r.target_audience };
+    }
+    return {
+      id: r.id,
+      createdAt: r.created_at,
+      updatedAt: r.updated_at,
+      title,
+      description,
+      scope,
+      targetAudience,
+      iconClass: r.icon_class,
+      colorClass: r.color_class,
+      serviceType: r.service_type,
+      isActive: Boolean(r.is_active),
+      sortOrder: r.sort_order
+    };
+  });
+  await azSet("azexbuy:services", JSON.stringify(result));
+  res.json(result);
+});
+app.post("/api/azexbuy/services", requireAuth, async (req, res) => {
+  const d = req.body;
+  if (!d.id || !d.title) return res.status(400).json({ error: "Missing required fields" });
+  const now = (/* @__PURE__ */ new Date()).toISOString();
+  azexbuyDb.prepare(`
+    INSERT OR REPLACE INTO azexbuy_services
+    (id, created_at, updated_at, title, description, scope, target_audience, icon_class, color_class, service_type, is_active, sort_order)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(
+    d.id,
+    d.createdAt || now,
+    now,
+    typeof d.title === "string" ? d.title : JSON.stringify(d.title || {}),
+    typeof d.description === "string" ? d.description : JSON.stringify(d.description || {}),
+    typeof d.scope === "string" ? d.scope : JSON.stringify(d.scope || {}),
+    typeof d.targetAudience === "string" ? d.targetAudience : JSON.stringify(d.targetAudience || {}),
+    d.iconClass || "fa-solid fa-briefcase",
+    d.colorClass || "bg-brandNavy",
+    d.serviceType || "primary",
+    d.isActive === false ? 0 : 1,
+    d.sortOrder || 0
+  );
+  await azDel("azexbuy:services");
+  res.json({ success: true, id: d.id });
+});
+app.patch("/api/azexbuy/services/:id", requireAuth, async (req, res) => {
+  const d = req.body;
+  const r = azexbuyDb.prepare("SELECT * FROM azexbuy_services WHERE id = ?").get(req.params.id);
+  if (!r) return res.status(404).json({ error: "Not found" });
+  const now = (/* @__PURE__ */ new Date()).toISOString();
+  const title = d.title !== void 0 ? typeof d.title === "string" ? d.title : JSON.stringify(d.title) : r.title;
+  const description = d.description !== void 0 ? typeof d.description === "string" ? d.description : JSON.stringify(d.description) : r.description;
+  const scope = d.scope !== void 0 ? typeof d.scope === "string" ? d.scope : JSON.stringify(d.scope) : r.scope;
+  const targetAudience = d.targetAudience !== void 0 ? typeof d.targetAudience === "string" ? d.targetAudience : JSON.stringify(d.targetAudience) : r.target_audience;
+  const iconClass = d.iconClass !== void 0 ? d.iconClass : r.icon_class;
+  const colorClass = d.colorClass !== void 0 ? d.colorClass : r.color_class;
+  const serviceType = d.serviceType !== void 0 ? d.serviceType : r.service_type;
+  const isActive = d.isActive !== void 0 ? d.isActive ? 1 : 0 : r.is_active;
+  const sortOrder = d.sortOrder !== void 0 ? d.sortOrder : r.sort_order;
+  azexbuyDb.prepare(`
+    UPDATE azexbuy_services SET
+      updated_at = ?,
+      title = ?,
+      description = ?,
+      scope = ?,
+      target_audience = ?,
+      icon_class = ?,
+      color_class = ?,
+      service_type = ?,
+      is_active = ?,
+      sort_order = ?
+    WHERE id = ?
+  `).run(now, title, description, scope, targetAudience, iconClass, colorClass, serviceType, isActive, sortOrder, req.params.id);
+  await azDel("azexbuy:services");
+  res.json({ success: true });
+});
+app.delete("/api/azexbuy/services/:id", requireAuth, async (req, res) => {
+  azexbuyDb.prepare("DELETE FROM azexbuy_services WHERE id = ?").run(req.params.id);
+  await azDel("azexbuy:services");
+  res.json({ success: true });
+});
+app.get("/api/azexbuy/service-applications", requireAuth, async (_req, res) => {
+  const rows = azexbuyDb.prepare("SELECT * FROM azexbuy_service_applications ORDER BY created_at DESC").all();
+  const result = rows.map((r) => {
+    let selectedServices = [];
+    try {
+      selectedServices = JSON.parse(r.selected_services || "[]");
+    } catch {
+      selectedServices = [];
+    }
+    return {
+      id: r.id,
+      createdAt: r.created_at,
+      fullName: r.full_name,
+      company: r.company,
+      country: r.country,
+      email: r.email,
+      phone: r.phone,
+      details: r.details,
+      selectedServices,
+      status: r.status
+    };
+  });
+  res.json(result);
+});
+app.post("/api/azexbuy/service-applications", async (req, res) => {
+  const d = req.body;
+  if (!d.id || !d.fullName || !d.email) return res.status(400).json({ error: "Missing required fields" });
+  azexbuyDb.prepare(`
+    INSERT OR REPLACE INTO azexbuy_service_applications
+    (id, created_at, full_name, company, country, email, phone, details, selected_services, status)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(
+    d.id,
+    d.createdAt || (/* @__PURE__ */ new Date()).toISOString(),
+    d.fullName,
+    d.company || "",
+    d.country || "",
+    d.email,
+    d.phone || "",
+    d.details || "",
+    JSON.stringify(d.selectedServices || []),
+    d.status || "Pending"
+  );
+  res.json({ success: true, id: d.id });
+});
+app.patch("/api/azexbuy/service-applications/:id", requireAuth, async (req, res) => {
+  const { status } = req.body;
+  if (status) {
+    azexbuyDb.prepare("UPDATE azexbuy_service_applications SET status = ? WHERE id = ?").run(status, req.params.id);
+  }
+  res.json({ success: true });
+});
+app.delete("/api/azexbuy/service-applications/:id", requireAuth, async (req, res) => {
+  azexbuyDb.prepare("DELETE FROM azexbuy_service_applications WHERE id = ?").run(req.params.id);
+  res.json({ success: true });
+});
+app.all("/api/azexbuy/seed", async (_req, res) => {
+  try {
+    const stats = seedAzexbuyData(azexbuyDb);
+    await azDel("azexbuy:products:all");
+    await azDel("azexbuy:categories:all");
+    await azDel("azexbuy:services");
+    await azDel("azexbuy:content");
+    res.json({ success: true, message: "AZEXBUY data seeded successfully", stats });
+  } catch (err) {
+    console.error("Seed error:", err);
+    res.status(500).json({ error: err.message });
+  }
 });
 app.get("/api/img-proxy", async (req, res) => {
   const url = req.query.url;

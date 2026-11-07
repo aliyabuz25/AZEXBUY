@@ -9,6 +9,7 @@ import multer from 'multer';
 import { Database } from './db.js';
 import { SqliteBackupManager } from './sqlite-backup.js';
 import { signJwt, verifyJwt, SESSION_DURATION_SECONDS } from './jwt.js';
+import { seedAzexbuyData } from './seed.js';
 import BetterSqlite3 from 'better-sqlite3';
 import Redis from 'ioredis';
 import bcrypt from 'bcryptjs';
@@ -1135,7 +1136,33 @@ try { azexbuyDb.exec(`
     published_at TEXT,
     author TEXT DEFAULT 'AZEXBUY'
   );
-`); } catch (err) { console.error('[DB] Product/Article schema init failed:', err); }
+  CREATE TABLE IF NOT EXISTS azexbuy_services (
+    id TEXT PRIMARY KEY,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    scope TEXT NOT NULL,
+    target_audience TEXT NOT NULL,
+    icon_class TEXT DEFAULT 'fa-solid fa-briefcase',
+    color_class TEXT DEFAULT 'bg-brandNavy',
+    service_type TEXT DEFAULT 'primary',
+    is_active INTEGER DEFAULT 1,
+    sort_order INTEGER DEFAULT 0
+  );
+  CREATE TABLE IF NOT EXISTS azexbuy_service_applications (
+    id TEXT PRIMARY KEY,
+    created_at TEXT NOT NULL,
+    full_name TEXT NOT NULL,
+    company TEXT NOT NULL,
+    country TEXT NOT NULL,
+    email TEXT NOT NULL,
+    phone TEXT DEFAULT '',
+    details TEXT DEFAULT '',
+    selected_services TEXT DEFAULT '[]',
+    status TEXT DEFAULT 'Pending'
+  );
+`); } catch (err) { console.error('[DB] Product/Article/Services schema init failed:', err); }
 
 // ── Migration: add is_featured to azexbuy_articles if missing ────────────────
 try {
@@ -1164,6 +1191,19 @@ if (catCount === 0) {
   const insertCat = azexbuyDb.prepare('INSERT OR IGNORE INTO azexbuy_categories (id, created_at, name, slug, description, sort_order, is_active) VALUES (?, ?, ?, ?, ?, ?, 1)');
   const now = new Date().toISOString();
   for (const c of defaultCats) insertCat.run(c.id, now, c.name, c.slug, c.description, c.sort_order);
+}
+
+// Auto-seed AZEXBUY products & services if empty
+try {
+  const prodCount = (azexbuyDb.prepare('SELECT COUNT(*) as c FROM azexbuy_products').get() as any).c;
+  const srvCount = (azexbuyDb.prepare('SELECT COUNT(*) as c FROM azexbuy_services').get() as any).c;
+  if (prodCount === 0 || srvCount === 0) {
+    console.log('[Seed] Auto-seeding initial AZEXBUY catalog, services & articles...');
+    seedAzexbuyData(azexbuyDb);
+    console.log('[Seed] Auto-seeding completed.');
+  }
+} catch (seedErr) {
+  console.error('[Seed] Initial check/seed error:', seedErr);
 }
 
 let azRedis: Redis | null = null;
@@ -1794,6 +1834,178 @@ app.delete('/api/azexbuy/images/:filename', requireAuth, (req: Request, res: Res
   const filePath = path.join(azexbuyUploadDir, req.params.filename);
   if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
   res.json({ success: true });
+});
+
+// ─── AZEXBUY Services ────────────────────────────────────────────────────────
+app.get('/api/azexbuy/services', async (_req: Request, res: Response) => {
+  const cached = await azGet('azexbuy:services');
+  if (cached) return res.json(JSON.parse(cached));
+  const rows = azexbuyDb.prepare('SELECT * FROM azexbuy_services ORDER BY sort_order ASC, created_at ASC').all() as any[];
+  const result = rows.map(r => {
+    let title = {};
+    let description = {};
+    let scope = { AZ: [], EN: [], TR: [], RU: [], AR: [], ES: [] };
+    let targetAudience = {};
+    try { title = typeof r.title === 'string' ? JSON.parse(r.title) : (r.title || {}); } catch { title = { AZ: r.title, EN: r.title }; }
+    try { description = typeof r.description === 'string' ? JSON.parse(r.description) : (r.description || {}); } catch { description = { AZ: r.description, EN: r.description }; }
+    try { scope = typeof r.scope === 'string' ? JSON.parse(r.scope) : (r.scope || {}); } catch { scope = { AZ: [], EN: [], TR: [], RU: [], AR: [], ES: [] }; }
+    try { targetAudience = typeof r.target_audience === 'string' ? JSON.parse(r.target_audience) : (r.target_audience || {}); } catch { targetAudience = { AZ: r.target_audience, EN: r.target_audience }; }
+    return {
+      id: r.id,
+      createdAt: r.created_at,
+      updatedAt: r.updated_at,
+      title,
+      description,
+      scope,
+      targetAudience,
+      iconClass: r.icon_class,
+      colorClass: r.color_class,
+      serviceType: r.service_type,
+      isActive: Boolean(r.is_active),
+      sortOrder: r.sort_order,
+    };
+  });
+  await azSet('azexbuy:services', JSON.stringify(result));
+  res.json(result);
+});
+
+app.post('/api/azexbuy/services', requireAuth, async (req: Request, res: Response) => {
+  const d = req.body;
+  if (!d.id || !d.title) return res.status(400).json({ error: 'Missing required fields' });
+  const now = new Date().toISOString();
+  azexbuyDb.prepare(`
+    INSERT OR REPLACE INTO azexbuy_services
+    (id, created_at, updated_at, title, description, scope, target_audience, icon_class, color_class, service_type, is_active, sort_order)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(
+    d.id,
+    d.createdAt || now,
+    now,
+    typeof d.title === 'string' ? d.title : JSON.stringify(d.title || {}),
+    typeof d.description === 'string' ? d.description : JSON.stringify(d.description || {}),
+    typeof d.scope === 'string' ? d.scope : JSON.stringify(d.scope || {}),
+    typeof d.targetAudience === 'string' ? d.targetAudience : JSON.stringify(d.targetAudience || {}),
+    d.iconClass || 'fa-solid fa-briefcase',
+    d.colorClass || 'bg-brandNavy',
+    d.serviceType || 'primary',
+    d.isActive === false ? 0 : 1,
+    d.sortOrder || 0
+  );
+  await azDel('azexbuy:services');
+  res.json({ success: true, id: d.id });
+});
+
+app.patch('/api/azexbuy/services/:id', requireAuth, async (req: Request, res: Response) => {
+  const d = req.body;
+  const r = azexbuyDb.prepare('SELECT * FROM azexbuy_services WHERE id = ?').get(req.params.id) as any;
+  if (!r) return res.status(404).json({ error: 'Not found' });
+  const now = new Date().toISOString();
+
+  const title = d.title !== undefined ? (typeof d.title === 'string' ? d.title : JSON.stringify(d.title)) : r.title;
+  const description = d.description !== undefined ? (typeof d.description === 'string' ? d.description : JSON.stringify(d.description)) : r.description;
+  const scope = d.scope !== undefined ? (typeof d.scope === 'string' ? d.scope : JSON.stringify(d.scope)) : r.scope;
+  const targetAudience = d.targetAudience !== undefined ? (typeof d.targetAudience === 'string' ? d.targetAudience : JSON.stringify(d.targetAudience)) : r.target_audience;
+  const iconClass = d.iconClass !== undefined ? d.iconClass : r.icon_class;
+  const colorClass = d.colorClass !== undefined ? d.colorClass : r.color_class;
+  const serviceType = d.serviceType !== undefined ? d.serviceType : r.service_type;
+  const isActive = d.isActive !== undefined ? (d.isActive ? 1 : 0) : r.is_active;
+  const sortOrder = d.sortOrder !== undefined ? d.sortOrder : r.sort_order;
+
+  azexbuyDb.prepare(`
+    UPDATE azexbuy_services SET
+      updated_at = ?,
+      title = ?,
+      description = ?,
+      scope = ?,
+      target_audience = ?,
+      icon_class = ?,
+      color_class = ?,
+      service_type = ?,
+      is_active = ?,
+      sort_order = ?
+    WHERE id = ?
+  `).run(now, title, description, scope, targetAudience, iconClass, colorClass, serviceType, isActive, sortOrder, req.params.id);
+
+  await azDel('azexbuy:services');
+  res.json({ success: true });
+});
+
+app.delete('/api/azexbuy/services/:id', requireAuth, async (req: Request, res: Response) => {
+  azexbuyDb.prepare('DELETE FROM azexbuy_services WHERE id = ?').run(req.params.id);
+  await azDel('azexbuy:services');
+  res.json({ success: true });
+});
+
+// ─── Service Applications ───────────────────────────────────────────────────
+app.get('/api/azexbuy/service-applications', requireAuth, async (_req: Request, res: Response) => {
+  const rows = azexbuyDb.prepare('SELECT * FROM azexbuy_service_applications ORDER BY created_at DESC').all() as any[];
+  const result = rows.map(r => {
+    let selectedServices = [];
+    try { selectedServices = JSON.parse(r.selected_services || '[]'); } catch { selectedServices = []; }
+    return {
+      id: r.id,
+      createdAt: r.created_at,
+      fullName: r.full_name,
+      company: r.company,
+      country: r.country,
+      email: r.email,
+      phone: r.phone,
+      details: r.details,
+      selectedServices,
+      status: r.status,
+    };
+  });
+  res.json(result);
+});
+
+app.post('/api/azexbuy/service-applications', async (req: Request, res: Response) => {
+  const d = req.body;
+  if (!d.id || !d.fullName || !d.email) return res.status(400).json({ error: 'Missing required fields' });
+  azexbuyDb.prepare(`
+    INSERT OR REPLACE INTO azexbuy_service_applications
+    (id, created_at, full_name, company, country, email, phone, details, selected_services, status)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(
+    d.id,
+    d.createdAt || new Date().toISOString(),
+    d.fullName,
+    d.company || '',
+    d.country || '',
+    d.email,
+    d.phone || '',
+    d.details || '',
+    JSON.stringify(d.selectedServices || []),
+    d.status || 'Pending'
+  );
+  res.json({ success: true, id: d.id });
+});
+
+app.patch('/api/azexbuy/service-applications/:id', requireAuth, async (req: Request, res: Response) => {
+  const { status } = req.body;
+  if (status) {
+    azexbuyDb.prepare('UPDATE azexbuy_service_applications SET status = ? WHERE id = ?').run(status, req.params.id);
+  }
+  res.json({ success: true });
+});
+
+app.delete('/api/azexbuy/service-applications/:id', requireAuth, async (req: Request, res: Response) => {
+  azexbuyDb.prepare('DELETE FROM azexbuy_service_applications WHERE id = ?').run(req.params.id);
+  res.json({ success: true });
+});
+
+// ─── Manual / Automated Seed Trigger ─────────────────────────────────────────
+app.all('/api/azexbuy/seed', async (_req: Request, res: Response) => {
+  try {
+    const stats = seedAzexbuyData(azexbuyDb);
+    await azDel('azexbuy:products:all');
+    await azDel('azexbuy:categories:all');
+    await azDel('azexbuy:services');
+    await azDel('azexbuy:content');
+    res.json({ success: true, message: 'AZEXBUY data seeded successfully', stats });
+  } catch (err: any) {
+    console.error('Seed error:', err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // ─── Image Proxy (for CORS-blocked external images in admin panel) ───────────

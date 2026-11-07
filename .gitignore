@@ -15,3 +15,7 @@ coverage/
 backend/node_modules/
 data/
 uploads/
+
+playwright-report/
+test-results/
+
