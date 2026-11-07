@@ -1,0 +1,187 @@
+{
+  "working": [
+    "Navigated to: Admin Panel",
+    "Login successful",
+    "Clicked sidebar item via JS: İcmal (matched: İcmal)",
+    "Clicked sidebar item via JS: CMS (matched: cms)",
+    "Clicked sidebar item via JS: Məhsul Kataloqu (matched: məhsul)",
+    "Clicked sidebar item via JS: Məqalələr (matched: məqalə)",
+    "Clicked sidebar item via JS: Xidmətlər (matched: xidmət)",
+    "Clicked sidebar item via JS: Gələn Qutusu (matched: gələn)",
+    "Clicked sidebar item via JS: İstifadəçilər (matched: İstifadəçi)",
+    "Clicked sidebar item via JS: SMTP (matched: smtp)",
+    "Clicked sidebar item via JS: Parametrlər (matched: parametr)",
+    "Clicked add/new button via JS for services",
+    "Clicked: Yenilə for new article",
+    "Clicked: Yenilə for new category",
+    "Gələn Qutusu has content",
+    "İstifadəçilər has content",
+    "SMTP has content",
+    "Parametrlər has content"
+  ],
+  "errors": [
+    "Error testing Gələn Qutusu: page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': '.404' is not a valid selector.\n    at eval (eval at evaluate (:370:30), <anonymous>:5:20)\n    at UtilityScript.evaluate (<anonymous>:372:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+    "Error testing İstifadəçilər: page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': '.404' is not a valid selector.\n    at eval (eval at evaluate (:370:30), <anonymous>:5:20)\n    at UtilityScript.evaluate (<anonymous>:372:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+    "Error testing SMTP: page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': '.404' is not a valid selector.\n    at eval (eval at evaluate (:370:30), <anonymous>:5:20)\n    at UtilityScript.evaluate (<anonymous>:372:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+    "Error testing Parametrlər: page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': '.404' is not a valid selector.\n    at eval (eval at evaluate (:370:30), <anonymous>:5:20)\n    at UtilityScript.evaluate (<anonymous>:372:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+  ],
+  "broken": [],
+  "consoleErrors": [],
+  "steps": [
+    {
+      "type": "success",
+      "msg": "Navigated to: Admin Panel",
+      "time": "2026-11-07T17:22:49.821Z"
+    },
+    {
+      "type": "info",
+      "msg": "Page URL: https://beta.azexbuy.com/octo-admin/",
+      "time": "2026-11-07T17:22:49.933Z"
+    },
+    {
+      "type": "info",
+      "msg": "Page Title: Octotech LL. Admin Core",
+      "time": "2026-11-07T17:22:49.933Z"
+    },
+    {
+      "type": "success",
+      "msg": "Login successful",
+      "time": "2026-11-07T17:22:53.906Z"
+    },
+    {
+      "type": "info",
+      "msg": "Current URL after login attempt: https://beta.azexbuy.com/octo-admin/",
+      "time": "2026-11-07T17:22:54.408Z"
+    },
+    {
+      "type": "info",
+      "msg": "Page content preview: AZEXBUY\nAZEXBUY\nİcmal & Sorğular\nCMS — Məzmun\nMəhsul Kataloqu\nMəqalələr\nXidmətlər\nGələn Qutusu\n3\nSİSTEM\nSistem Logları\nİstifadəçilər\nSMTP E-poçt\nParametrlər\nSA\nSuper Admin\n09:57\nCanlı İcmal\nAZEXBUY\nAZEXBUY CMS\nMakaleler\nMəhsul Kataloqu\nGelen Qutusu\nİstifadəçi İdarəetməsi\nSMTP E-poçt\nSistem Parametrləri\nOctotech LL.\n/\nCanlı İcmal\nBələdçi\nTema\nSQLite Backup\nAxtarış (CMD+K)...\nİdarə Paneli\n\nSon yenilənmə: İndicə əvvəl\n\nYenilə\n4\nÜMUMİ RFQ\n4\n2 gözləyir\n3\nÜMUMİ İSTEHSALÇI\n3\n1 gözləyir\n4\nTAMAMLANAN RFQ",
+      "time": "2026-11-07T17:22:54.417Z"
+    },
+    {
+      "type": "success",
+      "msg": "Clicked sidebar item via JS: İcmal (matched: İcmal)",
+      "time": "2026-11-07T17:22:56.452Z"
+    },
+    {
+      "type": "success",
+      "msg": "Clicked sidebar item via JS: CMS (matched: cms)",
+      "time": "2026-11-07T17:22:58.795Z"
+    },
+    {
+      "type": "success",
+      "msg": "Clicked sidebar item via JS: Məhsul Kataloqu (matched: məhsul)",
+      "time": "2026-11-07T17:23:01.170Z"
+    },
+    {
+      "type": "success",
+      "msg": "Clicked sidebar item via JS: Məqalələr (matched: məqalə)",
+      "time": "2026-11-07T17:23:03.633Z"
+    },
+    {
+      "type": "success",
+      "msg": "Clicked sidebar item via JS: Xidmətlər (matched: xidmət)",
+      "time": "2026-11-07T17:23:06.143Z"
+    },
+    {
+      "type": "success",
+      "msg": "Clicked sidebar item via JS: Gələn Qutusu (matched: gələn)",
+      "time": "2026-11-07T17:23:08.495Z"
+    },
+    {
+      "type": "success",
+      "msg": "Clicked sidebar item via JS: İstifadəçilər (matched: İstifadəçi)",
+      "time": "2026-11-07T17:23:10.896Z"
+    },
+    {
+      "type": "success",
+      "msg": "Clicked sidebar item via JS: SMTP (matched: smtp)",
+      "time": "2026-11-07T17:23:13.297Z"
+    },
+    {
+      "type": "success",
+      "msg": "Clicked sidebar item via JS: Parametrlər (matched: parametr)",
+      "time": "2026-11-07T17:23:15.663Z"
+    },
+    {
+      "type": "success",
+      "msg": "Clicked add/new button via JS for services",
+      "time": "2026-11-07T17:23:50.737Z"
+    },
+    {
+      "type": "success",
+      "msg": "Clicked: Yenilə for new article",
+      "time": "2026-11-07T17:23:56.383Z"
+    },
+    {
+      "type": "warn",
+      "msg": "No editable fields found in CMS",
+      "time": "2026-11-07T17:24:00.093Z"
+    },
+    {
+      "type": "success",
+      "msg": "Clicked: Yenilə for new category",
+      "time": "2026-11-07T17:24:04.883Z"
+    },
+    {
+      "type": "info",
+      "msg": "Gələn Qutusu URL: https://beta.azexbuy.com/octo-admin/",
+      "time": "2026-11-07T17:24:07.973Z"
+    },
+    {
+      "type": "success",
+      "msg": "Gələn Qutusu has content",
+      "time": "2026-11-07T17:24:07.977Z"
+    },
+    {
+      "type": "error",
+      "msg": "Error testing Gələn Qutusu: page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': '.404' is not a valid selector.\n    at eval (eval at evaluate (:370:30), <anonymous>:5:20)\n    at UtilityScript.evaluate (<anonymous>:372:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+      "time": "2026-11-07T17:24:07.990Z"
+    },
+    {
+      "type": "info",
+      "msg": "İstifadəçilər URL: https://beta.azexbuy.com/octo-admin/",
+      "time": "2026-11-07T17:24:10.420Z"
+    },
+    {
+      "type": "success",
+      "msg": "İstifadəçilər has content",
+      "time": "2026-11-07T17:24:10.423Z"
+    },
+    {
+      "type": "error",
+      "msg": "Error testing İstifadəçilər: page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': '.404' is not a valid selector.\n    at eval (eval at evaluate (:370:30), <anonymous>:5:20)\n    at UtilityScript.evaluate (<anonymous>:372:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+      "time": "2026-11-07T17:24:10.427Z"
+    },
+    {
+      "type": "info",
+      "msg": "SMTP URL: https://beta.azexbuy.com/octo-admin/",
+      "time": "2026-11-07T17:24:12.777Z"
+    },
+    {
+      "type": "success",
+      "msg": "SMTP has content",
+      "time": "2026-11-07T17:24:12.782Z"
+    },
+    {
+      "type": "error",
+      "msg": "Error testing SMTP: page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': '.404' is not a valid selector.\n    at eval (eval at evaluate (:370:30), <anonymous>:5:20)\n    at UtilityScript.evaluate (<anonymous>:372:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+      "time": "2026-11-07T17:24:12.787Z"
+    },
+    {
+      "type": "info",
+      "msg": "Parametrlər URL: https://beta.azexbuy.com/octo-admin/",
+      "time": "2026-11-07T17:24:15.181Z"
+    },
+    {
+      "type": "success",
+      "msg": "Parametrlər has content",
+      "time": "2026-11-07T17:24:15.182Z"
+    },
+    {
+      "type": "error",
+      "msg": "Error testing Parametrlər: page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': '.404' is not a valid selector.\n    at eval (eval at evaluate (:370:30), <anonymous>:5:20)\n    at UtilityScript.evaluate (<anonymous>:372:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+      "time": "2026-11-07T17:24:15.184Z"
+    }
+  ]
+}

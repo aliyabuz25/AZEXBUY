@@ -40,7 +40,7 @@ export const SmtpSettingsView: React.FC<SmtpSettingsViewProps> = () => {
   const [testTo, setTestTo] = useState('');
   const [loading, setLoading] = useState(true);
 
-  const token = () => localStorage.getItem('octo_token') || sessionStorage.getItem('octo_token') || '';
+  const token = () => localStorage.getItem('octotech_admin_jwt') || sessionStorage.getItem('octotech_admin_jwt') || '';
   const authH = () => ({ Authorization: `Bearer ${token()}`, 'Content-Type': 'application/json' });
 
   const flash = (msg: string) => { setSavedMsg(msg); setTimeout(() => setSavedMsg(''), 3000); };

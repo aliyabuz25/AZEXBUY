@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "vite build && node build-server.mjs",
+    "build": "vite build && node build-server.mjs && node -e \"const fs=require('fs');const path=require('path');const src=path.join(__dirname,'../dist');const dst=path.join(__dirname,'dist/azexbuy');if(fs.existsSync(src)){fs.rmSync(dst,{recursive:true,force:true});fs.cpSync(src,dst,{recursive:true});console.log('✓ AZEXBUY frontend copied to dist/azexbuy');}\"",
     "start": "node dist/server.js"
   },
   "dependencies": {

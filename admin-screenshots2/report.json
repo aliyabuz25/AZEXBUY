@@ -1,0 +1,4174 @@
+{
+  "working": [
+    "Filled username field",
+    "Filled password field",
+    "Login successful — on: https://beta.azexbuy.com/octo-admin/",
+    "Dashboard loaded"
+  ],
+  "errors": [
+    "Could not navigate to CMS",
+    "Could not navigate to Məhsul Kataloqu",
+    "Could not navigate to Məqalələr",
+    "Could not navigate to Xidmətlər",
+    "Could not navigate to Gələn Qutusu",
+    "Could not navigate to İstifadəçilər",
+    "Could not navigate to SMTP",
+    "Could not navigate to Parametrlər"
+  ],
+  "broken": [
+    "Məqalələr: Could not find/reach new article form",
+    "Xidmətlər: Service creation form not found/accessible"
+  ],
+  "consoleErrors": [],
+  "details": {
+    "dashboard": {
+      "links": [
+        {
+          "text": "SQLite Backup",
+          "href": "/api/backup/download"
+        },
+        {
+          "text": "Afrikaans",
+          "href": "#"
+        },
+        {
+          "text": "Albanian",
+          "href": "#"
+        },
+        {
+          "text": "Amharic",
+          "href": "#"
+        },
+        {
+          "text": "Arabic",
+          "href": "#"
+        },
+        {
+          "text": "Armenian",
+          "href": "#"
+        },
+        {
+          "text": "Azerbaijani",
+          "href": "#"
+        },
+        {
+          "text": "Basque",
+          "href": "#"
+        },
+        {
+          "text": "Belarusian",
+          "href": "#"
+        },
+        {
+          "text": "Bengali",
+          "href": "#"
+        },
+        {
+          "text": "Bosnian",
+          "href": "#"
+        },
+        {
+          "text": "Bulgarian",
+          "href": "#"
+        },
+        {
+          "text": "Catalan",
+          "href": "#"
+        },
+        {
+          "text": "Cebuano",
+          "href": "#"
+        },
+        {
+          "text": "Chichewa",
+          "href": "#"
+        },
+        {
+          "text": "Chinese (Simplified)",
+          "href": "#"
+        },
+        {
+          "text": "Chinese (Traditional)",
+          "href": "#"
+        },
+        {
+          "text": "Corsican",
+          "href": "#"
+        },
+        {
+          "text": "Croatian",
+          "href": "#"
+        },
+        {
+          "text": "Czech",
+          "href": "#"
+        },
+        {
+          "text": "Danish",
+          "href": "#"
+        },
+        {
+          "text": "Dutch",
+          "href": "#"
+        },
+        {
+          "text": "English",
+          "href": "#"
+        },
+        {
+          "text": "Esperanto",
+          "href": "#"
+        },
+        {
+          "text": "Estonian",
+          "href": "#"
+        },
+        {
+          "text": "Filipino",
+          "href": "#"
+        },
+        {
+          "text": "Finnish",
+          "href": "#"
+        },
+        {
+          "text": "French",
+          "href": "#"
+        },
+        {
+          "text": "Frisian",
+          "href": "#"
+        },
+        {
+          "text": "Galician",
+          "href": "#"
+        },
+        {
+          "text": "Georgian",
+          "href": "#"
+        },
+        {
+          "text": "German",
+          "href": "#"
+        },
+        {
+          "text": "Greek",
+          "href": "#"
+        },
+        {
+          "text": "Gujarati",
+          "href": "#"
+        },
+        {
+          "text": "Haitian Creole",
+          "href": "#"
+        },
+        {
+          "text": "Hausa",
+          "href": "#"
+        },
+        {
+          "text": "Hawaiian",
+          "href": "#"
+        },
+        {
+          "text": "Hebrew",
+          "href": "#"
+        },
+        {
+          "text": "Hindi",
+          "href": "#"
+        },
+        {
+          "text": "Hmong",
+          "href": "#"
+        },
+        {
+          "text": "Hungarian",
+          "href": "#"
+        },
+        {
+          "text": "Icelandic",
+          "href": "#"
+        },
+        {
+          "text": "Igbo",
+          "href": "#"
+        },
+        {
+          "text": "Indonesian",
+          "href": "#"
+        },
+        {
+          "text": "Irish",
+          "href": "#"
+        },
+        {
+          "text": "Italian",
+          "href": "#"
+        },
+        {
+          "text": "Japanese",
+          "href": "#"
+        },
+        {
+          "text": "Javanese",
+          "href": "#"
+        },
+        {
+          "text": "Kannada",
+          "href": "#"
+        },
+        {
+          "text": "Kazakh",
+          "href": "#"
+        },
+        {
+          "text": "Khmer",
+          "href": "#"
+        },
+        {
+          "text": "Korean",
+          "href": "#"
+        },
+        {
+          "text": "Kurdish (Kurmanji)",
+          "href": "#"
+        },
+        {
+          "text": "Kyrgyz",
+          "href": "#"
+        },
+        {
+          "text": "Lao",
+          "href": "#"
+        },
+        {
+          "text": "Latin",
+          "href": "#"
+        },
+        {
+          "text": "Latvian",
+          "href": "#"
+        },
+        {
+          "text": "Lithuanian",
+          "href": "#"
+        },
+        {
+          "text": "Luxembourgish",
+          "href": "#"
+        },
+        {
+          "text": "Macedonian",
+          "href": "#"
+        },
+        {
+          "text": "Malagasy",
+          "href": "#"
+        },
+        {
+          "text": "Malay",
+          "href": "#"
+        },
+        {
+          "text": "Malayalam",
+          "href": "#"
+        },
+        {
+          "text": "Maltese",
+          "href": "#"
+        },
+        {
+          "text": "Maori",
+          "href": "#"
+        },
+        {
+          "text": "Marathi",
+          "href": "#"
+        },
+        {
+          "text": "Mongolian",
+          "href": "#"
+        },
+        {
+          "text": "Myanmar (Burmese)",
+          "href": "#"
+        },
+        {
+          "text": "Nepali",
+          "href": "#"
+        },
+        {
+          "text": "Norwegian",
+          "href": "#"
+        },
+        {
+          "text": "Pashto",
+          "href": "#"
+        },
+        {
+          "text": "Persian",
+          "href": "#"
+        },
+        {
+          "text": "Polish",
+          "href": "#"
+        },
+        {
+          "text": "Portuguese",
+          "href": "#"
+        },
+        {
+          "text": "Punjabi",
+          "href": "#"
+        },
+        {
+          "text": "Romanian",
+          "href": "#"
+        },
+        {
+          "text": "Russian",
+          "href": "#"
+        },
+        {
+          "text": "Samoan",
+          "href": "#"
+        },
+        {
+          "text": "Scottish Gaelic",
+          "href": "#"
+        },
+        {
+          "text": "Serbian",
+          "href": "#"
+        },
+        {
+          "text": "Sesotho",
+          "href": "#"
+        },
+        {
+          "text": "Shona",
+          "href": "#"
+        },
+        {
+          "text": "Sindhi",
+          "href": "#"
+        },
+        {
+          "text": "Sinhala",
+          "href": "#"
+        },
+        {
+          "text": "Slovak",
+          "href": "#"
+        },
+        {
+          "text": "Slovenian",
+          "href": "#"
+        },
+        {
+          "text": "Somali",
+          "href": "#"
+        },
+        {
+          "text": "Spanish",
+          "href": "#"
+        },
+        {
+          "text": "Sundanese",
+          "href": "#"
+        },
+        {
+          "text": "Swahili",
+          "href": "#"
+        },
+        {
+          "text": "Swedish",
+          "href": "#"
+        },
+        {
+          "text": "Tajik",
+          "href": "#"
+        },
+        {
+          "text": "Tamil",
+          "href": "#"
+        },
+        {
+          "text": "Telugu",
+          "href": "#"
+        },
+        {
+          "text": "Thai",
+          "href": "#"
+        },
+        {
+          "text": "Turkish",
+          "href": "#"
+        },
+        {
+          "text": "Ukrainian",
+          "href": "#"
+        },
+        {
+          "text": "Urdu",
+          "href": "#"
+        },
+        {
+          "text": "Uzbek",
+          "href": "#"
+        },
+        {
+          "text": "Vietnamese",
+          "href": "#"
+        },
+        {
+          "text": "Welsh",
+          "href": "#"
+        },
+        {
+          "text": "Xhosa",
+          "href": "#"
+        },
+        {
+          "text": "Yiddish",
+          "href": "#"
+        },
+        {
+          "text": "Yoruba",
+          "href": "#"
+        },
+        {
+          "text": "Zulu",
+          "href": "#"
+        }
+      ],
+      "buttons": [
+        "İcmal & Sorğular",
+        "CMS — Məzmun",
+        "Məhsul Kataloqu",
+        "Məqalələr",
+        "Xidmətlər",
+        "Gələn Qutusu3",
+        "Sistem Logları",
+        "İstifadəçilər",
+        "SMTP E-poçt",
+        "Parametrlər",
+        "Canlı İcmal",
+        "AZEXBUY",
+        "AZEXBUY CMS",
+        "Makaleler",
+        "Məhsul Kataloqu",
+        "Gelen Qutusu",
+        "İstifadəçi İdarəetməsi",
+        "SMTP E-poçt",
+        "Sistem Parametrləri",
+        "Bələdçi",
+        "Tema",
+        "Axtarış (CMD+K)...",
+        "Yenilə",
+        "Burax",
+        "Geri",
+        "Növbəti"
+      ],
+      "inputs": [],
+      "headings": [
+        "İdarə Paneli",
+        "Son RFQ Sorğuları",
+        "Son İstehsalçılar",
+        "Canlı İcmal & Real Göstəricilər"
+      ],
+      "toasts": [],
+      "url": "https://beta.azexbuy.com/octo-admin/"
+    },
+    "cms": {
+      "links": [
+        {
+          "text": "SQLite Backup",
+          "href": "/api/backup/download"
+        },
+        {
+          "text": "Afrikaans",
+          "href": "#"
+        },
+        {
+          "text": "Albanian",
+          "href": "#"
+        },
+        {
+          "text": "Amharic",
+          "href": "#"
+        },
+        {
+          "text": "Arabic",
+          "href": "#"
+        },
+        {
+          "text": "Armenian",
+          "href": "#"
+        },
+        {
+          "text": "Azerbaijani",
+          "href": "#"
+        },
+        {
+          "text": "Basque",
+          "href": "#"
+        },
+        {
+          "text": "Belarusian",
+          "href": "#"
+        },
+        {
+          "text": "Bengali",
+          "href": "#"
+        },
+        {
+          "text": "Bosnian",
+          "href": "#"
+        },
+        {
+          "text": "Bulgarian",
+          "href": "#"
+        },
+        {
+          "text": "Catalan",
+          "href": "#"
+        },
+        {
+          "text": "Cebuano",
+          "href": "#"
+        },
+        {
+          "text": "Chichewa",
+          "href": "#"
+        },
+        {
+          "text": "Chinese (Simplified)",
+          "href": "#"
+        },
+        {
+          "text": "Chinese (Traditional)",
+          "href": "#"
+        },
+        {
+          "text": "Corsican",
+          "href": "#"
+        },
+        {
+          "text": "Croatian",
+          "href": "#"
+        },
+        {
+          "text": "Czech",
+          "href": "#"
+        },
+        {
+          "text": "Danish",
+          "href": "#"
+        },
+        {
+          "text": "Dutch",
+          "href": "#"
+        },
+        {
+          "text": "English",
+          "href": "#"
+        },
+        {
+          "text": "Esperanto",
+          "href": "#"
+        },
+        {
+          "text": "Estonian",
+          "href": "#"
+        },
+        {
+          "text": "Filipino",
+          "href": "#"
+        },
+        {
+          "text": "Finnish",
+          "href": "#"
+        },
+        {
+          "text": "French",
+          "href": "#"
+        },
+        {
+          "text": "Frisian",
+          "href": "#"
+        },
+        {
+          "text": "Galician",
+          "href": "#"
+        },
+        {
+          "text": "Georgian",
+          "href": "#"
+        },
+        {
+          "text": "German",
+          "href": "#"
+        },
+        {
+          "text": "Greek",
+          "href": "#"
+        },
+        {
+          "text": "Gujarati",
+          "href": "#"
+        },
+        {
+          "text": "Haitian Creole",
+          "href": "#"
+        },
+        {
+          "text": "Hausa",
+          "href": "#"
+        },
+        {
+          "text": "Hawaiian",
+          "href": "#"
+        },
+        {
+          "text": "Hebrew",
+          "href": "#"
+        },
+        {
+          "text": "Hindi",
+          "href": "#"
+        },
+        {
+          "text": "Hmong",
+          "href": "#"
+        },
+        {
+          "text": "Hungarian",
+          "href": "#"
+        },
+        {
+          "text": "Icelandic",
+          "href": "#"
+        },
+        {
+          "text": "Igbo",
+          "href": "#"
+        },
+        {
+          "text": "Indonesian",
+          "href": "#"
+        },
+        {
+          "text": "Irish",
+          "href": "#"
+        },
+        {
+          "text": "Italian",
+          "href": "#"
+        },
+        {
+          "text": "Japanese",
+          "href": "#"
+        },
+        {
+          "text": "Javanese",
+          "href": "#"
+        },
+        {
+          "text": "Kannada",
+          "href": "#"
+        },
+        {
+          "text": "Kazakh",
+          "href": "#"
+        },
+        {
+          "text": "Khmer",
+          "href": "#"
+        },
+        {
+          "text": "Korean",
+          "href": "#"
+        },
+        {
+          "text": "Kurdish (Kurmanji)",
+          "href": "#"
+        },
+        {
+          "text": "Kyrgyz",
+          "href": "#"
+        },
+        {
+          "text": "Lao",
+          "href": "#"
+        },
+        {
+          "text": "Latin",
+          "href": "#"
+        },
+        {
+          "text": "Latvian",
+          "href": "#"
+        },
+        {
+          "text": "Lithuanian",
+          "href": "#"
+        },
+        {
+          "text": "Luxembourgish",
+          "href": "#"
+        },
+        {
+          "text": "Macedonian",
+          "href": "#"
+        },
+        {
+          "text": "Malagasy",
+          "href": "#"
+        },
+        {
+          "text": "Malay",
+          "href": "#"
+        },
+        {
+          "text": "Malayalam",
+          "href": "#"
+        },
+        {
+          "text": "Maltese",
+          "href": "#"
+        },
+        {
+          "text": "Maori",
+          "href": "#"
+        },
+        {
+          "text": "Marathi",
+          "href": "#"
+        },
+        {
+          "text": "Mongolian",
+          "href": "#"
+        },
+        {
+          "text": "Myanmar (Burmese)",
+          "href": "#"
+        },
+        {
+          "text": "Nepali",
+          "href": "#"
+        },
+        {
+          "text": "Norwegian",
+          "href": "#"
+        },
+        {
+          "text": "Pashto",
+          "href": "#"
+        },
+        {
+          "text": "Persian",
+          "href": "#"
+        },
+        {
+          "text": "Polish",
+          "href": "#"
+        },
+        {
+          "text": "Portuguese",
+          "href": "#"
+        },
+        {
+          "text": "Punjabi",
+          "href": "#"
+        },
+        {
+          "text": "Romanian",
+          "href": "#"
+        },
+        {
+          "text": "Russian",
+          "href": "#"
+        },
+        {
+          "text": "Samoan",
+          "href": "#"
+        },
+        {
+          "text": "Scottish Gaelic",
+          "href": "#"
+        },
+        {
+          "text": "Serbian",
+          "href": "#"
+        },
+        {
+          "text": "Sesotho",
+          "href": "#"
+        },
+        {
+          "text": "Shona",
+          "href": "#"
+        },
+        {
+          "text": "Sindhi",
+          "href": "#"
+        },
+        {
+          "text": "Sinhala",
+          "href": "#"
+        },
+        {
+          "text": "Slovak",
+          "href": "#"
+        },
+        {
+          "text": "Slovenian",
+          "href": "#"
+        },
+        {
+          "text": "Somali",
+          "href": "#"
+        },
+        {
+          "text": "Spanish",
+          "href": "#"
+        },
+        {
+          "text": "Sundanese",
+          "href": "#"
+        },
+        {
+          "text": "Swahili",
+          "href": "#"
+        },
+        {
+          "text": "Swedish",
+          "href": "#"
+        },
+        {
+          "text": "Tajik",
+          "href": "#"
+        },
+        {
+          "text": "Tamil",
+          "href": "#"
+        },
+        {
+          "text": "Telugu",
+          "href": "#"
+        },
+        {
+          "text": "Thai",
+          "href": "#"
+        },
+        {
+          "text": "Turkish",
+          "href": "#"
+        },
+        {
+          "text": "Ukrainian",
+          "href": "#"
+        },
+        {
+          "text": "Urdu",
+          "href": "#"
+        },
+        {
+          "text": "Uzbek",
+          "href": "#"
+        },
+        {
+          "text": "Vietnamese",
+          "href": "#"
+        },
+        {
+          "text": "Welsh",
+          "href": "#"
+        },
+        {
+          "text": "Xhosa",
+          "href": "#"
+        },
+        {
+          "text": "Yiddish",
+          "href": "#"
+        },
+        {
+          "text": "Yoruba",
+          "href": "#"
+        },
+        {
+          "text": "Zulu",
+          "href": "#"
+        }
+      ],
+      "buttons": [
+        "İcmal & Sorğular",
+        "CMS — Məzmun",
+        "Məhsul Kataloqu",
+        "Məqalələr",
+        "Xidmətlər",
+        "Gələn Qutusu3",
+        "Sistem Logları",
+        "İstifadəçilər",
+        "SMTP E-poçt",
+        "Parametrlər",
+        "Canlı İcmal",
+        "AZEXBUY",
+        "AZEXBUY CMS",
+        "Makaleler",
+        "Məhsul Kataloqu",
+        "Gelen Qutusu",
+        "İstifadəçi İdarəetməsi",
+        "SMTP E-poçt",
+        "Sistem Parametrləri",
+        "Bələdçi",
+        "Tema",
+        "Axtarış (CMD+K)...",
+        "Yenilə",
+        "Burax",
+        "Geri",
+        "Növbəti"
+      ],
+      "inputs": [],
+      "headings": [
+        "İdarə Paneli",
+        "Son RFQ Sorğuları",
+        "Son İstehsalçılar",
+        "Canlı İcmal & Real Göstəricilər"
+      ],
+      "toasts": [],
+      "url": "https://beta.azexbuy.com/octo-admin/"
+    },
+    "products": {
+      "links": [
+        {
+          "text": "SQLite Backup",
+          "href": "/api/backup/download"
+        },
+        {
+          "text": "Afrikaans",
+          "href": "#"
+        },
+        {
+          "text": "Albanian",
+          "href": "#"
+        },
+        {
+          "text": "Amharic",
+          "href": "#"
+        },
+        {
+          "text": "Arabic",
+          "href": "#"
+        },
+        {
+          "text": "Armenian",
+          "href": "#"
+        },
+        {
+          "text": "Azerbaijani",
+          "href": "#"
+        },
+        {
+          "text": "Basque",
+          "href": "#"
+        },
+        {
+          "text": "Belarusian",
+          "href": "#"
+        },
+        {
+          "text": "Bengali",
+          "href": "#"
+        },
+        {
+          "text": "Bosnian",
+          "href": "#"
+        },
+        {
+          "text": "Bulgarian",
+          "href": "#"
+        },
+        {
+          "text": "Catalan",
+          "href": "#"
+        },
+        {
+          "text": "Cebuano",
+          "href": "#"
+        },
+        {
+          "text": "Chichewa",
+          "href": "#"
+        },
+        {
+          "text": "Chinese (Simplified)",
+          "href": "#"
+        },
+        {
+          "text": "Chinese (Traditional)",
+          "href": "#"
+        },
+        {
+          "text": "Corsican",
+          "href": "#"
+        },
+        {
+          "text": "Croatian",
+          "href": "#"
+        },
+        {
+          "text": "Czech",
+          "href": "#"
+        },
+        {
+          "text": "Danish",
+          "href": "#"
+        },
+        {
+          "text": "Dutch",
+          "href": "#"
+        },
+        {
+          "text": "English",
+          "href": "#"
+        },
+        {
+          "text": "Esperanto",
+          "href": "#"
+        },
+        {
+          "text": "Estonian",
+          "href": "#"
+        },
+        {
+          "text": "Filipino",
+          "href": "#"
+        },
+        {
+          "text": "Finnish",
+          "href": "#"
+        },
+        {
+          "text": "French",
+          "href": "#"
+        },
+        {
+          "text": "Frisian",
+          "href": "#"
+        },
+        {
+          "text": "Galician",
+          "href": "#"
+        },
+        {
+          "text": "Georgian",
+          "href": "#"
+        },
+        {
+          "text": "German",
+          "href": "#"
+        },
+        {
+          "text": "Greek",
+          "href": "#"
+        },
+        {
+          "text": "Gujarati",
+          "href": "#"
+        },
+        {
+          "text": "Haitian Creole",
+          "href": "#"
+        },
+        {
+          "text": "Hausa",
+          "href": "#"
+        },
+        {
+          "text": "Hawaiian",
+          "href": "#"
+        },
+        {
+          "text": "Hebrew",
+          "href": "#"
+        },
+        {
+          "text": "Hindi",
+          "href": "#"
+        },
+        {
+          "text": "Hmong",
+          "href": "#"
+        },
+        {
+          "text": "Hungarian",
+          "href": "#"
+        },
+        {
+          "text": "Icelandic",
+          "href": "#"
+        },
+        {
+          "text": "Igbo",
+          "href": "#"
+        },
+        {
+          "text": "Indonesian",
+          "href": "#"
+        },
+        {
+          "text": "Irish",
+          "href": "#"
+        },
+        {
+          "text": "Italian",
+          "href": "#"
+        },
+        {
+          "text": "Japanese",
+          "href": "#"
+        },
+        {
+          "text": "Javanese",
+          "href": "#"
+        },
+        {
+          "text": "Kannada",
+          "href": "#"
+        },
+        {
+          "text": "Kazakh",
+          "href": "#"
+        },
+        {
+          "text": "Khmer",
+          "href": "#"
+        },
+        {
+          "text": "Korean",
+          "href": "#"
+        },
+        {
+          "text": "Kurdish (Kurmanji)",
+          "href": "#"
+        },
+        {
+          "text": "Kyrgyz",
+          "href": "#"
+        },
+        {
+          "text": "Lao",
+          "href": "#"
+        },
+        {
+          "text": "Latin",
+          "href": "#"
+        },
+        {
+          "text": "Latvian",
+          "href": "#"
+        },
+        {
+          "text": "Lithuanian",
+          "href": "#"
+        },
+        {
+          "text": "Luxembourgish",
+          "href": "#"
+        },
+        {
+          "text": "Macedonian",
+          "href": "#"
+        },
+        {
+          "text": "Malagasy",
+          "href": "#"
+        },
+        {
+          "text": "Malay",
+          "href": "#"
+        },
+        {
+          "text": "Malayalam",
+          "href": "#"
+        },
+        {
+          "text": "Maltese",
+          "href": "#"
+        },
+        {
+          "text": "Maori",
+          "href": "#"
+        },
+        {
+          "text": "Marathi",
+          "href": "#"
+        },
+        {
+          "text": "Mongolian",
+          "href": "#"
+        },
+        {
+          "text": "Myanmar (Burmese)",
+          "href": "#"
+        },
+        {
+          "text": "Nepali",
+          "href": "#"
+        },
+        {
+          "text": "Norwegian",
+          "href": "#"
+        },
+        {
+          "text": "Pashto",
+          "href": "#"
+        },
+        {
+          "text": "Persian",
+          "href": "#"
+        },
+        {
+          "text": "Polish",
+          "href": "#"
+        },
+        {
+          "text": "Portuguese",
+          "href": "#"
+        },
+        {
+          "text": "Punjabi",
+          "href": "#"
+        },
+        {
+          "text": "Romanian",
+          "href": "#"
+        },
+        {
+          "text": "Russian",
+          "href": "#"
+        },
+        {
+          "text": "Samoan",
+          "href": "#"
+        },
+        {
+          "text": "Scottish Gaelic",
+          "href": "#"
+        },
+        {
+          "text": "Serbian",
+          "href": "#"
+        },
+        {
+          "text": "Sesotho",
+          "href": "#"
+        },
+        {
+          "text": "Shona",
+          "href": "#"
+        },
+        {
+          "text": "Sindhi",
+          "href": "#"
+        },
+        {
+          "text": "Sinhala",
+          "href": "#"
+        },
+        {
+          "text": "Slovak",
+          "href": "#"
+        },
+        {
+          "text": "Slovenian",
+          "href": "#"
+        },
+        {
+          "text": "Somali",
+          "href": "#"
+        },
+        {
+          "text": "Spanish",
+          "href": "#"
+        },
+        {
+          "text": "Sundanese",
+          "href": "#"
+        },
+        {
+          "text": "Swahili",
+          "href": "#"
+        },
+        {
+          "text": "Swedish",
+          "href": "#"
+        },
+        {
+          "text": "Tajik",
+          "href": "#"
+        },
+        {
+          "text": "Tamil",
+          "href": "#"
+        },
+        {
+          "text": "Telugu",
+          "href": "#"
+        },
+        {
+          "text": "Thai",
+          "href": "#"
+        },
+        {
+          "text": "Turkish",
+          "href": "#"
+        },
+        {
+          "text": "Ukrainian",
+          "href": "#"
+        },
+        {
+          "text": "Urdu",
+          "href": "#"
+        },
+        {
+          "text": "Uzbek",
+          "href": "#"
+        },
+        {
+          "text": "Vietnamese",
+          "href": "#"
+        },
+        {
+          "text": "Welsh",
+          "href": "#"
+        },
+        {
+          "text": "Xhosa",
+          "href": "#"
+        },
+        {
+          "text": "Yiddish",
+          "href": "#"
+        },
+        {
+          "text": "Yoruba",
+          "href": "#"
+        },
+        {
+          "text": "Zulu",
+          "href": "#"
+        }
+      ],
+      "buttons": [
+        "İcmal & Sorğular",
+        "CMS — Məzmun",
+        "Məhsul Kataloqu",
+        "Məqalələr",
+        "Xidmətlər",
+        "Gələn Qutusu3",
+        "Sistem Logları",
+        "İstifadəçilər",
+        "SMTP E-poçt",
+        "Parametrlər",
+        "Canlı İcmal",
+        "AZEXBUY",
+        "AZEXBUY CMS",
+        "Makaleler",
+        "Məhsul Kataloqu",
+        "Gelen Qutusu",
+        "İstifadəçi İdarəetməsi",
+        "SMTP E-poçt",
+        "Sistem Parametrləri",
+        "Bələdçi",
+        "Tema",
+        "Axtarış (CMD+K)...",
+        "Yenilə",
+        "Burax",
+        "Geri",
+        "Növbəti"
+      ],
+      "inputs": [],
+      "headings": [
+        "İdarə Paneli",
+        "Son RFQ Sorğuları",
+        "Son İstehsalçılar",
+        "Canlı İcmal & Real Göstəricilər"
+      ],
+      "toasts": [],
+      "url": "https://beta.azexbuy.com/octo-admin/"
+    },
+    "articles": {
+      "links": [
+        {
+          "text": "SQLite Backup",
+          "href": "/api/backup/download"
+        },
+        {
+          "text": "Afrikaans",
+          "href": "#"
+        },
+        {
+          "text": "Albanian",
+          "href": "#"
+        },
+        {
+          "text": "Amharic",
+          "href": "#"
+        },
+        {
+          "text": "Arabic",
+          "href": "#"
+        },
+        {
+          "text": "Armenian",
+          "href": "#"
+        },
+        {
+          "text": "Azerbaijani",
+          "href": "#"
+        },
+        {
+          "text": "Basque",
+          "href": "#"
+        },
+        {
+          "text": "Belarusian",
+          "href": "#"
+        },
+        {
+          "text": "Bengali",
+          "href": "#"
+        },
+        {
+          "text": "Bosnian",
+          "href": "#"
+        },
+        {
+          "text": "Bulgarian",
+          "href": "#"
+        },
+        {
+          "text": "Catalan",
+          "href": "#"
+        },
+        {
+          "text": "Cebuano",
+          "href": "#"
+        },
+        {
+          "text": "Chichewa",
+          "href": "#"
+        },
+        {
+          "text": "Chinese (Simplified)",
+          "href": "#"
+        },
+        {
+          "text": "Chinese (Traditional)",
+          "href": "#"
+        },
+        {
+          "text": "Corsican",
+          "href": "#"
+        },
+        {
+          "text": "Croatian",
+          "href": "#"
+        },
+        {
+          "text": "Czech",
+          "href": "#"
+        },
+        {
+          "text": "Danish",
+          "href": "#"
+        },
+        {
+          "text": "Dutch",
+          "href": "#"
+        },
+        {
+          "text": "English",
+          "href": "#"
+        },
+        {
+          "text": "Esperanto",
+          "href": "#"
+        },
+        {
+          "text": "Estonian",
+          "href": "#"
+        },
+        {
+          "text": "Filipino",
+          "href": "#"
+        },
+        {
+          "text": "Finnish",
+          "href": "#"
+        },
+        {
+          "text": "French",
+          "href": "#"
+        },
+        {
+          "text": "Frisian",
+          "href": "#"
+        },
+        {
+          "text": "Galician",
+          "href": "#"
+        },
+        {
+          "text": "Georgian",
+          "href": "#"
+        },
+        {
+          "text": "German",
+          "href": "#"
+        },
+        {
+          "text": "Greek",
+          "href": "#"
+        },
+        {
+          "text": "Gujarati",
+          "href": "#"
+        },
+        {
+          "text": "Haitian Creole",
+          "href": "#"
+        },
+        {
+          "text": "Hausa",
+          "href": "#"
+        },
+        {
+          "text": "Hawaiian",
+          "href": "#"
+        },
+        {
+          "text": "Hebrew",
+          "href": "#"
+        },
+        {
+          "text": "Hindi",
+          "href": "#"
+        },
+        {
+          "text": "Hmong",
+          "href": "#"
+        },
+        {
+          "text": "Hungarian",
+          "href": "#"
+        },
+        {
+          "text": "Icelandic",
+          "href": "#"
+        },
+        {
+          "text": "Igbo",
+          "href": "#"
+        },
+        {
+          "text": "Indonesian",
+          "href": "#"
+        },
+        {
+          "text": "Irish",
+          "href": "#"
+        },
+        {
+          "text": "Italian",
+          "href": "#"
+        },
+        {
+          "text": "Japanese",
+          "href": "#"
+        },
+        {
+          "text": "Javanese",
+          "href": "#"
+        },
+        {
+          "text": "Kannada",
+          "href": "#"
+        },
+        {
+          "text": "Kazakh",
+          "href": "#"
+        },
+        {
+          "text": "Khmer",
+          "href": "#"
+        },
+        {
+          "text": "Korean",
+          "href": "#"
+        },
+        {
+          "text": "Kurdish (Kurmanji)",
+          "href": "#"
+        },
+        {
+          "text": "Kyrgyz",
+          "href": "#"
+        },
+        {
+          "text": "Lao",
+          "href": "#"
+        },
+        {
+          "text": "Latin",
+          "href": "#"
+        },
+        {
+          "text": "Latvian",
+          "href": "#"
+        },
+        {
+          "text": "Lithuanian",
+          "href": "#"
+        },
+        {
+          "text": "Luxembourgish",
+          "href": "#"
+        },
+        {
+          "text": "Macedonian",
+          "href": "#"
+        },
+        {
+          "text": "Malagasy",
+          "href": "#"
+        },
+        {
+          "text": "Malay",
+          "href": "#"
+        },
+        {
+          "text": "Malayalam",
+          "href": "#"
+        },
+        {
+          "text": "Maltese",
+          "href": "#"
+        },
+        {
+          "text": "Maori",
+          "href": "#"
+        },
+        {
+          "text": "Marathi",
+          "href": "#"
+        },
+        {
+          "text": "Mongolian",
+          "href": "#"
+        },
+        {
+          "text": "Myanmar (Burmese)",
+          "href": "#"
+        },
+        {
+          "text": "Nepali",
+          "href": "#"
+        },
+        {
+          "text": "Norwegian",
+          "href": "#"
+        },
+        {
+          "text": "Pashto",
+          "href": "#"
+        },
+        {
+          "text": "Persian",
+          "href": "#"
+        },
+        {
+          "text": "Polish",
+          "href": "#"
+        },
+        {
+          "text": "Portuguese",
+          "href": "#"
+        },
+        {
+          "text": "Punjabi",
+          "href": "#"
+        },
+        {
+          "text": "Romanian",
+          "href": "#"
+        },
+        {
+          "text": "Russian",
+          "href": "#"
+        },
+        {
+          "text": "Samoan",
+          "href": "#"
+        },
+        {
+          "text": "Scottish Gaelic",
+          "href": "#"
+        },
+        {
+          "text": "Serbian",
+          "href": "#"
+        },
+        {
+          "text": "Sesotho",
+          "href": "#"
+        },
+        {
+          "text": "Shona",
+          "href": "#"
+        },
+        {
+          "text": "Sindhi",
+          "href": "#"
+        },
+        {
+          "text": "Sinhala",
+          "href": "#"
+        },
+        {
+          "text": "Slovak",
+          "href": "#"
+        },
+        {
+          "text": "Slovenian",
+          "href": "#"
+        },
+        {
+          "text": "Somali",
+          "href": "#"
+        },
+        {
+          "text": "Spanish",
+          "href": "#"
+        },
+        {
+          "text": "Sundanese",
+          "href": "#"
+        },
+        {
+          "text": "Swahili",
+          "href": "#"
+        },
+        {
+          "text": "Swedish",
+          "href": "#"
+        },
+        {
+          "text": "Tajik",
+          "href": "#"
+        },
+        {
+          "text": "Tamil",
+          "href": "#"
+        },
+        {
+          "text": "Telugu",
+          "href": "#"
+        },
+        {
+          "text": "Thai",
+          "href": "#"
+        },
+        {
+          "text": "Turkish",
+          "href": "#"
+        },
+        {
+          "text": "Ukrainian",
+          "href": "#"
+        },
+        {
+          "text": "Urdu",
+          "href": "#"
+        },
+        {
+          "text": "Uzbek",
+          "href": "#"
+        },
+        {
+          "text": "Vietnamese",
+          "href": "#"
+        },
+        {
+          "text": "Welsh",
+          "href": "#"
+        },
+        {
+          "text": "Xhosa",
+          "href": "#"
+        },
+        {
+          "text": "Yiddish",
+          "href": "#"
+        },
+        {
+          "text": "Yoruba",
+          "href": "#"
+        },
+        {
+          "text": "Zulu",
+          "href": "#"
+        }
+      ],
+      "buttons": [
+        "İcmal & Sorğular",
+        "CMS — Məzmun",
+        "Məhsul Kataloqu",
+        "Məqalələr",
+        "Xidmətlər",
+        "Gələn Qutusu3",
+        "Sistem Logları",
+        "İstifadəçilər",
+        "SMTP E-poçt",
+        "Parametrlər",
+        "Canlı İcmal",
+        "AZEXBUY",
+        "AZEXBUY CMS",
+        "Makaleler",
+        "Məhsul Kataloqu",
+        "Gelen Qutusu",
+        "İstifadəçi İdarəetməsi",
+        "SMTP E-poçt",
+        "Sistem Parametrləri",
+        "Bələdçi",
+        "Tema",
+        "Axtarış (CMD+K)...",
+        "Yenilə",
+        "Burax",
+        "Geri",
+        "Növbəti"
+      ],
+      "inputs": [],
+      "headings": [
+        "İdarə Paneli",
+        "Son RFQ Sorğuları",
+        "Son İstehsalçılar",
+        "Canlı İcmal & Real Göstəricilər"
+      ],
+      "toasts": [],
+      "url": "https://beta.azexbuy.com/octo-admin/"
+    },
+    "services": {
+      "links": [
+        {
+          "text": "SQLite Backup",
+          "href": "/api/backup/download"
+        },
+        {
+          "text": "Afrikaans",
+          "href": "#"
+        },
+        {
+          "text": "Albanian",
+          "href": "#"
+        },
+        {
+          "text": "Amharic",
+          "href": "#"
+        },
+        {
+          "text": "Arabic",
+          "href": "#"
+        },
+        {
+          "text": "Armenian",
+          "href": "#"
+        },
+        {
+          "text": "Azerbaijani",
+          "href": "#"
+        },
+        {
+          "text": "Basque",
+          "href": "#"
+        },
+        {
+          "text": "Belarusian",
+          "href": "#"
+        },
+        {
+          "text": "Bengali",
+          "href": "#"
+        },
+        {
+          "text": "Bosnian",
+          "href": "#"
+        },
+        {
+          "text": "Bulgarian",
+          "href": "#"
+        },
+        {
+          "text": "Catalan",
+          "href": "#"
+        },
+        {
+          "text": "Cebuano",
+          "href": "#"
+        },
+        {
+          "text": "Chichewa",
+          "href": "#"
+        },
+        {
+          "text": "Chinese (Simplified)",
+          "href": "#"
+        },
+        {
+          "text": "Chinese (Traditional)",
+          "href": "#"
+        },
+        {
+          "text": "Corsican",
+          "href": "#"
+        },
+        {
+          "text": "Croatian",
+          "href": "#"
+        },
+        {
+          "text": "Czech",
+          "href": "#"
+        },
+        {
+          "text": "Danish",
+          "href": "#"
+        },
+        {
+          "text": "Dutch",
+          "href": "#"
+        },
+        {
+          "text": "English",
+          "href": "#"
+        },
+        {
+          "text": "Esperanto",
+          "href": "#"
+        },
+        {
+          "text": "Estonian",
+          "href": "#"
+        },
+        {
+          "text": "Filipino",
+          "href": "#"
+        },
+        {
+          "text": "Finnish",
+          "href": "#"
+        },
+        {
+          "text": "French",
+          "href": "#"
+        },
+        {
+          "text": "Frisian",
+          "href": "#"
+        },
+        {
+          "text": "Galician",
+          "href": "#"
+        },
+        {
+          "text": "Georgian",
+          "href": "#"
+        },
+        {
+          "text": "German",
+          "href": "#"
+        },
+        {
+          "text": "Greek",
+          "href": "#"
+        },
+        {
+          "text": "Gujarati",
+          "href": "#"
+        },
+        {
+          "text": "Haitian Creole",
+          "href": "#"
+        },
+        {
+          "text": "Hausa",
+          "href": "#"
+        },
+        {
+          "text": "Hawaiian",
+          "href": "#"
+        },
+        {
+          "text": "Hebrew",
+          "href": "#"
+        },
+        {
+          "text": "Hindi",
+          "href": "#"
+        },
+        {
+          "text": "Hmong",
+          "href": "#"
+        },
+        {
+          "text": "Hungarian",
+          "href": "#"
+        },
+        {
+          "text": "Icelandic",
+          "href": "#"
+        },
+        {
+          "text": "Igbo",
+          "href": "#"
+        },
+        {
+          "text": "Indonesian",
+          "href": "#"
+        },
+        {
+          "text": "Irish",
+          "href": "#"
+        },
+        {
+          "text": "Italian",
+          "href": "#"
+        },
+        {
+          "text": "Japanese",
+          "href": "#"
+        },
+        {
+          "text": "Javanese",
+          "href": "#"
+        },
+        {
+          "text": "Kannada",
+          "href": "#"
+        },
+        {
+          "text": "Kazakh",
+          "href": "#"
+        },
+        {
+          "text": "Khmer",
+          "href": "#"
+        },
+        {
+          "text": "Korean",
+          "href": "#"
+        },
+        {
+          "text": "Kurdish (Kurmanji)",
+          "href": "#"
+        },
+        {
+          "text": "Kyrgyz",
+          "href": "#"
+        },
+        {
+          "text": "Lao",
+          "href": "#"
+        },
+        {
+          "text": "Latin",
+          "href": "#"
+        },
+        {
+          "text": "Latvian",
+          "href": "#"
+        },
+        {
+          "text": "Lithuanian",
+          "href": "#"
+        },
+        {
+          "text": "Luxembourgish",
+          "href": "#"
+        },
+        {
+          "text": "Macedonian",
+          "href": "#"
+        },
+        {
+          "text": "Malagasy",
+          "href": "#"
+        },
+        {
+          "text": "Malay",
+          "href": "#"
+        },
+        {
+          "text": "Malayalam",
+          "href": "#"
+        },
+        {
+          "text": "Maltese",
+          "href": "#"
+        },
+        {
+          "text": "Maori",
+          "href": "#"
+        },
+        {
+          "text": "Marathi",
+          "href": "#"
+        },
+        {
+          "text": "Mongolian",
+          "href": "#"
+        },
+        {
+          "text": "Myanmar (Burmese)",
+          "href": "#"
+        },
+        {
+          "text": "Nepali",
+          "href": "#"
+        },
+        {
+          "text": "Norwegian",
+          "href": "#"
+        },
+        {
+          "text": "Pashto",
+          "href": "#"
+        },
+        {
+          "text": "Persian",
+          "href": "#"
+        },
+        {
+          "text": "Polish",
+          "href": "#"
+        },
+        {
+          "text": "Portuguese",
+          "href": "#"
+        },
+        {
+          "text": "Punjabi",
+          "href": "#"
+        },
+        {
+          "text": "Romanian",
+          "href": "#"
+        },
+        {
+          "text": "Russian",
+          "href": "#"
+        },
+        {
+          "text": "Samoan",
+          "href": "#"
+        },
+        {
+          "text": "Scottish Gaelic",
+          "href": "#"
+        },
+        {
+          "text": "Serbian",
+          "href": "#"
+        },
+        {
+          "text": "Sesotho",
+          "href": "#"
+        },
+        {
+          "text": "Shona",
+          "href": "#"
+        },
+        {
+          "text": "Sindhi",
+          "href": "#"
+        },
+        {
+          "text": "Sinhala",
+          "href": "#"
+        },
+        {
+          "text": "Slovak",
+          "href": "#"
+        },
+        {
+          "text": "Slovenian",
+          "href": "#"
+        },
+        {
+          "text": "Somali",
+          "href": "#"
+        },
+        {
+          "text": "Spanish",
+          "href": "#"
+        },
+        {
+          "text": "Sundanese",
+          "href": "#"
+        },
+        {
+          "text": "Swahili",
+          "href": "#"
+        },
+        {
+          "text": "Swedish",
+          "href": "#"
+        },
+        {
+          "text": "Tajik",
+          "href": "#"
+        },
+        {
+          "text": "Tamil",
+          "href": "#"
+        },
+        {
+          "text": "Telugu",
+          "href": "#"
+        },
+        {
+          "text": "Thai",
+          "href": "#"
+        },
+        {
+          "text": "Turkish",
+          "href": "#"
+        },
+        {
+          "text": "Ukrainian",
+          "href": "#"
+        },
+        {
+          "text": "Urdu",
+          "href": "#"
+        },
+        {
+          "text": "Uzbek",
+          "href": "#"
+        },
+        {
+          "text": "Vietnamese",
+          "href": "#"
+        },
+        {
+          "text": "Welsh",
+          "href": "#"
+        },
+        {
+          "text": "Xhosa",
+          "href": "#"
+        },
+        {
+          "text": "Yiddish",
+          "href": "#"
+        },
+        {
+          "text": "Yoruba",
+          "href": "#"
+        },
+        {
+          "text": "Zulu",
+          "href": "#"
+        }
+      ],
+      "buttons": [
+        "İcmal & Sorğular",
+        "CMS — Məzmun",
+        "Məhsul Kataloqu",
+        "Məqalələr",
+        "Xidmətlər",
+        "Gələn Qutusu3",
+        "Sistem Logları",
+        "İstifadəçilər",
+        "SMTP E-poçt",
+        "Parametrlər",
+        "Canlı İcmal",
+        "AZEXBUY",
+        "AZEXBUY CMS",
+        "Makaleler",
+        "Məhsul Kataloqu",
+        "Gelen Qutusu",
+        "İstifadəçi İdarəetməsi",
+        "SMTP E-poçt",
+        "Sistem Parametrləri",
+        "Bələdçi",
+        "Tema",
+        "Axtarış (CMD+K)...",
+        "Yenilə",
+        "Burax",
+        "Geri",
+        "Növbəti"
+      ],
+      "inputs": [],
+      "headings": [
+        "İdarə Paneli",
+        "Son RFQ Sorğuları",
+        "Son İstehsalçılar",
+        "Canlı İcmal & Real Göstəricilər"
+      ],
+      "toasts": [],
+      "url": "https://beta.azexbuy.com/octo-admin/"
+    },
+    "inbox": {
+      "links": [
+        {
+          "text": "SQLite Backup",
+          "href": "/api/backup/download"
+        },
+        {
+          "text": "Afrikaans",
+          "href": "#"
+        },
+        {
+          "text": "Albanian",
+          "href": "#"
+        },
+        {
+          "text": "Amharic",
+          "href": "#"
+        },
+        {
+          "text": "Arabic",
+          "href": "#"
+        },
+        {
+          "text": "Armenian",
+          "href": "#"
+        },
+        {
+          "text": "Azerbaijani",
+          "href": "#"
+        },
+        {
+          "text": "Basque",
+          "href": "#"
+        },
+        {
+          "text": "Belarusian",
+          "href": "#"
+        },
+        {
+          "text": "Bengali",
+          "href": "#"
+        },
+        {
+          "text": "Bosnian",
+          "href": "#"
+        },
+        {
+          "text": "Bulgarian",
+          "href": "#"
+        },
+        {
+          "text": "Catalan",
+          "href": "#"
+        },
+        {
+          "text": "Cebuano",
+          "href": "#"
+        },
+        {
+          "text": "Chichewa",
+          "href": "#"
+        },
+        {
+          "text": "Chinese (Simplified)",
+          "href": "#"
+        },
+        {
+          "text": "Chinese (Traditional)",
+          "href": "#"
+        },
+        {
+          "text": "Corsican",
+          "href": "#"
+        },
+        {
+          "text": "Croatian",
+          "href": "#"
+        },
+        {
+          "text": "Czech",
+          "href": "#"
+        },
+        {
+          "text": "Danish",
+          "href": "#"
+        },
+        {
+          "text": "Dutch",
+          "href": "#"
+        },
+        {
+          "text": "English",
+          "href": "#"
+        },
+        {
+          "text": "Esperanto",
+          "href": "#"
+        },
+        {
+          "text": "Estonian",
+          "href": "#"
+        },
+        {
+          "text": "Filipino",
+          "href": "#"
+        },
+        {
+          "text": "Finnish",
+          "href": "#"
+        },
+        {
+          "text": "French",
+          "href": "#"
+        },
+        {
+          "text": "Frisian",
+          "href": "#"
+        },
+        {
+          "text": "Galician",
+          "href": "#"
+        },
+        {
+          "text": "Georgian",
+          "href": "#"
+        },
+        {
+          "text": "German",
+          "href": "#"
+        },
+        {
+          "text": "Greek",
+          "href": "#"
+        },
+        {
+          "text": "Gujarati",
+          "href": "#"
+        },
+        {
+          "text": "Haitian Creole",
+          "href": "#"
+        },
+        {
+          "text": "Hausa",
+          "href": "#"
+        },
+        {
+          "text": "Hawaiian",
+          "href": "#"
+        },
+        {
+          "text": "Hebrew",
+          "href": "#"
+        },
+        {
+          "text": "Hindi",
+          "href": "#"
+        },
+        {
+          "text": "Hmong",
+          "href": "#"
+        },
+        {
+          "text": "Hungarian",
+          "href": "#"
+        },
+        {
+          "text": "Icelandic",
+          "href": "#"
+        },
+        {
+          "text": "Igbo",
+          "href": "#"
+        },
+        {
+          "text": "Indonesian",
+          "href": "#"
+        },
+        {
+          "text": "Irish",
+          "href": "#"
+        },
+        {
+          "text": "Italian",
+          "href": "#"
+        },
+        {
+          "text": "Japanese",
+          "href": "#"
+        },
+        {
+          "text": "Javanese",
+          "href": "#"
+        },
+        {
+          "text": "Kannada",
+          "href": "#"
+        },
+        {
+          "text": "Kazakh",
+          "href": "#"
+        },
+        {
+          "text": "Khmer",
+          "href": "#"
+        },
+        {
+          "text": "Korean",
+          "href": "#"
+        },
+        {
+          "text": "Kurdish (Kurmanji)",
+          "href": "#"
+        },
+        {
+          "text": "Kyrgyz",
+          "href": "#"
+        },
+        {
+          "text": "Lao",
+          "href": "#"
+        },
+        {
+          "text": "Latin",
+          "href": "#"
+        },
+        {
+          "text": "Latvian",
+          "href": "#"
+        },
+        {
+          "text": "Lithuanian",
+          "href": "#"
+        },
+        {
+          "text": "Luxembourgish",
+          "href": "#"
+        },
+        {
+          "text": "Macedonian",
+          "href": "#"
+        },
+        {
+          "text": "Malagasy",
+          "href": "#"
+        },
+        {
+          "text": "Malay",
+          "href": "#"
+        },
+        {
+          "text": "Malayalam",
+          "href": "#"
+        },
+        {
+          "text": "Maltese",
+          "href": "#"
+        },
+        {
+          "text": "Maori",
+          "href": "#"
+        },
+        {
+          "text": "Marathi",
+          "href": "#"
+        },
+        {
+          "text": "Mongolian",
+          "href": "#"
+        },
+        {
+          "text": "Myanmar (Burmese)",
+          "href": "#"
+        },
+        {
+          "text": "Nepali",
+          "href": "#"
+        },
+        {
+          "text": "Norwegian",
+          "href": "#"
+        },
+        {
+          "text": "Pashto",
+          "href": "#"
+        },
+        {
+          "text": "Persian",
+          "href": "#"
+        },
+        {
+          "text": "Polish",
+          "href": "#"
+        },
+        {
+          "text": "Portuguese",
+          "href": "#"
+        },
+        {
+          "text": "Punjabi",
+          "href": "#"
+        },
+        {
+          "text": "Romanian",
+          "href": "#"
+        },
+        {
+          "text": "Russian",
+          "href": "#"
+        },
+        {
+          "text": "Samoan",
+          "href": "#"
+        },
+        {
+          "text": "Scottish Gaelic",
+          "href": "#"
+        },
+        {
+          "text": "Serbian",
+          "href": "#"
+        },
+        {
+          "text": "Sesotho",
+          "href": "#"
+        },
+        {
+          "text": "Shona",
+          "href": "#"
+        },
+        {
+          "text": "Sindhi",
+          "href": "#"
+        },
+        {
+          "text": "Sinhala",
+          "href": "#"
+        },
+        {
+          "text": "Slovak",
+          "href": "#"
+        },
+        {
+          "text": "Slovenian",
+          "href": "#"
+        },
+        {
+          "text": "Somali",
+          "href": "#"
+        },
+        {
+          "text": "Spanish",
+          "href": "#"
+        },
+        {
+          "text": "Sundanese",
+          "href": "#"
+        },
+        {
+          "text": "Swahili",
+          "href": "#"
+        },
+        {
+          "text": "Swedish",
+          "href": "#"
+        },
+        {
+          "text": "Tajik",
+          "href": "#"
+        },
+        {
+          "text": "Tamil",
+          "href": "#"
+        },
+        {
+          "text": "Telugu",
+          "href": "#"
+        },
+        {
+          "text": "Thai",
+          "href": "#"
+        },
+        {
+          "text": "Turkish",
+          "href": "#"
+        },
+        {
+          "text": "Ukrainian",
+          "href": "#"
+        },
+        {
+          "text": "Urdu",
+          "href": "#"
+        },
+        {
+          "text": "Uzbek",
+          "href": "#"
+        },
+        {
+          "text": "Vietnamese",
+          "href": "#"
+        },
+        {
+          "text": "Welsh",
+          "href": "#"
+        },
+        {
+          "text": "Xhosa",
+          "href": "#"
+        },
+        {
+          "text": "Yiddish",
+          "href": "#"
+        },
+        {
+          "text": "Yoruba",
+          "href": "#"
+        },
+        {
+          "text": "Zulu",
+          "href": "#"
+        }
+      ],
+      "buttons": [
+        "İcmal & Sorğular",
+        "CMS — Məzmun",
+        "Məhsul Kataloqu",
+        "Məqalələr",
+        "Xidmətlər",
+        "Gələn Qutusu3",
+        "Sistem Logları",
+        "İstifadəçilər",
+        "SMTP E-poçt",
+        "Parametrlər",
+        "Canlı İcmal",
+        "AZEXBUY",
+        "AZEXBUY CMS",
+        "Makaleler",
+        "Məhsul Kataloqu",
+        "Gelen Qutusu",
+        "İstifadəçi İdarəetməsi",
+        "SMTP E-poçt",
+        "Sistem Parametrləri",
+        "Bələdçi",
+        "Tema",
+        "Axtarış (CMD+K)...",
+        "Yenilə",
+        "Burax",
+        "Geri",
+        "Növbəti"
+      ],
+      "inputs": [],
+      "headings": [
+        "İdarə Paneli",
+        "Son RFQ Sorğuları",
+        "Son İstehsalçılar",
+        "Canlı İcmal & Real Göstəricilər"
+      ],
+      "toasts": [],
+      "url": "https://beta.azexbuy.com/octo-admin/"
+    },
+    "users": {
+      "links": [
+        {
+          "text": "SQLite Backup",
+          "href": "/api/backup/download"
+        },
+        {
+          "text": "Afrikaans",
+          "href": "#"
+        },
+        {
+          "text": "Albanian",
+          "href": "#"
+        },
+        {
+          "text": "Amharic",
+          "href": "#"
+        },
+        {
+          "text": "Arabic",
+          "href": "#"
+        },
+        {
+          "text": "Armenian",
+          "href": "#"
+        },
+        {
+          "text": "Azerbaijani",
+          "href": "#"
+        },
+        {
+          "text": "Basque",
+          "href": "#"
+        },
+        {
+          "text": "Belarusian",
+          "href": "#"
+        },
+        {
+          "text": "Bengali",
+          "href": "#"
+        },
+        {
+          "text": "Bosnian",
+          "href": "#"
+        },
+        {
+          "text": "Bulgarian",
+          "href": "#"
+        },
+        {
+          "text": "Catalan",
+          "href": "#"
+        },
+        {
+          "text": "Cebuano",
+          "href": "#"
+        },
+        {
+          "text": "Chichewa",
+          "href": "#"
+        },
+        {
+          "text": "Chinese (Simplified)",
+          "href": "#"
+        },
+        {
+          "text": "Chinese (Traditional)",
+          "href": "#"
+        },
+        {
+          "text": "Corsican",
+          "href": "#"
+        },
+        {
+          "text": "Croatian",
+          "href": "#"
+        },
+        {
+          "text": "Czech",
+          "href": "#"
+        },
+        {
+          "text": "Danish",
+          "href": "#"
+        },
+        {
+          "text": "Dutch",
+          "href": "#"
+        },
+        {
+          "text": "English",
+          "href": "#"
+        },
+        {
+          "text": "Esperanto",
+          "href": "#"
+        },
+        {
+          "text": "Estonian",
+          "href": "#"
+        },
+        {
+          "text": "Filipino",
+          "href": "#"
+        },
+        {
+          "text": "Finnish",
+          "href": "#"
+        },
+        {
+          "text": "French",
+          "href": "#"
+        },
+        {
+          "text": "Frisian",
+          "href": "#"
+        },
+        {
+          "text": "Galician",
+          "href": "#"
+        },
+        {
+          "text": "Georgian",
+          "href": "#"
+        },
+        {
+          "text": "German",
+          "href": "#"
+        },
+        {
+          "text": "Greek",
+          "href": "#"
+        },
+        {
+          "text": "Gujarati",
+          "href": "#"
+        },
+        {
+          "text": "Haitian Creole",
+          "href": "#"
+        },
+        {
+          "text": "Hausa",
+          "href": "#"
+        },
+        {
+          "text": "Hawaiian",
+          "href": "#"
+        },
+        {
+          "text": "Hebrew",
+          "href": "#"
+        },
+        {
+          "text": "Hindi",
+          "href": "#"
+        },
+        {
+          "text": "Hmong",
+          "href": "#"
+        },
+        {
+          "text": "Hungarian",
+          "href": "#"
+        },
+        {
+          "text": "Icelandic",
+          "href": "#"
+        },
+        {
+          "text": "Igbo",
+          "href": "#"
+        },
+        {
+          "text": "Indonesian",
+          "href": "#"
+        },
+        {
+          "text": "Irish",
+          "href": "#"
+        },
+        {
+          "text": "Italian",
+          "href": "#"
+        },
+        {
+          "text": "Japanese",
+          "href": "#"
+        },
+        {
+          "text": "Javanese",
+          "href": "#"
+        },
+        {
+          "text": "Kannada",
+          "href": "#"
+        },
+        {
+          "text": "Kazakh",
+          "href": "#"
+        },
+        {
+          "text": "Khmer",
+          "href": "#"
+        },
+        {
+          "text": "Korean",
+          "href": "#"
+        },
+        {
+          "text": "Kurdish (Kurmanji)",
+          "href": "#"
+        },
+        {
+          "text": "Kyrgyz",
+          "href": "#"
+        },
+        {
+          "text": "Lao",
+          "href": "#"
+        },
+        {
+          "text": "Latin",
+          "href": "#"
+        },
+        {
+          "text": "Latvian",
+          "href": "#"
+        },
+        {
+          "text": "Lithuanian",
+          "href": "#"
+        },
+        {
+          "text": "Luxembourgish",
+          "href": "#"
+        },
+        {
+          "text": "Macedonian",
+          "href": "#"
+        },
+        {
+          "text": "Malagasy",
+          "href": "#"
+        },
+        {
+          "text": "Malay",
+          "href": "#"
+        },
+        {
+          "text": "Malayalam",
+          "href": "#"
+        },
+        {
+          "text": "Maltese",
+          "href": "#"
+        },
+        {
+          "text": "Maori",
+          "href": "#"
+        },
+        {
+          "text": "Marathi",
+          "href": "#"
+        },
+        {
+          "text": "Mongolian",
+          "href": "#"
+        },
+        {
+          "text": "Myanmar (Burmese)",
+          "href": "#"
+        },
+        {
+          "text": "Nepali",
+          "href": "#"
+        },
+        {
+          "text": "Norwegian",
+          "href": "#"
+        },
+        {
+          "text": "Pashto",
+          "href": "#"
+        },
+        {
+          "text": "Persian",
+          "href": "#"
+        },
+        {
+          "text": "Polish",
+          "href": "#"
+        },
+        {
+          "text": "Portuguese",
+          "href": "#"
+        },
+        {
+          "text": "Punjabi",
+          "href": "#"
+        },
+        {
+          "text": "Romanian",
+          "href": "#"
+        },
+        {
+          "text": "Russian",
+          "href": "#"
+        },
+        {
+          "text": "Samoan",
+          "href": "#"
+        },
+        {
+          "text": "Scottish Gaelic",
+          "href": "#"
+        },
+        {
+          "text": "Serbian",
+          "href": "#"
+        },
+        {
+          "text": "Sesotho",
+          "href": "#"
+        },
+        {
+          "text": "Shona",
+          "href": "#"
+        },
+        {
+          "text": "Sindhi",
+          "href": "#"
+        },
+        {
+          "text": "Sinhala",
+          "href": "#"
+        },
+        {
+          "text": "Slovak",
+          "href": "#"
+        },
+        {
+          "text": "Slovenian",
+          "href": "#"
+        },
+        {
+          "text": "Somali",
+          "href": "#"
+        },
+        {
+          "text": "Spanish",
+          "href": "#"
+        },
+        {
+          "text": "Sundanese",
+          "href": "#"
+        },
+        {
+          "text": "Swahili",
+          "href": "#"
+        },
+        {
+          "text": "Swedish",
+          "href": "#"
+        },
+        {
+          "text": "Tajik",
+          "href": "#"
+        },
+        {
+          "text": "Tamil",
+          "href": "#"
+        },
+        {
+          "text": "Telugu",
+          "href": "#"
+        },
+        {
+          "text": "Thai",
+          "href": "#"
+        },
+        {
+          "text": "Turkish",
+          "href": "#"
+        },
+        {
+          "text": "Ukrainian",
+          "href": "#"
+        },
+        {
+          "text": "Urdu",
+          "href": "#"
+        },
+        {
+          "text": "Uzbek",
+          "href": "#"
+        },
+        {
+          "text": "Vietnamese",
+          "href": "#"
+        },
+        {
+          "text": "Welsh",
+          "href": "#"
+        },
+        {
+          "text": "Xhosa",
+          "href": "#"
+        },
+        {
+          "text": "Yiddish",
+          "href": "#"
+        },
+        {
+          "text": "Yoruba",
+          "href": "#"
+        },
+        {
+          "text": "Zulu",
+          "href": "#"
+        }
+      ],
+      "buttons": [
+        "İcmal & Sorğular",
+        "CMS — Məzmun",
+        "Məhsul Kataloqu",
+        "Məqalələr",
+        "Xidmətlər",
+        "Gələn Qutusu3",
+        "Sistem Logları",
+        "İstifadəçilər",
+        "SMTP E-poçt",
+        "Parametrlər",
+        "Canlı İcmal",
+        "AZEXBUY",
+        "AZEXBUY CMS",
+        "Makaleler",
+        "Məhsul Kataloqu",
+        "Gelen Qutusu",
+        "İstifadəçi İdarəetməsi",
+        "SMTP E-poçt",
+        "Sistem Parametrləri",
+        "Bələdçi",
+        "Tema",
+        "Axtarış (CMD+K)...",
+        "Yenilə",
+        "Burax",
+        "Geri",
+        "Növbəti"
+      ],
+      "inputs": [],
+      "headings": [
+        "İdarə Paneli",
+        "Son RFQ Sorğuları",
+        "Son İstehsalçılar",
+        "Canlı İcmal & Real Göstəricilər"
+      ],
+      "toasts": [],
+      "url": "https://beta.azexbuy.com/octo-admin/"
+    },
+    "smtp": {
+      "links": [
+        {
+          "text": "SQLite Backup",
+          "href": "/api/backup/download"
+        },
+        {
+          "text": "Afrikaans",
+          "href": "#"
+        },
+        {
+          "text": "Albanian",
+          "href": "#"
+        },
+        {
+          "text": "Amharic",
+          "href": "#"
+        },
+        {
+          "text": "Arabic",
+          "href": "#"
+        },
+        {
+          "text": "Armenian",
+          "href": "#"
+        },
+        {
+          "text": "Azerbaijani",
+          "href": "#"
+        },
+        {
+          "text": "Basque",
+          "href": "#"
+        },
+        {
+          "text": "Belarusian",
+          "href": "#"
+        },
+        {
+          "text": "Bengali",
+          "href": "#"
+        },
+        {
+          "text": "Bosnian",
+          "href": "#"
+        },
+        {
+          "text": "Bulgarian",
+          "href": "#"
+        },
+        {
+          "text": "Catalan",
+          "href": "#"
+        },
+        {
+          "text": "Cebuano",
+          "href": "#"
+        },
+        {
+          "text": "Chichewa",
+          "href": "#"
+        },
+        {
+          "text": "Chinese (Simplified)",
+          "href": "#"
+        },
+        {
+          "text": "Chinese (Traditional)",
+          "href": "#"
+        },
+        {
+          "text": "Corsican",
+          "href": "#"
+        },
+        {
+          "text": "Croatian",
+          "href": "#"
+        },
+        {
+          "text": "Czech",
+          "href": "#"
+        },
+        {
+          "text": "Danish",
+          "href": "#"
+        },
+        {
+          "text": "Dutch",
+          "href": "#"
+        },
+        {
+          "text": "English",
+          "href": "#"
+        },
+        {
+          "text": "Esperanto",
+          "href": "#"
+        },
+        {
+          "text": "Estonian",
+          "href": "#"
+        },
+        {
+          "text": "Filipino",
+          "href": "#"
+        },
+        {
+          "text": "Finnish",
+          "href": "#"
+        },
+        {
+          "text": "French",
+          "href": "#"
+        },
+        {
+          "text": "Frisian",
+          "href": "#"
+        },
+        {
+          "text": "Galician",
+          "href": "#"
+        },
+        {
+          "text": "Georgian",
+          "href": "#"
+        },
+        {
+          "text": "German",
+          "href": "#"
+        },
+        {
+          "text": "Greek",
+          "href": "#"
+        },
+        {
+          "text": "Gujarati",
+          "href": "#"
+        },
+        {
+          "text": "Haitian Creole",
+          "href": "#"
+        },
+        {
+          "text": "Hausa",
+          "href": "#"
+        },
+        {
+          "text": "Hawaiian",
+          "href": "#"
+        },
+        {
+          "text": "Hebrew",
+          "href": "#"
+        },
+        {
+          "text": "Hindi",
+          "href": "#"
+        },
+        {
+          "text": "Hmong",
+          "href": "#"
+        },
+        {
+          "text": "Hungarian",
+          "href": "#"
+        },
+        {
+          "text": "Icelandic",
+          "href": "#"
+        },
+        {
+          "text": "Igbo",
+          "href": "#"
+        },
+        {
+          "text": "Indonesian",
+          "href": "#"
+        },
+        {
+          "text": "Irish",
+          "href": "#"
+        },
+        {
+          "text": "Italian",
+          "href": "#"
+        },
+        {
+          "text": "Japanese",
+          "href": "#"
+        },
+        {
+          "text": "Javanese",
+          "href": "#"
+        },
+        {
+          "text": "Kannada",
+          "href": "#"
+        },
+        {
+          "text": "Kazakh",
+          "href": "#"
+        },
+        {
+          "text": "Khmer",
+          "href": "#"
+        },
+        {
+          "text": "Korean",
+          "href": "#"
+        },
+        {
+          "text": "Kurdish (Kurmanji)",
+          "href": "#"
+        },
+        {
+          "text": "Kyrgyz",
+          "href": "#"
+        },
+        {
+          "text": "Lao",
+          "href": "#"
+        },
+        {
+          "text": "Latin",
+          "href": "#"
+        },
+        {
+          "text": "Latvian",
+          "href": "#"
+        },
+        {
+          "text": "Lithuanian",
+          "href": "#"
+        },
+        {
+          "text": "Luxembourgish",
+          "href": "#"
+        },
+        {
+          "text": "Macedonian",
+          "href": "#"
+        },
+        {
+          "text": "Malagasy",
+          "href": "#"
+        },
+        {
+          "text": "Malay",
+          "href": "#"
+        },
+        {
+          "text": "Malayalam",
+          "href": "#"
+        },
+        {
+          "text": "Maltese",
+          "href": "#"
+        },
+        {
+          "text": "Maori",
+          "href": "#"
+        },
+        {
+          "text": "Marathi",
+          "href": "#"
+        },
+        {
+          "text": "Mongolian",
+          "href": "#"
+        },
+        {
+          "text": "Myanmar (Burmese)",
+          "href": "#"
+        },
+        {
+          "text": "Nepali",
+          "href": "#"
+        },
+        {
+          "text": "Norwegian",
+          "href": "#"
+        },
+        {
+          "text": "Pashto",
+          "href": "#"
+        },
+        {
+          "text": "Persian",
+          "href": "#"
+        },
+        {
+          "text": "Polish",
+          "href": "#"
+        },
+        {
+          "text": "Portuguese",
+          "href": "#"
+        },
+        {
+          "text": "Punjabi",
+          "href": "#"
+        },
+        {
+          "text": "Romanian",
+          "href": "#"
+        },
+        {
+          "text": "Russian",
+          "href": "#"
+        },
+        {
+          "text": "Samoan",
+          "href": "#"
+        },
+        {
+          "text": "Scottish Gaelic",
+          "href": "#"
+        },
+        {
+          "text": "Serbian",
+          "href": "#"
+        },
+        {
+          "text": "Sesotho",
+          "href": "#"
+        },
+        {
+          "text": "Shona",
+          "href": "#"
+        },
+        {
+          "text": "Sindhi",
+          "href": "#"
+        },
+        {
+          "text": "Sinhala",
+          "href": "#"
+        },
+        {
+          "text": "Slovak",
+          "href": "#"
+        },
+        {
+          "text": "Slovenian",
+          "href": "#"
+        },
+        {
+          "text": "Somali",
+          "href": "#"
+        },
+        {
+          "text": "Spanish",
+          "href": "#"
+        },
+        {
+          "text": "Sundanese",
+          "href": "#"
+        },
+        {
+          "text": "Swahili",
+          "href": "#"
+        },
+        {
+          "text": "Swedish",
+          "href": "#"
+        },
+        {
+          "text": "Tajik",
+          "href": "#"
+        },
+        {
+          "text": "Tamil",
+          "href": "#"
+        },
+        {
+          "text": "Telugu",
+          "href": "#"
+        },
+        {
+          "text": "Thai",
+          "href": "#"
+        },
+        {
+          "text": "Turkish",
+          "href": "#"
+        },
+        {
+          "text": "Ukrainian",
+          "href": "#"
+        },
+        {
+          "text": "Urdu",
+          "href": "#"
+        },
+        {
+          "text": "Uzbek",
+          "href": "#"
+        },
+        {
+          "text": "Vietnamese",
+          "href": "#"
+        },
+        {
+          "text": "Welsh",
+          "href": "#"
+        },
+        {
+          "text": "Xhosa",
+          "href": "#"
+        },
+        {
+          "text": "Yiddish",
+          "href": "#"
+        },
+        {
+          "text": "Yoruba",
+          "href": "#"
+        },
+        {
+          "text": "Zulu",
+          "href": "#"
+        }
+      ],
+      "buttons": [
+        "İcmal & Sorğular",
+        "CMS — Məzmun",
+        "Məhsul Kataloqu",
+        "Məqalələr",
+        "Xidmətlər",
+        "Gələn Qutusu3",
+        "Sistem Logları",
+        "İstifadəçilər",
+        "SMTP E-poçt",
+        "Parametrlər",
+        "Canlı İcmal",
+        "AZEXBUY",
+        "AZEXBUY CMS",
+        "Makaleler",
+        "Məhsul Kataloqu",
+        "Gelen Qutusu",
+        "İstifadəçi İdarəetməsi",
+        "SMTP E-poçt",
+        "Sistem Parametrləri",
+        "Bələdçi",
+        "Tema",
+        "Axtarış (CMD+K)...",
+        "Yenilə",
+        "Burax",
+        "Geri",
+        "Növbəti"
+      ],
+      "inputs": [],
+      "headings": [
+        "İdarə Paneli",
+        "Son RFQ Sorğuları",
+        "Son İstehsalçılar",
+        "Canlı İcmal & Real Göstəricilər"
+      ],
+      "toasts": [],
+      "url": "https://beta.azexbuy.com/octo-admin/"
+    },
+    "settings": {
+      "links": [
+        {
+          "text": "SQLite Backup",
+          "href": "/api/backup/download"
+        },
+        {
+          "text": "Afrikaans",
+          "href": "#"
+        },
+        {
+          "text": "Albanian",
+          "href": "#"
+        },
+        {
+          "text": "Amharic",
+          "href": "#"
+        },
+        {
+          "text": "Arabic",
+          "href": "#"
+        },
+        {
+          "text": "Armenian",
+          "href": "#"
+        },
+        {
+          "text": "Azerbaijani",
+          "href": "#"
+        },
+        {
+          "text": "Basque",
+          "href": "#"
+        },
+        {
+          "text": "Belarusian",
+          "href": "#"
+        },
+        {
+          "text": "Bengali",
+          "href": "#"
+        },
+        {
+          "text": "Bosnian",
+          "href": "#"
+        },
+        {
+          "text": "Bulgarian",
+          "href": "#"
+        },
+        {
+          "text": "Catalan",
+          "href": "#"
+        },
+        {
+          "text": "Cebuano",
+          "href": "#"
+        },
+        {
+          "text": "Chichewa",
+          "href": "#"
+        },
+        {
+          "text": "Chinese (Simplified)",
+          "href": "#"
+        },
+        {
+          "text": "Chinese (Traditional)",
+          "href": "#"
+        },
+        {
+          "text": "Corsican",
+          "href": "#"
+        },
+        {
+          "text": "Croatian",
+          "href": "#"
+        },
+        {
+          "text": "Czech",
+          "href": "#"
+        },
+        {
+          "text": "Danish",
+          "href": "#"
+        },
+        {
+          "text": "Dutch",
+          "href": "#"
+        },
+        {
+          "text": "English",
+          "href": "#"
+        },
+        {
+          "text": "Esperanto",
+          "href": "#"
+        },
+        {
+          "text": "Estonian",
+          "href": "#"
+        },
+        {
+          "text": "Filipino",
+          "href": "#"
+        },
+        {
+          "text": "Finnish",
+          "href": "#"
+        },
+        {
+          "text": "French",
+          "href": "#"
+        },
+        {
+          "text": "Frisian",
+          "href": "#"
+        },
+        {
+          "text": "Galician",
+          "href": "#"
+        },
+        {
+          "text": "Georgian",
+          "href": "#"
+        },
+        {
+          "text": "German",
+          "href": "#"
+        },
+        {
+          "text": "Greek",
+          "href": "#"
+        },
+        {
+          "text": "Gujarati",
+          "href": "#"
+        },
+        {
+          "text": "Haitian Creole",
+          "href": "#"
+        },
+        {
+          "text": "Hausa",
+          "href": "#"
+        },
+        {
+          "text": "Hawaiian",
+          "href": "#"
+        },
+        {
+          "text": "Hebrew",
+          "href": "#"
+        },
+        {
+          "text": "Hindi",
+          "href": "#"
+        },
+        {
+          "text": "Hmong",
+          "href": "#"
+        },
+        {
+          "text": "Hungarian",
+          "href": "#"
+        },
+        {
+          "text": "Icelandic",
+          "href": "#"
+        },
+        {
+          "text": "Igbo",
+          "href": "#"
+        },
+        {
+          "text": "Indonesian",
+          "href": "#"
+        },
+        {
+          "text": "Irish",
+          "href": "#"
+        },
+        {
+          "text": "Italian",
+          "href": "#"
+        },
+        {
+          "text": "Japanese",
+          "href": "#"
+        },
+        {
+          "text": "Javanese",
+          "href": "#"
+        },
+        {
+          "text": "Kannada",
+          "href": "#"
+        },
+        {
+          "text": "Kazakh",
+          "href": "#"
+        },
+        {
+          "text": "Khmer",
+          "href": "#"
+        },
+        {
+          "text": "Korean",
+          "href": "#"
+        },
+        {
+          "text": "Kurdish (Kurmanji)",
+          "href": "#"
+        },
+        {
+          "text": "Kyrgyz",
+          "href": "#"
+        },
+        {
+          "text": "Lao",
+          "href": "#"
+        },
+        {
+          "text": "Latin",
+          "href": "#"
+        },
+        {
+          "text": "Latvian",
+          "href": "#"
+        },
+        {
+          "text": "Lithuanian",
+          "href": "#"
+        },
+        {
+          "text": "Luxembourgish",
+          "href": "#"
+        },
+        {
+          "text": "Macedonian",
+          "href": "#"
+        },
+        {
+          "text": "Malagasy",
+          "href": "#"
+        },
+        {
+          "text": "Malay",
+          "href": "#"
+        },
+        {
+          "text": "Malayalam",
+          "href": "#"
+        },
+        {
+          "text": "Maltese",
+          "href": "#"
+        },
+        {
+          "text": "Maori",
+          "href": "#"
+        },
+        {
+          "text": "Marathi",
+          "href": "#"
+        },
+        {
+          "text": "Mongolian",
+          "href": "#"
+        },
+        {
+          "text": "Myanmar (Burmese)",
+          "href": "#"
+        },
+        {
+          "text": "Nepali",
+          "href": "#"
+        },
+        {
+          "text": "Norwegian",
+          "href": "#"
+        },
+        {
+          "text": "Pashto",
+          "href": "#"
+        },
+        {
+          "text": "Persian",
+          "href": "#"
+        },
+        {
+          "text": "Polish",
+          "href": "#"
+        },
+        {
+          "text": "Portuguese",
+          "href": "#"
+        },
+        {
+          "text": "Punjabi",
+          "href": "#"
+        },
+        {
+          "text": "Romanian",
+          "href": "#"
+        },
+        {
+          "text": "Russian",
+          "href": "#"
+        },
+        {
+          "text": "Samoan",
+          "href": "#"
+        },
+        {
+          "text": "Scottish Gaelic",
+          "href": "#"
+        },
+        {
+          "text": "Serbian",
+          "href": "#"
+        },
+        {
+          "text": "Sesotho",
+          "href": "#"
+        },
+        {
+          "text": "Shona",
+          "href": "#"
+        },
+        {
+          "text": "Sindhi",
+          "href": "#"
+        },
+        {
+          "text": "Sinhala",
+          "href": "#"
+        },
+        {
+          "text": "Slovak",
+          "href": "#"
+        },
+        {
+          "text": "Slovenian",
+          "href": "#"
+        },
+        {
+          "text": "Somali",
+          "href": "#"
+        },
+        {
+          "text": "Spanish",
+          "href": "#"
+        },
+        {
+          "text": "Sundanese",
+          "href": "#"
+        },
+        {
+          "text": "Swahili",
+          "href": "#"
+        },
+        {
+          "text": "Swedish",
+          "href": "#"
+        },
+        {
+          "text": "Tajik",
+          "href": "#"
+        },
+        {
+          "text": "Tamil",
+          "href": "#"
+        },
+        {
+          "text": "Telugu",
+          "href": "#"
+        },
+        {
+          "text": "Thai",
+          "href": "#"
+        },
+        {
+          "text": "Turkish",
+          "href": "#"
+        },
+        {
+          "text": "Ukrainian",
+          "href": "#"
+        },
+        {
+          "text": "Urdu",
+          "href": "#"
+        },
+        {
+          "text": "Uzbek",
+          "href": "#"
+        },
+        {
+          "text": "Vietnamese",
+          "href": "#"
+        },
+        {
+          "text": "Welsh",
+          "href": "#"
+        },
+        {
+          "text": "Xhosa",
+          "href": "#"
+        },
+        {
+          "text": "Yiddish",
+          "href": "#"
+        },
+        {
+          "text": "Yoruba",
+          "href": "#"
+        },
+        {
+          "text": "Zulu",
+          "href": "#"
+        }
+      ],
+      "buttons": [
+        "İcmal & Sorğular",
+        "CMS — Məzmun",
+        "Məhsul Kataloqu",
+        "Məqalələr",
+        "Xidmətlər",
+        "Gələn Qutusu3",
+        "Sistem Logları",
+        "İstifadəçilər",
+        "SMTP E-poçt",
+        "Parametrlər",
+        "Canlı İcmal",
+        "AZEXBUY",
+        "AZEXBUY CMS",
+        "Makaleler",
+        "Məhsul Kataloqu",
+        "Gelen Qutusu",
+        "İstifadəçi İdarəetməsi",
+        "SMTP E-poçt",
+        "Sistem Parametrləri",
+        "Bələdçi",
+        "Tema",
+        "Axtarış (CMD+K)...",
+        "Yenilə",
+        "Burax",
+        "Geri",
+        "Növbəti"
+      ],
+      "inputs": [],
+      "headings": [
+        "İdarə Paneli",
+        "Son RFQ Sorğuları",
+        "Son İstehsalçılar",
+        "Canlı İcmal & Real Göstəricilər"
+      ],
+      "toasts": [],
+      "url": "https://beta.azexbuy.com/octo-admin/"
+    }
+  }
+}

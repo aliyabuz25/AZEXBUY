@@ -11,9 +11,7 @@ import { UI_STRINGS } from '../../../../src/data/translations';
 
 interface AzexbuyCMSViewProps { uiLang: UiLanguage; }
 
-// CMS verileri frontend backend'ine yazılır (port 3500) — token gerektirmez
 const OCTO = '';
-const FRONTEND_API = 'http://localhost:3500';
 const LOCALES = ['EN', 'AZ', 'TR', 'RU', 'AR', 'ES'] as const;
 type Loc = typeof LOCALES[number];
 
@@ -29,13 +27,15 @@ async function apiGet(path: string) {
 }
 
 async function apiPost(path: string, body: any): Promise<{ ok: boolean; data: any }> {
-  // content ve localization frontend backend'ine (3500) yazılır — token gerektirmez
-  const isCmsWrite = path === '/api/azexbuy/content' || path === '/api/azexbuy/localization';
-  const base = isCmsWrite ? FRONTEND_API : OCTO;
   try {
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-    if (!isCmsWrite) headers['Authorization'] = `Bearer ${getToken()}`;
-    const r = await fetch(`${base}${path}`, { method: 'POST', headers, body: JSON.stringify(body) });
+    const r = await fetch(`${OCTO}${path}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getToken()}`,
+      },
+      body: JSON.stringify(body),
+    });
     const data = await r.json().catch(() => null);
     return { ok: r.ok, data };
   } catch { return { ok: false, data: null }; }
