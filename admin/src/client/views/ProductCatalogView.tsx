@@ -4,7 +4,7 @@ import {
   Package, Tag, Star, Eye, EyeOff, RefreshCw, CheckCircle,
   FileText, ArrowUpDown, MessageSquare, Upload,
 } from 'lucide-react';
-import { UiLanguage } from '../types';
+import { UiLanguage, toText } from '../types';
 
 interface ProductCatalogViewProps { uiLang: UiLanguage; }
 
@@ -333,7 +333,7 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
                       {LANGS.map(lang => (
                         <div key={lang}>
                           <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">{LANG_LABELS[lang]}</label>
-                          <input value={typeof editingCat.name === 'object' ? (editingCat.name[lang] || '') : (editingCat.name || '')} onChange={e => setEditingCat((v: any) => ({ ...v, name: { ...(typeof v.name === 'object' ? v.name : {}), [lang]: e.target.value } }))}
+                          <input value={typeof editingCat.name === 'object' ? (editingCat.name[lang] || '') : (lang === 'AZ' || lang === 'EN' ? (editingCat.name || '') : '')} onChange={e => setEditingCat((v: any) => ({ ...v, name: { ...(typeof v.name === 'object' ? v.name : { AZ: v.name, EN: v.name }), [lang]: e.target.value } }))}
                             className={inCls} />
                         </div>
                       ))}
@@ -345,7 +345,7 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
                       {LANGS.map(lang => (
                         <div key={lang}>
                           <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">{LANG_LABELS[lang]}</label>
-                          <textarea value={typeof editingCat.description === 'object' ? (editingCat.description[lang] || '') : (editingCat.description || '')} onChange={e => setEditingCat((v: any) => ({ ...v, description: { ...(typeof v.description === 'object' ? v.description : {}), [lang]: e.target.value } }))}
+                          <textarea value={typeof editingCat.description === 'object' ? (editingCat.description[lang] || '') : (lang === 'AZ' || lang === 'EN' ? (editingCat.description || '') : '')} onChange={e => setEditingCat((v: any) => ({ ...v, description: { ...(typeof v.description === 'object' ? v.description : { AZ: v.description, EN: v.description }), [lang]: e.target.value } }))}
                             rows={2} className={taCls} />
                         </div>
                       ))}
@@ -368,7 +368,7 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
                       <Tag className="w-4 h-4 text-slate-400 shrink-0" />
                     )}
                     <div>
-                      <span className="text-xs font-bold text-slate-800">{cat.name}</span>
+                      <span className="text-xs font-bold text-slate-800">{toText(cat.name)}</span>
                       <span className="ml-2 text-[10px] font-mono text-slate-400">{cat.slug}</span>
                     </div>
                     <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${cat.isActive ? 'bg-green-50 text-green-600' : 'bg-slate-100 text-slate-400'}`}>
@@ -385,7 +385,7 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
                       className="p-1 text-slate-300 hover:text-blue-500 rounded transition-colors">
                       <Edit2 className="w-3.5 h-3.5" />
                     </button>
-                    <button onClick={() => handleDeleteCat(cat.id, cat.name)}
+                    <button onClick={() => handleDeleteCat(cat.id, toText(cat.name))}
                       className="p-1 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded transition-colors">
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -404,7 +404,7 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
             <select value={filterCat} onChange={e => setFilterCat(e.target.value)}
               className="h-8 text-xs border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] bg-white">
               <option value="">Bütün kateqoriyalar</option>
-              {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+              {categories.map(c => <option key={c.id} value={c.id}>{toText(c.name)}</option>)}
             </select>
             <button onClick={() => setShowNewProd(v => !v)}
               className="flex items-center gap-1.5 h-8 px-3 bg-[#0f3156] hover:bg-[#081c33] text-white text-xs font-bold rounded-sm">
@@ -421,7 +421,7 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
                   <select value={newProd.categoryId} onChange={e => setNewProd(v => ({ ...v, categoryId: e.target.value }))}
                     className={`${inCls} bg-white`}>
                     <option value="">Seçin...</option>
-                    {categories.map(c => <option key={c.id} value={c.id}>{typeof c.name === 'object' ? (c.name.AZ || c.name.EN || Object.values(c.name)[0]) : c.name}</option>)}
+                    {categories.map(c => <option key={c.id} value={c.id}>{toText(c.name)}</option>)}
                   </select>
                 </Field>
                 <Field label="Slug *">
@@ -554,10 +554,10 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-xs font-bold text-slate-800">
-                        {typeof prod.name === 'object' ? (prod.name.AZ || prod.name.EN || prod.name.TR || prod.slug) : prod.name}
+                        {toText(prod.name, prod.slug)}
                       </span>
                       {prod.isFeatured && <Star className="w-3 h-3 text-amber-400 fill-amber-400" />}
-                      <span className="text-[10px] text-slate-400">{prod.categoryName}</span>
+                      <span className="text-[10px] text-slate-400">{toText(prod.categoryName)}</span>
                       {prod.hsCode && <span className="text-[10px] font-mono text-slate-400">HS: {prod.hsCode}</span>}
                       {prod.moq && <span className="text-[10px] text-slate-400">MOQ: {prod.moq}</span>}
                     </div>
@@ -580,7 +580,7 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
                     className={`p-1 rounded transition-colors ${prod.isFeatured ? 'text-amber-400' : 'text-slate-300 hover:text-amber-400'}`} title="Öne Çıkar">
                     <Star className="w-3.5 h-3.5" />
                   </button>
-                  <button onClick={() => handleDeleteProd(prod.id, typeof prod.name === 'object' ? (prod.name.AZ || prod.name.EN || prod.slug) : prod.name)}
+                  <button onClick={() => handleDeleteProd(prod.id, toText(prod.name, prod.slug))}
                     className="p-1 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded transition-colors">
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
@@ -597,7 +597,7 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
                           {[['Slug','slug'],['HS Kodu','hsCode'],['MOQ','moq'],['Mənşə Bölgəsi','originRegion'],['Qablaşdırma','packagingInfo'],['Sıralama (Sıra No)','sortOrder']].map(([lbl, fld]) => (
                             <div key={fld}>
                               <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">{lbl}</label>
-                              <input value={(editingProd as any)[fld] || ''} onChange={e => setEditingProd((v: any) => ({ ...v, [fld]: fld === 'slug' ? slugify(e.target.value) : e.target.value }))}
+                              <input value={toText((editingProd as any)[fld])} onChange={e => setEditingProd((v: any) => ({ ...v, [fld]: fld === 'slug' ? slugify(e.target.value) : e.target.value }))}
                                 className={inCls} />
                             </div>
                           ))}
@@ -605,7 +605,7 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
                             <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Kateqoriya</label>
                             <select value={editingProd.categoryId} onChange={e => setEditingProd((v: any) => ({ ...v, categoryId: e.target.value }))}
                               className={`${inCls} bg-white`}>
-                              {categories.map(c => <option key={c.id} value={c.id}>{typeof c.name === 'object' ? (c.name.AZ || c.name.EN) : c.name}</option>)}
+                              {categories.map(c => <option key={c.id} value={c.id}>{toText(c.name)}</option>)}
                             </select>
                           </div>
                         </div>
@@ -718,11 +718,11 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
                   ) : (
                     <>
                       <div className="grid grid-cols-3 gap-2 text-xs">
-                        {prod.shortDescription && <div className="col-span-3 text-slate-600 italic">{prod.shortDescription}</div>}
-                        {[['Kateqoriya', prod.categoryName],['HS Kodu', prod.hsCode],['MOQ', prod.moq],['Mənşə', prod.originRegion],['Qablaşdırma', prod.packagingInfo]].filter(([,v]) => v).map(([k,v]) => (
+                        {prod.shortDescription && <div className="col-span-3 text-slate-600 italic">{toText(prod.shortDescription)}</div>}
+                        {[['Kateqoriya', toText(prod.categoryName)],['HS Kodu', prod.hsCode],['MOQ', prod.moq],['Mənşə', toText(prod.originRegion)],['Qablaşdırma', toText(prod.packagingInfo)]].filter(([,v]) => v).map(([k,v]) => (
                           <div key={k} className="bg-white border border-slate-100 rounded p-2">
                             <div className="text-[9px] font-bold text-slate-400 uppercase mb-0.5">{k}</div>
-                            <div className="text-slate-700 font-medium text-[11px]">{v}</div>
+                            <div className="text-slate-700 font-medium text-[11px]">{toText(v)}</div>
                           </div>
                         ))}
                       </div>
@@ -765,7 +765,7 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
                   Məhsul üzrə Gələn Taleplər (RFQ)
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">
-                  {typeof inquiriesProd.name === 'object' ? (inquiriesProd.name.AZ || inquiriesProd.name.EN) : inquiriesProd.name} · {inquiriesList.length} sorğu tapıldı
+                  {toText(inquiriesProd.name)} · {inquiriesList.length} sorğu tapıldı
                 </p>
               </div>
               <button onClick={() => setInquiriesProd(null)} className="p-1 rounded text-slate-400 hover:text-slate-700">
@@ -793,7 +793,7 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
                     <div className="bg-white border border-slate-200/80 rounded p-2 text-[11px]">
                       {rfq.items.map((it: any, i: number) => (
                         <div key={i} className="flex justify-between">
-                          <span className="font-medium text-slate-800">{it.productName}</span>
+                          <span className="font-medium text-slate-800">{toText(it.productName)}</span>
                           <span className="font-bold text-[#0f3156]">{it.quantity} {it.unit}</span>
                         </div>
                       ))}

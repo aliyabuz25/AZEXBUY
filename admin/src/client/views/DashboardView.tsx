@@ -5,7 +5,7 @@ import {
   CheckCircle2, AlertCircle, MapPin, Package, RefreshCw,
   Search, Image, Languages, FileText,
 } from 'lucide-react';
-import { UiLanguage } from '../types';
+import { UiLanguage, toText } from '../types';
 
 interface RFQ {
   id: string; createdAt: string; buyerCompany: string; country: string;
@@ -339,7 +339,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ records = [], medi
                       {r.items?.length > 0 && (
                         <span className="ml-1 flex items-center gap-0.5">
                           <Package className="w-2.5 h-2.5" />
-                          {r.items[0].productName}
+                          {toText(r.items[0].productName)}
                         </span>
                       )}
                     </div>
@@ -377,10 +377,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ records = [], medi
               {producers.slice(0, 5).map(p => (
                 <div key={p.id} className="flex items-center justify-between gap-3 py-2 border-b border-slate-50 last:border-0">
                   <div className="min-w-0 flex-1">
-                    <div className="text-xs font-semibold text-slate-800 truncate">{p.companyName}</div>
+                    <div className="text-xs font-semibold text-slate-800 truncate">{toText(p.companyName)}</div>
                     <div className="text-[10px] text-slate-400 flex items-center gap-1 mt-0.5">
-                      <Package className="w-2.5 h-2.5" />{p.productName}
-                      {p.monthlyCapacity && <span className="ml-1">· {p.monthlyCapacity}/ay</span>}
+                      <Package className="w-2.5 h-2.5" />{toText(p.productName)}
+                      {p.monthlyCapacity && <span className="ml-1">· {toText(p.monthlyCapacity)}/ay</span>}
                     </div>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">

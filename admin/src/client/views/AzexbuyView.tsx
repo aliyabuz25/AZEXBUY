@@ -5,7 +5,7 @@ import {
   Package, Globe, AlertCircle, Mail, UserCheck, MessageSquare,
   FileText, ArrowRight, BarChart3,
 } from 'lucide-react';
-import { UiLanguage } from '../types';
+import { UiLanguage, toText } from '../types';
 
 interface AzexbuyViewProps { uiLang: UiLanguage; }
 
@@ -262,7 +262,7 @@ export const AzexbuyView: React.FC<AzexbuyViewProps> = ({ uiLang }) => {
           // Unified recent submissions
           const unifiedRecent = [
             ...rfqs.map(r => ({ id: r.id, createdAt: r.createdAt, title: r.buyerCompany, subtitle: `${r.country} · Alıcı RFQ`, type: 'rfq' as const, status: r.status })),
-            ...producers.map(p => ({ id: p.id, createdAt: p.createdAt, title: p.companyName, subtitle: `${p.productName} · İstehsalçı`, type: 'producer' as const, status: p.status })),
+            ...producers.map(p => ({ id: p.id, createdAt: p.createdAt, title: toText(p.companyName), subtitle: `${toText(p.productName)} · İstehsalçı`, type: 'producer' as const, status: p.status })),
             ...contacts.map(c => ({ id: c.id, createdAt: c.createdAt, title: c.fullName, subtitle: `${c.organization} · Əlaqə Sorğusu`, type: 'contact' as const, status: c.status })),
           ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 8);
 
@@ -392,7 +392,7 @@ export const AzexbuyView: React.FC<AzexbuyViewProps> = ({ uiLang }) => {
                         <span className="text-[10px] font-mono text-slate-400">{r.id}</span>
                       </div>
                       <div className="text-[10px] text-slate-500 mt-0.5">
-                        {r.items.map(i => `${i.productName} (${i.quantity} ${i.unit})`).join(' · ')}
+                        {r.items.map(i => `${toText(i.productName)} (${i.quantity} ${i.unit})`).join(' · ')}
                       </div>
                     </div>
                   </button>
@@ -434,7 +434,7 @@ export const AzexbuyView: React.FC<AzexbuyViewProps> = ({ uiLang }) => {
                         <tbody>
                           {r.items.map((it, i) => (
                             <tr key={i} className="border-t border-slate-200">
-                              <td className="px-2.5 py-1.5 font-medium text-slate-800">{it.productName}</td>
+                              <td className="px-2.5 py-1.5 font-medium text-slate-800">{toText(it.productName)}</td>
                               <td className="px-2.5 py-1.5 font-mono text-slate-600">{it.hsCode}</td>
                               <td className="px-2.5 py-1.5 text-right tabular-nums font-bold text-[#0f3156]">{it.quantity} {it.unit}</td>
                             </tr>
@@ -545,7 +545,7 @@ export const AzexbuyView: React.FC<AzexbuyViewProps> = ({ uiLang }) => {
                         <span className="text-[10px] font-mono text-slate-400">{p.id}</span>
                       </div>
                       <div className="text-[10px] text-slate-500 mt-0.5">
-                        {p.productName} · HS: {p.hsCode} · {p.economicRegion}
+                        {toText(p.productName)} · HS: {p.hsCode} · {toText(p.economicRegion)}
                       </div>
                     </div>
                   </button>

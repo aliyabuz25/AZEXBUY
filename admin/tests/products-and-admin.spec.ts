@@ -202,6 +202,29 @@ test.describe('AZEXBUY Storefront & Admin Diagnostic Audit', () => {
     console.log(`Found ${productRowTitles.length} products in admin catalog:`, productRowTitles);
     expect(productRowTitles.length).toBeGreaterThanOrEqual(5);
 
+    // Expand the first product row to test rendering of detailed multilingual fields
+    console.log('Expanding first product details row...');
+    const firstProdRowBtn = page.locator('.space-y-3 button.text-left').first();
+    if (await firstProdRowBtn.isVisible().catch(() => false)) {
+      await firstProdRowBtn.click();
+      await page.waitForTimeout(600);
+      // Verify no ErrorBoundary or React error #31 occurred
+      const errorBoundary = page.locator('text=ErrorBoundary, text=Something went wrong');
+      expect(await errorBoundary.count()).toBe(0);
+      console.log('Product row expanded cleanly with 0 errors.');
+    }
+
+    // Switch to Categories tab to test category name rendering
+    const categoriesTabBtn = page.locator('button:has-text("Kateqoriyalar")');
+    if (await categoriesTabBtn.isVisible().catch(() => false)) {
+      console.log('Switching to Kateqoriyalar tab...');
+      await categoriesTabBtn.first().click();
+      await page.waitForTimeout(600);
+      const catCount = await page.locator('.space-y-3 .text-xs.font-bold').count();
+      console.log(`Rendered ${catCount} categories without errors.`);
+      expect(catCount).toBeGreaterThanOrEqual(1);
+    }
+
     await page.screenshot({ path: path.join(SCREENSHOT_DIR, '06-admin-products-tab.png'), fullPage: true });
 
     // Verify Inbox / Gələn Qutusu

@@ -74,3 +74,22 @@ export interface SetupStatus {
   completed: boolean;
   completedAt?: string;
 }
+
+export function toText(val: any, fallback = ''): string {
+  if (val === null || val === undefined) return fallback;
+  if (typeof val === 'string') return val;
+  if (typeof val === 'number' || typeof val === 'boolean') return String(val);
+  if (typeof val === 'object') {
+    if (Array.isArray(val)) {
+      return val.map(x => toText(x)).filter(Boolean).join(', ');
+    }
+    const loc = val.AZ || val.EN || val.TR || val.RU || val.AR || val.ES;
+    if (loc) return typeof loc === 'string' ? loc : toText(loc);
+    for (const k of Object.keys(val)) {
+      if (typeof val[k] === 'string' && val[k].trim()) return val[k];
+    }
+    return fallback;
+  }
+  return String(val);
+}
+

@@ -4,7 +4,7 @@ import {
   Clock, AlertCircle, Globe, Trash2, Mail, Phone, MapPin,
   Package, Award, TrendingUp, Building2, User, Hash,
 } from 'lucide-react';
-import { UiLanguage } from '../types';
+import { UiLanguage, toText } from '../types';
 
 interface InboxViewProps { uiLang: UiLanguage; }
 
@@ -248,7 +248,7 @@ export const InboxView: React.FC<InboxViewProps> = () => {
                       </div>
                       <div className="text-xs text-slate-500 truncate">
                         {r.items.length > 0
-                          ? r.items.map(i => `${i.productName} — ${i.quantity} ${i.unit}`).join(' · ')
+                          ? r.items.map(i => `${toText(i.productName)} — ${i.quantity} ${i.unit}`).join(' · ')
                           : 'Məhsul məlumatı yoxdur'
                         }
                       </div>
@@ -294,7 +294,7 @@ export const InboxView: React.FC<InboxViewProps> = () => {
                             <tbody>
                               {r.items.map((it, i) => (
                                 <tr key={i} className="border-t border-slate-100">
-                                  <td className="px-4 py-2.5 font-semibold text-slate-800">{it.productName}</td>
+                                  <td className="px-4 py-2.5 font-semibold text-slate-800">{toText(it.productName)}</td>
                                   <td className="px-4 py-2.5 font-mono text-slate-500 text-[11px]">{it.hsCode || '—'}</td>
                                   <td className="px-4 py-2.5 text-right font-bold text-[#0f3156]">{it.quantity} {it.unit}</td>
                                 </tr>
@@ -392,9 +392,9 @@ export const InboxView: React.FC<InboxViewProps> = () => {
                         </span>
                       </div>
                       <div className="text-xs text-slate-500">
-                        <span className="font-medium">{p.productName}</span>
+                        <span className="font-medium">{toText(p.productName)}</span>
                         {p.hsCode && <span className="ml-2 font-mono text-slate-400">HS: {p.hsCode}</span>}
-                        {p.monthlyCapacity && <span className="ml-2">· {p.monthlyCapacity}/ay</span>}
+                        {p.monthlyCapacity && <span className="ml-2">· {toText(p.monthlyCapacity)}/ay</span>}
                       </div>
                     </div>
                   </button>
