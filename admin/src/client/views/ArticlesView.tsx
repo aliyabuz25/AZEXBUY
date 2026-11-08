@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   Plus, Trash2, Edit2, Save, BookOpen, RefreshCw,
-  CheckCircle, Eye, EyeOff, ChevronDown, ChevronRight, Tag, Star,
+  CheckCircle, Eye, EyeOff, ChevronDown, ChevronRight, Tag, Star, Upload,
 } from 'lucide-react';
 import { UiLanguage } from '../types';
 import { BBCodeEditor, BBCodeRenderer } from '../components/BBCodeEditor';
@@ -11,6 +11,23 @@ interface ArticlesViewProps { uiLang: UiLanguage; }
 const token = () => localStorage.getItem('octotech_admin_jwt') || '';
 const authFetch = (url: string, opts: RequestInit = {}) =>
   fetch(url, { ...opts, headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token()}`, ...(opts.headers || {}) } });
+
+const uploadFile = async (file: File): Promise<string | null> => {
+  const fd = new FormData();
+  fd.append('image', file);
+  try {
+    const res = await fetch('/api/azexbuy/upload-image', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token()}` },
+      body: fd,
+    });
+    if (res.ok) {
+      const data = await res.json();
+      return data.url || null;
+    }
+  } catch {}
+  return null;
+};
 
 const CATEGORIES = [
   'Export Guides',
@@ -59,6 +76,7 @@ export const ArticlesView: React.FC<ArticlesViewProps> = () => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editData, setEditData] = useState<any>({});
+  const [uploading, setUploading] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [newArt, setNewArt] = useState({ ...BLANK_ARTICLE });
   const [filterCat, setFilterCat] = useState('');
@@ -200,8 +218,23 @@ export const ArticlesView: React.FC<ArticlesViewProps> = () => {
               </select>
             </Field>
             <Field label="Kapak Şəkli URL">
-              <input value={newArt.coverImage} onChange={e => setNewArt(v => ({ ...v, coverImage: e.target.value }))}
-                className={inputCls} placeholder="https://..." />
+              <div className="flex gap-2">
+                <input value={newArt.coverImage} onChange={e => setNewArt(v => ({ ...v, coverImage: e.target.value }))}
+                  className={inputCls} placeholder="https://..." />
+                <label className="h-8 px-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-sm border border-slate-200 flex items-center gap-1 cursor-pointer shrink-0">
+                  <Upload className="w-3 h-3" />
+                  <span className="hidden sm:inline">{uploading ? '...' : 'Yüklə'}</span>
+                  <input type="file" accept="image/*" className="hidden" onChange={async e => {
+                    const f = e.target.files?.[0];
+                    if (f) {
+                      setUploading(true);
+                      const url = await uploadFile(f);
+                      if (url) setNewArt(v => ({ ...v, coverImage: url }));
+                      setUploading(false);
+                    }
+                  }} />
+                </label>
+              </div>
               {newArt.coverImage && (
                 <div className="mt-2 w-32 h-20 bg-slate-100 border border-slate-200 rounded p-1 flex items-center justify-center overflow-hidden">
                   <img src={newArt.coverImage} alt="" className="max-w-full max-h-full object-contain" onError={e => { (e.target as HTMLElement).style.display = 'none'; }} />
@@ -372,9 +405,24 @@ export const ArticlesView: React.FC<ArticlesViewProps> = () => {
                       </select>
                     </Field>
                     <Field label="Kapak Şəkli URL">
-                      <input value={editData.coverImage || ''}
-                        onChange={e => setEditData((v: any) => ({ ...v, coverImage: e.target.value }))}
-                        className={inputCls} placeholder="https://..." />
+                      <div className="flex gap-2">
+                        <input value={editData.coverImage || ''}
+                          onChange={e => setEditData((v: any) => ({ ...v, coverImage: e.target.value }))}
+                          className={inputCls} placeholder="https://..." />
+                        <label className="h-8 px-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-sm border border-slate-200 flex items-center gap-1 cursor-pointer shrink-0">
+                          <Upload className="w-3 h-3" />
+                          <span className="hidden sm:inline">{uploading ? '...' : 'Yüklə'}</span>
+                          <input type="file" accept="image/*" className="hidden" onChange={async e => {
+                            const f = e.target.files?.[0];
+                            if (f) {
+                              setUploading(true);
+                              const url = await uploadFile(f);
+                              if (url) setEditData((v: any) => ({ ...v, coverImage: url }));
+                              setUploading(false);
+                            }
+                          }} />
+                        </label>
+                      </div>
                       {editData.coverImage && (
                         <div className="mt-2 w-32 h-20 bg-slate-100 border border-slate-200 rounded p-1 flex items-center justify-center overflow-hidden">
                           <img src={editData.coverImage} alt="" className="max-w-full max-h-full object-contain" onError={e => { (e.target as HTMLElement).style.display = 'none'; }} />

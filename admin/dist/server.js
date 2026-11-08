@@ -3778,6 +3778,7 @@ try {
   if (!srvCols.find((c) => c.name === "category")) azexbuyDb.exec("ALTER TABLE azexbuy_services ADD COLUMN category TEXT DEFAULT 'Export'");
   if (!srvCols.find((c) => c.name === "is_approved")) azexbuyDb.exec("ALTER TABLE azexbuy_services ADD COLUMN is_approved INTEGER NOT NULL DEFAULT 1");
   if (!srvCols.find((c) => c.name === "rfq_slug")) azexbuyDb.exec("ALTER TABLE azexbuy_services ADD COLUMN rfq_slug TEXT DEFAULT ''");
+  if (!srvCols.find((c) => c.name === "image_url")) azexbuyDb.exec("ALTER TABLE azexbuy_services ADD COLUMN image_url TEXT DEFAULT ''");
   const catCols = azexbuyDb.prepare("PRAGMA table_info(azexbuy_categories)").all();
   if (!catCols.find((c) => c.name === "seo_title")) azexbuyDb.exec("ALTER TABLE azexbuy_categories ADD COLUMN seo_title TEXT");
   if (!catCols.find((c) => c.name === "seo_description")) azexbuyDb.exec("ALTER TABLE azexbuy_categories ADD COLUMN seo_description TEXT");
@@ -4518,6 +4519,10 @@ app.get("/api/azexbuy/services", async (_req, res) => {
       iconClass: r.icon_class,
       colorClass: r.color_class,
       serviceType: r.service_type,
+      category: r.category || "Export",
+      isApproved: r.is_approved !== void 0 ? Boolean(r.is_approved) : true,
+      rfqSlug: r.rfq_slug || "",
+      imageUrl: r.image_url || "",
       isActive: Boolean(r.is_active),
       sortOrder: r.sort_order
     };
@@ -4531,8 +4536,8 @@ app.post("/api/azexbuy/services", requireAuth, async (req, res) => {
   const now = (/* @__PURE__ */ new Date()).toISOString();
   azexbuyDb.prepare(`
     INSERT OR REPLACE INTO azexbuy_services
-    (id, created_at, updated_at, title, description, scope, target_audience, icon_class, color_class, service_type, is_active, sort_order)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    (id, created_at, updated_at, title, description, scope, target_audience, icon_class, color_class, service_type, is_active, sort_order, category, is_approved, rfq_slug, image_url)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
     d.id,
     d.createdAt || now,
@@ -4545,7 +4550,11 @@ app.post("/api/azexbuy/services", requireAuth, async (req, res) => {
     d.colorClass || "bg-brandNavy",
     d.serviceType || "primary",
     d.isActive === false ? 0 : 1,
-    d.sortOrder || 0
+    d.sortOrder || 0,
+    d.category || "Export",
+    d.isApproved === false ? 0 : 1,
+    d.rfqSlug || "",
+    d.imageUrl || ""
   );
   await azDel("azexbuy:services");
   res.json({ success: true, id: d.id });
@@ -4564,6 +4573,10 @@ app.patch("/api/azexbuy/services/:id", requireAuth, async (req, res) => {
   const serviceType = d.serviceType !== void 0 ? d.serviceType : r.service_type;
   const isActive = d.isActive !== void 0 ? d.isActive ? 1 : 0 : r.is_active;
   const sortOrder = d.sortOrder !== void 0 ? d.sortOrder : r.sort_order;
+  const category = d.category !== void 0 ? d.category : r.category || "Export";
+  const isApproved = d.isApproved !== void 0 ? d.isApproved ? 1 : 0 : r.is_approved !== void 0 ? r.is_approved : 1;
+  const rfqSlug = d.rfqSlug !== void 0 ? d.rfqSlug : r.rfq_slug || "";
+  const imageUrl = d.imageUrl !== void 0 ? d.imageUrl : r.image_url || "";
   azexbuyDb.prepare(`
     UPDATE azexbuy_services SET
       updated_at = ?,
@@ -4575,9 +4588,13 @@ app.patch("/api/azexbuy/services/:id", requireAuth, async (req, res) => {
       color_class = ?,
       service_type = ?,
       is_active = ?,
-      sort_order = ?
+      sort_order = ?,
+      category = ?,
+      is_approved = ?,
+      rfq_slug = ?,
+      image_url = ?
     WHERE id = ?
-  `).run(now, title, description, scope, targetAudience, iconClass, colorClass, serviceType, isActive, sortOrder, req.params.id);
+  `).run(now, title, description, scope, targetAudience, iconClass, colorClass, serviceType, isActive, sortOrder, category, isApproved, rfqSlug, imageUrl, req.params.id);
   await azDel("azexbuy:services");
   res.json({ success: true });
 });

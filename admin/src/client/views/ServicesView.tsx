@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   Plus, Trash2, Edit2, Save, Briefcase, RefreshCw,
-  CheckCircle, Eye, EyeOff, ChevronDown, ChevronRight, ToggleLeft, ToggleRight,
+  CheckCircle, Eye, EyeOff, ChevronDown, ChevronRight, ToggleLeft, ToggleRight, Upload,
 } from 'lucide-react';
 import { UiLanguage } from '../types';
 import { SEED_SERVICES } from '../../seed';
@@ -11,6 +11,23 @@ interface ServicesViewProps { uiLang: UiLanguage; }
 const token = () => localStorage.getItem('octotech_admin_jwt') || '';
 const authFetch = (url: string, opts: RequestInit = {}) =>
   fetch(url, { ...opts, headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token()}`, ...(opts.headers || {}) } });
+
+const uploadFile = async (file: File): Promise<string | null> => {
+  const fd = new FormData();
+  fd.append('image', file);
+  try {
+    const res = await fetch('/api/azexbuy/upload-image', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token()}` },
+      body: fd,
+    });
+    if (res.ok) {
+      const data = await res.json();
+      return data.url || null;
+    }
+  } catch {}
+  return null;
+};
 
 const inputCls = 'w-full h-8 text-xs border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156]';
 const textareaCls = 'w-full text-xs border border-slate-200 px-2.5 py-1.5 rounded-sm focus:outline-none focus:border-[#0f3156] resize-none';
@@ -34,6 +51,16 @@ const COLOR_OPTIONS = [
 const LANGS = ['AZ', 'EN', 'TR', 'RU', 'AR', 'ES'] as const;
 const LANG_LABELS: Record<string, string> = { AZ: 'Azərbaycanca', EN: 'English', TR: 'Türkçe', RU: 'Русский', AR: 'العربية', ES: 'Español' };
 
+const SERVICE_CATEGORIES = [
+  'Export',
+  'Logistics',
+  'Quality & Certification',
+  'Finance',
+  'Legal & Compliance',
+  'Marketing & Sales',
+  'Customs & Clearance'
+];
+
 const BLANK_SERVICE = {
   title: { AZ: '', EN: '', TR: '', RU: '', AR: '', ES: '' },
   description: { AZ: '', EN: '', TR: '', RU: '', AR: '', ES: '' },
@@ -42,6 +69,10 @@ const BLANK_SERVICE = {
   iconClass: 'fa-solid fa-briefcase',
   colorClass: 'bg-brandNavy',
   serviceType: 'primary' as 'primary' | 'secondary',
+  category: 'Export',
+  isApproved: true,
+  rfqSlug: '',
+  imageUrl: '',
   isActive: true,
   sortOrder: 0,
 };
@@ -421,9 +452,42 @@ export const ServicesView: React.FC<ServicesViewProps> = () => {
                       <option value="secondary">Əlavə xidmət</option>
                     </select>
                   </Field>
+                  <Field label="Kateqoriya">
+                    <select value={newSrv.category || 'Export'} onChange={e => setNewSrv((p: any) => ({ ...p, category: e.target.value }))} className={inputCls}>
+                      {SERVICE_CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                    </select>
+                  </Field>
+                  <Field label="RFQ Müraciət Kodu">
+                    <input type="text" value={newSrv.rfqSlug || ''} onChange={e => setNewSrv((p: any) => ({ ...p, rfqSlug: e.target.value }))} className={inputCls} placeholder="customs-clearance" />
+                  </Field>
                   <Field label="Sıra">
                     <input type="number" value={newSrv.sortOrder} onChange={e => setNewSrv((p: any) => ({ ...p, sortOrder: Number(e.target.value) }))} className={inputCls} />
                   </Field>
+                  <Field label="Xidmət Şəkli URL" col>
+                    <div className="flex gap-2">
+                      <input type="text" value={newSrv.imageUrl || ''} onChange={e => setNewSrv((p: any) => ({ ...p, imageUrl: e.target.value }))} className={inputCls} placeholder="https://..." />
+                      <label className="h-8 px-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-sm border border-slate-200 flex items-center gap-1 cursor-pointer shrink-0">
+                        <Upload className="w-3 h-3" />
+                        <span className="hidden sm:inline">Yüklə</span>
+                        <input type="file" accept="image/*" className="hidden" onChange={async e => {
+                          const f = e.target.files?.[0];
+                          if (f) {
+                            const url = await uploadFile(f);
+                            if (url) setNewSrv((p: any) => ({ ...p, imageUrl: url }));
+                          }
+                        }} />
+                      </label>
+                    </div>
+                    {newSrv.imageUrl && (
+                      <div className="mt-2 w-28 h-20 bg-slate-100 border border-slate-200 rounded p-1 flex items-center justify-center overflow-hidden">
+                        <img src={newSrv.imageUrl} alt="" className="max-w-full max-h-full object-contain" onError={e => { (e.target as HTMLElement).style.display = 'none'; }} />
+                      </div>
+                    )}
+                  </Field>
+                  <div className="col-span-2 flex items-center gap-2">
+                    <input type="checkbox" id="new-srv-approved" checked={newSrv.isApproved !== false} onChange={e => setNewSrv((p: any) => ({ ...p, isApproved: e.target.checked }))} />
+                    <label htmlFor="new-srv-approved" className="text-xs text-slate-700">Təsdiqlənib (Yayımlansın — təsdiqlənməyən əlavə xidmətlər saytda gizli saxlanılır)</label>
+                  </div>
                 </div>
               </div>
               <div className="flex gap-2 justify-end">
@@ -467,9 +531,24 @@ export const ServicesView: React.FC<ServicesViewProps> = () => {
                         <div className="text-xs font-bold text-slate-800 truncate">{srv.title?.AZ || srv.title?.EN || '—'}</div>
                         <div className="text-[10px] text-slate-400">{srv.title?.EN}</div>
                       </div>
+                      {srv.imageUrl && (
+                        <div className="w-8 h-8 rounded border border-slate-200 bg-slate-50 flex items-center justify-center p-0.5 shrink-0 overflow-hidden">
+                          <img src={srv.imageUrl} alt="" className="max-w-full max-h-full object-contain" onError={e => { (e.target as HTMLElement).style.display = 'none'; }} />
+                        </div>
+                      )}
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${srv.serviceType === 'primary' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'}`}>
                         {srv.serviceType === 'primary' ? 'Əsas' : 'Əlavə'}
                       </span>
+                      {srv.category && (
+                        <span className="text-[10px] font-medium px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-100">
+                          {srv.category}
+                        </span>
+                      )}
+                      {srv.isApproved === false && (
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200">
+                          Təsdiq Gözləyir
+                        </span>
+                      )}
                       <button
                         onClick={e => { e.stopPropagation(); handleToggleActive(srv); }}
                         className="p-1 rounded cursor-pointer"
@@ -551,9 +630,42 @@ export const ServicesView: React.FC<ServicesViewProps> = () => {
                                     <option value="secondary">Əlavə xidmət</option>
                                   </select>
                                 </Field>
+                                <Field label="Kateqoriya">
+                                  <select value={editData.category || 'Export'} onChange={e => setEditData((p: any) => ({ ...p, category: e.target.value }))} className={inputCls}>
+                                    {SERVICE_CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                                  </select>
+                                </Field>
+                                <Field label="RFQ Müraciət Kodu">
+                                  <input type="text" value={editData.rfqSlug || ''} onChange={e => setEditData((p: any) => ({ ...p, rfqSlug: e.target.value }))} className={inputCls} placeholder="customs-clearance" />
+                                </Field>
                                 <Field label="Sıra">
                                   <input type="number" value={editData.sortOrder || 0} onChange={e => setEditData((p: any) => ({ ...p, sortOrder: Number(e.target.value) }))} className={inputCls} />
                                 </Field>
+                                <Field label="Xidmət Şəkli URL" col>
+                                  <div className="flex gap-2">
+                                    <input type="text" value={editData.imageUrl || ''} onChange={e => setEditData((p: any) => ({ ...p, imageUrl: e.target.value }))} className={inputCls} placeholder="https://..." />
+                                    <label className="h-8 px-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-sm border border-slate-200 flex items-center gap-1 cursor-pointer shrink-0">
+                                      <Upload className="w-3 h-3" />
+                                      <span className="hidden sm:inline">Yüklə</span>
+                                      <input type="file" accept="image/*" className="hidden" onChange={async e => {
+                                        const f = e.target.files?.[0];
+                                        if (f) {
+                                          const url = await uploadFile(f);
+                                          if (url) setEditData((p: any) => ({ ...p, imageUrl: url }));
+                                        }
+                                      }} />
+                                    </label>
+                                  </div>
+                                  {editData.imageUrl && (
+                                    <div className="mt-2 w-28 h-20 bg-slate-100 border border-slate-200 rounded p-1 flex items-center justify-center overflow-hidden">
+                                      <img src={editData.imageUrl} alt="" className="max-w-full max-h-full object-contain" onError={e => { (e.target as HTMLElement).style.display = 'none'; }} />
+                                    </div>
+                                  )}
+                                </Field>
+                                <div className="col-span-2 flex items-center gap-2">
+                                  <input type="checkbox" id={`srv-appr-${srv.id}`} checked={editData.isApproved !== false} onChange={e => setEditData((p: any) => ({ ...p, isApproved: e.target.checked }))} />
+                                  <label htmlFor={`srv-appr-${srv.id}`} className="text-xs text-slate-700">Təsdiqlənib (Yayımlansın — təsdiqlənməyən əlavə xidmətlər saytda gizli saxlanılır)</label>
+                                </div>
                               </div>
                             </div>
                             <div className="flex gap-2 justify-end">

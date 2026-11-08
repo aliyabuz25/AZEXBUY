@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import {
   Plus, Trash2, Edit2, Save, X, ChevronDown, ChevronRight,
   Package, Tag, Star, Eye, EyeOff, RefreshCw, CheckCircle,
-  FileText, ArrowUpDown, MessageSquare,
+  FileText, ArrowUpDown, MessageSquare, Upload,
 } from 'lucide-react';
 import { UiLanguage } from '../types';
 
@@ -12,6 +12,23 @@ const token = () => localStorage.getItem('octotech_admin_jwt') || '';
 
 const authFetch = (url: string, opts: RequestInit = {}) =>
   fetch(url, { ...opts, headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token()}`, ...(opts.headers || {}) } });
+
+const uploadFile = async (file: File): Promise<string | null> => {
+  const fd = new FormData();
+  fd.append('image', file);
+  try {
+    const res = await fetch('/api/azexbuy/upload-image', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token()}` },
+      body: fd,
+    });
+    if (res.ok) {
+      const data = await res.json();
+      return data.url || null;
+    }
+  } catch {}
+  return null;
+};
 
 const LANGS = ['AZ', 'EN', 'TR', 'RU', 'AR', 'ES'] as const;
 const LANG_LABELS: Record<string, string> = { AZ: 'Azərbaycanca', EN: 'English', TR: 'Türkçe', RU: 'Русский', AR: 'العربية', ES: 'Español' };
@@ -66,6 +83,7 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
     sortOrder: 0,
   });
   const [filterCat, setFilterCat] = useState('');
+  const [uploading, setUploading] = useState(false);
   const [inquiriesProd, setInquiriesProd] = useState<any | null>(null);
   const [inquiriesList, setInquiriesList] = useState<any[]>([]);
   const [inquiriesLoading, setInquiriesLoading] = useState(false);
@@ -212,8 +230,23 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
                     className={`${inCls} font-mono`} placeholder="food-products" />
                 </Field>
                 <Field label="Şəkil URL">
-                  <input value={newCat.imageUrl || ''} onChange={e => setNewCat(v => ({ ...v, imageUrl: e.target.value }))}
-                    className={inCls} placeholder="https://..." />
+                  <div className="flex gap-2">
+                    <input value={newCat.imageUrl || ''} onChange={e => setNewCat(v => ({ ...v, imageUrl: e.target.value }))}
+                      className={inCls} placeholder="https://..." />
+                    <label className="h-8 px-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-sm border border-slate-200 flex items-center gap-1 cursor-pointer shrink-0">
+                      <Upload className="w-3 h-3" />
+                      <span className="hidden sm:inline">Yüklə</span>
+                      <input type="file" accept="image/*" className="hidden" onChange={async e => {
+                        const f = e.target.files?.[0];
+                        if (f) {
+                          setUploading(true);
+                          const url = await uploadFile(f);
+                          if (url) setNewCat(v => ({ ...v, imageUrl: url }));
+                          setUploading(false);
+                        }
+                      }} />
+                    </label>
+                  </div>
                   {newCat.imageUrl && (
                     <div className="mt-2 w-28 h-20 bg-white border border-slate-200 rounded p-1 flex items-center justify-center overflow-hidden">
                       <img src={newCat.imageUrl} alt="" className="max-w-full max-h-full object-contain" onError={e => { (e.target as HTMLElement).style.display = 'none'; }} />
@@ -270,8 +303,23 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
                     </div>
                     <div>
                       <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Şəkil URL</label>
-                      <input value={editingCat.imageUrl || ''} onChange={e => setEditingCat((v: any) => ({ ...v, imageUrl: e.target.value }))}
-                        className={inCls} placeholder="https://..." />
+                      <div className="flex gap-2">
+                        <input value={editingCat.imageUrl || ''} onChange={e => setEditingCat((v: any) => ({ ...v, imageUrl: e.target.value }))}
+                          className={inCls} placeholder="https://..." />
+                        <label className="h-8 px-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-sm border border-slate-200 flex items-center gap-1 cursor-pointer shrink-0">
+                          <Upload className="w-3 h-3" />
+                          <span className="hidden sm:inline">Yüklə</span>
+                          <input type="file" accept="image/*" className="hidden" onChange={async e => {
+                            const f = e.target.files?.[0];
+                            if (f) {
+                              setUploading(true);
+                              const url = await uploadFile(f);
+                              if (url) setEditingCat((v: any) => ({ ...v, imageUrl: url }));
+                              setUploading(false);
+                            }
+                          }} />
+                        </label>
+                      </div>
                       {editingCat.imageUrl && (
                         <div className="mt-2 w-28 h-20 bg-white border border-slate-200 rounded p-1 flex items-center justify-center overflow-hidden">
                           <img src={editingCat.imageUrl} alt="" className="max-w-full max-h-full object-contain" onError={e => { (e.target as HTMLElement).style.display = 'none'; }} />
@@ -431,7 +479,22 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
               </div>
               {/* Images */}
               <div>
-                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Məhsul Şəkilləri (Hər sətirdə bir URL)</label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-[10px] font-bold text-slate-500 uppercase">Məhsul Şəkilləri (Hər sətirdə bir URL)</label>
+                  <label className="text-[10px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer">
+                    <Upload className="w-3 h-3" />
+                    <span>{uploading ? 'Yüklənir...' : 'Kompüterdən Yüklə'}</span>
+                    <input type="file" accept="image/*" className="hidden" onChange={async e => {
+                      const f = e.target.files?.[0];
+                      if (f) {
+                        setUploading(true);
+                        const url = await uploadFile(f);
+                        if (url) setNewProd(v => ({ ...v, images: [...(v.images || []), url] }));
+                        setUploading(false);
+                      }
+                    }} />
+                  </label>
+                </div>
                 <textarea
                   value={Array.isArray(newProd.images) ? newProd.images.join('\n') : ''}
                   onChange={e => setNewProd(v => ({ ...v, images: e.target.value.split('\n').map((s: string) => s.trim()).filter(Boolean) }))}
@@ -585,7 +648,22 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
                         </div>
                         {/* Images */}
                         <div>
-                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Məhsul Şəkilləri (Hər sətirdə bir URL)</label>
+                          <div className="flex items-center justify-between mb-1">
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase">Məhsul Şəkilləri (Hər sətirdə bir URL)</label>
+                            <label className="text-[10px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer">
+                              <Upload className="w-3 h-3" />
+                              <span>{uploading ? 'Yüklənir...' : 'Kompüterdən Yüklə'}</span>
+                              <input type="file" accept="image/*" className="hidden" onChange={async e => {
+                                const f = e.target.files?.[0];
+                                if (f) {
+                                  setUploading(true);
+                                  const url = await uploadFile(f);
+                                  if (url) setEditingProd((v: any) => ({ ...v, images: [...(Array.isArray(v.images) ? v.images : []), url] }));
+                                  setUploading(false);
+                                }
+                              }} />
+                            </label>
+                          </div>
                           <textarea
                             value={Array.isArray(editingProd.images) ? editingProd.images.join('\n') : ''}
                             onChange={e => setEditingProd((v: any) => ({ ...v, images: e.target.value.split('\n').map((s: string) => s.trim()).filter(Boolean) }))}
