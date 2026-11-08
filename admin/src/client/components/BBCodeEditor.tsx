@@ -40,8 +40,8 @@ export function bbcodeToHtml(input: string): string {
     .replace(/\[th\]([\s\S]*?)\[\/th\]/gi, '<th style="border:1px solid #cbd5e1;padding:6px 10px;background:#f8fafc;text-align:left;font-weight:700">$1</th>')
     .replace(/\[td\]([\s\S]*?)\[\/td\]/gi, '<td style="border:1px solid #cbd5e1;padding:6px 10px">$1</td>')
     // Image
-    .replace(/\[img\]([\s\S]*?)\[\/img\]/gi, '<img src="$1" alt="" style="max-width:100%;height:auto;border-radius:4px" />')
-    .replace(/\[img=(\d+)x(\d+)\]([\s\S]*?)\[\/img\]/gi, '<img src="$3" width="$1" height="$2" alt="" style="max-width:100%;height:auto;border-radius:4px" />')
+    .replace(/\[img\]([\s\S]*?)\[\/img\]/gi, '<img src="$1" alt="" style="max-width:100%;height:auto;object-fit:contain;border-radius:4px;display:block;margin:0.5em 0" />')
+    .replace(/\[img=(\d+)x(\d+)\]([\s\S]*?)\[\/img\]/gi, '<img src="$3" width="$1" height="$2" alt="" style="max-width:100%;height:auto;object-fit:contain;border-radius:4px;display:block;margin:0.5em 0" />')
     // Quote
     .replace(/\[quote=([^\]]+)\]([\s\S]*?)\[\/quote\]/gi, '<blockquote style="border-left:4px solid #94a3b8;margin:1em 0;padding:.5em 1em;background:#f8fafc;border-radius:0 4px 4px 0"><strong style="display:block;margin-bottom:.3em">$1:</strong>$2</blockquote>')
     .replace(/\[quote\]([\s\S]*?)\[\/quote\]/gi, '<blockquote style="border-left:4px solid #94a3b8;margin:1em 0;padding:.5em 1em;background:#f8fafc;border-radius:0 4px 4px 0">$1</blockquote>')

@@ -214,6 +214,11 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
                 <Field label="Şəkil URL">
                   <input value={newCat.imageUrl || ''} onChange={e => setNewCat(v => ({ ...v, imageUrl: e.target.value }))}
                     className={inCls} placeholder="https://..." />
+                  {newCat.imageUrl && (
+                    <div className="mt-2 w-28 h-20 bg-white border border-slate-200 rounded p-1 flex items-center justify-center overflow-hidden">
+                      <img src={newCat.imageUrl} alt="" className="max-w-full max-h-full object-contain" onError={e => { (e.target as HTMLElement).style.display = 'none'; }} />
+                    </div>
+                  )}
                 </Field>
               </div>
               {/* Name - all langs */}
@@ -267,6 +272,11 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
                       <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Şəkil URL</label>
                       <input value={editingCat.imageUrl || ''} onChange={e => setEditingCat((v: any) => ({ ...v, imageUrl: e.target.value }))}
                         className={inCls} placeholder="https://..." />
+                      {editingCat.imageUrl && (
+                        <div className="mt-2 w-28 h-20 bg-white border border-slate-200 rounded p-1 flex items-center justify-center overflow-hidden">
+                          <img src={editingCat.imageUrl} alt="" className="max-w-full max-h-full object-contain" onError={e => { (e.target as HTMLElement).style.display = 'none'; }} />
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div>
@@ -302,7 +312,13 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
               ) : (
                 <div className="px-4 py-3 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Tag className="w-4 h-4 text-slate-400" />
+                    {cat.imageUrl ? (
+                      <div className="w-8 h-8 rounded border border-slate-200 bg-slate-50 flex items-center justify-center p-0.5 shrink-0 overflow-hidden">
+                        <img src={cat.imageUrl} alt="" className="max-w-full max-h-full object-contain" onError={e => { (e.target as HTMLElement).style.display = 'none'; }} />
+                      </div>
+                    ) : (
+                      <Tag className="w-4 h-4 text-slate-400 shrink-0" />
+                    )}
                     <div>
                       <span className="text-xs font-bold text-slate-800">{cat.name}</span>
                       <span className="ml-2 text-[10px] font-mono text-slate-400">{cat.slug}</span>
@@ -434,8 +450,14 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
             <div key={prod.id} className="bg-white border border-slate-200 rounded overflow-hidden">
               <div className="px-4 py-3 flex items-center justify-between">
                 <button onClick={() => setExpandedId(expandedId === prod.id ? null : prod.id)}
-                  className="flex items-center gap-3 flex-1 text-left">
-                  <Package className="w-4 h-4 text-slate-400 shrink-0" />
+                  className="flex items-center gap-3 flex-1 text-left min-w-0">
+                  {prod.images && prod.images.length > 0 && prod.images[0] ? (
+                    <div className="w-9 h-9 rounded border border-slate-200 bg-slate-50 flex items-center justify-center p-0.5 shrink-0 overflow-hidden">
+                      <img src={prod.images[0]} alt="" className="max-w-full max-h-full object-contain" onError={e => { (e.target as HTMLElement).style.display = 'none'; }} />
+                    </div>
+                  ) : (
+                    <Package className="w-4 h-4 text-slate-400 shrink-0" />
+                  )}
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-xs font-bold text-slate-800">{prod.name}</span>
@@ -564,6 +586,18 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
                           </div>
                         ))}
                       </div>
+                      {prod.images && prod.images.length > 0 && (
+                        <div className="space-y-1">
+                          <div className="text-[9px] font-bold text-slate-400 uppercase">Məhsul Şəkilləri</div>
+                          <div className="flex flex-wrap gap-2">
+                            {prod.images.map((imgUrl: string, idx: number) => (
+                              <div key={idx} className="w-16 h-16 bg-white border border-slate-200 rounded p-1 flex items-center justify-center overflow-hidden">
+                                <img src={imgUrl} alt="" className="max-w-full max-h-full object-contain" />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                       <SaveBar onSave={() => setEditingProd({ ...prod })} saving={false} saved={false} />
                       <div className="text-center">
                         <button onClick={() => setEditingProd({ ...prod })}

@@ -266,16 +266,16 @@ const ImageField = React.memo(({ imgKey, label, content, uploading, onSaveConten
           : <span className="text-[9px] px-1.5 py-0.5 bg-slate-100 border border-slate-200 text-slate-500 font-bold rounded-sm">VARSAYILAN</span>
         }
       </div>
-      <div className="relative w-full bg-slate-100 cursor-pointer overflow-hidden" style={{ height: '160px' }}
+      <div className="relative w-full bg-slate-100/80 cursor-pointer overflow-hidden flex items-center justify-center p-2" style={{ height: '170px' }}
         onClick={() => url && onPreview(proxyUrl)}>
         {proxyUrl
-          ? <img src={proxyUrl} alt={label} className="w-full h-full object-cover" onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+          ? <img src={proxyUrl} alt={label} className="max-w-full max-h-full object-contain" onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
           : <div className="w-full h-full flex items-center justify-center"><ImgIcon className="w-8 h-8 text-slate-300" /></div>
         }
         {url && (
           <div className="absolute inset-0 bg-black/0 hover:bg-black/30 transition-colors flex items-center justify-center opacity-0 hover:opacity-100">
-            <div className="bg-white/90 px-3 py-1.5 flex items-center gap-1.5 text-xs font-bold text-slate-800 rounded-sm">
-              <Eye className="w-3.5 h-3.5" /> Tam Goruntule
+            <div className="bg-white/95 shadow-sm px-3 py-1.5 flex items-center gap-1.5 text-xs font-bold text-slate-800 rounded-sm">
+              <Eye className="w-3.5 h-3.5" /> Tam Görünüş
             </div>
           </div>
         )}
@@ -2005,7 +2005,11 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                   <div className="px-4 py-3 flex items-center justify-between hover:bg-slate-50">
                     <button onClick={() => setExpandedId(expandedId === 'p'+idx ? null : 'p'+idx)}
                       className="flex items-center gap-3 flex-1 text-left">
-                      {prod.image && <img src={prod.image} className="w-10 h-7 object-cover border border-slate-200 rounded" />}
+                      {prod.image && (
+                        <div className="w-10 h-8 bg-slate-100 border border-slate-200 rounded flex items-center justify-center p-0.5 shrink-0 overflow-hidden">
+                          <img src={prod.image} alt="" className="max-w-full max-h-full object-contain" />
+                        </div>
+                      )}
                       <span className="text-xs font-bold text-slate-900">{prod.name?.EN || prod.id}</span>
                       <span className="text-[10px] font-mono text-slate-400">HS: {prod.hsCode}</span>
                       {expandedId === 'p'+idx ? <ChevronDown className="w-4 h-4 text-slate-400 ml-auto" /> : <ChevronRight className="w-4 h-4 text-slate-400 ml-auto" />}
@@ -2202,8 +2206,8 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                 {images.map(img => (
                   <div key={img.filename} className="bg-white border border-slate-200 rounded overflow-hidden group">
-                    <div className="h-24 bg-slate-100 relative cursor-pointer" onClick={() => setPreview(img.url)}>
-                      <img src={img.url} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                    <div className="h-28 bg-slate-100/80 relative cursor-pointer flex items-center justify-center p-1.5 overflow-hidden" onClick={() => setPreview(img.url)}>
+                      <img src={img.url} className="max-w-full max-h-full object-contain" referrerPolicy="no-referrer" />
                       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                         <Eye className="w-5 h-5 text-white" />
                       </div>
@@ -2816,7 +2820,9 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                                   </div>
                                   {imgUrl && (
                                     <div className="mt-1.5 flex items-center gap-2">
-                                      <img src={imgUrl} alt="Sector" className="w-10 h-10 object-cover rounded border border-slate-200" referrerPolicy="no-referrer" />
+                                      <div className="w-12 h-12 bg-slate-100 border border-slate-200 rounded flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                                        <img src={imgUrl} alt="Sector" className="max-w-full max-h-full object-contain" referrerPolicy="no-referrer" />
+                                      </div>
                                       <span className="text-[10px] text-slate-400 truncate flex-1 font-mono">{imgUrl}</span>
                                     </div>
                                   )}
@@ -3108,7 +3114,7 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                         <div className="flex items-start gap-3 mb-3">
                           <div className="w-14 h-14 rounded-lg bg-slate-100 border border-slate-200 overflow-hidden shrink-0">
                             {m.photo ? (
-                              <img src={m.photo} alt={m.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                              <img src={m.photo} alt={m.name} className="w-full h-full object-cover object-top" referrerPolicy="no-referrer" />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center text-slate-400">
                                 <Users className="w-6 h-6" />
@@ -3231,7 +3237,9 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                           </div>
                           {cur.photo && (
                             <div className="mt-2 flex items-center gap-3">
-                              <img src={cur.photo} alt="Preview" className="w-12 h-12 object-cover rounded border border-slate-200" referrerPolicy="no-referrer" />
+                              <div className="w-14 h-14 bg-slate-100 border border-slate-200 rounded-lg overflow-hidden shrink-0 flex items-center justify-center">
+                                <img src={cur.photo} alt="Preview" className="w-full h-full object-cover object-top" referrerPolicy="no-referrer" />
+                              </div>
                               <span className="text-[10px] text-slate-400 truncate font-mono">{cur.photo}</span>
                             </div>
                           )}

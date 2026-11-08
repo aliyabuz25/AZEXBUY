@@ -356,3 +356,26 @@ header button.dark\:bg-slate-900 svg {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--theme-accent);
 }
+
+/* 13. Image Aspect Ratio Integrity & Non-Stretching Guard */
+img {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Explicit aspect ratio & fitting rules */
+img.object-cover {
+  object-fit: cover !important;
+}
+
+img.object-contain {
+  object-fit: contain !important;
+}
+
+/* Prevent flex container items from stretching images vertically */
+.flex > img:not([class*="h-"]),
+.flex > div > img:not([class*="h-"]) {
+  align-self: center;
+}
+

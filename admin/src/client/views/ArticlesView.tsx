@@ -202,6 +202,11 @@ export const ArticlesView: React.FC<ArticlesViewProps> = () => {
             <Field label="Kapak Şəkli URL">
               <input value={newArt.coverImage} onChange={e => setNewArt(v => ({ ...v, coverImage: e.target.value }))}
                 className={inputCls} placeholder="https://..." />
+              {newArt.coverImage && (
+                <div className="mt-2 w-32 h-20 bg-slate-100 border border-slate-200 rounded p-1 flex items-center justify-center overflow-hidden">
+                  <img src={newArt.coverImage} alt="" className="max-w-full max-h-full object-contain" onError={e => { (e.target as HTMLElement).style.display = 'none'; }} />
+                </div>
+              )}
             </Field>
             <Field label="Xülasə" col>
               <textarea value={newArt.summary} onChange={e => setNewArt(v => ({ ...v, summary: e.target.value }))}
@@ -287,7 +292,13 @@ export const ArticlesView: React.FC<ArticlesViewProps> = () => {
               onClick={() => setExpandedId(expandedId === art.id ? null : art.id)}
               className="flex items-center gap-3 flex-1 text-left min-w-0"
             >
-              <BookOpen className="w-4 h-4 text-slate-400 shrink-0" />
+              {art.coverImage ? (
+                <div className="w-10 h-10 rounded border border-slate-200 bg-slate-50 flex items-center justify-center p-0.5 shrink-0 overflow-hidden">
+                  <img src={art.coverImage} alt="" className="max-w-full max-h-full object-contain" onError={e => { (e.target as HTMLElement).style.display = 'none'; }} />
+                </div>
+              ) : (
+                <BookOpen className="w-4 h-4 text-slate-400 shrink-0" />
+              )}
               <div className="min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-xs font-bold text-slate-800 truncate">{art.title}</span>
@@ -364,6 +375,11 @@ export const ArticlesView: React.FC<ArticlesViewProps> = () => {
                       <input value={editData.coverImage || ''}
                         onChange={e => setEditData((v: any) => ({ ...v, coverImage: e.target.value }))}
                         className={inputCls} placeholder="https://..." />
+                      {editData.coverImage && (
+                        <div className="mt-2 w-32 h-20 bg-slate-100 border border-slate-200 rounded p-1 flex items-center justify-center overflow-hidden">
+                          <img src={editData.coverImage} alt="" className="max-w-full max-h-full object-contain" onError={e => { (e.target as HTMLElement).style.display = 'none'; }} />
+                        </div>
+                      )}
                     </Field>
                     <Field label="Xülasə" col>
                       <textarea value={editData.summary || ''}
@@ -443,8 +459,10 @@ export const ArticlesView: React.FC<ArticlesViewProps> = () => {
                 /* ── VIEW MODE ── */
                 <div className="space-y-3">
                   {art.coverImage && (
-                    <img src={art.coverImage} alt={art.title}
-                      className="w-full max-h-48 object-cover rounded-md border border-slate-100" />
+                    <div className="w-full h-52 bg-slate-100/70 rounded-md border border-slate-200 overflow-hidden flex items-center justify-center p-2">
+                      <img src={art.coverImage} alt={art.title}
+                        className="max-w-full max-h-full object-contain rounded drop-shadow-xs" />
+                    </div>
                   )}
                   {art.summary && (
                     <p className="text-xs text-slate-600 italic border-l-2 border-blue-200 pl-3">{art.summary}</p>
