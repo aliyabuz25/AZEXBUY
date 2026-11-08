@@ -75,7 +75,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
         <div className="bg-brandNavy text-white rounded-lg p-6 sm:p-8 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-              {strings[locale].featuredProducts.heading}
+              {strings[locale]?.featuredProducts?.heading || strings.AZ?.featuredProducts?.heading || strings.EN?.featuredProducts?.heading || 'Export Commodities'}
             </h1>
             <p className="text-xs sm:text-sm text-slate-200 mt-1 max-w-2xl">
               Direct factory and agro-cluster sourcing across all 14 economic regions of Azerbaijan with verified AQTA phytosanitary, ISO, and EUR.1/CT-1 origin documentation.
@@ -241,7 +241,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
                       onClick={() => onRequestProduct(product)}
                       className="flex-1 bg-brandGreen hover:bg-brandGreenDark text-white text-xs font-bold py-2 px-3 rounded transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                     >
-                      <span>{strings[locale].featuredProducts.requestProduct}</span>
+                      <span>{strings[locale]?.featuredProducts?.requestProduct || strings.AZ?.featuredProducts?.requestProduct || 'Request RFQ'}</span>
                       <i className="fa-solid fa-arrow-right text-[10px]"></i>
                     </button>
                   </div>
@@ -372,7 +372,7 @@ export const ProductSpecModal: React.FC<ProductSpecModalProps> = ({
               }}
               className="bg-brandGreen hover:bg-brandGreenDark text-white font-bold px-5 py-2.5 rounded cursor-pointer flex items-center gap-2"
             >
-              <span>{strings[locale].featuredProducts.requestProduct}</span>
+              <span>{strings[locale]?.featuredProducts?.requestProduct || strings.AZ?.featuredProducts?.requestProduct || 'Request RFQ'}</span>
               <i className="fa-solid fa-arrow-right text-[10px]"></i>
             </button>
           </div>
@@ -1536,10 +1536,10 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
             <div className="max-w-2xl">
               
               <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight mb-2">
-                {strings[locale].services.heading}
+                {strings[locale]?.services?.heading || strings.AZ?.services?.heading || 'Services'}
               </h1>
               <p className="text-xs sm:text-sm text-slate-200 leading-relaxed">
-                {strings[locale].services.outsourcedDesc}
+                {strings[locale]?.services?.outsourcedDesc || strings.AZ?.services?.outsourcedDesc || ''}
               </p>
             </div>
             <div className="flex items-center gap-3 shrink-0">
@@ -1811,7 +1811,7 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
                 <i className="fa-solid fa-location-dot text-brandNavy mt-0.5"></i>
                 <div>
                   <strong className="block text-slate-900">Headquarters Address</strong>
-                  <span>{strings[locale].footer.hqAddress}</span>
+                  <span>{strings[locale]?.footer?.hqAddress || strings.AZ?.footer?.hqAddress || 'Baku, Azerbaijan'}</span>
                 </div>
               </div>
               <div className="flex items-start gap-3">

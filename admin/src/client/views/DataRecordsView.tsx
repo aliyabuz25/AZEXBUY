@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Database, Plus, Search, Filter } from 'lucide-react';
-import { RecordItem, UiLanguage } from '../types';
+import { RecordItem, UiLanguage, toText } from '../types';
 
 interface DataRecordsViewProps {
   records: RecordItem[];
@@ -19,9 +19,9 @@ export const DataRecordsView: React.FC<DataRecordsViewProps> = ({
   const [newTitle, setNewTitle] = useState('');
 
   const filtered = records.filter(r => 
-    r.title.toLowerCase().includes(search.toLowerCase()) ||
-    r.source.toLowerCase().includes(search.toLowerCase()) ||
-    r.author.toLowerCase().includes(search.toLowerCase())
+    toText(r.title).toLowerCase().includes(search.toLowerCase()) ||
+    toText(r.source).toLowerCase().includes(search.toLowerCase()) ||
+    toText(r.author).toLowerCase().includes(search.toLowerCase())
   );
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -97,9 +97,9 @@ export const DataRecordsView: React.FC<DataRecordsViewProps> = ({
                 filtered.map(row => (
                   <tr key={row.id} className="hover:bg-slate-50/70 transition-colors">
                     <td className="py-3 px-4 font-mono text-[11px] text-slate-400">{row.id}</td>
-                    <td className="py-3 px-4 font-medium text-slate-900">{row.title}</td>
-                    <td className="py-3 px-4 text-slate-500">{row.source}</td>
-                    <td className="py-3 px-4 text-slate-500">{row.author} • <span className="text-slate-400">{row.date}</span></td>
+                    <td className="py-3 px-4 font-medium text-slate-900">{toText(row.title)}</td>
+                    <td className="py-3 px-4 text-slate-500">{toText(row.source)}</td>
+                    <td className="py-3 px-4 text-slate-500">{toText(row.author)} • <span className="text-slate-400">{row.date}</span></td>
                     <td className="py-3 px-4 text-right">
                       <span className={`inline-block px-2 py-0.5 rounded text-[10.5px] font-medium capitalize ${
                         row.status === 'published' ? 'bg-slate-100 text-slate-800 border border-slate-200/80' :

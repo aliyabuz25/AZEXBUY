@@ -386,7 +386,7 @@ export const AzexbuyView: React.FC<AzexbuyViewProps> = ({ uiLang }) => {
                     <ShoppingCart className="w-3.5 h-3.5 text-[#0f3156] shrink-0" />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-xs font-bold text-slate-900">{r.buyerCompany}</span>
+                        <span className="text-xs font-bold text-slate-900">{toText(r.buyerCompany)}</span>
                         <span className="text-[10px] text-slate-400">·</span>
                         <span className="text-[10px] text-slate-500">{r.country}</span>
                         <span className="text-[10px] font-mono text-slate-400">{r.id}</span>
@@ -541,7 +541,7 @@ export const AzexbuyView: React.FC<AzexbuyViewProps> = ({ uiLang }) => {
                     <Factory className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-xs font-bold text-slate-900">{p.companyName}</span>
+                        <span className="text-xs font-bold text-slate-900">{toText(p.companyName)}</span>
                         <span className="text-[10px] font-mono text-slate-400">{p.id}</span>
                       </div>
                       <div className="text-[10px] text-slate-500 mt-0.5">

@@ -118,7 +118,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
   const langRef = useRef<HTMLDivElement>(null);
   const { strings } = useLocalization();
-  const t = strings[locale].nav;
+  const t = strings[locale]?.nav || strings['AZ']?.nav || strings['EN']?.nav || ({} as any);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {

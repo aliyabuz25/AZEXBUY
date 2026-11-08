@@ -241,7 +241,7 @@ export const InboxView: React.FC<InboxViewProps> = () => {
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                        <span className="text-sm font-bold text-slate-900">{r.buyerCompany}</span>
+                        <span className="text-sm font-bold text-slate-900">{toText(r.buyerCompany)}</span>
                         <span className="text-xs text-slate-500 flex items-center gap-1">
                           <MapPin className="w-3 h-3" />{r.country}
                         </span>
@@ -381,10 +381,10 @@ export const InboxView: React.FC<InboxViewProps> = () => {
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                        <span className="text-sm font-bold text-slate-900">{p.companyName}</span>
+                        <span className="text-sm font-bold text-slate-900">{toText(p.companyName)}</span>
                         {p.economicRegion && (
                           <span className="text-xs text-slate-500 flex items-center gap-1">
-                            <MapPin className="w-3 h-3" />{p.economicRegion}
+                            <MapPin className="w-3 h-3" />{toText(p.economicRegion)}
                           </span>
                         )}
                         <span className="text-[11px] font-bold tabular-nums px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full">

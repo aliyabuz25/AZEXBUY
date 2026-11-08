@@ -59,7 +59,8 @@ export async function askTradeAI(
 ): Promise<string> {
   const activeKey =
     customApiKey ||
-    (typeof process !== 'undefined' && process.env?.GEMINI_API_KEY) ||
+    (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_GEMINI_API_KEY) ||
+    (typeof process !== 'undefined' && (process as any).env?.GEMINI_API_KEY) ||
     (typeof window !== 'undefined' && localStorage.getItem('azexbuy_gemini_key')) ||
     '';
 

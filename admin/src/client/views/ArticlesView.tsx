@@ -3,7 +3,7 @@ import {
   Plus, Trash2, Edit2, Save, BookOpen, RefreshCw,
   CheckCircle, Eye, EyeOff, ChevronDown, ChevronRight, Tag, Star, Upload,
 } from 'lucide-react';
-import { UiLanguage } from '../types';
+import { UiLanguage, toText } from '../types';
 import { BBCodeEditor, BBCodeRenderer } from '../components/BBCodeEditor';
 
 interface ArticlesViewProps { uiLang: UiLanguage; }
@@ -334,7 +334,7 @@ export const ArticlesView: React.FC<ArticlesViewProps> = () => {
               )}
               <div className="min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-xs font-bold text-slate-800 truncate">{art.title}</span>
+                  <span className="text-xs font-bold text-slate-800 truncate">{toText(art.title)}</span>
                   <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wide ${art.isPublished ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
                     {art.isPublished ? 'Yayımlandı' : 'Qaralama'}
                   </span>
@@ -373,7 +373,7 @@ export const ArticlesView: React.FC<ArticlesViewProps> = () => {
                 className="p-1 text-slate-300 hover:text-blue-500 rounded transition-colors">
                 <Edit2 className="w-3.5 h-3.5" />
               </button>
-              <button onClick={() => handleDelete(art.id, art.title)}
+              <button onClick={() => handleDelete(art.id, toText(art.title))}
                 className="p-1 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded transition-colors">
                 <Trash2 className="w-3.5 h-3.5" />
               </button>

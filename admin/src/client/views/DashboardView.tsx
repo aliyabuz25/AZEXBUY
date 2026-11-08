@@ -333,7 +333,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ records = [], medi
               {rfqs.slice(0, 5).map(r => (
                 <div key={r.id} className="flex items-center justify-between gap-3 py-2 border-b border-slate-50 last:border-0">
                   <div className="min-w-0 flex-1">
-                    <div className="text-xs font-semibold text-slate-800 truncate">{r.buyerCompany}</div>
+                    <div className="text-xs font-semibold text-slate-800 truncate">{toText(r.buyerCompany)}</div>
                     <div className="text-[10px] text-slate-400 flex items-center gap-1 mt-0.5">
                       <MapPin className="w-2.5 h-2.5" />{r.country}
                       {r.items?.length > 0 && (

@@ -3,7 +3,7 @@ import {
   Plus, Trash2, Edit2, Save, Briefcase, RefreshCw,
   CheckCircle, Eye, EyeOff, ChevronDown, ChevronRight, ToggleLeft, ToggleRight, Upload,
 } from 'lucide-react';
-import { UiLanguage } from '../types';
+import { UiLanguage, toText } from '../types';
 import { SEED_SERVICES } from '../../seed';
 
 interface ServicesViewProps { uiLang: UiLanguage; }
@@ -528,8 +528,8 @@ export const ServicesView: React.FC<ServicesViewProps> = () => {
                         <i className={`${srv.iconClass} text-white text-xs`}></i>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="text-xs font-bold text-slate-800 truncate">{srv.title?.AZ || srv.title?.EN || '—'}</div>
-                        <div className="text-[10px] text-slate-400">{srv.title?.EN}</div>
+                        <div className="text-xs font-bold text-slate-800 truncate">{toText(srv.title, '—')}</div>
+                        <div className="text-[10px] text-slate-400">{typeof srv.title === 'object' ? toText(srv.title?.EN) : ''}</div>
                       </div>
                       {srv.imageUrl && (
                         <div className="w-8 h-8 rounded border border-slate-200 bg-slate-50 flex items-center justify-center p-0.5 shrink-0 overflow-hidden">
@@ -677,8 +677,8 @@ export const ServicesView: React.FC<ServicesViewProps> = () => {
                           </>
                         ) : (
                           <div className="text-xs text-slate-700 space-y-2">
-                            <p><span className="font-bold">EN:</span> {srv.description?.EN}</p>
-                            <p><span className="font-bold">AZ:</span> {srv.description?.AZ}</p>
+                            <p><span className="font-bold">EN:</span> {toText(srv.description?.EN || srv.description)}</p>
+                            <p><span className="font-bold">AZ:</span> {toText(srv.description?.AZ || srv.description)}</p>
                             {srv.scope?.EN?.length > 0 && (
                               <div>
                                 <span className="font-bold block mb-1">Scope (EN):</span>

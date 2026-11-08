@@ -2074,9 +2074,7 @@ app.get('/api/azexbuy/content', async (req: Request, res: Response) => {
   // Always sync live active products from azexbuy_products table into result.products
   try {
     const pRows = azexbuyDb.prepare('SELECT p.*, c.name as category_name, c.slug as category_slug FROM azexbuy_products p LEFT JOIN azexbuy_categories c ON p.category_id = c.id WHERE p.is_active = 1 ORDER BY p.sort_order ASC, p.created_at DESC').all() as any[];
-    if (pRows.length > 0) {
-      result.products = pRows.map(r => ({ ...mapProduct(r), categoryName: r.category_name, categorySlug: r.category_slug }));
-    }
+    result.products = pRows.map(r => ({ ...mapProduct(r), categoryName: r.category_name, categorySlug: r.category_slug }));
   } catch (err) {
     console.error('Error attaching live products to content:', err);
   }

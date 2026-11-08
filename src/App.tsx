@@ -324,7 +324,7 @@ export default function App() {
   };
 
   const { strings, heroImage, buyerCardImage, producerCardImage, whyAzImage, products: cmsProducts, services: cmsServicesPillars, buyerSteps: cmsBuyerSteps, producerSteps: cmsProducerSteps, cmsServices, contact } = useLocalization();
-  const t = strings[locale];
+  const t = strings[locale] || strings.AZ || strings.EN;
   const featuredProducts = cmsProducts.filter((p: any) => p.featured);
 
   const whyIcons = [
