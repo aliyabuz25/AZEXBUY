@@ -20,7 +20,7 @@ import { CmsService, AboutPageContent, TeamMember } from '../types';
 const OCTO_API_BASE = '';
 const LOC_CACHE_KEY = 'azexbuy_loc_override';
 const CONTENT_CACHE_KEY = 'azexbuy_content_override';
-const CACHE_VERSION = 'v4';
+const CACHE_VERSION = 'v5';
 const CACHE_VERSION_KEY = 'azexbuy_cache_ver';
 
 // Clear stale cache on version mismatch
@@ -305,7 +305,7 @@ export const LocalizationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       if (prodRes.ok) {
         try {
           const apiProds = await prodRes.json();
-          if (Array.isArray(apiProds) && apiProds.length > 0) {
+          if (Array.isArray(apiProds)) {
             const normalized = apiProds.map(normalizeProductItem).filter(Boolean);
             setContentOverrides((prev: any) => ({
               ...prev,

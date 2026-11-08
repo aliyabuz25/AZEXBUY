@@ -143,105 +143,113 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
         </div>
 
         {/* Product Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filtered.map((product) => {
-            const isShortlisted = shortlistedIds.includes(product.id);
-            return (
-              <div
-                key={product.id}
-                className="bg-white border border-slate-200 rounded-lg p-4 flex flex-col justify-between hover:shadow-md transition-shadow"
-              >
-                <div>
-                  <div
-                    onClick={() => onInspectProduct(product)}
-                    className="h-44 rounded overflow-hidden bg-slate-100 mb-3 relative cursor-pointer group"
-                  >
-                    <img
-                      src={product.image}
-                      alt={getLocalizedText(product.name, locale)}
-                      referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <div className="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-xs text-slate-700 text-[11px] font-semibold px-2.5 py-1 rounded shadow-xs border border-slate-200/80">
-                      {getLocalizedText(product.categoryLabel, locale)}
-                    </div>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onToggleShortlist(product.id);
-                      }}
-                      className={`absolute top-2.5 right-2.5 w-7 h-7 rounded flex items-center justify-center text-xs transition-colors cursor-pointer ${
-                        isShortlisted
-                          ? 'bg-brandGreen text-white'
-                          : 'bg-white/90 text-slate-700 hover:bg-white'
-                      }`}
-                      title={isShortlisted ? 'Remove from RFQ Shortlist' : 'Add to RFQ Shortlist'}
+        {filtered.length === 0 ? (
+          <div className="bg-white border border-dashed border-slate-300 rounded-lg p-12 text-center text-slate-500">
+            <i className="fa-solid fa-box-open text-3xl mb-3 text-slate-400"></i>
+            <p className="font-semibold text-slate-700">Məhsul tapılmadı / No products found</p>
+            <p className="text-xs text-slate-400 mt-1">Axtarış filtrini dəyişin və ya daha sonra təkrar yoxlayın.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {filtered.map((product) => {
+              const isShortlisted = shortlistedIds.includes(product.id);
+              return (
+                <div
+                  key={product.id}
+                  className="bg-white border border-slate-200 rounded-lg p-4 flex flex-col justify-between hover:shadow-md transition-shadow"
+                >
+                  <div>
+                    <div
+                      onClick={() => onInspectProduct(product)}
+                      className="h-44 rounded overflow-hidden bg-slate-100 mb-3 relative cursor-pointer group"
                     >
-                      <i className={`fa-${isShortlisted ? 'solid' : 'regular'} fa-bookmark`}></i>
-                    </button>
-                  </div>
-
-                  {/* Clean B2B Metadata */}
-                  <div className="flex items-center gap-2 text-[11px] text-slate-500 mb-1">
-                    <span className="font-semibold text-slate-600">HS {product.hsCode}</span>
-                    <span>·</span>
-                    <span className="text-emerald-700 font-medium inline-flex items-center gap-1">
-                      <i className="fa-solid fa-circle-check text-[10px] text-emerald-600"></i>
-                      <span className="tabular-nums">{product.verifiedSuppliersCount}</span> {locale === 'AZ' ? 'Təsdiqlənmiş İstehsalçı' : locale === 'TR' ? 'Onaylı Üretici' : locale === 'RU' ? 'Поставщиков' : 'Verified Producers'}
-                    </span>
-                  </div>
-
-                  <h3
-                    onClick={() => onInspectProduct(product)}
-                    className="text-base font-bold text-slate-900 hover:text-brandNavy cursor-pointer mb-1"
-                  >
-                    {getLocalizedText(product.name, locale)}
-                  </h3>
-
-                  <p className="text-xs text-slate-600 leading-relaxed mb-3">
-                    {getLocalizedText(product.shortDesc, locale)}
-                  </p>
-
-                  <div className="border-t border-slate-100 pt-2.5 mb-3 space-y-1 text-[11px] text-slate-600">
-                    <div className="flex justify-between">
-                      <span className="text-slate-400">Origin Cluster:</span>
-                      <span className="font-semibold text-slate-800">{getLocalizedText(product.originRegion, locale)}</span>
+                      <img
+                        src={product.image}
+                        alt={getLocalizedText(product.name, locale)}
+                        referrerPolicy="no-referrer"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-xs text-slate-700 text-[11px] font-semibold px-2.5 py-1 rounded shadow-xs border border-slate-200/80">
+                        {getLocalizedText(product.categoryLabel, locale)}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onToggleShortlist(product.id);
+                        }}
+                        className={`absolute top-2.5 right-2.5 w-7 h-7 rounded flex items-center justify-center text-xs transition-colors cursor-pointer ${
+                          isShortlisted
+                            ? 'bg-brandGreen text-white'
+                            : 'bg-white/90 text-slate-700 hover:bg-white'
+                        }`}
+                        title={isShortlisted ? 'Remove from RFQ Shortlist' : 'Add to RFQ Shortlist'}
+                      >
+                        <i className={`fa-${isShortlisted ? 'solid' : 'regular'} fa-bookmark`}></i>
+                      </button>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-400">Min. Export Order:</span>
-                      <span className="font-semibold text-slate-800 tabular-nums">{product.minOrderQty}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-400">Incoterms® 2020:</span>
-                      <span className="font-semibold text-slate-800">
-                        {Array.isArray(product.incoterms) ? product.incoterms.join(' / ') : 'FCA / FOB / CIF / DAP'}
+
+                    {/* Clean B2B Metadata */}
+                    <div className="flex items-center gap-2 text-[11px] text-slate-500 mb-1">
+                      <span className="font-semibold text-slate-600">HS {product.hsCode}</span>
+                      <span>·</span>
+                      <span className="text-emerald-700 font-medium inline-flex items-center gap-1">
+                        <i className="fa-solid fa-circle-check text-[10px] text-emerald-600"></i>
+                        <span className="tabular-nums">{product.verifiedSuppliersCount}</span> {locale === 'AZ' ? 'Təsdiqlənmiş İstehsalçı' : locale === 'TR' ? 'Onaylı Üretici' : locale === 'RU' ? 'Поставщиков' : 'Verified Producers'}
                       </span>
                     </div>
+
+                    <h3
+                      onClick={() => onInspectProduct(product)}
+                      className="text-base font-bold text-slate-900 hover:text-brandNavy cursor-pointer mb-1"
+                    >
+                      {getLocalizedText(product.name, locale)}
+                    </h3>
+
+                    <p className="text-xs text-slate-600 leading-relaxed mb-3">
+                      {getLocalizedText(product.shortDesc, locale)}
+                    </p>
+
+                    <div className="border-t border-slate-100 pt-2.5 mb-3 space-y-1 text-[11px] text-slate-600">
+                      <div className="flex justify-between">
+                        <span className="text-slate-400">Origin Cluster:</span>
+                        <span className="font-semibold text-slate-800">{getLocalizedText(product.originRegion, locale)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-400">Min. Export Order:</span>
+                        <span className="font-semibold text-slate-800 tabular-nums">{product.minOrderQty}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-400">Incoterms® 2020:</span>
+                        <span className="font-semibold text-slate-800">
+                          {Array.isArray(product.incoterms) ? product.incoterms.join(' / ') : 'FCA / FOB / CIF / DAP'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 pt-2 border-t border-slate-100">
+                    <button
+                      type="button"
+                      onClick={() => onInspectProduct(product)}
+                      className="px-3 py-2 text-xs font-bold text-brandNavy bg-slate-100 hover:bg-slate-200 rounded transition-colors cursor-pointer"
+                    >
+                      Specs
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onRequestProduct(product)}
+                      className="flex-1 bg-brandGreen hover:bg-brandGreenDark text-white text-xs font-bold py-2 px-3 rounded transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                    >
+                      <span>{strings[locale].featuredProducts.requestProduct}</span>
+                      <i className="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
                   </div>
                 </div>
-
-                <div className="flex items-center gap-2 pt-2 border-t border-slate-100">
-                  <button
-                    type="button"
-                    onClick={() => onInspectProduct(product)}
-                    className="px-3 py-2 text-xs font-bold text-brandNavy bg-slate-100 hover:bg-slate-200 rounded transition-colors cursor-pointer"
-                  >
-                    Specs
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => onRequestProduct(product)}
-                    className="flex-1 bg-brandGreen hover:bg-brandGreenDark text-white text-xs font-bold py-2 px-3 rounded transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
-                  >
-                    <span>{strings[locale].featuredProducts.requestProduct}</span>
-                    <i className="fa-solid fa-arrow-right text-[10px]"></i>
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </section>
   );
