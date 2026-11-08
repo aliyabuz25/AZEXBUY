@@ -1368,19 +1368,142 @@ app.delete('/api/azexbuy/categories/:id', requireAuth, (req: Request, res: Respo
 });
 
 // ─── PRODUCTS ────────────────────────────────────────────────────────────────
+function toLocalized(val: any, fallbackStr?: string): Record<string, string> {
+  if (!val && !fallbackStr) {
+    return { AZ: '', EN: '', TR: '', RU: '', AR: '', ES: '' };
+  }
+  let parsed = val;
+  if (typeof val === 'string' && (val.trim().startsWith('{') || val.trim().startsWith('['))) {
+    try { parsed = JSON.parse(val); } catch {}
+  }
+  if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+    const base = parsed.EN || parsed.AZ || parsed.TR || parsed.RU || Object.values(parsed)[0] || fallbackStr || '';
+    return {
+      AZ: parsed.AZ || base,
+      EN: parsed.EN || base,
+      TR: parsed.TR || base,
+      RU: parsed.RU || base,
+      AR: parsed.AR || base,
+      ES: parsed.ES || base,
+    };
+  }
+  const str = String(val || fallbackStr || '');
+  return { AZ: str, EN: str, TR: str, RU: str, AR: str, ES: str };
+}
+
 function mapProduct(r: any) {
+  let nameParsed = r.name;
+  if (typeof r.name === 'string' && (r.name.trim().startsWith('{') || r.name.trim().startsWith('['))) {
+    try { nameParsed = JSON.parse(r.name); } catch {}
+  }
+  let shortDescParsed = r.short_description;
+  if (typeof r.short_description === 'string' && (r.short_description.trim().startsWith('{') || r.short_description.trim().startsWith('['))) {
+    try { shortDescParsed = JSON.parse(r.short_description); } catch {}
+  }
+  let descParsed = r.description;
+  if (typeof r.description === 'string' && (r.description.trim().startsWith('{') || r.description.trim().startsWith('['))) {
+    try { descParsed = JSON.parse(r.description); } catch {}
+  }
+  let originParsed = r.origin_region;
+  if (typeof r.origin_region === 'string' && (r.origin_region.trim().startsWith('{') || r.origin_region.trim().startsWith('['))) {
+    try { originParsed = JSON.parse(r.origin_region); } catch {}
+  }
+  let packagingParsed = r.packaging_info;
+  if (typeof r.packaging_info === 'string' && (r.packaging_info.trim().startsWith('{') || r.packaging_info.trim().startsWith('['))) {
+    try { packagingParsed = JSON.parse(r.packaging_info); } catch {}
+  }
+
+  let technicalSpecs: any = {};
+  if (r.technical_specs) {
+    try { technicalSpecs = JSON.parse(r.technical_specs); } catch {}
+  }
+
+  let images: string[] = [];
+  if (r.images) {
+    try { images = JSON.parse(r.images); } catch {}
+  }
+  if (!Array.isArray(images)) images = [];
+
+  let certificates: string[] = [];
+  if (r.certificates) {
+    try { certificates = JSON.parse(r.certificates); } catch {}
+  }
+  if (!Array.isArray(certificates)) certificates = [];
+
+  const catSlug = (r.category_slug || r.category_id || '').toLowerCase();
+  let categoryKey = 'agro';
+  if (catSlug.includes('agri') || catSlug.includes('food')) categoryKey = 'agro';
+  else if (catSlug.includes('text') || catSlug.includes('carpet')) categoryKey = 'textile';
+  else if (catSlug.includes('stone') || catSlug.includes('construct') || catSlug.includes('marm')) categoryKey = 'construction';
+  else if (catSlug.includes('metal') || catSlug.includes('steel') || catSlug.includes('pipe') || catSlug.includes('pack')) categoryKey = 'metals';
+  else if (catSlug.includes('chem') || catSlug.includes('urea') || catSlug.includes('fertil')) categoryKey = 'chemicals';
+
+  const defaultImg = 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800';
+  const imgUrl = (images.length > 0 && images[0]) ? images[0] : defaultImg;
+
+  const nameLoc = toLocalized(nameParsed, r.slug || 'Commodity');
+  const shortDescLoc = toLocalized(shortDescParsed, typeof nameParsed === 'string' ? nameParsed : nameLoc.EN);
+  const originLoc = toLocalized(originParsed, 'Azerbaijan');
+  const packagingLoc = toLocalized(packagingParsed, 'Export standard multi-layer packaging');
+  const catLabel = r.category_name || (categoryKey === 'agro' ? 'Agriculture & Food' : categoryKey === 'textile' ? 'Textile & Carpets' : categoryKey === 'construction' ? 'Construction & Stone' : categoryKey === 'metals' ? 'Metals & Steel' : 'Chemicals & Urea');
+  const catLabelLoc = toLocalized(catLabel);
+
+  const gradeSpecsStr = Object.keys(technicalSpecs).length > 0
+    ? Object.entries(technicalSpecs).map(([k, v]) => `${k}: ${v}`).join(' | ')
+    : 'EU / International Export Grade A';
+  const gradeSpecsLoc = toLocalized(gradeSpecsStr);
+
   return {
-    id: r.id, createdAt: r.created_at, updatedAt: r.updated_at,
-    categoryId: r.category_id, name: r.name, slug: r.slug,
-    shortDescription: r.short_description, description: r.description,
-    technicalSpecs: r.technical_specs ? JSON.parse(r.technical_specs) : {},
-    images: r.images ? JSON.parse(r.images) : [],
-    moq: r.moq, certificates: r.certificates ? JSON.parse(r.certificates) : [],
-    packagingInfo: r.packaging_info, hsCode: r.hs_code, originRegion: r.origin_region,
-    isActive: !!r.is_active, isFeatured: !!r.is_featured,
-    seoTitle: r.seo_title, seoDescription: r.seo_description,
-    sortOrder: r.sort_order || 0
+    id: r.id,
+    createdAt: r.created_at,
+    updatedAt: r.updated_at,
+    categoryId: r.category_id,
+    categoryName: r.category_name,
+    categorySlug: r.category_slug,
+    name: nameLoc,
+    slug: r.slug,
+    shortDescription: shortDescLoc,
+    description: descParsed || shortDescLoc,
+    technicalSpecs,
+    images,
+    moq: r.moq || '1x 20ft FCL',
+    certificates,
+    packagingInfo: packagingLoc,
+    hsCode: r.hs_code || '',
+    originRegion: originLoc,
+    isActive: !!r.is_active,
+    isFeatured: !!r.is_featured,
+    seoTitle: r.seo_title,
+    seoDescription: r.seo_description,
+    sortOrder: r.sort_order || 0,
+    // Frontend-specific fields:
+    featured: !!r.is_featured,
+    image: imgUrl,
+    categoryKey,
+    categoryLabel: catLabelLoc,
+    shortDesc: shortDescLoc,
+    minOrderQty: r.moq || '1x 20ft FCL',
+    annualCapacity: technicalSpecs?.['Annual Capacity'] || technicalSpecs?.['Yearly Capacity'] || '10,000 MT',
+    verifiedSuppliersCount: Number(r.sort_order) > 0 ? (Number(r.sort_order) * 4 + 8) : 16,
+    incoterms: ['FCA', 'FOB', 'CIF', 'DAP'],
+    certifications: certificates.length > 0 ? certificates : ['ISO 22000', 'AQTA Phytosanitary', 'EUR.1 / CT-1'],
+    leadTimeDays: '7–14 Days',
+    packaging: packagingLoc,
+    gradeSpecs: gradeSpecsLoc,
   };
+}
+
+async function invalidateProductCaches(slug?: string) {
+  if (slug) await azDel(`azexbuy:product:${slug}`);
+  await azDel('azexbuy:products:all:0:50:0');
+  await azDel('azexbuy:products:all:1:50:0');
+  await azDel('azexbuy:content');
+  if (azRedis) {
+    try {
+      const keys = await azRedis.keys('azexbuy:product*');
+      if (keys.length > 0) await azRedis.del(...keys);
+    } catch {}
+  }
 }
 
 // Public: list active products (optionally filtered by category slug)
@@ -1394,7 +1517,7 @@ app.get('/api/azexbuy/products', async (req: Request, res: Response) => {
   const params: any[] = [];
   if (category) { query += ' AND c.slug = ?'; params.push(category); }
   if (featured === '1') { query += ' AND p.is_featured = 1'; }
-  query += ' ORDER BY p.created_at DESC LIMIT ? OFFSET ?';
+  query += ' ORDER BY p.sort_order ASC, p.created_at DESC LIMIT ? OFFSET ?';
   params.push(Number(lim) || 50, Number(off) || 0);
 
   const rows = azexbuyDb.prepare(query).all(...params) as any[];
@@ -1417,12 +1540,12 @@ app.get('/api/azexbuy/products/:slug', async (req: Request, res: Response) => {
 
 // Admin: list all products (including inactive)
 app.get('/api/azexbuy/admin/products', requireAuth, async (_req: Request, res: Response) => {
-  const rows = azexbuyDb.prepare('SELECT p.*, c.name as category_name, c.slug as category_slug FROM azexbuy_products p LEFT JOIN azexbuy_categories c ON p.category_id = c.id ORDER BY p.created_at DESC').all() as any[];
+  const rows = azexbuyDb.prepare('SELECT p.*, c.name as category_name, c.slug as category_slug FROM azexbuy_products p LEFT JOIN azexbuy_categories c ON p.category_id = c.id ORDER BY p.sort_order ASC, p.created_at DESC').all() as any[];
   res.json(rows.map(r => ({ ...mapProduct(r), categoryName: r.category_name, categorySlug: r.category_slug })));
 });
 
 // Admin: create product
-app.post('/api/azexbuy/admin/products', requireAuth, (req: Request, res: Response) => {
+app.post('/api/azexbuy/admin/products', requireAuth, async (req: Request, res: Response) => {
   const { categoryId, name, slug, shortDescription, description, technicalSpecs, images, moq, certificates, packagingInfo, hsCode, originRegion, isFeatured, seoTitle, seoDescription, sortOrder } = req.body;
   const rawName = name;
   const nameStr = typeof rawName === 'string' ? rawName.trim() : (rawName?.AZ || rawName?.EN || rawName?.TR || Object.values(rawName || {})[0] || '');
@@ -1433,18 +1556,23 @@ app.post('/api/azexbuy/admin/products', requireAuth, (req: Request, res: Respons
   if (!catExists) return res.status(400).json({ error: 'Category not found' });
   const id = `prod-${Date.now()}`;
   const now = new Date().toISOString();
-  const storedName = typeof rawName === 'object' ? JSON.stringify(rawName) : nameStr;
+  const storedName = typeof rawName === 'object' && rawName !== null ? JSON.stringify(rawName) : nameStr;
+  const storedShortDesc = typeof shortDescription === 'object' && shortDescription !== null ? JSON.stringify(shortDescription) : (shortDescription || null);
+  const storedDesc = typeof description === 'object' && description !== null ? JSON.stringify(description) : (description || null);
+  const storedPackaging = typeof packagingInfo === 'object' && packagingInfo !== null ? JSON.stringify(packagingInfo) : (packagingInfo || null);
+  const storedOrigin = typeof originRegion === 'object' && originRegion !== null ? JSON.stringify(originRegion) : (originRegion || null);
+
   azexbuyDb.prepare(`INSERT INTO azexbuy_products (id, created_at, updated_at, category_id, name, slug, short_description, description, technical_specs, images, moq, certificates, packaging_info, hs_code, origin_region, is_active, is_featured, seo_title, seo_description, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?)`)
-    .run(id, now, now, categoryId, storedName, slug.trim().toLowerCase(), shortDescription || null, description || null,
+    .run(id, now, now, categoryId, storedName, slug.trim().toLowerCase(), storedShortDesc, storedDesc,
       JSON.stringify(technicalSpecs || {}), JSON.stringify(images || []), moq || null,
-      JSON.stringify(certificates || []), packagingInfo || null, hsCode || null, originRegion || null,
+      JSON.stringify(certificates || []), storedPackaging, hsCode || null, storedOrigin,
       isFeatured ? 1 : 0, seoTitle || null, seoDescription || null, Number(sortOrder) || 0);
-  azDel('azexbuy:products:all:0:50:0');
+  await invalidateProductCaches(slug);
   res.status(201).json({ success: true, id });
 });
 
 // Admin: update product
-app.patch('/api/azexbuy/admin/products/:id', requireAuth, (req: Request, res: Response) => {
+app.patch('/api/azexbuy/admin/products/:id', requireAuth, async (req: Request, res: Response) => {
   const r = azexbuyDb.prepare('SELECT id, slug FROM azexbuy_products WHERE id = ?').get(req.params.id) as any;
   if (!r) return res.status(404).json({ error: 'Product not found' });
   const fields = ['categoryId:category_id','name','slug','shortDescription:short_description','description','moq','packagingInfo:packaging_info','hsCode:hs_code','originRegion:origin_region','seoTitle:seo_title','seoDescription:seo_description','sortOrder:sort_order'];
@@ -1456,7 +1584,7 @@ app.patch('/api/azexbuy/admin/products/:id', requireAuth, (req: Request, res: Re
   for (const f of fields) {
     const [jsKey, dbCol] = f.includes(':') ? f.split(':') : [f, f];
     if (body[jsKey] !== undefined) {
-      const val = jsKey === 'name' && typeof body[jsKey] === 'object' ? JSON.stringify(body[jsKey]) : body[jsKey];
+      const val = typeof body[jsKey] === 'object' && body[jsKey] !== null ? JSON.stringify(body[jsKey]) : body[jsKey];
       azexbuyDb.prepare(`UPDATE azexbuy_products SET ${dbCol} = ? WHERE id = ?`).run(val, req.params.id);
     }
   }
@@ -1468,17 +1596,16 @@ app.patch('/api/azexbuy/admin/products/:id', requireAuth, (req: Request, res: Re
     const [jsKey, dbCol] = f.split(':');
     if (body[jsKey] !== undefined) azexbuyDb.prepare(`UPDATE azexbuy_products SET ${dbCol} = ? WHERE id = ?`).run(body[jsKey] ? 1 : 0, req.params.id);
   }
-  // Invalidate cache for this slug and all listing caches
-  azDel(`azexbuy:product:${r.slug}`);
+  await invalidateProductCaches(r.slug);
   res.json({ success: true });
 });
 
 // Admin: delete product
-app.delete('/api/azexbuy/admin/products/:id', requireAuth, (req: Request, res: Response) => {
+app.delete('/api/azexbuy/admin/products/:id', requireAuth, async (req: Request, res: Response) => {
   const r = azexbuyDb.prepare('SELECT slug FROM azexbuy_products WHERE id = ?').get(req.params.id) as any;
   if (!r) return res.status(404).json({ error: 'Product not found' });
   azexbuyDb.prepare('DELETE FROM azexbuy_products WHERE id = ?').run(req.params.id);
-  azDel(`azexbuy:product:${r.slug}`);
+  await invalidateProductCaches(r.slug);
   res.json({ success: true });
 });
 
@@ -1910,6 +2037,17 @@ app.get('/api/azexbuy/content', async (req: Request, res: Response) => {
   if (cached) return res.json(JSON.parse(cached));
   const row = azexbuyDb.prepare("SELECT value FROM azexbuy_kv WHERE key = 'content'").get() as any;
   const result = row ? JSON.parse(row.value) : {};
+
+  // Always sync live active products from azexbuy_products table into result.products
+  try {
+    const pRows = azexbuyDb.prepare('SELECT p.*, c.name as category_name, c.slug as category_slug FROM azexbuy_products p LEFT JOIN azexbuy_categories c ON p.category_id = c.id WHERE p.is_active = 1 ORDER BY p.sort_order ASC, p.created_at DESC').all() as any[];
+    if (pRows.length > 0) {
+      result.products = pRows.map(r => ({ ...mapProduct(r), categoryName: r.category_name, categorySlug: r.category_slug }));
+    }
+  } catch (err) {
+    console.error('Error attaching live products to content:', err);
+  }
+
   await azSet('azexbuy:content', JSON.stringify(result));
   res.json(result);
 });

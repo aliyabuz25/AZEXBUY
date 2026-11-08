@@ -13,6 +13,7 @@ import {
   INCOTERMS_GUIDE,
   PRODUCTS_CATALOG,
 } from '../data/translations';
+import { useLocalization } from '../context/LocalizationContext';
 
 // ── Modal localization strings ─────────────────────────────────────────────
 const ML: Record<string, Record<string, string>> = {
@@ -60,6 +61,9 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
   shortlistedIds,
   onSubmitRFQ,
 }) => {
+  const { products: ctxProducts } = useLocalization();
+  const allProducts: ProductItem[] = ctxProducts && ctxProducts.length > 0 ? (ctxProducts as ProductItem[]) : PRODUCTS_CATALOG;
+
   const [buyerCompany, setBuyerCompany] = useState('');
   const [country, setCountry] = useState('');
   const [contactName, setContactName] = useState('');
@@ -96,7 +100,7 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
       ]);
     } else if (shortlistedIds.length > 0) {
       const prefilled: RFQLineItem[] = shortlistedIds
-        .map((id) => PRODUCTS_CATALOG.find((p) => p.id === id))
+        .map((id) => allProducts.find((p) => p.id === id))
         .filter((p): p is ProductItem => Boolean(p))
         .map((p) => ({
           productId: p.id,
@@ -107,7 +111,7 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
         }));
       setItems(prefilled);
     } else if (items.length === 0) {
-      const def = PRODUCTS_CATALOG[0];
+      const def = allProducts[0];
       setItems([
         {
           productId: def.id,
@@ -146,8 +150,8 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
 
   const handleAddLineItem = () => {
     const nextProd =
-      PRODUCTS_CATALOG.find((p) => !items.some((i) => i.productId === p.id)) ||
-      PRODUCTS_CATALOG[0];
+      allProducts.find((p) => !items.some((i) => i.productId === p.id)) ||
+      allProducts[0];
     setItems((prev) => [
       ...prev,
       {
@@ -162,7 +166,7 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
   };
 
   const handleProductChange = (idx: number, productId: string) => {
-    const prod = PRODUCTS_CATALOG.find((p) => p.id === productId);
+    const prod = allProducts.find((p) => p.id === productId);
     if (!prod) return;
     setItems((prev) =>
       prev.map((item, i) =>
@@ -287,7 +291,7 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
                       onChange={(e) => handleProductChange(idx, e.target.value)}
                       className="w-full h-9 px-2.5 text-xs font-semibold bg-white border border-slate-300 rounded text-slate-900"
                     >
-                      {PRODUCTS_CATALOG.map((p) => (
+                      {allProducts.map((p) => (
                         <option key={p.id} value={p.id}>
                           {getLocalizedText(p.name, locale)} — HS: {p.hsCode} ({getLocalizedText(p.originRegion, locale)})
                         </option>
@@ -1277,18 +1281,20 @@ export const GlobalSearchModal: React.FC<SearchModalProps> = ({
   onSelectProduct,
   onRequestProduct,
 }) => {
+  const { products: ctxProducts } = useLocalization();
+  const allProducts: ProductItem[] = ctxProducts && ctxProducts.length > 0 ? (ctxProducts as ProductItem[]) : PRODUCTS_CATALOG;
   const [query, setQuery] = useState('');
 
   if (!isOpen) return null;
 
   const q = query.trim().toLowerCase();
-  const filteredProducts = PRODUCTS_CATALOG.filter(
+  const filteredProducts = allProducts.filter(
     (p) =>
       !q ||
-      (p.name?.EN || '').toLowerCase().includes(q) ||
-      (p.name?.AZ || '').toLowerCase().includes(q) ||
-      (p.name?.RU || '').toLowerCase().includes(q) ||
-      (p.hsCode || '').includes(q) ||
+      getLocalizedText(p.name, locale).toLowerCase().includes(q) ||
+      getLocalizedText(p.name, 'EN').toLowerCase().includes(q) ||
+      getLocalizedText(p.name, 'AZ').toLowerCase().includes(q) ||
+      String(p.hsCode || '').toLowerCase().includes(q) ||
       getLocalizedText(p.originRegion, locale).toLowerCase().includes(q) ||
       getLocalizedText(p.categoryLabel, locale).toLowerCase().includes(q)
   );

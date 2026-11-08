@@ -44,12 +44,24 @@ export interface LocalizedText {
 }
 
 export const getLocalizedText = (
-  textObj: LocalizedText | Record<string, string> | undefined | null,
+  textObj: LocalizedText | Record<string, string> | string | undefined | null,
   locale: Locale
 ): string => {
   if (!textObj) return '';
+  if (typeof textObj === 'string') return textObj;
+  if (typeof textObj === 'number') return String(textObj);
   const obj = textObj as Record<string, string>;
-  return obj[locale] || obj['EN'] || obj['AZ'] || obj['RU'] || '';
+  return (
+    obj[locale] ||
+    obj['EN'] ||
+    obj['AZ'] ||
+    obj['TR'] ||
+    obj['RU'] ||
+    obj['AR'] ||
+    obj['ES'] ||
+    Object.values(obj)[0] ||
+    ''
+  );
 };
 
 export interface ProductItem {

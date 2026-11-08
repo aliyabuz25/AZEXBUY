@@ -553,7 +553,9 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
                   )}
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-xs font-bold text-slate-800">{prod.name}</span>
+                      <span className="text-xs font-bold text-slate-800">
+                        {typeof prod.name === 'object' ? (prod.name.AZ || prod.name.EN || prod.name.TR || prod.slug) : prod.name}
+                      </span>
                       {prod.isFeatured && <Star className="w-3 h-3 text-amber-400 fill-amber-400" />}
                       <span className="text-[10px] text-slate-400">{prod.categoryName}</span>
                       {prod.hsCode && <span className="text-[10px] font-mono text-slate-400">HS: {prod.hsCode}</span>}
@@ -578,7 +580,7 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
                     className={`p-1 rounded transition-colors ${prod.isFeatured ? 'text-amber-400' : 'text-slate-300 hover:text-amber-400'}`} title="Öne Çıkar">
                     <Star className="w-3.5 h-3.5" />
                   </button>
-                  <button onClick={() => handleDeleteProd(prod.id, prod.name)}
+                  <button onClick={() => handleDeleteProd(prod.id, typeof prod.name === 'object' ? (prod.name.AZ || prod.name.EN || prod.slug) : prod.name)}
                     className="p-1 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded transition-colors">
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>

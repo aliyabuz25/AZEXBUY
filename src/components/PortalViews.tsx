@@ -51,13 +51,19 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
   ];
 
   const filtered = cmsProducts.filter((p: any) => {
-    const matchesCat = categoryFilter === 'all' || p.categoryKey === categoryFilter;
-    const matchesIncoterm = incotermFilter === 'ALL' || p.incoterms.includes(incotermFilter);
+    const matchesCat =
+      categoryFilter === 'all' ||
+      p.categoryKey === categoryFilter ||
+      p.categoryId === categoryFilter ||
+      p.categorySlug === categoryFilter;
+    const matchesIncoterm =
+      incotermFilter === 'ALL' ||
+      (Array.isArray(p.incoterms) && p.incoterms.includes(incotermFilter));
     const q = searchQuery.trim().toLowerCase();
     const matchesSearch =
       !q ||
       getLocalizedText(p.name, locale).toLowerCase().includes(q) ||
-      p.hsCode.includes(q) ||
+      String(p.hsCode || '').toLowerCase().includes(q) ||
       getLocalizedText(p.originRegion, locale).toLowerCase().includes(q);
     return matchesCat && matchesIncoterm && matchesSearch;
   });
@@ -209,7 +215,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
                     <div className="flex justify-between">
                       <span className="text-slate-400">Incoterms® 2020:</span>
                       <span className="font-semibold text-slate-800">
-                        {product.incoterms.join(' / ')}
+                        {Array.isArray(product.incoterms) ? product.incoterms.join(' / ') : 'FCA / FOB / CIF / DAP'}
                       </span>
                     </div>
                   </div>
@@ -332,7 +338,7 @@ export const ProductSpecModal: React.FC<ProductSpecModalProps> = ({
                   Available Compliance Certificates
                 </span>
                 <span className="font-semibold text-slate-800">
-                  {product.certifications.join(' · ')}
+                  {Array.isArray(product.certifications) ? product.certifications.join(' · ') : 'AQTA Phytosanitary · ISO 22000'}
                 </span>
               </div>
               <div className="text-right shrink-0">
@@ -340,7 +346,7 @@ export const ProductSpecModal: React.FC<ProductSpecModalProps> = ({
                   Incoterms® 2020
                 </span>
                 <span className="font-semibold text-slate-800">
-                  {product.incoterms.join(' · ')}
+                  {Array.isArray(product.incoterms) ? product.incoterms.join(' · ') : 'FCA · FOB · CIF · DAP'}
                 </span>
               </div>
             </div>

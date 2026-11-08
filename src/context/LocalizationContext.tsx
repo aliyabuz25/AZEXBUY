@@ -118,6 +118,91 @@ const LocalizationContext = createContext<LocalizationContextType>({
   refresh: () => {},
 });
 
+function normalizeProductItem(p: any): any {
+  if (!p) return null;
+  const toLoc = (val: any, fallback = ''): any => {
+    if (!val && !fallback) return { AZ: '', EN: '', TR: '', RU: '', AR: '', ES: '' };
+    if (typeof val === 'string' && (val.trim().startsWith('{') || val.trim().startsWith('['))) {
+      try { val = JSON.parse(val); } catch {}
+    }
+    if (val && typeof val === 'object' && !Array.isArray(val)) {
+      const base = val.EN || val.AZ || val.TR || val.RU || Object.values(val)[0] || fallback;
+      return {
+        AZ: val.AZ || base,
+        EN: val.EN || base,
+        TR: val.TR || base,
+        RU: val.RU || base,
+        AR: val.AR || base,
+        ES: val.ES || base,
+      };
+    }
+    const str = String(val || fallback || '');
+    return { AZ: str, EN: str, TR: str, RU: str, AR: str, ES: str };
+  };
+
+  const images = Array.isArray(p.images) ? p.images : (p.image ? [p.image] : []);
+  const defaultImg = 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800';
+  const imgUrl = p.image || (images.length > 0 ? images[0] : defaultImg);
+
+  const catSlug = String(p.categorySlug || p.categoryId || p.categoryKey || '').toLowerCase();
+  let categoryKey = 'agro';
+  if (catSlug.includes('agri') || catSlug.includes('food')) categoryKey = 'agro';
+  else if (catSlug.includes('text') || catSlug.includes('carpet')) categoryKey = 'textile';
+  else if (catSlug.includes('stone') || catSlug.includes('construct') || catSlug.includes('marm')) categoryKey = 'construction';
+  else if (catSlug.includes('metal') || catSlug.includes('steel') || catSlug.includes('pipe') || catSlug.includes('pack')) categoryKey = 'metals';
+  else if (catSlug.includes('chem') || catSlug.includes('urea') || catSlug.includes('fertil')) categoryKey = 'chemicals';
+  else if (['agro', 'textile', 'construction', 'metals', 'chemicals'].includes(p.categoryKey)) categoryKey = p.categoryKey;
+
+  const rawName = p.name;
+  const nameLoc = toLoc(rawName, p.slug || 'Commodity');
+  const shortDescLoc = toLoc(p.shortDesc || p.shortDescription || p.description, typeof rawName === 'string' ? rawName : nameLoc.EN);
+  const originLoc = toLoc(p.originRegion, 'Azerbaijan');
+  const packagingLoc = toLoc(p.packaging || p.packagingInfo, 'Export standard multi-layer packaging');
+  const catLabelStr = p.categoryName || (categoryKey === 'agro' ? 'Agriculture & Food' : categoryKey === 'textile' ? 'Textile & Carpets' : categoryKey === 'construction' ? 'Construction & Stone' : categoryKey === 'metals' ? 'Metals & Steel' : 'Chemicals & Urea');
+  const catLabelLoc = toLoc(p.categoryLabel || catLabelStr);
+
+  const certs = Array.isArray(p.certifications) && p.certifications.length > 0
+    ? p.certifications
+    : (Array.isArray(p.certificates) && p.certificates.length > 0 ? p.certificates : ['ISO 22000', 'AQTA Phytosanitary', 'EUR.1 / CT-1']);
+
+  const incoterms = Array.isArray(p.incoterms) && p.incoterms.length > 0
+    ? p.incoterms
+    : ['FCA', 'FOB', 'CIF', 'DAP'];
+
+  const specs = p.technicalSpecs || {};
+  const gradeSpecsStr = typeof specs === 'object' && Object.keys(specs).length > 0
+    ? Object.entries(specs).map(([k, v]) => `${k}: ${v}`).join(' | ')
+    : 'EU / International Export Grade A';
+  const gradeSpecsLoc = toLoc(p.gradeSpecs || gradeSpecsStr);
+
+  return {
+    id: String(p.id || p.slug || Math.random().toString(36).slice(2, 8)),
+    slug: p.slug || '',
+    featured: !!p.featured || !!p.isFeatured || !!p.is_featured,
+    isFeatured: !!p.featured || !!p.isFeatured || !!p.is_featured,
+    hsCode: String(p.hsCode || p.hs_code || ''),
+    categoryKey,
+    categoryId: p.categoryId,
+    categorySlug: p.categorySlug,
+    name: nameLoc,
+    categoryLabel: catLabelLoc,
+    shortDesc: shortDescLoc,
+    originRegion: originLoc,
+    image: imgUrl,
+    images: images.length > 0 ? images : [imgUrl],
+    minOrderQty: p.minOrderQty || p.moq || '1x 20ft FCL',
+    moq: p.minOrderQty || p.moq || '1x 20ft FCL',
+    annualCapacity: p.annualCapacity || (specs as any)?.['Annual Capacity'] || (specs as any)?.['Yearly Capacity'] || '10,000 MT',
+    verifiedSuppliersCount: Number(p.verifiedSuppliersCount) || (Number(p.sortOrder) > 0 ? Number(p.sortOrder) * 4 + 8 : 16),
+    incoterms,
+    certifications: certs,
+    certificates: certs,
+    leadTimeDays: p.leadTimeDays || '7–14 Days',
+    packaging: packagingLoc,
+    gradeSpecs: gradeSpecsLoc,
+  };
+}
+
 function applyContentOverrides(content: any) {
   const images = content?.images || {};
   const about = content?.about ? { ...ABOUT_PAGE_DEFAULT, ...content.about } : { ...ABOUT_PAGE_DEFAULT };
@@ -135,6 +220,9 @@ function applyContentOverrides(content: any) {
     if (images['ABOUT_SECTOR_5_IMAGE'] && about.sectors.items[5]) about.sectors.items[5].image = images['ABOUT_SECTOR_5_IMAGE'];
   }
 
+  const rawProducts = content?.products?.length ? content.products : PRODUCTS_DEFAULT;
+  const products = rawProducts.map(normalizeProductItem).filter(Boolean);
+
   return {
     heroImage: images['HERO_IMAGE'] || HERO_IMAGE_DEFAULT,
     buyerCardImage: images['BUYER_CARD_IMAGE'] || BUYER_CARD_DEFAULT,
@@ -142,7 +230,7 @@ function applyContentOverrides(content: any) {
     whyAzImage: images['WHY_AZERBAIJAN_IMAGE'] || WHY_AZ_DEFAULT,
     howItWorksBuyersImage: images['HOW_IT_WORKS_BUYERS_IMAGE'] || HOW_BUYERS_DEFAULT,
     howItWorksSellersImage: images['HOW_IT_WORKS_SELLERS_IMAGE'] || HOW_SELLERS_DEFAULT,
-    products: content?.products?.length ? content.products : PRODUCTS_DEFAULT,
+    products: products.length ? products : PRODUCTS_DEFAULT,
     services: content?.services?.length ? content.services : SERVICES_DEFAULT,
     buyerSteps: content?.buyer_steps?.length ? content.buyer_steps : BUYER_STEPS_DEFAULT,
     producerSteps: content?.producer_steps?.length ? content.producer_steps : PRODUCER_STEPS_DEFAULT,
@@ -177,8 +265,7 @@ export const LocalizationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       const cached = localStorage.getItem(CONTENT_CACHE_KEY);
       if (cached) {
         const parsed = JSON.parse(cached);
-        // Sanity check — products must have valid name objects
-        if (parsed?.products?.some((p: any) => !p?.name || typeof p.name !== 'object')) {
+        if (parsed?.products?.some((p: any) => !p?.name)) {
           localStorage.removeItem(CONTENT_CACHE_KEY);
           return applyContentOverrides({});
         }
@@ -193,11 +280,12 @@ export const LocalizationProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
   const fetchAndApply = async () => {
     try {
-      const [locRes, contentRes, srvRes, teamRes] = await Promise.all([
+      const [locRes, contentRes, srvRes, teamRes, prodRes] = await Promise.all([
         fetch(`${OCTO_API_BASE}/api/azexbuy/localization`),
         fetch(`${OCTO_API_BASE}/api/azexbuy/content`),
         fetch(`${OCTO_API_BASE}/api/azexbuy/services`),
         fetch(`${OCTO_API_BASE}/api/azexbuy/team`),
+        fetch(`${OCTO_API_BASE}/api/azexbuy/products`),
       ]);
       if (locRes.ok) {
         const overrides = await locRes.json();
@@ -213,6 +301,18 @@ export const LocalizationProvider: React.FC<{ children: React.ReactNode }> = ({ 
         if (Array.isArray(content?.cmsServices) && content.cmsServices.length > 0) {
           setCmsServices(content.cmsServices.filter((s: CmsService) => s.isActive));
         }
+      }
+      if (prodRes.ok) {
+        try {
+          const apiProds = await prodRes.json();
+          if (Array.isArray(apiProds) && apiProds.length > 0) {
+            const normalized = apiProds.map(normalizeProductItem).filter(Boolean);
+            setContentOverrides((prev: any) => ({
+              ...prev,
+              products: normalized,
+            }));
+          }
+        } catch {}
       }
       if (srvRes.ok) {
         try {

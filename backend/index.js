@@ -15,7 +15,7 @@ app.use(express.json());
 const db = new Database(path.join(__dirname, 'azexbuy.db'));
 
 // Admin DB — localization & content buradan okunur/yazılır
-const adminDbPath = '/Users/ali_new/Desktop/AZEXBUY/admin/data/azexbuy.db';
+const adminDbPath = process.env.ADMIN_DB_PATH || path.join(__dirname, '../admin/data/azexbuy.db');
 let adminDb = null;
 let adminDbRw = null;
 try {
