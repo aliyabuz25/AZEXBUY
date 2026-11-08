@@ -429,6 +429,36 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
                   ))}
                 </div>
               </div>
+              {/* Images */}
+              <div>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Məhsul Şəkilləri (Hər sətirdə bir URL)</label>
+                <textarea
+                  value={Array.isArray(newProd.images) ? newProd.images.join('\n') : ''}
+                  onChange={e => setNewProd(v => ({ ...v, images: e.target.value.split('\n').map((s: string) => s.trim()).filter(Boolean) }))}
+                  rows={2}
+                  className={taCls}
+                  placeholder="https://images.unsplash.com/..."
+                />
+                {Array.isArray(newProd.images) && newProd.images.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {newProd.images.map((imgUrl: string, idx: number) => (
+                      <div key={idx} className="w-14 h-14 bg-white border border-slate-200 rounded p-1 flex items-center justify-center overflow-hidden">
+                        <img src={imgUrl} alt="" className="max-w-full max-h-full object-contain" onError={e => { (e.target as HTMLElement).style.display = 'none'; }} />
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              {/* Certificates */}
+              <div>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Sertifikatlar (Vergüllə ayırın: GlobalGAP, ISO 22000, Halal)</label>
+                <input
+                  value={Array.isArray(newProd.certificates) ? newProd.certificates.join(', ') : ''}
+                  onChange={e => setNewProd(v => ({ ...v, certificates: e.target.value.split(',').map((s: string) => s.trim()).filter(Boolean) }))}
+                  className={inCls}
+                  placeholder="GlobalGAP, ISO 22000, Halal, HACCP"
+                />
+              </div>
               <div className="flex items-center gap-2">
                 <input type="checkbox" id="new-featured" checked={newProd.isFeatured} onChange={e => setNewProd(v => ({ ...v, isFeatured: e.target.checked }))} />
                 <label htmlFor="new-featured" className="text-xs text-slate-700">Ana səhifədə öne çıkar</label>
@@ -552,6 +582,36 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
                               </div>
                             ))}
                           </div>
+                        </div>
+                        {/* Images */}
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Məhsul Şəkilləri (Hər sətirdə bir URL)</label>
+                          <textarea
+                            value={Array.isArray(editingProd.images) ? editingProd.images.join('\n') : ''}
+                            onChange={e => setEditingProd((v: any) => ({ ...v, images: e.target.value.split('\n').map((s: string) => s.trim()).filter(Boolean) }))}
+                            rows={2}
+                            className={taCls}
+                            placeholder="https://images.unsplash.com/..."
+                          />
+                          {Array.isArray(editingProd.images) && editingProd.images.length > 0 && (
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              {editingProd.images.map((imgUrl: string, idx: number) => (
+                                <div key={idx} className="w-14 h-14 bg-white border border-slate-200 rounded p-1 flex items-center justify-center overflow-hidden">
+                                  <img src={imgUrl} alt="" className="max-w-full max-h-full object-contain" onError={e => { (e.target as HTMLElement).style.display = 'none'; }} />
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                        {/* Certificates */}
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Sertifikatlar (Vergüllə ayırın: GlobalGAP, ISO 22000, Halal)</label>
+                          <input
+                            value={Array.isArray(editingProd.certificates) ? editingProd.certificates.join(', ') : ''}
+                            onChange={e => setEditingProd((v: any) => ({ ...v, certificates: e.target.value.split(',').map((s: string) => s.trim()).filter(Boolean) }))}
+                            className={inCls}
+                            placeholder="GlobalGAP, ISO 22000, Halal, HACCP"
+                          />
                         </div>
                         {/* SEO */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

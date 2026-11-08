@@ -126,8 +126,9 @@ export const InboxView: React.FC<InboxViewProps> = () => {
     if (expandedId === id) setExpandedId(null);
   };
 
-  const pendingRfqs = rfqs.filter(r => r.status === 'Pending').length;
-  const pendingProducers = producers.filter(p => p.status === 'Pending').length;
+  const isPending = (s?: string) => s === 'Pending' || s === 'Yeni' || s === 'New' || s === 'İncelemede';
+  const pendingRfqs = rfqs.filter(r => isPending(r.status)).length;
+  const pendingProducers = producers.filter(p => isPending(p.status)).length;
 
   const filteredRfqs = rfqs.filter(r =>
     !search || r.buyerCompany.toLowerCase().includes(search.toLowerCase()) ||
@@ -227,14 +228,14 @@ export const InboxView: React.FC<InboxViewProps> = () => {
             )}
             {filteredRfqs.map(r => (
               <div key={r.id} className={`bg-white border rounded-xl overflow-hidden transition-shadow hover:shadow-sm ${
-                r.status === 'Pending' ? 'border-amber-200' : 'border-slate-200'
+                isPending(r.status) ? 'border-amber-200' : 'border-slate-200'
               }`}>
                 {/* Card header */}
                 <div className="px-5 py-4 flex items-center justify-between gap-3">
                   <button onClick={() => setExpandedId(expandedId === r.id ? null : r.id)}
                     className="flex items-center gap-4 flex-1 min-w-0 text-left">
                     <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
-                      r.status === 'Pending' ? 'bg-amber-50 border border-amber-200' : 'bg-blue-50 border border-blue-100'
+                      isPending(r.status) ? 'bg-amber-50 border border-amber-200' : 'bg-blue-50 border border-blue-100'
                     }`}>
                       <ShoppingCart className="w-4.5 h-4.5 text-[#0f3156]" />
                     </div>
@@ -367,14 +368,14 @@ export const InboxView: React.FC<InboxViewProps> = () => {
             )}
             {filteredProducers.map(p => (
               <div key={p.id} className={`bg-white border rounded-xl overflow-hidden transition-shadow hover:shadow-sm ${
-                p.status === 'Pending' ? 'border-amber-200' : 'border-slate-200'
+                isPending(p.status) ? 'border-amber-200' : 'border-slate-200'
               }`}>
                 {/* Card header */}
                 <div className="px-5 py-4 flex items-center justify-between gap-3">
                   <button onClick={() => setExpandedId(expandedId === p.id ? null : p.id)}
                     className="flex items-center gap-4 flex-1 min-w-0 text-left">
                     <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
-                      p.status === 'Pending' ? 'bg-amber-50 border border-amber-200' : 'bg-emerald-50 border border-emerald-100'
+                      isPending(p.status) ? 'bg-amber-50 border border-amber-200' : 'bg-emerald-50 border border-emerald-100'
                     }`}>
                       <Factory className="w-4.5 h-4.5 text-emerald-600" />
                     </div>

@@ -263,6 +263,17 @@ function kickAllClients(message: string) {
   sseClients.clear();
 }
 
+// 0. Health Check
+app.get(['/api/health', '/health'], (_req: Request, res: Response) => {
+  res.json({
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    redis: azRedis ? 'connected' : 'unavailable',
+    version: '2.4.3'
+  });
+});
+
 // 0. Login & Session Management
 app.post('/api/auth/login', async (req: Request, res: Response) => {
   const { username, password } = req.body;
@@ -1785,8 +1796,8 @@ export const APPLICATION_STATUSES = ['New', 'Under Review', 'Awaiting Info', 'Se
 app.get('/api/azexbuy/stats', async (_req: Request, res: Response) => {
   const rfqCount = (azexbuyDb.prepare('SELECT COUNT(*) as c FROM azexbuy_rfqs').get() as any).c;
   const producerCount = (azexbuyDb.prepare('SELECT COUNT(*) as c FROM azexbuy_producers').get() as any).c;
-  const pendingRfqs = (azexbuyDb.prepare("SELECT COUNT(*) as c FROM azexbuy_rfqs WHERE status IN ('Pending','New','Under Review')").get() as any).c;
-  const activeProducers = (azexbuyDb.prepare("SELECT COUNT(*) as c FROM azexbuy_producers WHERE status NOT IN ('Rejected','Closed')").get() as any).c;
+  const pendingRfqs = (azexbuyDb.prepare("SELECT COUNT(*) as c FROM azexbuy_rfqs WHERE status IN ('Pending','New','Under Review','Yeni','İncelemede')").get() as any).c;
+  const activeProducers = (azexbuyDb.prepare("SELECT COUNT(*) as c FROM azexbuy_producers WHERE status NOT IN ('Rejected','Closed','Kapatıldı')").get() as any).c;
   const categoryCount = (azexbuyDb.prepare('SELECT COUNT(*) as c FROM azexbuy_categories WHERE is_active = 1').get() as any).c;
   const productCount = (azexbuyDb.prepare('SELECT COUNT(*) as c FROM azexbuy_products WHERE is_active = 1').get() as any).c;
   const articleCount = (azexbuyDb.prepare('SELECT COUNT(*) as c FROM azexbuy_articles WHERE is_published = 1').get() as any).c;

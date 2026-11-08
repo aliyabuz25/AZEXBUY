@@ -88,9 +88,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
         if (rr.ok && pr.ok) {
           const rfqs = await rr.json();
           const producers = await pr.json();
+          const isPending = (s?: string) => s === 'Pending' || s === 'Yeni' || s === 'New' || s === 'İncelemede';
           setUnreadCounts({
-            rfqs: Array.isArray(rfqs) ? rfqs.filter((r: any) => r.status === 'Pending').length : 0,
-            producers: Array.isArray(producers) ? producers.filter((p: any) => p.status === 'Pending').length : 0,
+            rfqs: Array.isArray(rfqs) ? rfqs.filter((r: any) => isPending(r.status)).length : 0,
+            producers: Array.isArray(producers) ? producers.filter((p: any) => isPending(p.status)).length : 0,
           });
         } else {
           setUnreadCounts({ rfqs: 0, producers: 0 });

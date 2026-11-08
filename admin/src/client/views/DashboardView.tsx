@@ -107,10 +107,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ records = [], medi
   useEffect(() => { load(); }, []);
 
   // Stats
-  const rfqPending   = rfqs.filter(r => r.status === 'Pending').length;
-  const rfqCompleted = rfqs.filter(r => r.status === 'Completed').length;
-  const prodPending  = producers.filter(p => p.status === 'Pending').length;
-  const prodCompleted = producers.filter(p => p.status === 'Completed').length;
+  const isPending = (s?: string) => s === 'Pending' || s === 'Yeni' || s === 'New';
+  const isCompleted = (s?: string) => s === 'Completed' || s === 'Tamamlandı';
+  const isUnderReview = (s?: string) => s === 'Under Review' || s === 'İncelemede';
+  const isClosed = (s?: string) => s === 'Rejected' || s === 'Kapatıldı' || s === 'Closed';
+
+  const rfqPending   = rfqs.filter(r => isPending(r.status)).length;
+  const rfqCompleted = rfqs.filter(r => isCompleted(r.status)).length;
+  const prodPending  = producers.filter(p => isPending(p.status)).length;
+  const prodCompleted = producers.filter(p => isCompleted(p.status)).length;
 
   // Country distribution (top 5)
   const countryCounts: Record<string, number> = {};
@@ -120,16 +125,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ records = [], medi
 
   // Status distribution for bar chart
   const rfqStatusData = [
-    { label: 'Pending',  value: rfqPending },
-    { label: 'Review',   value: rfqs.filter(r => r.status === 'Under Review').length },
-    { label: 'Done',     value: rfqCompleted },
-    { label: 'Rejected', value: rfqs.filter(r => r.status === 'Rejected').length },
+    { label: 'Yeni / Pending',  value: rfqPending },
+    { label: 'İncelemede',      value: rfqs.filter(r => isUnderReview(r.status)).length },
+    { label: 'Tamamlandı',      value: rfqCompleted },
+    { label: 'Kapatıldı',       value: rfqs.filter(r => isClosed(r.status)).length },
   ];
   const prodStatusData = [
-    { label: 'Pending',  value: prodPending },
-    { label: 'Review',   value: producers.filter(p => p.status === 'Under Review').length },
-    { label: 'Done',     value: prodCompleted },
-    { label: 'Rejected', value: producers.filter(p => p.status === 'Rejected').length },
+    { label: 'Yeni / Pending',  value: prodPending },
+    { label: 'İncelemede',      value: producers.filter(p => isUnderReview(p.status)).length },
+    { label: 'Tamamlandı',      value: prodCompleted },
+    { label: 'Kapatıldı',       value: producers.filter(p => isClosed(p.status)).length },
   ];
 
   // Readiness score avg
