@@ -11,14 +11,16 @@ import {
   WHY_AZERBAIJAN_IMAGE as WHY_AZ_DEFAULT,
   HOW_IT_WORKS_BUYERS_IMAGE as HOW_BUYERS_DEFAULT,
   HOW_IT_WORKS_SELLERS_IMAGE as HOW_SELLERS_DEFAULT,
+  ABOUT_PAGE_DEFAULT,
+  DEFAULT_TEAM_MEMBERS,
 } from '../data/translations';
-import { CmsService } from '../types';
+import { CmsService, AboutPageContent, TeamMember } from '../types';
 
 // Same origin — both frontend and API run on the same port
 const OCTO_API_BASE = '';
 const LOC_CACHE_KEY = 'azexbuy_loc_override';
 const CONTENT_CACHE_KEY = 'azexbuy_content_override';
-const CACHE_VERSION = 'v3';
+const CACHE_VERSION = 'v4';
 const CACHE_VERSION_KEY = 'azexbuy_cache_ver';
 
 // Clear stale cache on version mismatch
@@ -79,6 +81,15 @@ type LocalizationContextType = {
   buyerSteps: typeof BUYER_STEPS_DEFAULT;
   producerSteps: typeof PRODUCER_STEPS_DEFAULT;
   cmsServices: CmsService[];
+  about: AboutPageContent;
+  team: TeamMember[];
+  contact: {
+    phone: string;
+    phoneAlt: string;
+    email: string;
+    emailAlt: string;
+    hours: string;
+  };
   refresh: () => void;
 };
 
@@ -95,11 +106,35 @@ const LocalizationContext = createContext<LocalizationContextType>({
   buyerSteps: BUYER_STEPS_DEFAULT,
   producerSteps: PRODUCER_STEPS_DEFAULT,
   cmsServices: [],
+  about: ABOUT_PAGE_DEFAULT,
+  team: DEFAULT_TEAM_MEMBERS,
+  contact: {
+    phone: '+994 (12) 404 85 00',
+    phoneAlt: '+994 (50) 290 45 00',
+    email: 'desk@azexbuy.az',
+    emailAlt: 'procurement@azexbuy.az',
+    hours: '09:00 – 18:00 (AZT / UTC+4)',
+  },
   refresh: () => {},
 });
 
 function applyContentOverrides(content: any) {
   const images = content?.images || {};
+  const about = content?.about ? { ...ABOUT_PAGE_DEFAULT, ...content.about } : { ...ABOUT_PAGE_DEFAULT };
+  
+  // Link customizable image keys to about sections
+  if (images['ABOUT_WHO_WE_ARE_IMAGE'] && about.whoWeAre) about.whoWeAre.image = images['ABOUT_WHO_WE_ARE_IMAGE'];
+  if (images['ABOUT_MISSION_IMAGE'] && about.missionVision) about.missionVision.missionImage = images['ABOUT_MISSION_IMAGE'];
+  if (images['ABOUT_VISION_IMAGE'] && about.missionVision) about.missionVision.visionImage = images['ABOUT_VISION_IMAGE'];
+  if (about.sectors?.items) {
+    if (images['ABOUT_SECTOR_0_IMAGE'] && about.sectors.items[0]) about.sectors.items[0].image = images['ABOUT_SECTOR_0_IMAGE'];
+    if (images['ABOUT_SECTOR_1_IMAGE'] && about.sectors.items[1]) about.sectors.items[1].image = images['ABOUT_SECTOR_1_IMAGE'];
+    if (images['ABOUT_SECTOR_2_IMAGE'] && about.sectors.items[2]) about.sectors.items[2].image = images['ABOUT_SECTOR_2_IMAGE'];
+    if (images['ABOUT_SECTOR_3_IMAGE'] && about.sectors.items[3]) about.sectors.items[3].image = images['ABOUT_SECTOR_3_IMAGE'];
+    if (images['ABOUT_SECTOR_4_IMAGE'] && about.sectors.items[4]) about.sectors.items[4].image = images['ABOUT_SECTOR_4_IMAGE'];
+    if (images['ABOUT_SECTOR_5_IMAGE'] && about.sectors.items[5]) about.sectors.items[5].image = images['ABOUT_SECTOR_5_IMAGE'];
+  }
+
   return {
     heroImage: images['HERO_IMAGE'] || HERO_IMAGE_DEFAULT,
     buyerCardImage: images['BUYER_CARD_IMAGE'] || BUYER_CARD_DEFAULT,
@@ -111,6 +146,14 @@ function applyContentOverrides(content: any) {
     services: content?.services?.length ? content.services : SERVICES_DEFAULT,
     buyerSteps: content?.buyer_steps?.length ? content.buyer_steps : BUYER_STEPS_DEFAULT,
     producerSteps: content?.producer_steps?.length ? content.producer_steps : PRODUCER_STEPS_DEFAULT,
+    about,
+    contact: {
+      phone: content?.contact?.phone || '+994 (12) 404 85 00',
+      phoneAlt: content?.contact?.phoneAlt || '+994 (50) 290 45 00',
+      email: content?.contact?.email || 'desk@azexbuy.az',
+      emailAlt: content?.contact?.emailAlt || 'procurement@azexbuy.az',
+      hours: content?.contact?.hours || '09:00 – 18:00 (AZT / UTC+4)',
+    },
   };
 }
 
@@ -146,13 +189,15 @@ export const LocalizationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   });
 
   const [cmsServices, setCmsServices] = useState<CmsService[]>([]);
+  const [team, setTeam] = useState<TeamMember[]>(DEFAULT_TEAM_MEMBERS);
 
   const fetchAndApply = async () => {
     try {
-      const [locRes, contentRes, srvRes] = await Promise.all([
+      const [locRes, contentRes, srvRes, teamRes] = await Promise.all([
         fetch(`${OCTO_API_BASE}/api/azexbuy/localization`),
         fetch(`${OCTO_API_BASE}/api/azexbuy/content`),
         fetch(`${OCTO_API_BASE}/api/azexbuy/services`),
+        fetch(`${OCTO_API_BASE}/api/azexbuy/team`),
       ]);
       if (locRes.ok) {
         const overrides = await locRes.json();
@@ -177,6 +222,14 @@ export const LocalizationProvider: React.FC<{ children: React.ReactNode }> = ({ 
           }
         } catch {}
       }
+      if (teamRes.ok) {
+        try {
+          const teamData = await teamRes.json();
+          if (Array.isArray(teamData) && teamData.length > 0) {
+            setTeam(teamData.filter((m: TeamMember) => m.isActive));
+          }
+        } catch {}
+      }
     } catch {}
   };
 
@@ -187,7 +240,7 @@ export const LocalizationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   }, []);
 
   return (
-    <LocalizationContext.Provider value={{ strings, ...contentOverrides, cmsServices, refresh: fetchAndApply }}>
+    <LocalizationContext.Provider value={{ strings, ...contentOverrides, cmsServices, team, refresh: fetchAndApply }}>
       {children}
     </LocalizationContext.Provider>
   );

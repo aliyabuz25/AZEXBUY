@@ -156,8 +156,8 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
-                    <div className="absolute top-2.5 left-2.5 bg-brandNavy/90 text-white text-[10px] font-mono font-bold px-2 py-0.5 rounded tabular-nums">
-                      HS: {product.hsCode}
+                    <div className="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-xs text-slate-700 text-[11px] font-semibold px-2.5 py-1 rounded shadow-xs border border-slate-200/80">
+                      {getLocalizedText(product.categoryLabel, locale)}
                     </div>
                     <button
                       type="button"
@@ -176,11 +176,14 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
                     </button>
                   </div>
 
-                  {/* Unboxed Metadata per Sovereign Design */}
-                  <div className="flex items-center gap-1.5 text-[11px] text-slate-500 mb-1">
-                    <span>{getLocalizedText(product.categoryLabel, locale)}</span>
+                  {/* Clean B2B Metadata */}
+                  <div className="flex items-center gap-2 text-[11px] text-slate-500 mb-1">
+                    <span className="font-semibold text-slate-600">HS {product.hsCode}</span>
                     <span>·</span>
-                    <span className="tabular-nums">{product.verifiedSuppliersCount} Verified Producers</span>
+                    <span className="text-emerald-700 font-medium inline-flex items-center gap-1">
+                      <i className="fa-solid fa-circle-check text-[10px] text-emerald-600"></i>
+                      <span className="tabular-nums">{product.verifiedSuppliersCount}</span> {locale === 'AZ' ? 'Təsdiqlənmiş İstehsalçı' : locale === 'TR' ? 'Onaylı Üretici' : locale === 'RU' ? 'Поставщиков' : 'Verified Producers'}
+                    </span>
                   </div>
 
                   <h3
@@ -205,7 +208,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-400">Incoterms® 2020:</span>
-                      <span className="font-mono font-semibold text-brandNavy">
+                      <span className="font-semibold text-slate-800">
                         {product.incoterms.join(' / ')}
                       </span>
                     </div>
@@ -276,9 +279,12 @@ export const ProductSpecModal: React.FC<ProductSpecModalProps> = ({
             <i className="fa-solid fa-xmark"></i>
           </button>
           <div className="absolute bottom-4 left-6 right-6 text-white">
-            <span className="text-[11px] font-mono uppercase tracking-wider text-amber-300 block">
-              HS CODE: {product.hsCode} · {getLocalizedText(product.categoryLabel, locale)}
-            </span>
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="bg-white/20 backdrop-blur-xs text-white text-[11px] font-semibold px-2 py-0.5 rounded">
+                {getLocalizedText(product.categoryLabel, locale)}
+              </span>
+              <span className="text-xs text-slate-200 font-medium">HS {product.hsCode}</span>
+            </div>
             <h3 className="text-2xl font-extrabold">{getLocalizedText(product.name, locale)}</h3>
           </div>
         </div>
@@ -333,7 +339,7 @@ export const ProductSpecModal: React.FC<ProductSpecModalProps> = ({
                 <span className="text-[10px] font-bold uppercase text-slate-400 block mb-0.5">
                   Incoterms® 2020
                 </span>
-                <span className="font-mono font-bold text-brandNavy">
+                <span className="font-semibold text-slate-800">
                   {product.incoterms.join(' · ')}
                 </span>
               </div>
@@ -521,7 +527,7 @@ export const DossiersView: React.FC<DossiersViewProps> = ({
                 <div key={rfq.id} className="bg-white border border-slate-200 rounded-lg p-5 shadow-xs space-y-4">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 gap-2">
                     <div>
-                      <span className="font-mono text-xs font-bold text-brandNavy">{rfq.id}</span>
+                      <span className="text-xs font-bold text-slate-700 tabular-nums">{rfq.id}</span>
                       <h3 className="text-sm font-extrabold text-slate-900">
                         {rfq.buyerCompany} ({rfq.country})
                       </h3>
@@ -603,7 +609,7 @@ export const DossiersView: React.FC<DossiersViewProps> = ({
                   >
                     <div>
                       <div className="flex items-center justify-between text-xs mb-2">
-                        <span className="font-mono font-bold text-brandNavy tabular-nums">
+                        <span className="font-bold text-slate-800 tabular-nums">
                           {rfq.id}
                         </span>
                         <div className="flex items-center gap-2">
@@ -752,7 +758,7 @@ export const DossiersView: React.FC<DossiersViewProps> = ({
                   >
                     <div>
                       <div className="flex items-center justify-between text-xs mb-2">
-                        <span className="font-mono font-bold text-brandGreen tabular-nums">
+                        <span className="font-bold text-brandGreen tabular-nums">
                           {app.id}
                         </span>
                         <div className="flex items-center gap-2">
@@ -904,7 +910,7 @@ export const DossiersView: React.FC<DossiersViewProps> = ({
                     />
                     <div>
                       <h4 className="text-xs font-bold text-slate-900">{getLocalizedText(p.name, locale)}</h4>
-                      <span className="text-[11px] text-slate-500 font-mono">HS: {p.hsCode}</span>
+                      <span className="text-xs text-slate-500 font-medium">HS {p.hsCode}</span>
                     </div>
                   </div>
                   <button
@@ -941,7 +947,7 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
   onOpenServiceApp,
   onNavigate,
 }) => {
-  const { strings, buyerSteps: cmsBuyerSteps, producerSteps: cmsProducerSteps, cmsServices, howItWorksBuyersImage, howItWorksSellersImage } = useLocalization();
+  const { strings, buyerSteps: cmsBuyerSteps, producerSteps: cmsProducerSteps, cmsServices, howItWorksBuyersImage, howItWorksSellersImage, contact } = useLocalization();
   const [selectedBuyerStep, setSelectedBuyerStep] = useState<number>(1);
   const [selectedProducerStep, setSelectedProducerStep] = useState<number>(1);
   const [contactSubmitted, setContactSubmitted] = useState(false);
@@ -1763,7 +1769,7 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
                     {route.transitDays}
                   </span>
                 </div>
-                <p className="text-xs font-mono text-slate-600">{route.path}</p>
+                <p className="text-xs font-medium text-slate-600">{route.path}</p>
                 <div className="text-[11px] text-slate-500 pt-1">
                   <strong>Mode:</strong> {route.mode} · <strong>Key Cargo:</strong>{' '}
                   {route.idealCommodities}
@@ -1798,14 +1804,14 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
                 <i className="fa-solid fa-phone text-brandNavy mt-0.5"></i>
                 <div>
                   <strong className="block text-slate-900">Direct Trade Desk Telephone</strong>
-                  <span className="tabular-nums">+994 (12) 404 85 00 · +994 (50) 290 45 00</span>
+                  <span className="tabular-nums">{contact.phone} {contact.phoneAlt ? `· ${contact.phoneAlt}` : ''}</span>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <i className="fa-solid fa-envelope text-brandNavy mt-0.5"></i>
                 <div>
                   <strong className="block text-slate-900">Official Electronic Dispatch</strong>
-                  <span>desk@azexbuy.az · procurement@azexbuy.az</span>
+                  <span>{contact.email} {contact.emailAlt ? `· ${contact.emailAlt}` : ''}</span>
                 </div>
               </div>
             </div>

@@ -144,7 +144,7 @@ const ShareModal: React.FC<{ article: AzArticle; onClose: () => void }> = ({ art
           ))}
         </div>
         <div className="flex items-center gap-2 rounded-xl p-2.5" style={{ backgroundColor: '#F8F8F3' }}>
-          <span className="truncate flex-1 font-mono" style={{ fontSize: '9px', color: '#7C857D' }}>{url}</span>
+          <span className="truncate flex-1 font-medium" style={{ fontSize: '9px', color: '#7C857D' }}>{url}</span>
           <button onClick={copy} className="shrink-0 px-3 py-1.5 rounded-lg cursor-pointer transition-colors"
             style={{ backgroundColor: copied ? '#00382D' : '#17231D', color: '#fff', fontSize: '11px', fontWeight: 700 }}>
             {copied ? 'Copied!' : 'Copy'}

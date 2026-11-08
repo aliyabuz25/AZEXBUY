@@ -34,6 +34,7 @@ const Empty: React.FC<{ message: string }> = ({ message }) => (
 const BLANK_ARTICLE = {
   title: '', slug: '', category: 'Export Guides', summary: '', content: '',
   coverImage: '', seoTitle: '', seoDescription: '', isPublished: false, author: 'AZEXBUY',
+  sourceName: '', sourceUrl: '', sourceCountry: '', sourcePeriod: '', pubStatus: 'draft',
 };
 
 // ─── Inline field helper ──────────────────────────────────────────────────────
@@ -181,7 +182,7 @@ export const ArticlesView: React.FC<ArticlesViewProps> = () => {
       {showNew && (
         <div className="bg-blue-50 border border-blue-200 rounded p-4 space-y-3">
           <h3 className="text-xs font-bold text-blue-800">Yeni Məqalə</h3>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Field label="Başlıq *">
               <input value={newArt.title}
                 onChange={e => setNewArt(v => ({ ...v, title: e.target.value, slug: slugify(e.target.value) }))}
@@ -217,6 +218,32 @@ export const ArticlesView: React.FC<ArticlesViewProps> = () => {
             <Field label="SEO Açıqlaması">
               <input value={newArt.seoDescription} onChange={e => setNewArt(v => ({ ...v, seoDescription: e.target.value }))}
                 className={inputCls} />
+            </Field>
+            <Field label="Mənbə Adı">
+              <input value={newArt.sourceName} onChange={e => setNewArt(v => ({ ...v, sourceName: e.target.value }))}
+                className={inputCls} placeholder="Məs: Dövlət Statistika Komitəsi / ITC Trademap" />
+            </Field>
+            <Field label="Mənbə URL">
+              <input value={newArt.sourceUrl} onChange={e => setNewArt(v => ({ ...v, sourceUrl: e.target.value }))}
+                className={inputCls} placeholder="https://trademap.org/..." />
+            </Field>
+            <Field label="Mənbə Ölkəsi">
+              <input value={newArt.sourceCountry} onChange={e => setNewArt(v => ({ ...v, sourceCountry: e.target.value }))}
+                className={inputCls} placeholder="Azərbaycan / Qlobal" />
+            </Field>
+            <Field label="Mənbə Dövrü / Tarixi">
+              <input value={newArt.sourcePeriod} onChange={e => setNewArt(v => ({ ...v, sourcePeriod: e.target.value }))}
+                className={inputCls} placeholder="2024–2025 I Rüb" />
+            </Field>
+            <Field label="Yayım Statusu">
+              <select value={newArt.pubStatus} onChange={e => {
+                const s = e.target.value;
+                setNewArt(v => ({ ...v, pubStatus: s, isPublished: s === 'published' }));
+              }} className={`${inputCls} bg-white`}>
+                <option value="draft">Taslak (Qaralama)</option>
+                <option value="published">Yayımlandı</option>
+                <option value="archived">Arxivləndi</option>
+              </select>
             </Field>
           </div>
 
@@ -315,7 +342,7 @@ export const ArticlesView: React.FC<ArticlesViewProps> = () => {
               {editingId === art.id ? (
                 /* ── EDIT MODE ── */
                 <>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <Field label="Başlıq">
                       <input value={editData.title || ''}
                         onChange={e => setEditData((v: any) => ({ ...v, title: e.target.value }))}
@@ -352,6 +379,36 @@ export const ArticlesView: React.FC<ArticlesViewProps> = () => {
                       <input value={editData.seoDescription || ''}
                         onChange={e => setEditData((v: any) => ({ ...v, seoDescription: e.target.value }))}
                         className={inputCls} />
+                    </Field>
+                    <Field label="Mənbə Adı">
+                      <input value={editData.sourceName || ''}
+                        onChange={e => setEditData((v: any) => ({ ...v, sourceName: e.target.value }))}
+                        className={inputCls} placeholder="Məs: Dövlət Statistika Komitəsi / ITC Trademap" />
+                    </Field>
+                    <Field label="Mənbə URL">
+                      <input value={editData.sourceUrl || ''}
+                        onChange={e => setEditData((v: any) => ({ ...v, sourceUrl: e.target.value }))}
+                        className={inputCls} placeholder="https://..." />
+                    </Field>
+                    <Field label="Mənbə Ölkəsi">
+                      <input value={editData.sourceCountry || ''}
+                        onChange={e => setEditData((v: any) => ({ ...v, sourceCountry: e.target.value }))}
+                        className={inputCls} placeholder="Azərbaycan" />
+                    </Field>
+                    <Field label="Mənbə Dövrü">
+                      <input value={editData.sourcePeriod || ''}
+                        onChange={e => setEditData((v: any) => ({ ...v, sourcePeriod: e.target.value }))}
+                        className={inputCls} placeholder="2024–2025" />
+                    </Field>
+                    <Field label="Yayım Statusu">
+                      <select value={editData.pubStatus || (editData.isPublished ? 'published' : 'draft')} onChange={e => {
+                        const s = e.target.value;
+                        setEditData((v: any) => ({ ...v, pubStatus: s, isPublished: s === 'published' }));
+                      }} className={`${inputCls} bg-white`}>
+                        <option value="draft">Taslak (Qaralama)</option>
+                        <option value="published">Yayımlandı</option>
+                        <option value="archived">Arxivləndi</option>
+                      </select>
                     </Field>
                   </div>
 

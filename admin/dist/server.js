@@ -710,6 +710,731 @@ function verifyJwt(token) {
   }
 }
 
+// ../src/data/translations.ts
+var ABOUT_PAGE_DEFAULT = {
+  whoWeAre: {
+    badge: {
+      AZ: "AZEXBUY \xB7 KORPORAT\u0130V PROF\u0130L",
+      EN: "AZEXBUY \xB7 CORPORATE PROFILE",
+      TR: "AZEXBUY \xB7 KURUMSAL PROF\u0130L",
+      RU: "AZEXBUY \xB7 \u041A\u041E\u0420\u041F\u041E\u0420\u0410\u0422\u0418\u0412\u041D\u042B\u0419 \u041F\u0420\u041E\u0424\u0418\u041B\u042C",
+      AR: "AZEXBUY \xB7 \u0627\u0644\u0645\u0644\u0641 \u0627\u0644\u0645\u0624\u0633\u0633\u064A",
+      ES: "AZEXBUY \xB7 PERFIL CORPORATIVO"
+    },
+    title: {
+      AZ: "Biz kimik?",
+      EN: "Who are we?",
+      TR: "Biz kimiz?",
+      RU: "\u041A\u0442\u043E \u043C\u044B?",
+      AR: "\u0645\u0646 \u0646\u062D\u0646\u061F",
+      ES: "\xBFQui\xE9nes somos?"
+    },
+    p1: {
+      AZ: "AZEXBUY, Az\u0259rbaycan istehsal\xE7\u0131lar\u0131 il\u0259 beyn\u0259lxalq bazarlar aras\u0131nda ticar\u0259t \u0259laq\u0259l\u0259rinin qurulmas\u0131na, yerli m\u0259hsullar\u0131n xarici al\u0131c\u0131lara t\u0259qdim edilm\u0259sin\u0259 v\u0259 beyn\u0259lxalq sat\u0131nalma imkanlar\u0131n\u0131n inki\u015Faf\u0131na d\u0259st\u0259k ver\u0259n ixracat v\u0259 sat\u0131nalma xidm\u0259tl\u0259ri \u015Firk\u0259tidir.",
+      EN: "AZEXBUY is an export and procurement services company supporting the establishment of trade relations between Azerbaijani producers and international markets, the presentation of local products to foreign buyers, and the development of international procurement opportunities.",
+      TR: "AZEXBUY, Azerbaycanl\u0131 \xFCreticilerle uluslararas\u0131 pazarlar aras\u0131nda ticari ili\u015Fkilerin kurulmas\u0131na, yerli \xFCr\xFCnlerin yabanc\u0131 al\u0131c\u0131lara sunulmas\u0131na ve uluslararas\u0131 sat\u0131n alma imk\xE2nlar\u0131n\u0131n geli\u015Fmesine destek veren ihracat ve sat\u0131n alma hizmetleri \u015Firketidir.",
+      RU: "AZEXBUY \u2014 \u043A\u043E\u043C\u043F\u0430\u043D\u0438\u044F \u044D\u043A\u0441\u043F\u043E\u0440\u0442\u043D\u044B\u0445 \u0438 \u0437\u0430\u043A\u0443\u043F\u043E\u0447\u043D\u044B\u0445 \u0443\u0441\u043B\u0443\u0433, \u0441\u043E\u0434\u0435\u0439\u0441\u0442\u0432\u0443\u044E\u0449\u0430\u044F \u0443\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044E \u0442\u043E\u0440\u0433\u043E\u0432\u044B\u0445 \u043E\u0442\u043D\u043E\u0448\u0435\u043D\u0438\u0439 \u043C\u0435\u0436\u0434\u0443 \u0430\u0437\u0435\u0440\u0431\u0430\u0439\u0434\u0436\u0430\u043D\u0441\u043A\u0438\u043C\u0438 \u043F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0438\u0442\u0435\u043B\u044F\u043C\u0438 \u0438 \u043C\u0435\u0436\u0434\u0443\u043D\u0430\u0440\u043E\u0434\u043D\u044B\u043C\u0438 \u0440\u044B\u043D\u043A\u0430\u043C\u0438.",
+      AR: "AZEXBUY \u0647\u064A \u0628\u0648\u0627\u0628\u0629 \u0648\u0634\u0631\u0643\u0629 \u062E\u062F\u0645\u0627\u062A \u062A\u0635\u062F\u064A\u0631 \u0648\u0634\u0631\u0627\u0621 \u062A\u062F\u0639\u0645 \u0628\u0646\u0627\u0621 \u0627\u0644\u0639\u0644\u0627\u0642\u0627\u062A \u0627\u0644\u062A\u062C\u0627\u0631\u064A\u0629 \u0628\u064A\u0646 \u0627\u0644\u0645\u0646\u062A\u062C\u064A\u0646 \u0627\u0644\u0623\u0630\u0631\u0628\u064A\u062C\u0627\u0646\u064A\u064A\u0646 \u0648\u0627\u0644\u0623\u0633\u0648\u0627\u0642 \u0627\u0644\u0639\u0627\u0644\u0645\u064A\u0629.",
+      ES: "AZEXBUY es una empresa de servicios de exportaci\xF3n y adquisiciones que apoya el establecimiento de relaciones comerciales entre productores azerbaiyanos y mercados internacionales."
+    },
+    p2: {
+      AZ: "F\u0259aliyy\u0259timiz yerli istehsal\xE7\u0131lar\u0131n xarici bazarlara \xE7\u0131x\u0131\u015F imkanlar\u0131n\u0131n ara\u015Fd\u0131r\u0131lmas\u0131n\u0131, potensial al\u0131c\u0131lar\u0131n tap\u0131lmas\u0131n\u0131, xarici \u015Firk\u0259tl\u0259r \xFC\xE7\xFCn Az\u0259rbaycanda uy\u011Fun istehsal\xE7\u0131 v\u0259 t\u0259dar\xFCk\xE7\xFCl\u0259rin m\xFC\u0259yy\u0259nl\u0259\u015Fdirilm\u0259sini, ticar\u0259t t\u0259klifl\u0259rinin toplanmas\u0131n\u0131 v\u0259 beyn\u0259lxalq ticar\u0259t prosesl\u0259rinin koordinasiyas\u0131n\u0131 \u0259hat\u0259 edir.",
+      EN: "Our activities encompass researching market access opportunities for local producers, finding potential buyers, identifying suitable manufacturers and suppliers in Azerbaijan for foreign companies, collecting trade offers, and coordinating international trade processes.",
+      TR: "Faaliyetimiz yerli \xFCreticilerin yabanc\u0131 pazarlara \xE7\u0131k\u0131\u015F imk\xE2nlar\u0131n\u0131n ara\u015Ft\u0131r\u0131lmas\u0131n\u0131, potansiyel al\u0131c\u0131lar\u0131n bulunmas\u0131n\u0131, yabanc\u0131 \u015Firketler i\xE7in Azerbaycan'da uygun \xFCretici ve tedarik\xE7ilerin belirlenmesini, ticari tekliflerin toplanmas\u0131n\u0131 ve uluslararas\u0131 ticaret s\xFCre\xE7lerinin koordinasyonunu kapsar.",
+      RU: "\u041D\u0430\u0448\u0430 \u0434\u0435\u044F\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C \u043E\u0445\u0432\u0430\u0442\u044B\u0432\u0430\u0435\u0442 \u0438\u0441\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u043D\u0438\u0435 \u0432\u043E\u0437\u043C\u043E\u0436\u043D\u043E\u0441\u0442\u0435\u0439 \u0432\u044B\u0445\u043E\u0434\u0430 \u043D\u0430 \u0437\u0430\u0440\u0443\u0431\u0435\u0436\u043D\u044B\u0435 \u0440\u044B\u043D\u043A\u0438, \u043F\u043E\u0438\u0441\u043A \u043F\u043E\u0442\u0435\u043D\u0446\u0438\u0430\u043B\u044C\u043D\u044B\u0445 \u043F\u043E\u043A\u0443\u043F\u0430\u0442\u0435\u043B\u0435\u0439, \u043E\u043F\u0440\u0435\u0434\u0435\u043B\u0435\u043D\u0438\u0435 \u043F\u043E\u0434\u0445\u043E\u0434\u044F\u0449\u0438\u0445 \u043F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0438\u0442\u0435\u043B\u0435\u0439 \u0434\u043B\u044F \u0438\u043D\u043E\u0441\u0442\u0440\u0430\u043D\u043D\u044B\u0445 \u043A\u043E\u043C\u043F\u0430\u043D\u0438\u0439 \u0438 \u043A\u043E\u043E\u0440\u0434\u0438\u043D\u0430\u0446\u0438\u044E \u043C\u0435\u0436\u0434\u0443\u043D\u0430\u0440\u043E\u0434\u043D\u044B\u0445 \u0442\u043E\u0440\u0433\u043E\u0432\u044B\u0445 \u043F\u0440\u043E\u0446\u0435\u0441\u0441\u043E\u0432.",
+      AR: "\u062A\u0634\u0645\u0644 \u0623\u0646\u0634\u0637\u062A\u0646\u0627 \u062F\u0631\u0627\u0633\u0629 \u0641\u0631\u0635 \u0627\u0644\u0648\u0635\u0648\u0644 \u0625\u0644\u0649 \u0627\u0644\u0623\u0633\u0648\u0627\u0642 \u0648\u062A\u062D\u062F\u064A\u062F \u0627\u0644\u0645\u0648\u0631\u062F\u064A\u0646 \u0627\u0644\u0645\u0639\u062A\u0645\u062F\u064A\u0646 \u0648\u062A\u0646\u0633\u064A\u0642 \u0627\u0644\u0645\u0639\u0627\u0645\u0644\u0627\u062A \u0627\u0644\u062A\u062C\u0627\u0631\u064A\u0629.",
+      ES: "Nuestras actividades abarcan la investigaci\xF3n de oportunidades de acceso al mercado, b\xFAsqueda de compradores y coordinaci\xF3n de procesos comerciales."
+    },
+    p3: {
+      AZ: "Biz istehsal\xE7\u0131lar, ixracat\xE7\u0131lar, idxalat\xE7\u0131lar v\u0259 beyn\u0259lxalq ticar\u0259t t\u0259r\u0259fl\u0259ri aras\u0131nda \u0259laq\u0259l\u0259rin qurulmas\u0131na k\xF6m\u0259k ed\u0259r\u0259k Az\u0259rbaycan m\u0259hsullar\u0131n\u0131n qlobal bazarlarda tan\u0131nmas\u0131na v\u0259 yeni i\u015F imkanlar\u0131n\u0131n yaranmas\u0131na t\xF6hf\u0259 verm\u0259yi h\u0259d\u0259fl\u0259yirik.",
+      EN: "By facilitating connections between producers, exporters, importers and international trade parties, we aim to contribute to the global recognition of Azerbaijani products and the creation of new business opportunities.",
+      TR: "Biz \xFCreticiler, ihracat\xE7\u0131lar, ithalat\xE7\u0131lar ve uluslararas\u0131 ticari taraflar aras\u0131nda ili\u015Fkilerin kurulmas\u0131na yard\u0131mc\u0131 olarak Azerbaycan \xFCr\xFCnlerinin k\xFCresel pazarlarda tan\u0131nmas\u0131na ve yeni i\u015F imk\xE2nlar\u0131n\u0131n olu\u015Fmas\u0131na katk\u0131 vermeyi hedefliyoruz.",
+      RU: "\u0421\u043E\u0434\u0435\u0439\u0441\u0442\u0432\u0443\u044F \u0443\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044E \u0441\u0432\u044F\u0437\u0435\u0439 \u043C\u0435\u0436\u0434\u0443 \u043F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0438\u0442\u0435\u043B\u044F\u043C\u0438, \u044D\u043A\u0441\u043F\u043E\u0440\u0442\u0451\u0440\u0430\u043C\u0438, \u0438\u043C\u043F\u043E\u0440\u0442\u0451\u0440\u0430\u043C\u0438 \u0438 \u043C\u0435\u0436\u0434\u0443\u043D\u0430\u0440\u043E\u0434\u043D\u044B\u043C\u0438 \u0442\u043E\u0440\u0433\u043E\u0432\u044B\u043C\u0438 \u0441\u0442\u043E\u0440\u043E\u043D\u0430\u043C\u0438, \u043C\u044B \u0441\u0442\u0440\u0435\u043C\u0438\u043C\u0441\u044F \u0441\u043F\u043E\u0441\u043E\u0431\u0441\u0442\u0432\u043E\u0432\u0430\u0442\u044C \u0433\u043B\u043E\u0431\u0430\u043B\u044C\u043D\u043E\u043C\u0443 \u043F\u0440\u0438\u0437\u043D\u0430\u043D\u0438\u044E \u0430\u0437\u0435\u0440\u0431\u0430\u0439\u0434\u0436\u0430\u043D\u0441\u043A\u043E\u0439 \u043F\u0440\u043E\u0434\u0443\u043A\u0446\u0438\u0438.",
+      AR: "\u0646\u0647\u062F\u0641 \u0625\u0644\u0649 \u062A\u0633\u0647\u064A\u0644 \u0627\u0644\u0631\u0648\u0627\u0628\u0637 \u0627\u0644\u062A\u062C\u0627\u0631\u064A\u0629 \u0648\u062A\u0648\u0633\u064A\u0639 \u062A\u0648\u0627\u062C\u062F \u0627\u0644\u0645\u0646\u062A\u062C\u0627\u062A \u0627\u0644\u0623\u0630\u0631\u0628\u064A\u062C\u0627\u0646\u064A\u0629 \u0639\u0644\u0649 \u0627\u0644\u062E\u0627\u0631\u0637\u0629 \u0627\u0644\u0639\u0627\u0644\u0645\u064A\u0629.",
+      ES: "Al facilitar conexiones comerciales, nuestro objetivo es contribuir al reconocimiento global de los productos azerbaiyanos."
+    },
+    pillars: [
+      {
+        icon: "fa-solid fa-arrow-up-right-dots",
+        label: {
+          AZ: "\u0130xracat\u0131n \u0130nki\u015Faf\u0131",
+          EN: "Export Development",
+          TR: "\u0130hracat\u0131n Geli\u015Ftirilmesi",
+          RU: "\u0420\u0430\u0437\u0432\u0438\u0442\u0438\u0435 \u044D\u043A\u0441\u043F\u043E\u0440\u0442\u0430",
+          AR: "\u062A\u0637\u0648\u064A\u0631 \u0627\u0644\u0635\u0627\u062F\u0631\u0627\u062A",
+          ES: "Desarrollo de Exportaciones"
+        }
+      },
+      {
+        icon: "fa-solid fa-magnifying-glass-location",
+        label: {
+          AZ: "Al\u0131c\u0131 v\u0259 T\u0259dar\xFCk\xE7\xFC Axtar\u0131\u015F\u0131",
+          EN: "Buyer & Supplier Search",
+          TR: "Al\u0131c\u0131 ve Tedarik\xE7i Arama",
+          RU: "\u041F\u043E\u0438\u0441\u043A \u043F\u043E\u043A\u0443\u043F\u0430\u0442\u0435\u043B\u0435\u0439 \u0438 \u043F\u043E\u0441\u0442\u0430\u0432\u0449\u0438\u043A\u043E\u0432",
+          AR: "\u0627\u0644\u0628\u062D\u062B \u0639\u0646 \u0627\u0644\u0645\u0634\u062A\u0631\u064A\u0646 \u0648\u0627\u0644\u0645\u0648\u0631\u062F\u064A\u0646",
+          ES: "B\xFAsqueda de Compradores y Proveedores"
+        }
+      },
+      {
+        icon: "fa-solid fa-arrows-spin",
+        label: {
+          AZ: "Ticar\u0259t Prosesl\u0259rinin Koordinasiyas\u0131",
+          EN: "Trade Process Coordination",
+          TR: "Ticaret S\xFCre\xE7lerinin Koordinasyonu",
+          RU: "\u041A\u043E\u043E\u0440\u0434\u0438\u043D\u0430\u0446\u0438\u044F \u0442\u043E\u0440\u0433\u043E\u0432\u044B\u0445 \u043F\u0440\u043E\u0446\u0435\u0441\u0441\u043E\u0432",
+          AR: "\u062A\u0646\u0633\u064A\u0642 \u0627\u0644\u0639\u0645\u0644\u064A\u0627\u062A \u0627\u0644\u062A\u062C\u0627\u0631\u064A\u0629",
+          ES: "Coordinaci\xF3n de Procesos Comerciales"
+        }
+      }
+    ],
+    image: "https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=800&q=80",
+    imageTagline: {
+      AZ: "Az\u0259rbaycan m\u0259hsullar\u0131n\u0131 beyn\u0259lxalq bazarlara da\u015F\u0131y\u0131r\u0131q",
+      EN: "Connecting Azerbaijani Products with Global Markets",
+      TR: "Azerbaycan \xFCr\xFCnlerini uluslararas\u0131 pazarlara ta\u015F\u0131yoruz",
+      RU: "\u0412\u044B\u0432\u043E\u0434\u0438\u043C \u0430\u0437\u0435\u0440\u0431\u0430\u0439\u0434\u0436\u0430\u043D\u0441\u043A\u0443\u044E \u043F\u0440\u043E\u0434\u0443\u043A\u0446\u0438\u044E \u043D\u0430 \u043C\u0435\u0436\u0434\u0443\u043D\u0430\u0440\u043E\u0434\u043D\u044B\u0435 \u0440\u044B\u043D\u043A\u0438",
+      AR: "\u0646\u0631\u0628\u0637 \u0627\u0644\u0645\u0646\u062A\u062C\u0627\u062A \u0627\u0644\u0623\u0630\u0631\u0628\u064A\u062C\u0627\u0646\u064A\u0629 \u0628\u0627\u0644\u0623\u0633\u0648\u0627\u0642 \u0627\u0644\u0639\u0627\u0644\u0645\u064A\u0629",
+      ES: "Conectando productos azerbaiyanos con los mercados mundiales"
+    },
+    imageSub: {
+      AZ: "Az\u0259rbaycan \u2192 Qlobal Bazarlar",
+      EN: "Azerbaijan \u2192 Global Markets",
+      TR: "Azerbaycan \u2192 K\xFCresel Pazarlar",
+      RU: "\u0410\u0437\u0435\u0440\u0431\u0430\u0439\u0434\u0436\u0430\u043D \u2192 \u041C\u0438\u0440\u043E\u0432\u044B\u0435 \u0440\u044B\u043D\u043A\u0438",
+      AR: "\u0623\u0630\u0631\u0628\u064A\u062C\u0627\u0646 \u2190 \u0627\u0644\u0623\u0633\u0648\u0627\u0642 \u0627\u0644\u0639\u0627\u0644\u0645\u064A\u0629",
+      ES: "Azerbaiy\xE1n \u2192 Mercados Globales"
+    }
+  },
+  activities: {
+    badge: {
+      AZ: "F\u018FAL\u0130YY\u018FT\u0130M\u0130Z",
+      EN: "OUR ACTIVITIES",
+      TR: "FAAL\u0130YET\u0130M\u0130Z",
+      RU: "\u041D\u0410\u0428\u0410 \u0414\u0415\u042F\u0422\u0415\u041B\u042C\u041D\u041E\u0421\u0422\u042C",
+      AR: "\u0623\u0646\u0634\u0637\u062A\u0646\u0627",
+      ES: "NUESTRAS ACTIVIDADES"
+    },
+    title: {
+      AZ: "N\u0259 il\u0259 m\u0259\u015F\u011Fuluq?",
+      EN: "What do we do?",
+      TR: "Ne ile me\u015Fgul\xFCz?",
+      RU: "\u0427\u0435\u043C \u043C\u044B \u0437\u0430\u043D\u0438\u043C\u0430\u0435\u043C\u0441\u044F?",
+      AR: "\u0645\u0627\u0630\u0627 \u0646\u0641\u0639\u0644\u061F",
+      ES: "\xBFQu\xE9 hacemos?"
+    },
+    desc: {
+      AZ: "AZEXBUY beyn\u0259lxalq ticar\u0259t \u0259m\u0259liyyatlar\u0131n\u0131n m\xFCxt\u0259lif m\u0259rh\u0259l\u0259l\u0259rind\u0259 \u015Firk\u0259tl\u0259r\u0259 d\u0259st\u0259k g\xF6st\u0259rir. F\u0259aliyy\u0259timiz h\u0259m Az\u0259rbaycan istehsal\xE7\u0131lar\u0131n\u0131n ixracat imkanlar\u0131n\u0131n inki\u015Faf\u0131n\u0131, h\u0259m d\u0259 xarici \u015Firk\u0259tl\u0259rin Az\u0259rbaycandan m\u0259hsul v\u0259 t\u0259dar\xFCk\xE7\xFC tapmas\u0131n\u0131 \u0259hat\u0259 edir.",
+      EN: "AZEXBUY supports companies at various stages of international trade operations. Our activities cover both developing export opportunities for Azerbaijani producers and helping foreign companies find products and suppliers in Azerbaijan.",
+      TR: "AZEXBUY uluslararas\u0131 ticaret i\u015Flemlerinin \xE7e\u015Fitli a\u015Famalar\u0131nda \u015Firketlere destek g\xF6sterir. Faaliyetimiz hem Azerbaycanl\u0131 \xFCreticilerin ihracat imk\xE2nlar\u0131n\u0131n geli\u015Ftirilmesini, hem de yabanc\u0131 \u015Firketlerin Azerbaycan'dan \xFCr\xFCn ve tedarik\xE7i bulmas\u0131n\u0131 kapsar.",
+      RU: "AZEXBUY \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u0438\u0432\u0430\u0435\u0442 \u043A\u043E\u043C\u043F\u0430\u043D\u0438\u0438 \u043D\u0430 \u0440\u0430\u0437\u043B\u0438\u0447\u043D\u044B\u0445 \u044D\u0442\u0430\u043F\u0430\u0445 \u043C\u0435\u0436\u0434\u0443\u043D\u0430\u0440\u043E\u0434\u043D\u044B\u0445 \u0442\u043E\u0440\u0433\u043E\u0432\u044B\u0445 \u043E\u043F\u0435\u0440\u0430\u0446\u0438\u0439, \u043E\u0445\u0432\u0430\u0442\u044B\u0432\u0430\u044F \u043A\u0430\u043A \u0440\u0430\u0437\u0432\u0438\u0442\u0438\u0435 \u044D\u043A\u0441\u043F\u043E\u0440\u0442\u043D\u044B\u0445 \u0432\u043E\u0437\u043C\u043E\u0436\u043D\u043E\u0441\u0442\u0435\u0439, \u0442\u0430\u043A \u0438 \u043F\u043E\u043C\u043E\u0449\u044C \u0438\u043D\u043E\u0441\u0442\u0440\u0430\u043D\u043D\u044B\u043C \u043A\u043E\u043C\u043F\u0430\u043D\u0438\u044F\u043C \u0432 \u043F\u043E\u0438\u0441\u043A\u0435 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u043E\u0432 \u0438 \u043F\u043E\u0441\u0442\u0430\u0432\u0449\u0438\u043A\u043E\u0432.",
+      AR: "\u062A\u062F\u0639\u0645 AZEXBUY \u0627\u0644\u0634\u0631\u0643\u0627\u062A \u0641\u064A \u0645\u062E\u062A\u0644\u0641 \u0645\u0631\u0627\u062D\u0644 \u0627\u0644\u062A\u062C\u0627\u0631\u0629 \u0627\u0644\u062F\u0648\u0644\u064A\u0629 \u0639\u0628\u0631 \u062F\u0631\u0627\u0633\u0627\u062A \u0627\u0644\u0633\u0648\u0642 \u0648\u0627\u0644\u062A\u0648\u0631\u064A\u062F \u0627\u0644\u0645\u0628\u0627\u0634\u0631.",
+      ES: "AZEXBUY apoya a las empresas en diversas etapas de las operaciones de comercio internacional."
+    },
+    items: [
+      {
+        icon: "fa-solid fa-globe",
+        color: "bg-blue-600",
+        title: {
+          AZ: "\u0130xracat\u0131n \u0130nki\u015Faf\u0131",
+          EN: "Export Development",
+          TR: "\u0130hracat\u0131n Geli\u015Ftirilmesi",
+          RU: "\u0420\u0430\u0437\u0432\u0438\u0442\u0438\u0435 \u044D\u043A\u0441\u043F\u043E\u0440\u0442\u0430",
+          AR: "\u062A\u0637\u0648\u064A\u0631 \u0627\u0644\u0635\u0627\u062F\u0631\u0627\u062A",
+          ES: "Desarrollo de Exportaciones"
+        },
+        desc: {
+          AZ: "Az\u0259rbaycanl\u0131 istehsal\xE7\u0131lar\u0131n m\u0259hsullar\u0131 \xFC\xE7\xFCn bazar imkanlar\u0131n\u0131n ara\u015Fd\u0131r\u0131lmas\u0131, h\u0259d\u0259f \xF6lk\u0259l\u0259rin m\xFC\u0259yy\u0259nl\u0259\u015Fdirilm\u0259si v\u0259 ixrac strategiyas\u0131n\u0131n formala\u015Fd\u0131r\u0131lmas\u0131na d\u0259st\u0259k.",
+          EN: "Market research for Azerbaijani producers, target country identification, and export strategy development support.",
+          TR: "Azerbaycanl\u0131 \xFCreticilerin \xFCr\xFCnleri i\xE7in pazar imk\xE2nlar\u0131n\u0131n ara\u015Ft\u0131r\u0131lmas\u0131, hedef \xFClkelerin belirlenmesi ve ihracat stratejisinin olu\u015Fturulmas\u0131na destek.",
+          RU: "\u0418\u0441\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u043D\u0438\u0435 \u0440\u044B\u043D\u043E\u0447\u043D\u044B\u0445 \u0432\u043E\u0437\u043C\u043E\u0436\u043D\u043E\u0441\u0442\u0435\u0439 \u0434\u043B\u044F \u0430\u0437\u0435\u0440\u0431\u0430\u0439\u0434\u0436\u0430\u043D\u0441\u043A\u0438\u0445 \u043F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0438\u0442\u0435\u043B\u0435\u0439, \u043E\u043F\u0440\u0435\u0434\u0435\u043B\u0435\u043D\u0438\u0435 \u0446\u0435\u043B\u0435\u0432\u044B\u0445 \u0441\u0442\u0440\u0430\u043D \u0438 \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0430 \u044D\u043A\u0441\u043F\u043E\u0440\u0442\u043D\u043E\u0439 \u0441\u0442\u0440\u0430\u0442\u0435\u0433\u0438\u0438.",
+          AR: "\u0623\u0628\u062D\u0627\u062B \u0627\u0644\u0633\u0648\u0642 \u0644\u0644\u0645\u0646\u062A\u062C\u064A\u0646 \u0627\u0644\u0623\u0630\u0631\u0628\u064A\u062C\u0627\u0646\u064A\u064A\u0646 \u0648\u062A\u062D\u062F\u064A\u062F \u0627\u0644\u0628\u0644\u062F\u0627\u0646 \u0627\u0644\u0645\u0633\u062A\u0647\u062F\u0641\u0629 \u0648\u0635\u064A\u0627\u063A\u0629 \u0627\u0633\u062A\u0631\u0627\u062A\u064A\u062C\u064A\u0627\u062A \u0627\u0644\u062A\u0635\u062F\u064A\u0631.",
+          ES: "Investigaci\xF3n de mercado para productores azerbaiyanos y desarrollo de estrategias de exportaci\xF3n."
+        }
+      },
+      {
+        icon: "fa-solid fa-handshake",
+        color: "bg-emerald-600",
+        title: {
+          AZ: "Beyn\u0259lxalq Al\u0131c\u0131lar\u0131n Tap\u0131lmas\u0131",
+          EN: "Finding International Buyers",
+          TR: "Uluslararas\u0131 Al\u0131c\u0131lar\u0131n Bulunmas\u0131",
+          RU: "\u041F\u043E\u0438\u0441\u043A \u043C\u0435\u0436\u0434\u0443\u043D\u0430\u0440\u043E\u0434\u043D\u044B\u0445 \u043F\u043E\u043A\u0443\u043F\u0430\u0442\u0435\u043B\u0435\u0439",
+          AR: "\u0625\u064A\u062C\u0627\u062F \u0645\u0634\u062A\u0631\u064A\u0646 \u062F\u0648\u0644\u064A\u064A\u0646",
+          ES: "B\xFAsqueda de Compradores Internacionales"
+        },
+        desc: {
+          AZ: "Yerli m\u0259hsullara uy\u011Fun xarici al\u0131c\u0131lar\u0131n, idxalat\xE7\u0131lar\u0131n, distrib\xFCtorlar\u0131n v\u0259 ticar\u0259t t\u0259r\u0259fda\u015Flar\u0131n\u0131n ara\u015Fd\u0131r\u0131lmas\u0131.",
+          EN: "Research and identification of foreign buyers, importers, distributors and trade partners suitable for local products.",
+          TR: "Yerli \xFCr\xFCnlere uygun yabanc\u0131 al\u0131c\u0131lar\u0131n, ithalat\xE7\u0131lar\u0131n, distrib\xFCt\xF6rlerin ve ticari taraflar\u0131n ara\u015Ft\u0131r\u0131lmas\u0131.",
+          RU: "\u041F\u043E\u0438\u0441\u043A \u0438 \u043F\u043E\u0434\u0431\u043E\u0440 \u0437\u0430\u0440\u0443\u0431\u0435\u0436\u043D\u044B\u0445 \u043F\u043E\u043A\u0443\u043F\u0430\u0442\u0435\u043B\u0435\u0439, \u0438\u043C\u043F\u043E\u0440\u0442\u0451\u0440\u043E\u0432, \u0434\u0438\u0441\u0442\u0440\u0438\u0431\u044C\u044E\u0442\u043E\u0440\u043E\u0432 \u0438 \u0442\u043E\u0440\u0433\u043E\u0432\u044B\u0445 \u043F\u0430\u0440\u0442\u043D\u0435\u0440\u043E\u0432.",
+          AR: "\u0627\u0644\u0628\u062D\u062B \u0648\u062A\u062D\u062F\u064A\u062F \u0627\u0644\u0645\u0634\u062A\u0631\u064A\u0646 \u0648\u0627\u0644\u0645\u0633\u062A\u0648\u0631\u062F\u064A\u0646 \u0648\u0627\u0644\u0645\u0648\u0632\u0639\u064A\u0646 \u0627\u0644\u0623\u062C\u0627\u0646\u0628 \u0627\u0644\u0645\u0646\u0627\u0633\u0628\u064A\u0646 \u0644\u0644\u0645\u0646\u062A\u062C\u0627\u062A \u0627\u0644\u0645\u062D\u0644\u064A\u0629.",
+          ES: "Identificaci\xF3n de compradores extranjeros, importadores y distribuidores adecuados para productos locales."
+        }
+      },
+      {
+        icon: "fa-solid fa-magnifying-glass",
+        color: "bg-violet-600",
+        title: {
+          AZ: "T\u0259dar\xFCk\xE7\xFC v\u0259 M\u0259hsul Axtar\u0131\u015F\u0131",
+          EN: "Supplier & Product Search",
+          TR: "Tedarik\xE7i ve \xDCr\xFCn Arama",
+          RU: "\u041F\u043E\u0438\u0441\u043A \u043F\u043E\u0441\u0442\u0430\u0432\u0449\u0438\u043A\u043E\u0432 \u0438 \u0442\u043E\u0432\u0430\u0440\u043E\u0432",
+          AR: "\u0627\u0644\u0628\u062D\u062B \u0639\u0646 \u0627\u0644\u0645\u0648\u0631\u062F\u064A\u0646 \u0648\u0627\u0644\u0645\u0646\u062A\u062C\u0627\u062A",
+          ES: "B\xFAsqueda de Proveedores y Productos"
+        },
+        desc: {
+          AZ: "Az\u0259rbaycandan m\u0259hsul almaq ist\u0259y\u0259n xarici \u015Firk\u0259tl\u0259r \xFC\xE7\xFCn uy\u011Fun istehsal\xE7\u0131 v\u0259 t\u0259dar\xFCk\xE7\xFCl\u0259rin m\xFC\u0259yy\u0259nl\u0259\u015Fdirilm\u0259si.",
+          EN: "Identifying suitable manufacturers and suppliers in Azerbaijan for foreign companies seeking to source products.",
+          TR: "Azerbaycan'dan \xFCr\xFCn almak isteyen yabanc\u0131 \u015Firketler i\xE7in uygun \xFCretici ve tedarik\xE7ilerin belirlenmesi.",
+          RU: "\u041E\u043F\u0440\u0435\u0434\u0435\u043B\u0435\u043D\u0438\u0435 \u043F\u043E\u0434\u0445\u043E\u0434\u044F\u0449\u0438\u0445 \u043F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0438\u0442\u0435\u043B\u0435\u0439 \u0438 \u043F\u043E\u0441\u0442\u0430\u0432\u0449\u0438\u043A\u043E\u0432 \u0432 \u0410\u0437\u0435\u0440\u0431\u0430\u0439\u0434\u0436\u0430\u043D\u0435 \u0434\u043B\u044F \u0438\u043D\u043E\u0441\u0442\u0440\u0430\u043D\u043D\u044B\u0445 \u043A\u043E\u043C\u043F\u0430\u043D\u0438\u0439.",
+          AR: "\u062A\u062D\u062F\u064A\u062F \u0627\u0644\u0645\u0635\u0646\u0639\u064A\u0646 \u0648\u0627\u0644\u0645\u0648\u0631\u062F\u064A\u0646 \u0627\u0644\u0645\u0648\u062B\u0648\u0642\u064A\u0646 \u0641\u064A \u0623\u0630\u0631\u0628\u064A\u062C\u0627\u0646 \u0644\u0644\u0634\u0631\u0643\u0627\u062A \u0627\u0644\u062F\u0648\u0644\u064A\u0629 \u0627\u0644\u0631\u0627\u063A\u0628\u0629 \u0641\u064A \u0627\u0644\u0634\u0631\u0627\u0621.",
+          ES: "Identificaci\xF3n de fabricantes y proveedores en Azerbaiy\xE1n para empresas extranjeras."
+        }
+      },
+      {
+        icon: "fa-solid fa-comments",
+        color: "bg-amber-600",
+        title: {
+          AZ: "Ticar\u0259t \u018Flaq\u0259l\u0259rinin Qurulmas\u0131",
+          EN: "Building Trade Relations",
+          TR: "Ticari \u0130li\u015Fkilerin Kurulmas\u0131",
+          RU: "\u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u0435 \u0442\u043E\u0440\u0433\u043E\u0432\u044B\u0445 \u0441\u0432\u044F\u0437\u0435\u0439",
+          AR: "\u0628\u0646\u0627\u0621 \u0627\u0644\u0639\u0644\u0627\u0642\u0627\u062A \u0627\u0644\u062A\u062C\u0627\u0631\u064A\u0629",
+          ES: "Construcci\xF3n de Relaciones Comerciales"
+        },
+        desc: {
+          AZ: "Al\u0131c\u0131 v\u0259 sat\u0131c\u0131 aras\u0131nda ilk t\u0259maslar\u0131n formala\u015Fd\u0131r\u0131lmas\u0131, kommersiya t\u0259klifl\u0259rinin toplanmas\u0131 v\u0259 dan\u0131\u015F\u0131qlar\u0131n koordinasiyas\u0131.",
+          EN: "Establishing initial contacts between buyers and sellers, collecting trade offers, and coordinating negotiations.",
+          TR: "Al\u0131c\u0131 ve sat\u0131c\u0131 aras\u0131nda ilk temaslar\u0131n olu\u015Fturulmas\u0131, ticari tekliflerin toplanmas\u0131 ve g\xF6r\xFC\u015Fmelerin koordinasyonu.",
+          RU: "\u0423\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u0435 \u043F\u0435\u0440\u0432\u0438\u0447\u043D\u044B\u0445 \u043A\u043E\u043D\u0442\u0430\u043A\u0442\u043E\u0432 \u043C\u0435\u0436\u0434\u0443 \u0441\u0442\u043E\u0440\u043E\u043D\u0430\u043C\u0438, \u0441\u0431\u043E\u0440 \u043A\u043E\u043C\u043C\u0435\u0440\u0447\u0435\u0441\u043A\u0438\u0445 \u043F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u0439 \u0438 \u043A\u043E\u043E\u0440\u0434\u0438\u043D\u0430\u0446\u0438\u044F \u043F\u0435\u0440\u0435\u0433\u043E\u0432\u043E\u0440\u043E\u0432.",
+          AR: "\u062A\u0623\u0633\u064A\u0633 \u0627\u0644\u0627\u062A\u0635\u0627\u0644\u0627\u062A \u0627\u0644\u0623\u0648\u0644\u064A\u0629 \u0648\u062C\u0645\u0639 \u0627\u0644\u0639\u0631\u0648\u0636 \u0627\u0644\u062A\u062C\u0627\u0631\u064A\u0629 \u0648\u062A\u0646\u0633\u064A\u0642 \u0627\u0644\u0645\u0641\u0627\u0648\u0636\u0627\u062A \u0628\u064A\u0646 \u0627\u0644\u0623\u0637\u0631\u0627\u0641.",
+          ES: "Establecimiento de contactos iniciales, recopilaci\xF3n de ofertas y coordinaci\xF3n de negociaciones."
+        }
+      },
+      {
+        icon: "fa-solid fa-truck",
+        color: "bg-cyan-600",
+        title: {
+          AZ: "\u0130xracat v\u0259 Logistika D\u0259st\u0259yi",
+          EN: "Export & Logistics Support",
+          TR: "\u0130hracat ve Lojistik Deste\u011Fi",
+          RU: "\u042D\u043A\u0441\u043F\u043E\u0440\u0442\u043D\u0430\u044F \u0438 \u043B\u043E\u0433\u0438\u0441\u0442\u0438\u0447\u0435\u0441\u043A\u0430\u044F \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0430",
+          AR: "\u062F\u0639\u0645 \u0627\u0644\u062A\u0635\u062F\u064A\u0631 \u0648\u0627\u0644\u062E\u062F\u0645\u0627\u062A \u0627\u0644\u0644\u0648\u062C\u0633\u062A\u064A\u0629",
+          ES: "Apoyo a la Exportaci\xF3n y Log\xEDstica"
+        },
+        desc: {
+          AZ: "Ticar\u0259t s\u0259n\u0259dl\u0259ri, sertifikatla\u015Fd\u0131rma, g\xF6mr\xFCk prosedurlar\u0131 v\u0259 beyn\u0259lxalq da\u015F\u0131ma m\u0259rh\u0259l\u0259l\u0259rinin koordinasiyas\u0131.",
+          EN: "Coordination of trade documentation, certification, customs procedures and international shipping stages.",
+          TR: "Ticari evraklar, sertifikasyon, g\xFCmr\xFCk prosed\xFCrleri ve uluslararas\u0131 ta\u015F\u0131ma a\u015Famalar\u0131n\u0131n koordinasyonu.",
+          RU: "\u041A\u043E\u043E\u0440\u0434\u0438\u043D\u0430\u0446\u0438\u044F \u0442\u043E\u0440\u0433\u043E\u0432\u043E\u0439 \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u0430\u0446\u0438\u0438, \u0441\u0435\u0440\u0442\u0438\u0444\u0438\u043A\u0430\u0446\u0438\u0438, \u0442\u0430\u043C\u043E\u0436\u0435\u043D\u043D\u044B\u0445 \u043F\u0440\u043E\u0446\u0435\u0434\u0443\u0440 \u0438 \u043C\u0435\u0436\u0434\u0443\u043D\u0430\u0440\u043E\u0434\u043D\u044B\u0445 \u043F\u0435\u0440\u0435\u0432\u043E\u0437\u043E\u043A.",
+          AR: "\u062A\u0646\u0633\u064A\u0642 \u0627\u0644\u0648\u062B\u0627\u0626\u0642 \u0627\u0644\u062A\u062C\u0627\u0631\u064A\u0629 \u0648\u0627\u0644\u0634\u0647\u0627\u062F\u0627\u062A \u0648\u0625\u062C\u0631\u0627\u0621\u0627\u062A \u0627\u0644\u062C\u0645\u0627\u0631\u0643 \u0648\u0627\u0644\u0634\u062D\u0646 \u0627\u0644\u062F\u0648\u0644\u064A.",
+          ES: "Coordinaci\xF3n de documentaci\xF3n comercial, certificaci\xF3n, aduanas y transporte internacional."
+        }
+      }
+    ]
+  },
+  missionVision: {
+    missionBadge: {
+      AZ: "M\u0130SS\u0130YAMIZ",
+      EN: "OUR MISSION",
+      TR: "M\u0130SYONUMUZ",
+      RU: "\u041D\u0410\u0428\u0410 \u041C\u0418\u0421\u0421\u0418\u042F",
+      AR: "\u0645\u0647\u0645\u062A\u0646\u0627",
+      ES: "NUESTRA MISI\xD3N"
+    },
+    missionTitle: {
+      AZ: "N\u0259 \xFC\xE7\xFCn var\u0131q?",
+      EN: "Why do we exist?",
+      TR: "Neden var\u0131z?",
+      RU: "\u0417\u0430\u0447\u0435\u043C \u043C\u044B \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u0443\u0435\u043C?",
+      AR: "\u0644\u0645\u0627\u0630\u0627 \u0646\u062D\u0646 \u0647\u0646\u0627\u061F",
+      ES: "\xBFPor qu\xE9 existimos?"
+    },
+    missionDesc: {
+      AZ: "Az\u0259rbaycan istehsal\xE7\u0131lar\u0131n\u0131n beyn\u0259lxalq bazarlara \xE7\u0131x\u0131\u015F imkanlar\u0131n\u0131 geni\u015Fl\u0259ndirm\u0259k, yerli m\u0259hsullar\u0131n xarici al\u0131c\u0131lara t\u0259qdim edilm\u0259sini asanla\u015Fd\u0131rmaq v\u0259 beyn\u0259lxalq \u015Firk\u0259tl\u0259rin Az\u0259rbaycandan etibarl\u0131 t\u0259dar\xFCk imkanlar\u0131n\u0131 ara\u015Fd\u0131rmas\u0131na k\xF6m\u0259k etm\u0259k.",
+      EN: "To expand market access opportunities for Azerbaijani producers, facilitate the presentation of local products to foreign buyers, and help international companies explore reliable sourcing options from Azerbaijan.",
+      TR: "Azerbaycanl\u0131 \xFCreticilerin uluslararas\u0131 pazarlara \xE7\u0131k\u0131\u015F imk\xE2nlar\u0131n\u0131 geni\u015Fletmek, yerli \xFCr\xFCnlerin yabanc\u0131 al\u0131c\u0131lara sunulmas\u0131n\u0131 kolayla\u015Ft\u0131rmak ve uluslararas\u0131 \u015Firketlerin Azerbaycan'dan g\xFCvenilir tedarik imk\xE2nlar\u0131n\u0131 ara\u015Ft\u0131rmas\u0131na yard\u0131mc\u0131 olmakt\u0131r.",
+      RU: "\u0420\u0430\u0441\u0448\u0438\u0440\u044F\u0442\u044C \u0432\u043E\u0437\u043C\u043E\u0436\u043D\u043E\u0441\u0442\u0438 \u0432\u044B\u0445\u043E\u0434\u0430 \u0430\u0437\u0435\u0440\u0431\u0430\u0439\u0434\u0436\u0430\u043D\u0441\u043A\u0438\u0445 \u043F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0438\u0442\u0435\u043B\u0435\u0439 \u043D\u0430 \u043C\u0435\u0436\u0434\u0443\u043D\u0430\u0440\u043E\u0434\u043D\u044B\u0435 \u0440\u044B\u043D\u043A\u0438, \u043E\u0431\u043B\u0435\u0433\u0447\u0430\u0442\u044C \u043F\u0440\u0435\u0434\u0441\u0442\u0430\u0432\u043B\u0435\u043D\u0438\u0435 \u043C\u0435\u0441\u0442\u043D\u043E\u0439 \u043F\u0440\u043E\u0434\u0443\u043A\u0446\u0438\u0438 \u0438\u043D\u043E\u0441\u0442\u0440\u0430\u043D\u043D\u044B\u043C \u043F\u043E\u043A\u0443\u043F\u0430\u0442\u0435\u043B\u044F\u043C \u0438 \u043F\u043E\u043C\u043E\u0433\u0430\u0442\u044C \u043C\u0435\u0436\u0434\u0443\u043D\u0430\u0440\u043E\u0434\u043D\u044B\u043C \u043A\u043E\u043C\u043F\u0430\u043D\u0438\u044F\u043C \u0438\u0441\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u0442\u044C \u043D\u0430\u0434\u0451\u0436\u043D\u044B\u0435 \u0432\u0430\u0440\u0438\u0430\u043D\u0442\u044B \u0437\u0430\u043A\u0443\u043F\u043E\u043A \u0438\u0437 \u0410\u0437\u0435\u0440\u0431\u0430\u0439\u0434\u0436\u0430\u043D\u0430.",
+      AR: "\u062A\u0648\u0633\u064A\u0639 \u0641\u0631\u0635 \u0627\u0644\u0648\u0635\u0648\u0644 \u0625\u0644\u0649 \u0627\u0644\u0623\u0633\u0648\u0627\u0642 \u0644\u0644\u0645\u0646\u062A\u062C\u064A\u0646 \u0627\u0644\u0645\u062D\u0644\u064A\u064A\u0646 \u0648\u062A\u0633\u0647\u064A\u0644 \u0627\u0644\u062A\u0648\u0631\u064A\u062F \u0644\u0644\u0634\u0631\u0643\u0627\u062A \u0627\u0644\u062F\u0648\u0644\u064A\u0629.",
+      ES: "Ampliar las oportunidades de acceso a los mercados para productores azerbaiyanos y facilitar adquisiciones fiables."
+    },
+    missionImage: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=800&q=80",
+    visionBadge: {
+      AZ: "V\u0130Z\u0130YAMIZ",
+      EN: "OUR VISION",
+      TR: "V\u0130ZYONUMUZ",
+      RU: "\u041D\u0410\u0428\u0415 \u0412\u0418\u0414\u0415\u041D\u0418\u0415",
+      AR: "\u0631\u0624\u064A\u062A\u0646\u0627",
+      ES: "NUESTRA VISI\xD3N"
+    },
+    visionTitle: {
+      AZ: "Hara gedirik?",
+      EN: "Where are we heading?",
+      TR: "Nereye gidiyoruz?",
+      RU: "\u041A\u0443\u0434\u0430 \u043C\u044B \u0434\u0432\u0438\u0436\u0435\u043C\u0441\u044F?",
+      AR: "\u0625\u0644\u0649 \u0623\u064A\u0646 \u0646\u062A\u062C\u0647\u061F",
+      ES: "\xBFHacia d\xF3nde nos dirigimos?"
+    },
+    visionDesc: {
+      AZ: "Az\u0259rbaycan m\u0259hsullar\u0131n\u0131n beyn\u0259lxalq ticar\u0259td\u0259 daha geni\u015F tan\u0131nmas\u0131na, yerli istehsal\xE7\u0131lar\u0131n qlobal bazarlarda yeni ticar\u0259t imkanlar\u0131 \u0259ld\u0259 etm\u0259sin\u0259 v\u0259 xarici \u015Firk\u0259tl\u0259rin Az\u0259rbaycan t\u0259dar\xFCk bazar\u0131na \xE7\u0131x\u0131\u015F\u0131n\u0131n asanla\u015Fmas\u0131na t\xF6hf\u0259 ver\u0259n etibarl\u0131 beyn\u0259lxalq ticar\u0259t xidm\u0259tl\u0259ri \u015Firk\u0259ti olmaq.",
+      EN: "To become a trusted international trade services company contributing to wider recognition of Azerbaijani products, helping local producers gain new commercial opportunities in global markets, and facilitating foreign companies' access to the Azerbaijani supply market.",
+      TR: "Azerbaycan \xFCr\xFCnlerinin uluslararas\u0131 ticarette daha geni\u015F tan\u0131nmas\u0131na, yerli \xFCreticilerin k\xFCresel pazarlarda yeni ticari imk\xE2nlar elde etmesine ve yabanc\u0131 \u015Firketlerin Azerbaycan tedarik pazar\u0131na \xE7\u0131k\u0131\u015F\u0131n\u0131n kolayla\u015Fmas\u0131na katk\u0131 veren g\xFCvenilir uluslararas\u0131 ticaret hizmetleri \u015Firketi olmakt\u0131r.",
+      RU: "\u0421\u0442\u0430\u0442\u044C \u043D\u0430\u0434\u0451\u0436\u043D\u043E\u0439 \u043A\u043E\u043C\u043F\u0430\u043D\u0438\u0435\u0439 \u043C\u0435\u0436\u0434\u0443\u043D\u0430\u0440\u043E\u0434\u043D\u044B\u0445 \u0442\u043E\u0440\u0433\u043E\u0432\u044B\u0445 \u0443\u0441\u043B\u0443\u0433, \u0441\u043F\u043E\u0441\u043E\u0431\u0441\u0442\u0432\u0443\u044E\u0449\u0435\u0439 \u0431\u043E\u043B\u0435\u0435 \u0448\u0438\u0440\u043E\u043A\u043E\u043C\u0443 \u043F\u0440\u0438\u0437\u043D\u0430\u043D\u0438\u044E \u0430\u0437\u0435\u0440\u0431\u0430\u0439\u0434\u0436\u0430\u043D\u0441\u043A\u043E\u0439 \u043F\u0440\u043E\u0434\u0443\u043A\u0446\u0438\u0438 \u0438 \u043E\u0431\u043B\u0435\u0433\u0447\u0435\u043D\u0438\u044E \u0434\u043E\u0441\u0442\u0443\u043F\u0430 \u0438\u043D\u043E\u0441\u0442\u0440\u0430\u043D\u043D\u044B\u0445 \u043A\u043E\u043C\u043F\u0430\u043D\u0438\u0439 \u043A \u0430\u0437\u0435\u0440\u0431\u0430\u0439\u0434\u0436\u0430\u043D\u0441\u043A\u043E\u043C\u0443 \u0440\u044B\u043D\u043A\u0443 \u043F\u043E\u0441\u0442\u0430\u0432\u043E\u043A.",
+      AR: "\u0623\u0646 \u0646\u0643\u0648\u0646 \u0627\u0644\u0628\u0648\u0627\u0628\u0629 \u0627\u0644\u0623\u0643\u062B\u0631 \u0645\u0648\u062B\u0648\u0642\u064A\u0629 \u0644\u0644\u062A\u062C\u0627\u0631\u0629 \u0627\u0644\u062F\u0648\u0644\u064A\u0629 \u0644\u0644\u0645\u0646\u062A\u062C\u0627\u062A \u0627\u0644\u0623\u0630\u0631\u0628\u064A\u062C\u0627\u0646\u064A\u0629 \u0639\u0627\u0644\u0645\u064A\u0627\u064B.",
+      ES: "Convertirnos en una empresa de servicios comerciales de referencia mundial para Azerbaiy\xE1n."
+    },
+    visionImage: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80"
+  },
+  serviceModel: {
+    badge: {
+      AZ: "X\u0130DM\u018FT MODEL\u0130M\u0130Z",
+      EN: "OUR SERVICE MODEL",
+      TR: "H\u0130ZMET MODEL\u0130M\u0130Z",
+      RU: "\u041D\u0410\u0428\u0410 \u041C\u041E\u0414\u0415\u041B\u042C \u041E\u0411\u0421\u041B\u0423\u0416\u0418\u0412\u0410\u041D\u0418\u042F",
+      AR: "\u0646\u0645\u0648\u0630\u062C \u062E\u062F\u0645\u0627\u062A\u0646\u0627",
+      ES: "NUESTRO MODELO DE SERVICIO"
+    },
+    title: {
+      AZ: "Biz nec\u0259 i\u015Fl\u0259yirik?",
+      EN: "How do we work?",
+      TR: "Biz nas\u0131l \xE7al\u0131\u015F\u0131yoruz?",
+      RU: "\u041A\u0430\u043A \u043C\u044B \u0440\u0430\u0431\u043E\u0442\u0430\u0435\u043C?",
+      AR: "\u0643\u064A\u0641 \u0646\u0639\u0645\u0644\u061F",
+      ES: "\xBFC\xF3mo trabajamos?"
+    },
+    desc: {
+      AZ: "AZEXBUY-un xidm\u0259t modeli m\xFC\u015Ft\u0259ril\u0259rin ehtiyac\u0131na \u0259saslanan f\u0259rdi yana\u015Fma \xFCz\u0259rind\u0259 qurulur. H\u0259r m\xFCraci\u0259t m\u0259hsulun x\xFCsusiyy\u0259tl\u0259rin\u0259, ist\u0259nil\u0259n h\u0259cm\u0259, h\u0259d\u0259f bazara v\u0259 ticar\u0259t \u015F\u0259rtl\u0259rin\u0259 uy\u011Fun qiym\u0259tl\u0259ndirilir.",
+      EN: "AZEXBUY's service model is built on an individual approach based on client needs. Each application is evaluated according to the product's characteristics, desired volume, target market and commercial terms.",
+      TR: "AZEXBUY'un hizmet modeli m\xFC\u015Fterilerin ihtiyac\u0131na dayal\u0131 bireysel yakla\u015F\u0131m \xFCzerine kurulur. Her ba\u015Fvuru \xFCr\xFCn\xFCn \xF6zelliklerine, istenen hacme, hedef pazara ve ticari \u015Fartlara uygun de\u011Ferlendirilir.",
+      RU: "\u0421\u0435\u0440\u0432\u0438\u0441\u043D\u0430\u044F \u043C\u043E\u0434\u0435\u043B\u044C AZEXBUY \u043F\u043E\u0441\u0442\u0440\u043E\u0435\u043D\u0430 \u043D\u0430 \u0438\u043D\u0434\u0438\u0432\u0438\u0434\u0443\u0430\u043B\u044C\u043D\u043E\u043C \u043F\u043E\u0434\u0445\u043E\u0434\u0435, \u043E\u0441\u043D\u043E\u0432\u0430\u043D\u043D\u043E\u043C \u043D\u0430 \u043F\u043E\u0442\u0440\u0435\u0431\u043D\u043E\u0441\u0442\u044F\u0445 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432. \u041A\u0430\u0436\u0434\u0430\u044F \u0437\u0430\u044F\u0432\u043A\u0430 \u043E\u0446\u0435\u043D\u0438\u0432\u0430\u0435\u0442\u0441\u044F \u0432 \u0441\u043E\u043E\u0442\u0432\u0435\u0442\u0441\u0442\u0432\u0438\u0438 \u0441 \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0430\u043C\u0438 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430, \u0436\u0435\u043B\u0430\u0435\u043C\u044B\u043C \u043E\u0431\u044A\u0451\u043C\u043E\u043C \u0438 \u0446\u0435\u043B\u0435\u0432\u044B\u043C \u0440\u044B\u043D\u043A\u043E\u043C.",
+      AR: "\u064A\u0642\u0648\u0645 \u0646\u0645\u0648\u0630\u062C\u0646\u0627 \u0639\u0644\u0649 \u0646\u0647\u062C \u0645\u062E\u0635\u0635 \u064A\u0631\u0627\u0639\u064A \u062D\u062C\u0645 \u0627\u0644\u0637\u0644\u0628 \u0648\u0627\u0644\u0645\u062A\u0637\u0644\u0628\u0627\u062A \u0627\u0644\u062A\u0646\u0638\u064A\u0645\u064A\u0629 \u0648\u0634\u0631\u0648\u0637 \u0627\u0644\u062A\u0633\u0644\u064A\u0645 \u0627\u0644\u062F\u0648\u0644\u064A\u0629.",
+      ES: "El modelo de servicio se basa en un enfoque individual adaptado a las necesidades de cada cliente."
+    },
+    steps: [
+      {
+        step: "01",
+        icon: "fa-solid fa-search",
+        color: "bg-blue-600",
+        borderColor: "border-blue-200",
+        bgColor: "bg-blue-50",
+        title: {
+          AZ: "Ara\u015Fd\u0131rma v\u0259 Qiym\u0259tl\u0259ndirm\u0259",
+          EN: "Research & Assessment",
+          TR: "Ara\u015Ft\u0131rma ve De\u011Ferlendirme",
+          RU: "\u0418\u0441\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u043D\u0438\u0435 \u0438 \u043E\u0446\u0435\u043D\u043A\u0430",
+          AR: "\u0627\u0644\u0628\u062D\u062B \u0648\u0627\u0644\u062A\u0642\u064A\u064A\u0645",
+          ES: "Investigaci\xF3n y Evaluaci\xF3n"
+        },
+        desc: {
+          AZ: "M\xFC\u015Ft\u0259ril\u0259rin t\u0259l\u0259bl\u0259rini, m\u0259hsulun texniki parametrl\u0259rini, bazar potensial\u0131n\u0131 v\u0259 uy\u011Fun t\u0259r\u0259fl\u0259ri ara\u015Fd\u0131r\u0131r\u0131q.",
+          EN: "We analyze customer needs, product specifications, market feasibility, and potential trading partners.",
+          TR: "M\xFC\u015Fterilerin ihtiyac\u0131n\u0131, \xFCr\xFCn\xFCn\xFC, pazar imk\xE2nlar\u0131n\u0131 ve potansiyel taraflar\u0131n\u0131 ara\u015Ft\u0131r\u0131yoruz.",
+          RU: "\u041C\u044B \u0430\u043D\u0430\u043B\u0438\u0437\u0438\u0440\u0443\u0435\u043C \u043F\u043E\u0442\u0440\u0435\u0431\u043D\u043E\u0441\u0442\u0438 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432, \u043F\u0430\u0440\u0430\u043C\u0435\u0442\u0440\u044B \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u0430, \u0432\u043E\u0437\u043C\u043E\u0436\u043D\u043E\u0441\u0442\u0438 \u0440\u044B\u043D\u043A\u0430 \u0438 \u043F\u043E\u0442\u0435\u043D\u0446\u0438\u0430\u043B\u044C\u043D\u044B\u0445 \u043F\u0430\u0440\u0442\u043D\u0435\u0440\u043E\u0432.",
+          AR: "\u0646\u062D\u0644\u0644 \u0645\u062A\u0637\u0644\u0628\u0627\u062A \u0627\u0644\u0639\u0645\u0644\u0627\u0621 \u0648\u0645\u0648\u0627\u0635\u0641\u0627\u062A \u0627\u0644\u0645\u0646\u062A\u062C\u0627\u062A \u0648\u0627\u0644\u0634\u0631\u0643\u0627\u0621 \u0627\u0644\u0645\u062D\u062A\u0645\u0644\u064A\u0646.",
+          ES: "Analizamos las necesidades del cliente, especificaciones del producto y viabilidad de mercado."
+        }
+      },
+      {
+        step: "02",
+        icon: "fa-solid fa-handshake",
+        color: "bg-emerald-600",
+        borderColor: "border-emerald-200",
+        bgColor: "bg-emerald-50",
+        title: {
+          AZ: "\u018Flaq\u0259 v\u0259 Kommersiya \u0130\u015F Birliyi",
+          EN: "Communication & Matchmaking",
+          TR: "\u0130leti\u015Fim ve Ticari \u0130\u015F Birli\u011Fi",
+          RU: "\u041A\u043E\u043C\u043C\u0443\u043D\u0438\u043A\u0430\u0446\u0438\u044F \u0438 \u0441\u043E\u0442\u0440\u0443\u0434\u043D\u0438\u0447\u0435\u0441\u0442\u0432\u043E",
+          AR: "\u0627\u0644\u062A\u0648\u0627\u0635\u0644 \u0648\u0627\u0644\u062A\u0639\u0627\u0648\u0646 \u0627\u0644\u062A\u062C\u0627\u0631\u064A",
+          ES: "Comunicaci\xF3n y Cooperaci\xF3n Comercial"
+        },
+        desc: {
+          AZ: "Uy\u011Fun t\u0259r\u0259fl\u0259ri m\xFC\u0259yy\u0259nl\u0259\u015Fdirir, \u0259laq\u0259l\u0259rin qurulmas\u0131na v\u0259 kommersiya t\u0259klifl\u0259rinin uzla\u015Fd\u0131r\u0131lmas\u0131na k\xF6m\u0259k edirik.",
+          EN: "We identify vetted counterparts, facilitate introductions, and assist in negotiating commercial terms.",
+          TR: "Uygun taraflar\u0131 belirliyor, ili\u015Fkilerin kurulmas\u0131na ve tekliflerin mutab\u0131k kal\u0131nmas\u0131na yard\u0131mc\u0131 oluyoruz.",
+          RU: "\u041C\u044B \u043E\u043F\u0440\u0435\u0434\u0435\u043B\u044F\u0435\u043C \u043F\u043E\u0434\u0445\u043E\u0434\u044F\u0449\u0438\u0435 \u0441\u0442\u043E\u0440\u043E\u043D\u044B, \u0441\u043E\u0434\u0435\u0439\u0441\u0442\u0432\u0443\u0435\u043C \u043A\u043E\u043D\u0442\u0430\u043A\u0442\u0430\u043C \u0438 \u0441\u043E\u0433\u043B\u0430\u0441\u043E\u0432\u0430\u043D\u0438\u044E \u043F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u0439.",
+          AR: "\u0646\u062D\u062F\u062F \u0627\u0644\u0623\u0637\u0631\u0627\u0641 \u0627\u0644\u0645\u0639\u062A\u0645\u062F\u0629 \u0648\u0646\u0633\u0627\u0639\u062F \u0641\u064A \u062A\u0642\u062F\u064A\u0645 \u0627\u0644\u0639\u0631\u0648\u0636 \u0648\u0627\u0644\u062A\u0641\u0627\u0648\u0636.",
+          ES: "Identificamos contrapartes adecuadas, facilitamos contactos y mediaci\xF3n comercial."
+        }
+      },
+      {
+        step: "03",
+        icon: "fa-solid fa-clipboard-check",
+        color: "bg-violet-600",
+        borderColor: "border-violet-200",
+        bgColor: "bg-violet-50",
+        title: {
+          AZ: "\u0130cra M\u0259rh\u0259l\u0259l\u0259rinin Koordinasiyas\u0131",
+          EN: "Execution & Logistics Coordination",
+          TR: "\u0130cra A\u015Famalar\u0131n\u0131n Koordinasyonu",
+          RU: "\u041A\u043E\u043E\u0440\u0434\u0438\u043D\u0430\u0446\u0438\u044F \u0438\u0441\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u044F",
+          AR: "\u062A\u0646\u0633\u064A\u0642 \u0627\u0644\u062A\u0646\u0641\u064A\u0630 \u0648\u0627\u0644\u0634\u062D\u0646",
+          ES: "Coordinaci\xF3n de Ejecuci\xF3n"
+        },
+        desc: {
+          AZ: "S\u0259n\u0259dl\u0259\u015Fm\u0259, sertifikasiya, g\xF6mr\xFCk v\u0259 da\u015F\u0131ma prosesl\u0259rinin ard\u0131c\u0131l icras\u0131na d\u0259st\u0259k veririk.",
+          EN: "We provide full coordination for trade documentation, certification, export customs, and logistics dispatch.",
+          TR: "Evrakland\u0131rma, uygunluk, g\xFCmr\xFCk ve lojistik s\xFCre\xE7lerinin koordinasyonuna destek veriyoruz.",
+          RU: "\u041C\u044B \u043E\u0431\u0435\u0441\u043F\u0435\u0447\u0438\u0432\u0430\u0435\u043C \u043A\u043E\u043E\u0440\u0434\u0438\u043D\u0430\u0446\u0438\u044E \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u0430\u0446\u0438\u0438, \u0441\u0435\u0440\u0442\u0438\u0444\u0438\u043A\u0430\u0446\u0438\u0438, \u0442\u0430\u043C\u043E\u0436\u043D\u0438 \u0438 \u043B\u043E\u0433\u0438\u0441\u0442\u0438\u0447\u0435\u0441\u043A\u0438\u0445 \u043F\u0440\u043E\u0446\u0435\u0441\u0441\u043E\u0432.",
+          AR: "\u0646\u0648\u0641\u0631 \u0627\u0644\u062F\u0639\u0645 \u0627\u0644\u0643\u0627\u0645\u0644 \u0644\u0644\u0648\u062B\u0627\u0626\u0642 \u0627\u0644\u062C\u0645\u0631\u0643\u064A\u0629 \u0648\u0634\u0647\u0627\u062F\u0627\u062A \u0627\u0644\u0645\u0646\u0634\u0623 \u0648\u0625\u062C\u0631\u0627\u0621\u0627\u062A \u0627\u0644\u0646\u0642\u0644.",
+          ES: "Damos soporte continuo en documentaci\xF3n, cumplimiento aduanero y transporte."
+        }
+      }
+    ],
+    bottomNote: {
+      AZ: "Biz yaln\u0131z t\u0259r\u0259fl\u0259ri tapmaqla kifay\u0259tl\u0259nmir, \u0259m\u0259kda\u015Fl\u0131\u011F\u0131n h\u0259r bir m\u0259rh\u0259l\u0259sind\u0259 m\u0259lumat m\xFCbadil\u0259sini v\u0259 prosesl\u0259rin \u015F\u0259ffaf koordinasiyas\u0131n\u0131 t\u0259min edirik.",
+      EN: "We do not simply connect parties; we actively coordinate the information exchange, commercial offers, and execution milestones throughout the entire transaction lifecycle.",
+      TR: "Biz yaln\u0131z taraflar\u0131 bulu\u015Fturmakla yetinmeyerek, i\u015F birli\u011Finin \xE7e\u015Fitli a\u015Famalar\u0131nda bilgi al\u0131\u015Fveri\u015Finin, ticari tekliflerin ve s\xFCre\xE7lerin koordinasyonuna destek veriyoruz.",
+      RU: "\u041C\u044B \u043D\u0435 \u043F\u0440\u043E\u0441\u0442\u043E \u0441\u043E\u0435\u0434\u0438\u043D\u044F\u0435\u043C \u0441\u0442\u043E\u0440\u043E\u043D\u044B, \u043D\u043E \u0438 \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u0438\u0432\u0430\u0435\u043C \u043E\u0431\u043C\u0435\u043D \u0438\u043D\u0444\u043E\u0440\u043C\u0430\u0446\u0438\u0435\u0439, \u0441\u043E\u0433\u043B\u0430\u0441\u043E\u0432\u0430\u043D\u0438\u0435 \u043F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u0439 \u0438 \u043A\u043E\u043E\u0440\u0434\u0438\u043D\u0430\u0446\u0438\u044E \u043D\u0430 \u0432\u0441\u0435\u0445 \u044D\u0442\u0430\u043F\u0430\u0445.",
+      AR: "\u0644\u0627 \u0646\u0643\u062A\u0641\u064A \u0628\u0627\u0644\u0631\u0628\u0637 \u0628\u064A\u0646 \u0627\u0644\u0623\u0637\u0631\u0627\u0641 \u0628\u0644 \u0646\u0648\u0641\u0631 \u0627\u0644\u0645\u062A\u0627\u0628\u0639\u0629 \u0627\u0644\u0643\u0627\u0645\u0644\u0629 \u0648\u062A\u0646\u0633\u064A\u0642 \u0627\u0644\u062A\u0648\u0631\u064A\u062F \u062E\u0637\u0648\u0629 \u0628\u062E\u0637\u0648\u0629.",
+      ES: "No solo conectamos partes, sino que coordinamos activamente cada etapa del proceso comercial."
+    }
+  },
+  sectors: {
+    badge: {
+      AZ: "F\u018FAL\u0130YY\u018FT SAH\u018FL\u018FR\u0130",
+      EN: "OUR SECTORS",
+      TR: "FAAL\u0130YET ALANLARIMIZ",
+      RU: "\u041D\u0410\u0428\u0418 \u0421\u0415\u041A\u0422\u041E\u0420\u042B",
+      AR: "\u0627\u0644\u0642\u0637\u0627\u0639\u0627\u062A \u0627\u0644\u0645\u0633\u062A\u0647\u062F\u0641\u0629",
+      ES: "NUESTROS SECTORES"
+    },
+    title: {
+      AZ: "M\xFCxt\u0259lif sektorlar \xFCzr\u0259 beyn\u0259lxalq ticar\u0259t imkanlar\u0131",
+      EN: "International trade opportunities across diverse sectors",
+      TR: "\xC7e\u015Fitli sekt\xF6rler \xFCzere uluslararas\u0131 ticaret imk\xE2nlar\u0131",
+      RU: "\u041C\u0435\u0436\u0434\u0443\u043D\u0430\u0440\u043E\u0434\u043D\u044B\u0435 \u0442\u043E\u0440\u0433\u043E\u0432\u044B\u0435 \u0432\u043E\u0437\u043C\u043E\u0436\u043D\u043E\u0441\u0442\u0438 \u0432 \u0440\u0430\u0437\u043B\u0438\u0447\u043D\u044B\u0445 \u0441\u0435\u043A\u0442\u043E\u0440\u0430\u0445",
+      AR: "\u0641\u0631\u0635 \u062A\u062C\u0627\u0631\u064A\u0629 \u062F\u0648\u0644\u064A\u0629 \u0639\u0628\u0631 \u0645\u062E\u062A\u0644\u0641 \u0627\u0644\u0642\u0637\u0627\u0639\u0627\u062A \u0627\u0644\u0635\u0646\u0627\u0639\u064A\u0629 \u0648\u0627\u0644\u0632\u0631\u0627\u0639\u064A\u0629",
+      ES: "Oportunidades de comercio internacional en diversos sectores"
+    },
+    desc: {
+      AZ: "AZEXBUY m\xFCxt\u0259lif m\u0259hsul v\u0259 s\u0259naye sah\u0259l\u0259ri \xFCzr\u0259 yerli istehsal\xE7\u0131larla xarici al\u0131c\u0131lar aras\u0131nda ticar\u0259t \u0259laq\u0259l\u0259rini inki\u015Faf etdirir.",
+      EN: "AZEXBUY promotes export and supply matchmaking across key manufacturing and agricultural commodity sectors in Azerbaijan.",
+      TR: "AZEXBUY \xE7e\u015Fitli \xFCr\xFCn ve sanayi y\xF6nleri \xFCzere yerli \xFCreticilerle yabanc\u0131 al\u0131c\u0131lar aras\u0131nda i\u015F birli\u011Fi imk\xE2nlar\u0131n\u0131n ara\u015Ft\u0131r\u0131lmas\u0131n\u0131 hedefler.",
+      RU: "AZEXBUY \u0438\u0441\u0441\u043B\u0435\u0434\u0443\u0435\u0442 \u0432\u043E\u0437\u043C\u043E\u0436\u043D\u043E\u0441\u0442\u0438 \u0441\u043E\u0442\u0440\u0443\u0434\u043D\u0438\u0447\u0435\u0441\u0442\u0432\u0430 \u043C\u0435\u0436\u0434\u0443 \u043C\u0435\u0441\u0442\u043D\u044B\u043C\u0438 \u043F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0438\u0442\u0435\u043B\u044F\u043C\u0438 \u0438 \u0438\u043D\u043E\u0441\u0442\u0440\u0430\u043D\u043D\u044B\u043C\u0438 \u043F\u043E\u043A\u0443\u043F\u0430\u0442\u0435\u043B\u044F\u043C\u0438 \u043F\u043E \u043A\u043B\u044E\u0447\u0435\u0432\u044B\u043C \u043E\u0442\u0440\u0430\u0441\u043B\u044F\u043C.",
+      AR: "\u062A\u0631\u0628\u0637 AZEXBUY \u0628\u064A\u0646 \u0627\u0644\u0645\u0646\u062A\u062C\u064A\u0646 \u0627\u0644\u0645\u062D\u0644\u064A\u064A\u0646 \u0648\u0627\u0644\u0645\u0634\u062A\u0631\u064A\u0646 \u0627\u0644\u0623\u062C\u0627\u0646\u0628 \u0641\u064A \u0642\u0637\u0627\u0639\u0627\u062A \u0627\u0633\u062A\u0631\u0627\u062A\u064A\u062C\u064A\u0629 \u0645\u062A\u0639\u062F\u062F\u0629.",
+      ES: "AZEXBUY fomenta la cooperaci\xF3n entre productores locales y compradores internacionales."
+    },
+    items: [
+      {
+        icon: "fa-solid fa-wheat-awn",
+        color: "bg-green-700",
+        title: { AZ: "K\u0259nd T\u0259s\u0259rr\xFCfat\u0131 v\u0259 Qida", EN: "Agriculture & Food", TR: "Tar\u0131m ve G\u0131da", RU: "\u0421\u0435\u043B\u044C\u0441\u043A\u043E\u0435 \u0445\u043E\u0437\u044F\u0439\u0441\u0442\u0432\u043E \u0438 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u044B" },
+        desc: { AZ: "F\u0131nd\u0131q, nar, xurma, pomidor, meyv\u0259-t\u0259r\u0259v\u0259z v\u0259 emal olunmu\u015F qida m\u0259hsullar\u0131.", EN: "Hazelnuts, pomegranates, persimmons, fresh fruits, vegetables, and processed food products.", TR: "Meyveler, f\u0131nd\u0131k, tah\u0131llar, i\u015Flenmi\u015F g\u0131dalar ve tar\u0131m \xFCr\xFCnleri.", RU: "\u0424\u0443\u043D\u0434\u0443\u043A, \u0433\u0440\u0430\u043D\u0430\u0442\u044B, \u0445\u0443\u0440\u043C\u0430, \u0442\u043E\u043C\u0430\u0442\u044B \u0438 \u043F\u0435\u0440\u0435\u0440\u0430\u0431\u043E\u0442\u0430\u043D\u043D\u0430\u044F \u0441\u0435\u043B\u044C\u0445\u043E\u0437\u043F\u0440\u043E\u0434\u0443\u043A\u0446\u0438\u044F." },
+        image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&q=80"
+      },
+      {
+        icon: "fa-solid fa-industry",
+        color: "bg-blue-700",
+        title: { AZ: "Emal S\u0259nayesi", EN: "Processing Industry", TR: "\u0130\u015Fleme Sanayisi", RU: "\u041F\u0435\u0440\u0435\u0440\u0430\u0431\u0430\u0442\u044B\u0432\u0430\u044E\u0449\u0430\u044F \u043F\u0440\u043E\u043C\u044B\u0448\u043B\u0435\u043D\u043D\u043E\u0441\u0442\u044C" },
+        desc: { AZ: "Qida emal\u0131, konservl\u0259r, \u015Fir\u0259l\u0259r v\u0259 s\u0259naye qabla\u015Fd\u0131rma materiallar\u0131.", EN: "Juice concentrates, canned goods, aseptic purees, and food packaging solutions.", TR: "G\u0131da i\u015Fleme, ambalajlama ve sanayi \xFCretimi.", RU: "\u041F\u0438\u0449\u0435\u0432\u0430\u044F \u043F\u0435\u0440\u0435\u0440\u0430\u0431\u043E\u0442\u043A\u0430, \u043A\u043E\u043D\u0441\u0435\u0440\u0432\u0430\u0446\u0438\u044F, \u0441\u043E\u043A\u0438 \u0438 \u043F\u0440\u043E\u043C\u044B\u0448\u043B\u0435\u043D\u043D\u0430\u044F \u0442\u0430\u0440\u0430." },
+        image: "https://images.unsplash.com/photo-1565793298595-6a879b1d9492?w=400&q=80"
+      },
+      {
+        icon: "fa-solid fa-building",
+        color: "bg-slate-600",
+        title: { AZ: "Tikinti Materiallar\u0131", EN: "Construction Materials", TR: "\u0130n\u015Faat Malzemeleri", RU: "\u0421\u0442\u0440\u043E\u0438\u0442\u0435\u043B\u044C\u043D\u044B\u0435 \u043C\u0430\u0442\u0435\u0440\u0438\u0430\u043B\u044B" },
+        desc: { AZ: "Gips, bentonit, t\u0259bii da\u015F, m\u0259rm\u0259r, sement v\u0259 tikinti qar\u0131\u015F\u0131qlar\u0131.", EN: "Gypsum, bentonite, natural stone, marble, cement, and dry construction mixtures.", TR: "Mermer, granit, kire\xE7ta\u015F\u0131 ve in\u015Faat ta\u015Flar\u0131.", RU: "\u0413\u0438\u043F\u0441, \u0431\u0435\u043D\u0442\u043E\u043D\u0438\u0442, \u043F\u0440\u0438\u0440\u043E\u0434\u043D\u044B\u0439 \u043A\u0430\u043C\u0435\u043D\u044C, \u0446\u0435\u043C\u0435\u043D\u0442 \u0438 \u0441\u0442\u0440\u043E\u0438\u0442\u0435\u043B\u044C\u043D\u044B\u0435 \u0441\u043C\u0435\u0441\u0438." },
+        image: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&q=80"
+      },
+      {
+        icon: "fa-solid fa-cogs",
+        color: "bg-gray-700",
+        title: { AZ: "S\u0259naye v\u0259 Metal", EN: "Industrial & Metals", TR: "Sanayi \xDCr\xFCnleri", RU: "\u041F\u0440\u043E\u043C\u044B\u0448\u043B\u0435\u043D\u043D\u0430\u044F \u043F\u0440\u043E\u0434\u0443\u043A\u0446\u0438\u044F" },
+        desc: { AZ: "Polad borular, armatur, al\xFCminium profill\u0259r v\u0259 metal konstruksiyalar.", EN: "Steel pipes, rebar, aluminum extrusions, and heavy metal fabrications.", TR: "Metal, \xE7elik, boru ve sanayi imalat \xFCr\xFCnleri.", RU: "\u0421\u0442\u0430\u043B\u044C\u043D\u044B\u0435 \u0442\u0440\u0443\u0431\u044B, \u0430\u0440\u043C\u0430\u0442\u0443\u0440\u0430, \u0430\u043B\u044E\u043C\u0438\u043D\u0438\u0435\u0432\u044B\u0435 \u043F\u0440\u043E\u0444\u0438\u043B\u0438 \u0438 \u043C\u0435\u0442\u0430\u043B\u043B\u043E\u043A\u043E\u043D\u0441\u0442\u0440\u0443\u043A\u0446\u0438\u0438." },
+        image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&q=80"
+      },
+      {
+        icon: "fa-solid fa-flask",
+        color: "bg-purple-700",
+        title: { AZ: "Kimya v\u0259 Xammal", EN: "Chemicals & Raw Materials", TR: "Kimya ve Hammadde", RU: "\u0425\u0438\u043C\u0438\u044F \u0438 \u0441\u044B\u0440\u044C\u0435" },
+        desc: { AZ: "Polimerl\u0259r, karbamid, g\xFCbr\u0259l\u0259r, bitki ekstraktlar\u0131 v\u0259 qatranlar.", EN: "Polymers, urea fertilizer, licorice extracts, petrochemical compounds, and resins.", TR: "Polimer, g\xFCbre, petrokimya ve kimyasal \xFCr\xFCnler.", RU: "\u041F\u043E\u043B\u0438\u043C\u0435\u0440\u044B, \u043A\u0430\u0440\u0431\u0430\u043C\u0438\u0434, \u0443\u0434\u043E\u0431\u0440\u0435\u043D\u0438\u044F, \u044D\u043A\u0441\u0442\u0440\u0430\u043A\u0442\u044B \u0441\u043E\u043B\u043E\u0434\u043A\u0438 \u0438 \u043D\u0435\u0444\u0442\u0435\u0445\u0438\u043C\u0438\u044F." },
+        image: "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=400&q=80"
+      },
+      {
+        icon: "fa-solid fa-bolt",
+        color: "bg-yellow-600",
+        title: { AZ: "Elektrik v\u0259 Avadanl\u0131q", EN: "Electrical & Equipment", TR: "Elektrik ve Elektronik", RU: "\u042D\u043B\u0435\u043A\u0442\u0440\u043E\u0442\u0435\u0445\u043D\u0438\u043A\u0430" },
+        desc: { AZ: "Mis v\u0259 al\xFCminium kabell\u0259r, transformator hiss\u0259l\u0259ri v\u0259 elektrik l\u0259vazimatlar\u0131.", EN: "Copper/aluminum electrical cables, switchgear, and industrial electrical supplies.", TR: "Kablo, ekipman ve elektrik malzemeleri.", RU: "\u041A\u0430\u0431\u0435\u043B\u0438, \u0442\u0440\u0430\u043D\u0441\u0444\u043E\u0440\u043C\u0430\u0442\u043E\u0440\u043D\u043E\u0435 \u043E\u0431\u043E\u0440\u0443\u0434\u043E\u0432\u0430\u043D\u0438\u0435 \u0438 \u044D\u043B\u0435\u043A\u0442\u0440\u043E\u0442\u0435\u0445\u043D\u0438\u043A\u0430." },
+        image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=80"
+      },
+      {
+        icon: "fa-solid fa-shirt",
+        color: "bg-pink-600",
+        title: { AZ: "Tekstil v\u0259 Y\xFCng\xFCl S\u0259naye", EN: "Textiles & Light Industry", TR: "Tekstil ve Hafif Sanayi", RU: "\u0422\u0435\u043A\u0441\u0442\u0438\u043B\u044C \u0438 \u043B\u0435\u0433\u043A\u0430\u044F \u043F\u0440\u043E\u043C\u044B\u0448\u043B\u0435\u043D\u043D\u043E\u0441\u0442\u044C" },
+        desc: { AZ: "\u018Fl xal\xE7alar\u0131, xam ip\u0259k, pamb\u0131q ipliyi v\u0259 s\u0259naye toxuculu\u011Fu m\u0259hsullar\u0131.", EN: "Hand-knotted silk carpets, raw silk, combed cotton yarn, and technical fabrics.", TR: "Hal\u0131, kuma\u015F, ipek ve tekstil \xFCr\xFCnleri.", RU: "\u041A\u043E\u0432\u0440\u044B \u0440\u0443\u0447\u043D\u043E\u0439 \u0440\u0430\u0431\u043E\u0442\u044B, \u0448\u0451\u043B\u043A, \u0445\u043B\u043E\u043F\u0447\u0430\u0442\u043E\u0431\u0443\u043C\u0430\u0436\u043D\u0430\u044F \u043F\u0440\u044F\u0436\u0430 \u0438 \u0442\u0435\u043A\u0441\u0442\u0438\u043B\u044C." },
+        image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80"
+      },
+      {
+        icon: "fa-solid fa-box-open",
+        color: "bg-orange-600",
+        title: { AZ: "Qabla\u015Fd\u0131rma v\u0259 Dig\u0259r Mallar", EN: "Packaging & Bulk Commodities", TR: "Di\u011Fer \u0130hracat \xDCr\xFCnleri", RU: "\u0423\u043F\u0430\u043A\u043E\u0432\u043A\u0430 \u0438 \u043F\u0440\u043E\u0447\u0438\u0435 \u0442\u043E\u0432\u0430\u0440\u044B" },
+        desc: { AZ: "Polipropilen kis\u0259l\u0259r, big-bag \xE7antalar v\u0259 x\xFCsusi ixrac m\u0259hsullar\u0131.", EN: "PP woven bags, FIBC bulk bags, corrugated cartons, and custom commodities.", TR: "\u0130hracat potansiyeline sahip di\u011Fer \xFCr\xFCn kategorileri.", RU: "\u041F\u043E\u043B\u0438\u043F\u0440\u043E\u043F\u0438\u043B\u0435\u043D\u043E\u0432\u044B\u0435 \u043C\u0435\u0448\u043A\u0438, \u0431\u0438\u0433-\u0431\u044D\u0433\u0438 \u0438 \u0441\u043F\u0435\u0446\u0438\u0430\u043B\u0438\u0437\u0438\u0440\u043E\u0432\u0430\u043D\u043D\u044B\u0435 \u044D\u043A\u0441\u043F\u043E\u0440\u0442\u043D\u044B\u0435 \u0442\u043E\u0432\u0430\u0440\u044B." },
+        image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&q=80"
+      }
+    ]
+  },
+  values: {
+    badge: {
+      AZ: "D\u018FY\u018FRL\u018FR\u0130M\u0130Z",
+      EN: "OUR VALUES",
+      TR: "DE\u011EERLER\u0130M\u0130Z",
+      RU: "\u041D\u0410\u0428\u0418 \u0426\u0415\u041D\u041D\u041E\u0421\u0422\u0418",
+      AR: "\u0642\u064A\u0645\u0646\u0627 \u0627\u0644\u0645\u0624\u0633\u0633\u064A\u0629",
+      ES: "NUESTROS VALORES"
+    },
+    title: {
+      AZ: "F\u0259aliyy\u0259timizin \u0259sas prinsipl\u0259ri",
+      EN: "Core principles of our activity",
+      TR: "Faaliyetimizin temel prensipleri",
+      RU: "\u041E\u0441\u043D\u043E\u0432\u043D\u044B\u0435 \u043F\u0440\u0438\u043D\u0446\u0438\u043F\u044B \u043D\u0430\u0448\u0435\u0439 \u0434\u0435\u044F\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u0438",
+      AR: "\u0627\u0644\u0645\u0628\u0627\u062F\u0626 \u0627\u0644\u0623\u0633\u0627\u0633\u064A\u0629 \u0644\u0639\u0645\u0644\u0646\u0627",
+      ES: "Principios fundamentales de nuestra actividad"
+    },
+    desc: {
+      AZ: "AZEXBUY-un f\u0259aliyy\u0259tind\u0259 etibarl\u0131 \u0259m\u0259kda\u015Fl\u0131q, pe\u015F\u0259kar yana\u015Fma, \u015F\u0259ffaf \xFCnsiyy\u0259t v\u0259 m\xFC\u015Ft\u0259ri ehtiyaclar\u0131n\u0131n d\xFCzg\xFCn anla\u015F\u0131lmas\u0131 \u0259sas prinsipl\u0259rdir.",
+      EN: "The core principles of AZEXBUY's activity are reliable partnership, professional execution, transparent communication, and an accurate alignment with client requirements.",
+      TR: "AZEXBUY'un faaliyetinde g\xFCvenilir i\u015F birli\u011Fi, profesyonel yakla\u015F\u0131m, \u015Feffaf ileti\u015Fim ve m\xFC\u015Fteri ihtiya\xE7lar\u0131n\u0131n do\u011Fru anla\u015F\u0131lmas\u0131 temel prensiplerdir.",
+      RU: "\u041E\u0441\u043D\u043E\u0432\u043D\u044B\u043C\u0438 \u043F\u0440\u0438\u043D\u0446\u0438\u043F\u0430\u043C\u0438 \u0434\u0435\u044F\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u0438 AZEXBUY \u044F\u0432\u043B\u044F\u044E\u0442\u0441\u044F \u043D\u0430\u0434\u0451\u0436\u043D\u043E\u0435 \u0441\u043E\u0442\u0440\u0443\u0434\u043D\u0438\u0447\u0435\u0441\u0442\u0432\u043E, \u043F\u0440\u043E\u0444\u0435\u0441\u0441\u0438\u043E\u043D\u0430\u043B\u044C\u043D\u044B\u0439 \u043F\u043E\u0434\u0445\u043E\u0434, \u043F\u0440\u043E\u0437\u0440\u0430\u0447\u043D\u0430\u044F \u043A\u043E\u043C\u043C\u0443\u043D\u0438\u043A\u0430\u0446\u0438\u044F \u0438 \u0442\u043E\u0447\u043D\u043E\u0435 \u043F\u043E\u043D\u0438\u043C\u0430\u043D\u0438\u0435 \u043F\u043E\u0442\u0440\u0435\u0431\u043D\u043E\u0441\u0442\u0435\u0439 \u043A\u043B\u0438\u0435\u043D\u0442\u043E\u0432.",
+      AR: "\u062A\u0642\u0648\u0645 \u0642\u064A\u0645\u0646\u0627 \u0639\u0644\u0649 \u0627\u0644\u0646\u0632\u0627\u0647\u0629 \u0648\u0627\u0644\u0645\u0648\u062B\u0648\u0642\u064A\u0629 \u0648\u0627\u0644\u0634\u0641\u0627\u0641\u064A\u0629 \u0627\u0644\u062A\u0627\u0645\u0629 \u0648\u0627\u0644\u0627\u062D\u062A\u0631\u0627\u0641\u064A\u0629.",
+      ES: "Los principios fundamentales son la cooperaci\xF3n fiable, enfoque profesional y comunicaci\xF3n transparente."
+    },
+    items: [
+      {
+        icon: "fa-solid fa-user-check",
+        color: "text-blue-600 bg-blue-50",
+        title: { AZ: "M\xFC\u015Ft\u0259ri Y\xF6n\xFCml\xFCl\xFCk", EN: "Client Focus", TR: "M\xFC\u015Fteri Odakl\u0131l\u0131k", RU: "\u041A\u043B\u0438\u0435\u043D\u0442\u043E\u043E\u0440\u0438\u0435\u043D\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u043D\u043E\u0441\u0442\u044C" },
+        desc: { AZ: "H\u0259r bir m\xFCraci\u0259t m\xFC\u015Ft\u0259rinin konkret t\u0259l\u0259bat\u0131 v\u0259 kommersiya m\u0259qs\u0259dl\u0259ri \u0259sas\u0131nda f\u0259rdi d\u0259y\u0259rl\u0259ndirilir.", EN: "Every request is assessed individually based on specific commercial targets and operational parameters.", TR: "Her ba\u015Fvuru m\xFC\u015Fterinin somut ihtiya\xE7lar\u0131 ve ticari ama\xE7lar\u0131 esas\u0131nda de\u011Ferlendirilir.", RU: "\u041A\u0430\u0436\u0434\u0430\u044F \u0437\u0430\u044F\u0432\u043A\u0430 \u043E\u0446\u0435\u043D\u0438\u0432\u0430\u0435\u0442\u0441\u044F \u0438\u043D\u0434\u0438\u0432\u0438\u0434\u0443\u0430\u043B\u044C\u043D\u043E \u043D\u0430 \u043E\u0441\u043D\u043E\u0432\u0435 \u043A\u043E\u043D\u043A\u0440\u0435\u0442\u043D\u044B\u0445 \u0446\u0435\u043B\u0435\u0439 \u0438 \u043F\u043E\u0442\u0440\u0435\u0431\u043D\u043E\u0441\u0442\u0435\u0439." }
+      },
+      {
+        icon: "fa-solid fa-eye",
+        color: "text-emerald-600 bg-emerald-50",
+        title: { AZ: "\u015E\u0259ffafl\u0131q", EN: "Transparency", TR: "\u015Eeffafl\u0131k", RU: "\u041F\u0440\u043E\u0437\u0440\u0430\u0447\u043D\u043E\u0441\u0442\u044C" },
+        desc: { AZ: "\u018Fm\u0259kda\u015Fl\u0131\u011F\u0131n b\xFCt\xFCn m\u0259rh\u0259l\u0259l\u0259ri, xidm\u0259t h\u0259cmi v\u0259 t\u0259r\u0259fl\u0259rin \xF6hd\u0259likl\u0259ri bar\u0259d\u0259 ayd\u0131n v\u0259 d\u0259qiq m\u0259lumat t\u0259qdim edirik.", EN: "We ensure clear, upfront disclosure of service scopes, documentation milestones, and partner responsibilities.", TR: "\u0130\u015F birli\u011Finin a\u015Famalar\u0131, hizmetin kapsam\u0131 ve taraflar\u0131n y\xFCk\xFCml\xFCl\xFCkleri hakk\u0131nda net bilgi sunar\u0131z.", RU: "\u041C\u044B \u043F\u0440\u0435\u0434\u043E\u0441\u0442\u0430\u0432\u043B\u044F\u0435\u043C \u044F\u0441\u043D\u0443\u044E \u0438\u043D\u0444\u043E\u0440\u043C\u0430\u0446\u0438\u044E \u043E\u0431\u043E \u0432\u0441\u0435\u0445 \u044D\u0442\u0430\u043F\u0430\u0445 \u0441\u0434\u0435\u043B\u043A\u0438, \u043E\u0431\u044A\u0451\u043C\u0435 \u0443\u0441\u043B\u0443\u0433 \u0438 \u043E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u044C\u0441\u0442\u0432\u0430\u0445." }
+      },
+      {
+        icon: "fa-solid fa-briefcase",
+        color: "text-violet-600 bg-violet-50",
+        title: { AZ: "Pe\u015F\u0259karl\u0131q", EN: "Professionalism", TR: "Profesyonellik", RU: "\u041F\u0440\u043E\u0444\u0435\u0441\u0441\u0438\u043E\u043D\u0430\u043B\u0438\u0437\u043C" },
+        desc: { AZ: "Beyn\u0259lxalq ticar\u0259t prosesl\u0259rin\u0259 sistemli, d\u0259qiq v\u0259 m\u0259suliyy\u0259tli yana\u015Fma n\xFCmayi\u015F etdiririk.", EN: "We adhere to disciplined, international trade standards and regulatory compliance across all touchpoints.", TR: "Uluslararas\u0131 ticaret s\xFCre\xE7lerine sistemli ve sorumlu yakla\u015F\u0131r\u0131z.", RU: "\u041C\u044B \u043F\u0440\u0438\u0434\u0435\u0440\u0436\u0438\u0432\u0430\u0435\u043C\u0441\u044F \u0441\u0442\u0440\u043E\u0433\u0438\u0445 \u0441\u0442\u0430\u043D\u0434\u0430\u0440\u0442\u043E\u0432 \u043C\u0435\u0436\u0434\u0443\u043D\u0430\u0440\u043E\u0434\u043D\u043E\u0439 \u0442\u043E\u0440\u0433\u043E\u0432\u043B\u0438 \u0438 \u043D\u043E\u0440\u043C\u0430\u0442\u0438\u0432\u043D\u043E\u0433\u043E \u043A\u043E\u043C\u043F\u043B\u0430\u0435\u043D\u0441\u0430." }
+      },
+      {
+        icon: "fa-solid fa-link",
+        color: "text-amber-600 bg-amber-50",
+        title: { AZ: "Etibarl\u0131 T\u0259r\u0259fda\u015Fl\u0131q", EN: "Reliable Partnership", TR: "G\xFCvenilir \u0130\u015F Birli\u011Fi", RU: "\u041D\u0430\u0434\u0451\u0436\u043D\u043E\u0435 \u043F\u0430\u0440\u0442\u043D\u0435\u0440\u0441\u0442\u0432\u043E" },
+        desc: { AZ: "Al\u0131c\u0131lar, istehsal\xE7\u0131lar v\u0259 lojistika t\u0259r\u0259fda\u015Flar\u0131 aras\u0131nda uzunm\xFCdd\u0259tli i\u015F birliyin\u0259 x\xFCsusi \xF6n\u0259m veririk.", EN: "We foster durable, long-term trade relationships among buyers, producers, and supply chain partners.", TR: "Al\u0131c\u0131lar, \xFCreticiler ve ticari taraflar aras\u0131nda uzun vadeli i\u015F birli\u011Fi ili\u015Fkilerinin kurulmas\u0131n\u0131 \xF6nemli sayar\u0131z.", RU: "\u041C\u044B \u043D\u0430\u0446\u0435\u043B\u0435\u043D\u044B \u043D\u0430 \u0434\u043E\u043B\u0433\u043E\u0441\u0440\u043E\u0447\u043D\u044B\u0435 \u0434\u043E\u0432\u0435\u0440\u0438\u0442\u0435\u043B\u044C\u043D\u044B\u0435 \u043E\u0442\u043D\u043E\u0448\u0435\u043D\u0438\u044F \u043C\u0435\u0436\u0434\u0443 \u043F\u043E\u043A\u0443\u043F\u0430\u0442\u0435\u043B\u044F\u043C\u0438 \u0438 \u043F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0438\u0442\u0435\u043B\u044F\u043C\u0438." }
+      },
+      {
+        icon: "fa-solid fa-sliders",
+        color: "text-cyan-600 bg-cyan-50",
+        title: { AZ: "\xC7eviklik", EN: "Flexibility", TR: "Esneklik", RU: "\u0413\u0438\u0431\u043A\u043E\u0441\u0442\u044C" },
+        desc: { AZ: "M\xFCxt\u0259lif m\u0259hsul kateqoriyalar\u0131na, f\u0259rqli bazarlara v\u0259 x\xFCsusi \u015F\u0259rtl\u0259r\u0259 uy\u011Fun h\u0259ll\u0259r t\u0259tbiq edirik.", EN: "We adapt rapidly to diverse commodity requirements, unique buyer specifications, and market dynamics.", TR: "Farkl\u0131 \xFCr\xFCn kategorilerine, pazarlara ve m\xFC\u015Fteri taleplerine uygun yakla\u015F\u0131m uygular\u0131z.", RU: "\u041C\u044B \u0430\u0434\u0430\u043F\u0442\u0438\u0440\u0443\u0435\u043C\u0441\u044F \u043A \u0441\u043F\u0435\u0446\u0438\u0444\u0438\u043A\u0435 \u0440\u0430\u0437\u043B\u0438\u0447\u043D\u044B\u0445 \u0442\u043E\u0432\u0430\u0440\u043E\u0432, \u0440\u044B\u043D\u043A\u043E\u0432 \u0438 \u0438\u043D\u0434\u0438\u0432\u0438\u0434\u0443\u0430\u043B\u044C\u043D\u044B\u0445 \u0442\u0440\u0435\u0431\u043E\u0432\u0430\u043D\u0438\u0439." }
+      },
+      {
+        icon: "fa-solid fa-seedling",
+        color: "text-green-600 bg-green-50",
+        title: { AZ: "Davaml\u0131 \u0130nki\u015Faf", EN: "Sustainable Development", TR: "S\xFCrd\xFCr\xFClebilir Geli\u015Fim", RU: "\u0423\u0441\u0442\u043E\u0439\u0447\u0438\u0432\u043E\u0435 \u0440\u0430\u0437\u0432\u0438\u0442\u0438\u0435" },
+        desc: { AZ: "Xidm\u0259t infrastrukturumuzu, t\u0259r\u0259fda\u015Fl\u0131q \u015F\u0259b\u0259k\u0259mizi v\u0259 r\u0259q\u0259msal ticar\u0259t h\u0259ll\u0259rimizi m\xFCt\u0259madi t\u0259kmill\u0259\u015Fdiririk.", EN: "We continuously evolve our digital trade infrastructure, knowledge bases, and corridor capabilities.", TR: "Hizmet modelimizi, i\u015F birli\u011Fi imk\xE2nlar\u0131m\u0131z\u0131 ve uluslararas\u0131 faaliyet y\xF6nlerimizi geli\u015Ftirmeyi hedefleriz.", RU: "\u041C\u044B \u043F\u043E\u0441\u0442\u043E\u044F\u043D\u043D\u043E \u0441\u043E\u0432\u0435\u0440\u0448\u0435\u043D\u0441\u0442\u0432\u0443\u0435\u043C \u0441\u0435\u0440\u0432\u0438\u0441\u043D\u044B\u0435 \u043C\u0435\u0445\u0430\u043D\u0438\u0437\u043C\u044B \u0438 \u0446\u0438\u0444\u0440\u043E\u0432\u0443\u044E \u0442\u043E\u0440\u0433\u043E\u0432\u0443\u044E \u0438\u043D\u0444\u0440\u0430\u0441\u0442\u0440\u0443\u043A\u0442\u0443\u0440\u0443." }
+      }
+    ]
+  },
+  partnership: {
+    badge: {
+      AZ: "\u0130\u015E B\u0130RL\u0130Y\u0130 MODEL\u0130M\u0130Z",
+      EN: "PARTNERSHIP MODEL",
+      TR: "\u0130\u015E B\u0130RL\u0130\u011E\u0130 MODEL\u0130M\u0130Z",
+      RU: "\u041C\u041E\u0414\u0415\u041B\u042C \u0421\u041E\u0422\u0420\u0423\u0414\u041D\u0418\u0427\u0415\u0421\u0422\u0412\u0410",
+      AR: "\u0646\u0645\u0648\u0630\u062C \u0627\u0644\u0634\u0631\u0627\u0643\u0629",
+      ES: "MODELO DE ASOCIACI\xD3N"
+    },
+    title: {
+      AZ: "Kiml\u0259rl\u0259 i\u015F birliyi qururuq?",
+      EN: "Who do we partner with?",
+      TR: "Kimlerle i\u015F birli\u011Fi yap\u0131yoruz?",
+      RU: "\u0421 \u043A\u0435\u043C \u043C\u044B \u0441\u043E\u0442\u0440\u0443\u0434\u043D\u0438\u0447\u0430\u0435\u043C?",
+      AR: "\u0645\u0639 \u0645\u0646 \u0646\u062A\u0639\u0627\u0648\u0646\u061F",
+      ES: "\xBFCon qui\xE9n nos asociamos?"
+    },
+    desc: {
+      AZ: "AZEXBUY beyn\u0259lxalq ticar\u0259t z\u0259ncirind\u0259 yer alan apar\u0131c\u0131 bazar i\u015Ftirak\xE7\u0131lar\u0131 il\u0259 strateji \u0259m\u0259kda\u015Fl\u0131q qurur.",
+      EN: "AZEXBUY acts as a neutral, trusted trade facilitator bridging key stakeholders across the international supply ecosystem.",
+      TR: "AZEXBUY uluslararas\u0131 ticarette yer alan \xE7e\u015Fitli i\u015F sahipleriyle i\u015F birli\u011Fi imk\xE2nlar\u0131n\u0131 geli\u015Ftirmeye y\xF6neliktir.",
+      RU: "AZEXBUY \u0440\u0430\u0437\u0432\u0438\u0432\u0430\u0435\u0442 \u0441\u043E\u0442\u0440\u0443\u0434\u043D\u0438\u0447\u0435\u0441\u0442\u0432\u043E \u0441 \u043A\u043B\u044E\u0447\u0435\u0432\u044B\u043C\u0438 \u0443\u0447\u0430\u0441\u0442\u043D\u0438\u043A\u0430\u043C\u0438 \u043C\u0435\u0436\u0434\u0443\u043D\u0430\u0440\u043E\u0434\u043D\u043E\u0439 \u0442\u043E\u0440\u0433\u043E\u0432\u043B\u0438 \u0438 \u0446\u0435\u043F\u043E\u0447\u0435\u043A \u043F\u043E\u0441\u0442\u0430\u0432\u043E\u043A.",
+      AR: "\u062A\u0628\u0646\u064A AZEXBUY \u0634\u0631\u0627\u0643\u0627\u062A \u0627\u0633\u062A\u0631\u0627\u062A\u064A\u062C\u064A\u0629 \u0645\u0639 \u0643\u0627\u0641\u0629 \u0623\u0637\u0631\u0627\u0641 \u0633\u0644\u0627\u0633\u0644 \u0627\u0644\u062A\u0648\u0631\u064A\u062F \u0627\u0644\u062F\u0648\u0644\u064A\u0629.",
+      ES: "AZEXBUY desarrolla la cooperaci\xF3n con los principales participantes del comercio internacional."
+    },
+    items: [
+      {
+        icon: "fa-solid fa-factory",
+        color: "bg-blue-600",
+        title: { AZ: "Az\u0259rbaycan \u0130stehsal\xE7\u0131lar\u0131 v\u0259 \u0130xracat\xE7\u0131lar\u0131", EN: "Azerbaijani Producers & Exporters", TR: "Azerbaycanl\u0131 \xDCreticiler ve \u0130hracat\xE7\u0131lar", RU: "\u0410\u0437\u0435\u0440\u0431\u0430\u0439\u0434\u0436\u0430\u043D\u0441\u043A\u0438\u0435 \u043F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0438\u0442\u0435\u043B\u0438 \u0438 \u044D\u043A\u0441\u043F\u043E\u0440\u0442\u0451\u0440\u044B" },
+        desc: { AZ: "M\u0259hsullar\u0131n\u0131 xarici bazarlara \xE7\u0131xarmaq, al\u0131c\u0131 bazas\u0131n\u0131 geni\u015Fl\u0259ndirm\u0259k v\u0259 sabit ixrac sifari\u015Fl\u0259ri almaq ist\u0259y\u0259n m\xFC\u0259ssis\u0259l\u0259r.", EN: "Companies seeking international market entry, verified buyer channels, and scalable export order pipelines.", TR: "\xDCr\xFCnlerini yabanc\u0131 pazarlara \xE7\u0131karmak, potansiyel al\u0131c\u0131lar bulmak ve ihracat imk\xE2nlar\u0131n\u0131 geni\u015Fletmek isteyen \u015Firketler.", RU: "\u041F\u0440\u0435\u0434\u043F\u0440\u0438\u044F\u0442\u0438\u044F, \u0441\u0442\u0440\u0435\u043C\u044F\u0449\u0438\u0435\u0441\u044F \u0432\u044B\u0439\u0442\u0438 \u043D\u0430 \u0437\u0430\u0440\u0443\u0431\u0435\u0436\u043D\u044B\u0435 \u0440\u044B\u043D\u043A\u0438 \u0438 \u0440\u0430\u0441\u0448\u0438\u0440\u0438\u0442\u044C \u044D\u043A\u0441\u043F\u043E\u0440\u0442\u043D\u044B\u0435 \u043A\u0430\u043D\u0430\u043B\u044B." }
+      },
+      {
+        icon: "fa-solid fa-ship",
+        color: "bg-emerald-600",
+        title: { AZ: "Beyn\u0259lxalq Al\u0131c\u0131lar v\u0259 \u0130dxalat\xE7\u0131lar", EN: "International Buyers & Importers", TR: "Uluslararas\u0131 Al\u0131c\u0131lar ve \u0130thalat\xE7\u0131lar", RU: "\u041C\u0435\u0436\u0434\u0443\u043D\u0430\u0440\u043E\u0434\u043D\u044B\u0435 \u043F\u043E\u043A\u0443\u043F\u0430\u0442\u0435\u043B\u0438 \u0438 \u0438\u043C\u043F\u043E\u0440\u0442\u0451\u0440\u044B" },
+        desc: { AZ: "Az\u0259rbaycandan r\u0259qab\u0259t\u0259davaml\u0131 xammal, aqrar v\u0259 s\u0259naye m\u0259hsullar\u0131 almaq \xFC\xE7\xFCn etibarl\u0131 t\u0259dar\xFCk\xE7\xFC axtaran \u015Firk\u0259tl\u0259r.", EN: "Global procurement desks seeking audited direct manufacturers, consistent quality, and transparent landed cost pricing.", TR: "Azerbaycan'dan \xFCr\xFCn, hammadde ve sanayi mallar\u0131 almak i\xE7in uygun tedarik\xE7i arayan \u015Firketler.", RU: "\u041A\u043E\u043C\u043F\u0430\u043D\u0438\u0438, \u0438\u0449\u0443\u0449\u0438\u0435 \u043D\u0430\u0434\u0435\u0436\u043D\u044B\u0445 \u043F\u043E\u0441\u0442\u0430\u0432\u0449\u0438\u043A\u043E\u0432 \u0441\u0435\u043B\u044C\u0441\u043A\u043E\u0445\u043E\u0437\u044F\u0439\u0441\u0442\u0432\u0435\u043D\u043D\u044B\u0445 \u0438 \u043F\u0440\u043E\u043C\u044B\u0448\u043B\u0435\u043D\u043D\u044B\u0445 \u0442\u043E\u0432\u0430\u0440\u043E\u0432 \u0432 \u0410\u0437\u0435\u0440\u0431\u0430\u0439\u0434\u0436\u0430\u043D\u0435." }
+      },
+      {
+        icon: "fa-solid fa-store",
+        color: "bg-violet-600",
+        title: { AZ: "Distrib\xFCtorlar v\u0259 Topdansat\u0131\u015F \u015E\u0259b\u0259k\u0259l\u0259ri", EN: "Distributors & Wholesale Channels", TR: "Distrib\xFCt\xF6rler ve Toptan Sat\u0131\u015F", RU: "\u0414\u0438\u0441\u0442\u0440\u0438\u0431\u044C\u044E\u0442\u043E\u0440\u044B \u0438 \u043E\u043F\u0442\u043E\u0432\u044B\u0435 \u0441\u0435\u0442\u0438" },
+        desc: { AZ: "Yeni m\u0259hsul kateqoriyalar\u0131 v\u0259 y\xFCks\u0259k g\u0259lirli t\u0259dar\xFCk m\u0259nb\u0259l\u0259ri il\u0259 ticar\u0259t \u0259laq\u0259l\u0259rini geni\u015Fl\u0259ndir\u0259n t\u0259r\u0259fl\u0259r.", EN: "Regional distributors establishing proprietary product categories and direct supply pipelines from the South Caucasus.", TR: "Yeni \xFCr\xFCn kategorileri ve tedarik kaynaklar\u0131yla i\u015F birli\u011Fi yapmak isteyen ticari taraflar.", RU: "\u0422\u043E\u0440\u0433\u043E\u0432\u044B\u0435 \u043E\u043F\u0435\u0440\u0430\u0442\u043E\u0440\u044B, \u0440\u0430\u0441\u0448\u0438\u0440\u044F\u044E\u0449\u0438\u0435 \u0434\u0438\u0441\u0442\u0440\u0438\u0431\u044C\u044E\u0442\u043E\u0440\u0441\u043A\u0438\u0435 \u043F\u043E\u0440\u0442\u0444\u0435\u043B\u0438 \u043D\u043E\u0432\u044B\u043C\u0438 \u043A\u0430\u0442\u0435\u0433\u043E\u0440\u0438\u044F\u043C\u0438 \u043F\u0440\u043E\u0434\u0443\u043A\u0446\u0438\u0438." }
+      },
+      {
+        icon: "fa-solid fa-network-wired",
+        color: "bg-amber-600",
+        title: { AZ: "Ticar\u0259t v\u0259 Xidm\u0259t T\u0259r\u0259fda\u015Flar\u0131", EN: "Trade & Logistics Providers", TR: "Ticari ve Hizmet Taraflar\u0131", RU: "\u0422\u043E\u0440\u0433\u043E\u0432\u044B\u0435 \u0438 \u043B\u043E\u0433\u0438\u0441\u0442\u0438\u0447\u0435\u0441\u043A\u0438\u0435 \u043F\u0430\u0440\u0442\u043D\u0435\u0440\u044B" },
+        desc: { AZ: "Lojistika, laboratoriya s\u0131naqlar\u0131, sertifikatla\u015Fd\u0131rma, g\xF6mr\xFCk v\u0259 keyfiyy\u0259t n\u0259zar\u0259ti \xFCzr\u0259 ixtisasla\u015Fm\u0131\u015F institutlar.", EN: "Specialized freight forwarders, accredited testing labs (SGS/Bureau Veritas), customs brokers, and trade insurers.", TR: "Lojistik, sertifikasyon, g\xFCmr\xFCk, kalite denetimi ve di\u011Fer ilgili alanlarda faaliyet g\xF6steren potansiyel hizmet sa\u011Flay\u0131c\u0131lar.", RU: "\u0418\u043D\u0441\u0442\u0438\u0442\u0443\u0442\u044B \u043B\u043E\u0433\u0438\u0441\u0442\u0438\u043A\u0438, \u0441\u044E\u0440\u0432\u0435\u0439\u0435\u0440\u0441\u043A\u0438\u0435 \u043A\u043E\u043C\u043F\u0430\u043D\u0438\u0438, \u043B\u0430\u0431\u043E\u0440\u0430\u0442\u043E\u0440\u0438\u0438 \u0438 \u0442\u0430\u043C\u043E\u0436\u0435\u043D\u043D\u044B\u0435 \u0431\u0440\u043E\u043A\u0435\u0440\u044B." }
+      }
+    ]
+  },
+  growth: {
+    badge: {
+      AZ: "STRATEJ\u0130 G\u018FL\u0130\u015E\u0130M",
+      EN: "STRATEGIC GROWTH",
+      TR: "GEL\u0130\u015E\u0130M Y\xD6NLER\u0130M\u0130Z",
+      RU: "\u0421\u0422\u0420\u0410\u0422\u0415\u0413\u0418\u0427\u0415\u0421\u041A\u041E\u0415 \u0420\u0410\u0417\u0412\u0418\u0422\u0418\u0415",
+      AR: "\u0627\u0644\u062A\u0637\u0648\u0631 \u0627\u0644\u0627\u0633\u062A\u0631\u0627\u062A\u064A\u062C\u064A",
+      ES: "CRECIMIENTO ESTRAT\xC9GICO"
+    },
+    title: {
+      AZ: "G\u0259l\u0259c\u0259y\u0259 bax\u0131\u015F v\u0259 strateji h\u0259d\u0259fl\u0259r",
+      EN: "Future outlook & strategic objectives",
+      TR: "Gelece\u011Fe bak\u0131\u015F ve stratejik hedefler",
+      RU: "\u0412\u0437\u0433\u043B\u044F\u0434 \u0432 \u0431\u0443\u0434\u0443\u0449\u0435\u0435 \u0438 \u0441\u0442\u0440\u0430\u0442\u0435\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0435 \u0446\u0435\u043B\u0438",
+      AR: "\u0627\u0644\u0631\u0624\u064A\u0629 \u0627\u0644\u0645\u0633\u062A\u0642\u0628\u0644\u064A\u0629 \u0648\u0627\u0644\u0623\u0647\u062F\u0627\u0641 \u0627\u0644\u0627\u0633\u062A\u0631\u0627\u062A\u064A\u062C\u064A\u0629",
+      ES: "Visi\xF3n de futuro y objetivos estrat\xE9gicos"
+    },
+    desc: {
+      AZ: "AZEXBUY-un inki\u015Faf strategiyas\u0131 beyn\u0259lxalq ticar\u0259t xidm\u0259tl\u0259rinin geni\u015Fl\u0259ndirilm\u0259si, yeni bazarlarda ticar\u0259t d\u0259hlizl\u0259rinin a\xE7\u0131lmas\u0131 v\u0259 r\u0259q\u0259msal ticar\u0259t imkanlar\u0131n\u0131n g\xFCcl\u0259ndirilm\u0259sin\u0259 \u0259saslan\u0131r.",
+      EN: "AZEXBUY's roadmap focuses on scaling cross-border trade facilitation, opening multimodal Middle Corridor routes, and deploying AI-driven trade verification tools.",
+      TR: "AZEXBUY'un geli\u015Fim stratejisi uluslararas\u0131 ticaret hizmetlerinin geni\u015Fletilmesi, yeni pazarlarda i\u015F birli\u011Fi imk\xE2nlar\u0131n\u0131n olu\u015Fturulmas\u0131 ve yerli \xFCreticilerin ihracat faaliyetinin desteklenmesi \xFCzerine kuruludur.",
+      RU: "\u0421\u0442\u0440\u0430\u0442\u0435\u0433\u0438\u044F \u0440\u0430\u0437\u0432\u0438\u0442\u0438\u044F AZEXBUY \u043E\u043F\u0438\u0440\u0430\u0435\u0442\u0441\u044F \u043D\u0430 \u0440\u0430\u0441\u0448\u0438\u0440\u0435\u043D\u0438\u0435 \u0441\u0435\u0440\u0432\u0438\u0441\u043E\u0432 \u043C\u0435\u0436\u0434\u0443\u043D\u0430\u0440\u043E\u0434\u043D\u043E\u0439 \u0442\u043E\u0440\u0433\u043E\u0432\u043B\u0438 \u0438 \u043E\u0441\u0432\u043E\u0435\u043D\u0438\u0435 \u043D\u043E\u0432\u044B\u0445 \u0442\u0440\u0430\u043D\u0441\u043F\u043E\u0440\u0442\u043D\u044B\u0445 \u043A\u043E\u0440\u0438\u0434\u043E\u0440\u043E\u0432.",
+      AR: "\u062A\u0631\u062A\u0643\u0632 \u0627\u0633\u062A\u0631\u0627\u062A\u064A\u062C\u064A\u062A\u0646\u0627 \u0639\u0644\u0649 \u0641\u062A\u062D \u0645\u0645\u0631\u0627\u062A \u062A\u062C\u0627\u0631\u064A\u0629 \u062C\u062F\u064A\u062F\u0629 \u0648\u062A\u0648\u0638\u064A\u0641 \u0627\u0644\u062D\u0644\u0648\u0644 \u0627\u0644\u0631\u0642\u0645\u064A\u0629 \u0627\u0644\u0630\u0643\u064A\u0629.",
+      ES: "La estrategia se basa en ampliar los servicios comerciales internacionales y abrir nuevas rutas."
+    },
+    disclaimer: {
+      AZ: "Bunlar t\u0259sdiql\u0259nmi\u015F statistik nailiyy\u0259tl\u0259r deyil, AZEXBUY-un strateji inki\u015Faf prioritetl\u0259ridir.",
+      EN: "These reflect forward-looking strategic roadmaps and service expansion priorities.",
+      TR: "Bunlar onaylanm\u0131\u015F ba\u015Far\u0131lar de\u011Fil, stratejik hedeflerdir.",
+      RU: "\u042D\u0442\u043E \u043F\u0435\u0440\u0441\u043F\u0435\u043A\u0442\u0438\u0432\u043D\u044B\u0435 \u0441\u0442\u0440\u0430\u0442\u0435\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0435 \u043D\u0430\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u044F, \u0430 \u043D\u0435 \u0437\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u043D\u044B\u0435 \u0434\u043E\u0441\u0442\u0438\u0436\u0435\u043D\u0438\u044F.",
+      AR: "\u0647\u0630\u0647 \u0623\u0647\u062F\u0627\u0641 \u0627\u0633\u062A\u0631\u0627\u062A\u064A\u062C\u064A\u0629 \u0645\u0633\u062A\u0642\u0628\u0644\u064A\u0629 \u0648\u0623\u0648\u0644\u0648\u064A\u0627\u062A \u062A\u0637\u0648\u064A\u0631.",
+      ES: "Estos puntos representan prioridades y objetivos estrat\xE9gicos de desarrollo."
+    },
+    items: [
+      {
+        num: "01",
+        icon: "fa-solid fa-earth-americas",
+        title: { AZ: "Yeni Beyn\u0259lxalq Bazarlara \xC7\u0131x\u0131\u015F", EN: "Expansion into New Markets", TR: "Yeni Uluslararas\u0131 Pazarlara \xC7\u0131k\u0131\u015F", RU: "\u0412\u044B\u0445\u043E\u0434 \u043D\u0430 \u043D\u043E\u0432\u044B\u0435 \u043C\u0435\u0436\u0434\u0443\u043D\u0430\u0440\u043E\u0434\u043D\u044B\u0435 \u0440\u044B\u043D\u043A\u0438" },
+        desc: { AZ: "K\xF6rf\u0259z \xF6lk\u0259l\u0259ri, M\u0259rk\u0259zi Asiya v\u0259 Avropa bazarlar\u0131nda Az\u0259rbaycan m\u0259hsullar\u0131 \xFC\xE7\xFCn yeni ticar\u0259t d\u0259hlizl\u0259rinin formala\u015Fd\u0131r\u0131lmas\u0131.", EN: "Developing structured export channels in GCC, Central Asian, and European Union commercial territories.", TR: "Azerbaycan \xFCr\xFCnleri i\xE7in yeni \xFClke ve b\xF6lgelerde ticari imk\xE2nlar\u0131n ara\u015Ft\u0131r\u0131lmas\u0131.", RU: "\u0424\u043E\u0440\u043C\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u0442\u043E\u0440\u0433\u043E\u0432\u044B\u0445 \u043A\u043E\u0440\u0438\u0434\u043E\u0440\u043E\u0432 \u0432 \u0441\u0442\u0440\u0430\u043D\u0430\u0445 \u0417\u0430\u043B\u0438\u0432\u0430, \u0426\u0435\u043D\u0442\u0440\u0430\u043B\u044C\u043D\u043E\u0439 \u0410\u0437\u0438\u0438 \u0438 \u0415\u0421." }
+      },
+      {
+        num: "02",
+        icon: "fa-solid fa-network-wired",
+        title: { AZ: "T\u0259r\u0259fda\u015Fl\u0131q \u015E\u0259b\u0259k\u0259sinin Geni\u015Fl\u0259ndirilm\u0259si", EN: "Ecosystem & Partner Expansion", TR: "Ortakl\u0131k A\u011F\u0131n\u0131n Geni\u015Fletilmesi", RU: "\u0420\u0430\u0441\u0448\u0438\u0440\u0435\u043D\u0438\u0435 \u043F\u0430\u0440\u0442\u043D\u0451\u0440\u0441\u043A\u043E\u0439 \u0441\u0435\u0442\u0438" },
+        desc: { AZ: "Qlobal al\u0131c\u0131 \u015F\u0259b\u0259k\u0259l\u0259ri, ticar\u0259t palatalar\u0131 v\u0259 logistika t\u0259chizat\xE7\u0131lar\u0131 il\u0259 institusional \u0259m\u0259kda\u015Fl\u0131\u011F\u0131n art\u0131r\u0131lmas\u0131.", EN: "Deepening institutional tie-ups with global procurement consortia, chambers of commerce, and maritime freight operators.", TR: "Yabanc\u0131 al\u0131c\u0131lar, distrib\xFCt\xF6rler, tedarik\xE7iler ve hizmet sa\u011Flay\u0131c\u0131larla i\u015F birli\u011Fi ili\u015Fkilerinin geli\u015Fimi.", RU: "\u0423\u043A\u0440\u0435\u043F\u043B\u0435\u043D\u0438\u0435 \u0441\u0432\u044F\u0437\u0435\u0439 \u0441 \u0437\u0430\u043A\u0443\u043F\u043E\u0447\u043D\u044B\u043C\u0438 \u0430\u0441\u0441\u043E\u0446\u0438\u0430\u0446\u0438\u044F\u043C\u0438, \u0442\u043E\u0440\u0433\u043E\u0432\u044B\u043C\u0438 \u043F\u0430\u043B\u0430\u0442\u0430\u043C\u0438 \u0438 \u043F\u0435\u0440\u0435\u0432\u043E\u0437\u0447\u0438\u043A\u0430\u043C\u0438." }
+      },
+      {
+        num: "03",
+        icon: "fa-solid fa-layer-group",
+        title: { AZ: "Xidm\u0259t Portfelinin \u015Eax\u0259l\u0259ndirilm\u0259si", EN: "Service Portfolio Diversification", TR: "Hizmet Portf\xF6y\xFCn\xFCn Geni\u015Fletilmesi", RU: "\u0414\u0438\u0432\u0435\u0440\u0441\u0438\u0444\u0438\u043A\u0430\u0446\u0438\u044F \u043F\u043E\u0440\u0442\u0444\u0435\u043B\u044F \u0443\u0441\u043B\u0443\u0433" },
+        desc: { AZ: "Bazar analitikas\u0131, KYB yoxlamalar\u0131, s\u0131\u011Forta v\u0259 maliyy\u0259 vasit\u0259\xE7iliyi sah\u0259sind\u0259 xidm\u0259t imkanlar\u0131n\u0131n geni\u015Fl\u0259ndirilm\u0259si.", EN: "Adding specialized commodity escrow facilitation, KYB credit reporting, and trade finance advisory.", TR: "Pazar ara\u015Ft\u0131rmas\u0131, sat\u0131n alma, ihracat ve lojistik koordinasyonu \xFCzere hizmet imk\xE2nlar\u0131n\u0131n art\u0131r\u0131lmas\u0131.", RU: "\u0412\u043D\u0435\u0434\u0440\u0435\u043D\u0438\u0435 \u0430\u043D\u0430\u043B\u0438\u0442\u0438\u0447\u0435\u0441\u043A\u0438\u0445 \u043E\u0442\u0447\u0451\u0442\u043E\u0432, \u0441\u043A\u043E\u0440\u0438\u043D\u0433\u0430 \u043A\u043E\u043D\u0442\u0440\u0430\u0433\u0435\u043D\u0442\u043E\u0432 \u0438 \u0442\u043E\u0440\u0433\u043E\u0432\u043E\u0433\u043E \u0444\u0438\u043D\u0430\u043D\u0441\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u044F." }
+      },
+      {
+        num: "04",
+        icon: "fa-solid fa-laptop-code",
+        title: { AZ: "R\u0259q\u0259msal Ticar\u0259t H\u0259ll\u0259ri", EN: "Digital Trade & AI Verification", TR: "Dijital Hizmetlerin Geli\u015Fimi", RU: "\u0426\u0438\u0444\u0440\u043E\u0432\u044B\u0435 \u0442\u043E\u0440\u0433\u043E\u0432\u044B\u0435 \u0441\u0435\u0440\u0432\u0438\u0441\u044B" },
+        desc: { AZ: "Elektron RFQ sistemi, avtomatla\u015Fd\u0131r\u0131lm\u0131\u015F s\u0259n\u0259d yoxlan\u0131\u015F\u0131 v\u0259 t\u0259dar\xFCk z\u0259nciri monitorinqinin t\u0259tbiqi.", EN: "Deploying digital RFQ tracking, automated HS tariff compliance engines, and transparent order tracking.", TR: "M\xFC\u015Fteri ba\u015Fvurular\u0131n\u0131n, \xFCr\xFCn bilgilerinin ve ticari sorgular\u0131n daha sistemli y\xF6netilmesi.", RU: "\u0412\u043D\u0435\u0434\u0440\u0435\u043D\u0438\u0435 \u044D\u043B\u0435\u043A\u0442\u0440\u043E\u043D\u043D\u043E\u0433\u043E RFQ, \u0430\u0432\u0442\u043E\u043C\u0430\u0442\u0438\u0447\u0435\u0441\u043A\u043E\u0439 \u043F\u0440\u043E\u0432\u0435\u0440\u043A\u0438 \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u043E\u0432 \u0438 \u043C\u043E\u043D\u0438\u0442\u043E\u0440\u0438\u043D\u0433\u0430 \u043F\u043E\u0441\u0442\u0430\u0432\u043E\u043A." }
+      },
+      {
+        num: "05",
+        icon: "fa-solid fa-chart-pie",
+        title: { AZ: "Sektorlar \xDCzr\u0259 \u0130xtisasla\u015Fma", EN: "Deep Sectoral Specialization", TR: "Sekt\xF6rler \xDCzere \u0130htisasla\u015Fma", RU: "\u041E\u0442\u0440\u0430\u0441\u043B\u0435\u0432\u0430\u044F \u0441\u043F\u0435\u0446\u0438\u0430\u043B\u0438\u0437\u0430\u0446\u0438\u044F" },
+        desc: { AZ: "Aqrar xammal, polimerl\u0259r, metal v\u0259 qida emal\u0131 \xFCzr\u0259 ixtisasla\u015Fm\u0131\u015F ticar\u0259t komandalar\u0131n\u0131n formala\u015Fd\u0131r\u0131lmas\u0131.", EN: "Building dedicated commodity-specific trade desks for agro-industrial goods, chemicals, and construction materials.", TR: "\xC7e\u015Fitli \xFCr\xFCn kategorilerinin ve ihracat y\xF6nlerinin geli\u015Fimine uygun hizmet modelinin \u015Fekillendirilmesi.", RU: "\u0424\u043E\u0440\u043C\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u0441\u043F\u0435\u0446\u0438\u0430\u043B\u0438\u0437\u0438\u0440\u043E\u0432\u0430\u043D\u043D\u044B\u0445 \u043E\u0442\u0440\u0430\u0441\u043B\u0435\u0432\u044B\u0445 \u0434\u0435\u0441\u043A\u043E\u0432 \u043F\u043E \u0430\u0433\u0440\u043E\u043F\u0440\u043E\u043C\u0443, \u0445\u0438\u043C\u0438\u0438 \u0438 \u043C\u0435\u0442\u0430\u043B\u043B\u0430\u043C." }
+      }
+    ]
+  },
+  team: {
+    badge: {
+      AZ: "PE\u015E\u018FKAR KOMANDA",
+      EN: "OUR LEADERSHIP & TEAM",
+      TR: "UZMAN EK\u0130B\u0130M\u0130Z",
+      RU: "\u041F\u0420\u041E\u0424\u0415\u0421\u0421\u0418\u041E\u041D\u0410\u041B\u042C\u041D\u0410\u042F \u041A\u041E\u041C\u0410\u041D\u0414\u0410",
+      AR: "\u0641\u0631\u064A\u0642 \u0627\u0644\u0642\u064A\u0627\u062F\u0629 \u0648\u0627\u0644\u062E\u0628\u0631\u0627\u0621",
+      ES: "NUESTRO EQUIPO"
+    },
+    title: {
+      AZ: "Komandam\u0131zla Tan\u0131\u015F Olun",
+      EN: "Meet Our Leadership & Team",
+      TR: "Ekibimizle Tan\u0131\u015F\u0131n",
+      RU: "\u041F\u043E\u0437\u043D\u0430\u043A\u043E\u043C\u044C\u0442\u0435\u0441\u044C \u0441 \u043D\u0430\u0448\u0435\u0439 \u043A\u043E\u043C\u0430\u043D\u0434\u043E\u0439",
+      AR: "\u062A\u0639\u0631\u0641 \u0639\u0644\u0649 \u0641\u0631\u064A\u0642 \u0639\u0645\u0644\u0646\u0627",
+      ES: "Conozca a Nuestro Equipo"
+    },
+    desc: {
+      AZ: "Beyn\u0259lxalq ticar\u0259t, ixrac \u0259m\u0259liyyatlar\u0131, sertifikasiya v\u0259 sat\u0131nalma \xFCzr\u0259 t\u0259cr\xFCb\u0259li komandam\u0131z.",
+      EN: "Experienced professionals in international trade, export compliance, commodity inspection, and global procurement.",
+      TR: "Uluslararas\u0131 ticaret, ihracat operasyonlar\u0131, sertifikasyon ve sat\u0131n alma alanlar\u0131nda deneyimli ekibimiz.",
+      RU: "\u041E\u043F\u044B\u0442\u043D\u0430\u044F \u043A\u043E\u043C\u0430\u043D\u0434\u0430 \u0441\u043F\u0435\u0446\u0438\u0430\u043B\u0438\u0441\u0442\u043E\u0432 \u043F\u043E \u043C\u0435\u0436\u0434\u0443\u043D\u0430\u0440\u043E\u0434\u043D\u043E\u0439 \u0442\u043E\u0440\u0433\u043E\u0432\u043B\u0435, \u044D\u043A\u0441\u043F\u043E\u0440\u0442\u043D\u043E\u043C\u0443 \u043A\u043E\u043C\u043F\u043B\u0430\u0435\u043D\u0441\u0443 \u0438 \u0437\u0430\u043A\u0443\u043F\u043A\u0430\u043C.",
+      AR: "\u0641\u0631\u064A\u0642 \u0639\u0645\u0644 \u0630\u0648 \u062E\u0628\u0631\u0629 \u0639\u0631\u064A\u0642\u0629 \u0641\u064A \u0627\u0644\u062A\u062C\u0627\u0631\u0629 \u0627\u0644\u062F\u0648\u0644\u064A\u0629 \u0648\u0639\u0645\u0644\u064A\u0627\u062A \u0627\u0644\u062A\u0635\u062F\u064A\u0631 \u0648\u0625\u062F\u0627\u0631\u0629 \u0627\u0644\u062A\u0648\u0631\u064A\u062F.",
+      ES: "Profesionales experimentados en comercio exterior, cumplimiento aduanero y adquisiciones globales."
+    }
+  },
+  cta: {
+    badge: {
+      AZ: "\u018FM\u018FKDA\u015ELI\u011EA D\u018FV\u018FT",
+      EN: "INVITATION TO COOPERATE",
+      TR: "\u0130\u015E B\u0130RL\u0130\u011E\u0130NE DAVET",
+      RU: "\u041F\u0420\u0418\u0413\u041B\u0410\u0428\u0415\u041D\u0418\u0415 \u041A \u0421\u041E\u0422\u0420\u0423\u0414\u041D\u0418\u0427\u0415\u0421\u0422\u0412\u0423",
+      AR: "\u062F\u0639\u0648\u0629 \u0644\u0644\u062A\u0639\u0627\u0648\u0646",
+      ES: "INVITACI\xD3N A COOPERAR"
+    },
+    title: {
+      AZ: "G\u0259lin, beyn\u0259lxalq ticar\u0259td\u0259 yeni imkanlar yaradaq.",
+      EN: "Let's create new opportunities in international trade together.",
+      TR: "Gelin, uluslararas\u0131 ticarette yeni imk\xE2nlar yaratal\u0131m.",
+      RU: "\u0414\u0430\u0432\u0430\u0439\u0442\u0435 \u0441\u043E\u0437\u0434\u0430\u0432\u0430\u0442\u044C \u043D\u043E\u0432\u044B\u0435 \u0432\u043E\u0437\u043C\u043E\u0436\u043D\u043E\u0441\u0442\u0438 \u0432 \u043C\u0435\u0436\u0434\u0443\u043D\u0430\u0440\u043E\u0434\u043D\u043E\u0439 \u0442\u043E\u0440\u0433\u043E\u0432\u043B\u0435.",
+      AR: "\u0645\u0639\u0627\u064B \u0644\u0646\u062E\u0644\u0642 \u0641\u0631\u0635\u0627\u064B \u062C\u062F\u064A\u062F\u0629 \u0641\u064A \u0627\u0644\u062A\u062C\u0627\u0631\u0629 \u0627\u0644\u062F\u0648\u0644\u064A\u0629.",
+      ES: "Creemos juntos nuevas oportunidades en el comercio internacional."
+    },
+    desc: {
+      AZ: "\u0130st\u0259r Az\u0259rbaycan m\u0259hsullar\u0131n\u0131 beyn\u0259lxalq bazarlara \xE7\u0131xarmaq, ist\u0259rs\u0259 d\u0259 Az\u0259rbaycandan etibarl\u0131 t\u0259dar\xFCk\xE7\xFC tapmaq ist\u0259yin, AZEXBUY \u0259m\u0259kda\u015Fl\u0131q imkanlar\u0131n\u0131 ara\u015Fd\u0131rmaq \xFC\xE7\xFCn sizinl\u0259 \u0259laq\u0259 saxlama\u011Fa haz\u0131rd\u0131r.",
+      EN: "Whether you want to bring Azerbaijani products to international markets or source reliably from vetted Azerbaijani manufacturers, AZEXBUY is ready to assist your commercial growth.",
+      TR: "\u0130ster Azerbaycan \xFCr\xFCnlerini uluslararas\u0131 pazarlara \xE7\u0131karmak, isterse de Azerbaycan'dan g\xFCvenilir tedarik\xE7i bulmak isteyin, AZEXBUY i\u015F birli\u011Fi imk\xE2nlar\u0131n\u0131 ara\u015Ft\u0131rmak i\xE7in sizinle ileti\u015Fim kurmaya haz\u0131rd\u0131r.",
+      RU: "\u0425\u043E\u0442\u0438\u0442\u0435 \u043B\u0438 \u0432\u044B \u0432\u044B\u0432\u0435\u0441\u0442\u0438 \u0430\u0437\u0435\u0440\u0431\u0430\u0439\u0434\u0436\u0430\u043D\u0441\u043A\u0443\u044E \u043F\u0440\u043E\u0434\u0443\u043A\u0446\u0438\u044E \u043D\u0430 \u043C\u0435\u0436\u0434\u0443\u043D\u0430\u0440\u043E\u0434\u043D\u044B\u0435 \u0440\u044B\u043D\u043A\u0438 \u0438\u043B\u0438 \u043D\u0430\u0439\u0442\u0438 \u043D\u0430\u0434\u0451\u0436\u043D\u044B\u0445 \u043F\u043E\u0441\u0442\u0430\u0432\u0449\u0438\u043A\u043E\u0432 \u0438\u0437 \u0410\u0437\u0435\u0440\u0431\u0430\u0439\u0434\u0436\u0430\u043D\u0430 \u2014 AZEXBUY \u0433\u043E\u0442\u043E\u0432 \u0441\u0432\u044F\u0437\u0430\u0442\u044C\u0441\u044F \u0441 \u0432\u0430\u043C\u0438 \u0434\u043B\u044F \u0438\u0437\u0443\u0447\u0435\u043D\u0438\u044F \u0432\u043E\u0437\u043C\u043E\u0436\u043D\u043E\u0441\u0442\u0435\u0439 \u0441\u043E\u0442\u0440\u0443\u0434\u043D\u0438\u0447\u0435\u0441\u0442\u0432\u0430.",
+      AR: "\u0633\u0648\u0627\u0621 \u0643\u0646\u062A \u062A\u0631\u063A\u0628 \u0641\u064A \u062A\u0635\u062F\u064A\u0631 \u0645\u0646\u062A\u062C\u0627\u062A\u0643 \u0623\u0648 \u0627\u0633\u062A\u064A\u0631\u0627\u062F \u0628\u0636\u0627\u0626\u0639 \u0645\u0639\u062A\u0645\u062F\u0629 \u0645\u0646 \u0623\u0630\u0631\u0628\u064A\u062C\u0627\u0646\u060C \u0641\u0631\u064A\u0642\u0646\u0627 \u0645\u0633\u062A\u0639\u062F \u0644\u062E\u062F\u0645\u062A\u0643\u0645.",
+      ES: "Tanto si desea exportar productos azerbaiyanos como abastecerse de fabricantes fiables, AZEXBUY est\xE1 listo para colaborar."
+    },
+    buyerBtn: {
+      AZ: "Al\u0131c\u0131 kimi m\xFCraci\u0259t et",
+      EN: "Apply as a Buyer",
+      TR: "Al\u0131c\u0131 olarak ba\u015Fvur",
+      RU: "\u041F\u043E\u0434\u0430\u0442\u044C \u0437\u0430\u044F\u0432\u043A\u0443 \u043A\u0430\u043A \u043F\u043E\u043A\u0443\u043F\u0430\u0442\u0435\u043B\u044C",
+      AR: "\u062A\u0642\u062F\u064A\u0645 \u0637\u0644\u0628 \u0643\u0645\u0634\u062A\u0631\u064A",
+      ES: "Solicitar como Comprador"
+    },
+    producerBtn: {
+      AZ: "\u0130stehsal\xE7\u0131 kimi m\xFCraci\u0259t et",
+      EN: "Apply as a Producer",
+      TR: "\xDCretici olarak ba\u015Fvur",
+      RU: "\u041F\u043E\u0434\u0430\u0442\u044C \u0437\u0430\u044F\u0432\u043A\u0443 \u043A\u0430\u043A \u043F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0438\u0442\u0435\u043B\u044C",
+      AR: "\u062A\u0642\u062F\u064A\u0645 \u0637\u0644\u0628 \u0643\u0645\u0646\u062A\u062C",
+      ES: "Solicitar como Productor"
+    },
+    contactBtn: {
+      AZ: "Biziml\u0259 \u0259laq\u0259 saxlay\u0131n",
+      EN: "Contact Us",
+      TR: "Bizimle ileti\u015Fim kurun",
+      RU: "\u0421\u0432\u044F\u0436\u0438\u0442\u0435\u0441\u044C \u0441 \u043D\u0430\u043C\u0438",
+      AR: "\u0627\u062A\u0635\u0644 \u0628\u0646\u0627",
+      ES: "Cont\xE1ctenos"
+    }
+  }
+};
+
 // src/seed.ts
 var SEED_CATEGORIES = [
   { id: "cat-food", name: "Food Products", slug: "food-products", description: "Natural and processed organic food products from Azerbaijan", sort_order: 1 },
@@ -1848,6 +2573,68 @@ function seedAzexbuyData(db) {
       a.author
     );
   }
+  const insertTeam = db.prepare(`
+    INSERT OR REPLACE INTO azexbuy_team_members
+    (id, created_at, updated_at, name, role, bio, photo, email, linkedin, sort_order, is_active)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `);
+  const SEED_TEAM = [
+    {
+      id: "tm-001",
+      name: "Ali \u018Fhm\u0259dov",
+      role: { AZ: "Ba\u015F \u0130cra\xE7\u0131 Direktor", EN: "Chief Executive Officer", TR: "Genel M\xFCd\xFCr", RU: "\u0413\u0435\u043D\u0435\u0440\u0430\u043B\u044C\u043D\u044B\u0439 \u0434\u0438\u0440\u0435\u043A\u0442\u043E\u0440", AR: "\u0627\u0644\u0631\u0626\u064A\u0633 \u0627\u0644\u062A\u0646\u0641\u064A\u0630\u064A", ES: "Director Ejecutivo" },
+      bio: { AZ: "Beyn\u0259lxalq ticar\u0259t v\u0259 ixrac sah\u0259sind\u0259 15 ild\u0259n \xE7ox t\u0259cr\xFCb\u0259y\u0259 malik. AZEXBUY-un qurulu\u015Fundan b\u0259ri \u015Firk\u0259tin inki\u015Faf\u0131na r\u0259hb\u0259rlik edir.", EN: "Over 15 years of experience in international trade and export. Leading the strategic growth and global partnerships of AZEXBUY.", TR: "Uluslararas\u0131 ticaret ve ihracat alan\u0131nda 15 y\u0131l\u0131 a\u015Fk\u0131n deneyime sahip.", RU: "\u0411\u043E\u043B\u0435\u0435 15 \u043B\u0435\u0442 \u043E\u043F\u044B\u0442\u0430 \u0432 \u043C\u0435\u0436\u0434\u0443\u043D\u0430\u0440\u043E\u0434\u043D\u043E\u0439 \u0442\u043E\u0440\u0433\u043E\u0432\u043B\u0435 \u0438 \u044D\u043A\u0441\u043F\u043E\u0440\u0442\u0435.", AR: "\u0623\u0643\u062B\u0631 \u0645\u0646 15 \u0639\u0627\u0645\u0627\u064B \u0645\u0646 \u0627\u0644\u062E\u0628\u0631\u0629 \u0641\u064A \u0627\u0644\u062A\u062C\u0627\u0631\u0629 \u0627\u0644\u062F\u0648\u0644\u064A\u0629 \u0648\u0627\u0644\u062A\u0635\u062F\u064A\u0631.", ES: "M\xE1s de 15 a\xF1os de experiencia en comercio internacional y exportaci\xF3n." },
+      photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80",
+      email: "ceo@azexbuy.com",
+      linkedin: "https://linkedin.com",
+      sortOrder: 1
+    },
+    {
+      id: "tm-002",
+      name: "Leyla H\xFCseynova",
+      role: { AZ: "\u0130xrac \u018Fm\u0259liyyatlar\u0131 Direktoru", EN: "Director of Export Operations", TR: "\u0130hracat Operasyonlar\u0131 Direkt\xF6r\xFC", RU: "\u0414\u0438\u0440\u0435\u043A\u0442\u043E\u0440 \u043F\u043E \u044D\u043A\u0441\u043F\u043E\u0440\u0442\u043D\u044B\u043C \u043E\u043F\u0435\u0440\u0430\u0446\u0438\u044F\u043C", AR: "\u0645\u062F\u064A\u0631\u0629 \u0639\u0645\u0644\u064A\u0627\u062A \u0627\u0644\u062A\u0635\u062F\u064A\u0631", ES: "Directora de Operaciones de Exportaci\xF3n" },
+      bio: { AZ: "Sertifikasiya, g\xF6mr\xFCk prosedurlar\u0131 v\u0259 beyn\u0259lxalq lojistika sah\u0259sind\u0259 ixtisasla\u015Fm\u0131\u015F. 10 ild\u0259n \xE7ox sah\u0259 t\u0259cr\xFCb\u0259si var.", EN: "Specializes in product certification, customs regulations, and multimodal logistics across EU and GCC corridors.", TR: "Sertifikasyon, g\xFCmr\xFCk prosed\xFCrleri ve uluslararas\u0131 lojistik alan\u0131nda uzmanla\u015Fm\u0131\u015F.", RU: "\u0421\u043F\u0435\u0446\u0438\u0430\u043B\u0438\u0437\u0438\u0440\u0443\u0435\u0442\u0441\u044F \u043D\u0430 \u0441\u0435\u0440\u0442\u0438\u0444\u0438\u043A\u0430\u0446\u0438\u0438, \u0442\u0430\u043C\u043E\u0436\u0435\u043D\u043D\u044B\u0445 \u043F\u0440\u043E\u0446\u0435\u0434\u0443\u0440\u0430\u0445 \u0438 \u043C\u0435\u0436\u0434\u0443\u043D\u0430\u0440\u043E\u0434\u043D\u043E\u0439 \u043B\u043E\u0433\u0438\u0441\u0442\u0438\u043A\u0435.", AR: "\u0645\u062A\u062E\u0635\u0635\u0629 \u0641\u064A \u0627\u0644\u0634\u0647\u0627\u062F\u0627\u062A \u0648\u0627\u0644\u0625\u062C\u0631\u0627\u0621\u0627\u062A \u0627\u0644\u062C\u0645\u0631\u0643\u064A\u0629 \u0648\u0627\u0644\u0644\u0648\u062C\u0633\u062A\u064A\u0627\u062A \u0627\u0644\u062F\u0648\u0644\u064A\u0629.", ES: "Especializada en certificaci\xF3n, procedimientos aduaneros y log\xEDstica internacional." },
+      photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80",
+      email: "export@azexbuy.com",
+      linkedin: "https://linkedin.com",
+      sortOrder: 2
+    },
+    {
+      id: "tm-003",
+      name: "Murad Quliyev",
+      role: { AZ: "Bazar Ara\u015Fd\u0131rmas\u0131 v\u0259 Al\u0131c\u0131 \u018Flaq\u0259l\u0259ri", EN: "Market Research & Buyer Relations", TR: "Pazar Ara\u015Ft\u0131rmas\u0131 ve Al\u0131c\u0131 \u0130li\u015Fkileri", RU: "\u0418\u0441\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u043D\u0438\u0435 \u0440\u044B\u043D\u043A\u043E\u0432 \u0438 \u0440\u0430\u0431\u043E\u0442\u0430 \u0441 \u043F\u043E\u043A\u0443\u043F\u0430\u0442\u0435\u043B\u044F\u043C\u0438", AR: "\u0628\u062D\u0648\u062B \u0627\u0644\u0633\u0648\u0642 \u0648\u0639\u0644\u0627\u0642\u0627\u062A \u0627\u0644\u0645\u0634\u062A\u0631\u064A\u0646", ES: "Investigaci\xF3n de Mercado y Relaciones con Compradores" },
+      bio: { AZ: "Avropa, K\xF6rf\u0259z v\u0259 Asiya bazarlar\u0131nda al\u0131c\u0131 axtar\u0131\u015F\u0131 v\u0259 kommersiya dan\u0131\u015F\u0131qlar\u0131nda ixtisasla\u015Fm\u0131\u015Fd\u0131r.", EN: "Focuses on buyer sourcing, market intelligence, and structured commercial negotiations in European and Asian markets.", TR: "Avrupa, K\xF6rfez ve Asya pazarlar\u0131nda al\u0131c\u0131 arama ve ticari m\xFCzakerelerde uzmanla\u015Fm\u0131\u015Ft\u0131r.", RU: "\u0421\u043F\u0435\u0446\u0438\u0430\u043B\u0438\u0437\u0438\u0440\u0443\u0435\u0442\u0441\u044F \u043D\u0430 \u043F\u043E\u0438\u0441\u043A\u0435 \u043F\u043E\u043A\u0443\u043F\u0430\u0442\u0435\u043B\u0435\u0439 \u0438 \u043A\u043E\u043C\u043C\u0435\u0440\u0447\u0435\u0441\u043A\u0438\u0445 \u043F\u0435\u0440\u0435\u0433\u043E\u0432\u043E\u0440\u0430\u0445 \u043D\u0430 \u0435\u0432\u0440\u043E\u043F\u0435\u0439\u0441\u043A\u0438\u0445, \u0431\u043B\u0438\u0436\u043D\u0435\u0432\u043E\u0441\u0442\u043E\u0447\u043D\u044B\u0445 \u0438 \u0430\u0437\u0438\u0430\u0442\u0441\u043A\u0438\u0445 \u0440\u044B\u043D\u043A\u0430\u0445.", AR: "\u0645\u062A\u062E\u0635\u0635 \u0641\u064A \u0627\u0644\u0628\u062D\u062B \u0639\u0646 \u0627\u0644\u0645\u0634\u062A\u0631\u064A\u0646 \u0648\u0627\u0644\u062A\u0641\u0627\u0648\u0636 \u0627\u0644\u062A\u062C\u0627\u0631\u064A \u0641\u064A \u0627\u0644\u0623\u0633\u0648\u0627\u0642 \u0627\u0644\u0623\u0648\u0631\u0648\u0628\u064A\u0629 \u0648\u0623\u0633\u0648\u0627\u0642 \u0627\u0644\u062E\u0644\u064A\u062C \u0648\u0622\u0633\u064A\u0627.", ES: "Especializado en b\xFAsqueda de compradores y negociaciones comerciales en mercados europeos, del Golfo y asi\xE1ticos." },
+      photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80",
+      email: "buyers@azexbuy.com",
+      linkedin: "https://linkedin.com",
+      sortOrder: 3
+    },
+    {
+      id: "tm-004",
+      name: "N\u0259rgiz M\u0259mm\u0259dova",
+      role: { AZ: "Keyfiyy\u0259t v\u0259 Uy\u011Funluq M\xFCt\u0259x\u0259ssisi", EN: "Quality & Compliance Specialist", TR: "Kalite ve Uygunluk Uzman\u0131", RU: "\u0421\u043F\u0435\u0446\u0438\u0430\u043B\u0438\u0441\u0442 \u043F\u043E \u043A\u0430\u0447\u0435\u0441\u0442\u0432\u0443 \u0438 \u0441\u043E\u043E\u0442\u0432\u0435\u0442\u0441\u0442\u0432\u0438\u044E", AR: "\u0623\u062E\u0635\u0627\u0626\u064A\u0629 \u0627\u0644\u062C\u0648\u062F\u0629 \u0648\u0627\u0644\u0627\u0645\u062A\u062B\u0627\u0644", ES: "Especialista en Calidad y Cumplimiento" },
+      bio: { AZ: "ISO, HACCP, Halal v\u0259 GlobalGAP standartlar\u0131 \xFCzr\u0259 yoxlama v\u0259 akkreditasiya prosesl\u0259rini idar\u0259 edir.", EN: "Oversees product audit, AQTA phytosanitary licensing, and international conformity assessments (ISO, GlobalGAP, Halal).", TR: "ISO, HACCP, Helal ve GlobalGAP standartlar\u0131 \xFCzere denetim ve akreditasyon s\xFCre\xE7lerini y\xF6netir.", RU: "\u041A\u0443\u0440\u0438\u0440\u0443\u0435\u0442 \u043F\u0440\u043E\u0432\u0435\u0440\u043A\u0443 \u0441\u0442\u0430\u043D\u0434\u0430\u0440\u0442\u043E\u0432 \u043A\u0430\u0447\u0435\u0441\u0442\u0432\u0430, \u0444\u0438\u0442\u043E\u0441\u0430\u043D\u0438\u0442\u0430\u0440\u043D\u044B\u0435 \u0441\u0435\u0440\u0442\u0438\u0444\u0438\u043A\u0430\u0442\u044B AQTA \u0438 \u043C\u0435\u0436\u0434\u0443\u043D\u0430\u0440\u043E\u0434\u043D\u044B\u0439 \u043A\u043E\u043C\u043F\u043B\u0430\u0435\u043D\u0441.", AR: "\u062A\u0634\u0631\u0641 \u0639\u0644\u0649 \u0645\u0639\u0627\u064A\u064A\u0631 \u0627\u0644\u062C\u0648\u062F\u0629 \u0627\u0644\u062F\u0648\u0644\u064A\u0629 \u0648\u062A\u0631\u0627\u062E\u064A\u0635 \u0627\u0644\u0627\u0645\u062A\u062B\u0627\u0644 (ISO, GlobalGAP, \u062D\u0644\u0627\u0644).", ES: "Gestiona auditor\xEDas de producto, normativas de calidad y acreditaciones internacionales." },
+      photo: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=80",
+      email: "compliance@azexbuy.com",
+      linkedin: "https://linkedin.com",
+      sortOrder: 4
+    }
+  ];
+  for (const t of SEED_TEAM) {
+    insertTeam.run(
+      t.id,
+      now,
+      now,
+      t.name,
+      JSON.stringify(t.role),
+      JSON.stringify(t.bio),
+      t.photo,
+      t.email,
+      t.linkedin,
+      t.sortOrder,
+      1
+    );
+  }
   const existingKv = db.prepare("SELECT value FROM azexbuy_kv WHERE key = 'content'").get();
   let cmsContent = {};
   if (existingKv) {
@@ -1859,12 +2646,16 @@ function seedAzexbuyData(db) {
   if (!cmsContent.products || cmsContent.products.length < 4) {
     cmsContent.products = SEED_CMS_PRODUCTS;
   }
+  if (!cmsContent.about) {
+    cmsContent.about = ABOUT_PAGE_DEFAULT;
+  }
   db.prepare("INSERT OR REPLACE INTO azexbuy_kv (key, value, updated_at) VALUES ('content', ?, ?)").run(JSON.stringify(cmsContent), now);
   return {
     categoriesCount: SEED_CATEGORIES.length,
     productsCount: SEED_PRODUCTS.length,
     servicesCount: SEED_SERVICES.length,
     articlesCount: SEED_ARTICLES.length,
+    teamCount: SEED_TEAM.length,
     cmsProductsCount: (cmsContent.products || []).length
   };
 }
@@ -2677,6 +3468,14 @@ try {
     updated_at TEXT
   );
   INSERT OR IGNORE INTO active_session (id, token) VALUES (1, NULL);
+  CREATE TABLE IF NOT EXISTS email_logs (
+    id TEXT PRIMARY KEY,
+    created_at TEXT NOT NULL,
+    recipient TEXT NOT NULL,
+    subject TEXT NOT NULL,
+    status TEXT NOT NULL,
+    error_message TEXT
+  );
 `);
 } catch (err) {
   console.error("[DB] admin_users schema init failed:", err);
@@ -2873,6 +3672,83 @@ try {
   console.error("[DB] Product/Article/Services schema init failed:", err);
 }
 try {
+  azexbuyDb.exec(`
+    CREATE TABLE IF NOT EXISTS azexbuy_team_members (
+      id TEXT PRIMARY KEY,
+      created_at TEXT NOT NULL,
+      updated_at TEXT,
+      name TEXT NOT NULL DEFAULT '',
+      role TEXT DEFAULT '{}',
+      bio TEXT DEFAULT '{}',
+      photo TEXT DEFAULT '',
+      email TEXT DEFAULT '',
+      linkedin TEXT DEFAULT '',
+      sort_order INTEGER DEFAULT 0,
+      is_active INTEGER DEFAULT 1
+    );
+  `);
+} catch (err) {
+  console.error("[DB] Team members table init failed:", err);
+}
+try {
+  const teamCount = azexbuyDb.prepare("SELECT COUNT(*) as c FROM azexbuy_team_members").get().c;
+  if (teamCount === 0) {
+    const now = (/* @__PURE__ */ new Date()).toISOString();
+    const ins = azexbuyDb.prepare("INSERT OR IGNORE INTO azexbuy_team_members (id,created_at,updated_at,name,role,bio,photo,email,linkedin,sort_order,is_active) VALUES (?,?,?,?,?,?,?,?,?,?,1)");
+    ins.run(
+      "tm-001",
+      now,
+      now,
+      "Ali \u018Fhm\u0259dov",
+      JSON.stringify({ AZ: "Ba\u015F \u0130cra\xE7\u0131 Direktor", EN: "Chief Executive Officer", TR: "Genel M\xFCd\xFCr", RU: "\u0413\u0435\u043D\u0435\u0440\u0430\u043B\u044C\u043D\u044B\u0439 \u0434\u0438\u0440\u0435\u043A\u0442\u043E\u0440", AR: "\u0627\u0644\u0631\u0626\u064A\u0633 \u0627\u0644\u062A\u0646\u0641\u064A\u0630\u064A", ES: "Director Ejecutivo" }),
+      JSON.stringify({ AZ: "Beyn\u0259lxalq ticar\u0259t v\u0259 ixrac sah\u0259sind\u0259 15 ild\u0259n \xE7ox t\u0259cr\xFCb\u0259y\u0259 malik. AZEXBUY-un qurulu\u015Fundan b\u0259ri \u015Firk\u0259tin inki\u015Faf\u0131na r\u0259hb\u0259rlik edir.", EN: "Over 15 years of experience in international trade and export. Leading the strategic growth and global partnerships of AZEXBUY.", TR: "Uluslararas\u0131 ticaret ve ihracat alan\u0131nda 15 y\u0131l\u0131 a\u015Fk\u0131n deneyime sahip.", RU: "\u0411\u043E\u043B\u0435\u0435 15 \u043B\u0435\u0442 \u043E\u043F\u044B\u0442\u0430 \u0432 \u043C\u0435\u0436\u0434\u0443\u043D\u0430\u0440\u043E\u0434\u043D\u043E\u0439 \u0442\u043E\u0440\u0433\u043E\u0432\u043B\u0435 \u0438 \u044D\u043A\u0441\u043F\u043E\u0440\u0442\u0435.", AR: "\u0623\u0643\u062B\u0631 \u0645\u0646 15 \u0639\u0627\u0645\u0627\u064B \u0645\u0646 \u0627\u0644\u062E\u0628\u0631\u0629 \u0641\u064A \u0627\u0644\u062A\u062C\u0627\u0631\u0629 \u0627\u0644\u062F\u0648\u0644\u064A\u0629 \u0648\u0627\u0644\u062A\u0635\u062F\u064A\u0631.", ES: "M\xE1s de 15 a\xF1os de experiencia en comercio internacional y exportaci\xF3n." }),
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80",
+      "ceo@azexbuy.com",
+      "https://linkedin.com",
+      1
+    );
+    ins.run(
+      "tm-002",
+      now,
+      now,
+      "Leyla H\xFCseynova",
+      JSON.stringify({ AZ: "\u0130xrac \u018Fm\u0259liyyatlar\u0131 Direktoru", EN: "Director of Export Operations", TR: "\u0130hracat Operasyonlar\u0131 Direkt\xF6r\xFC", RU: "\u0414\u0438\u0440\u0435\u043A\u0442\u043E\u0440 \u043F\u043E \u044D\u043A\u0441\u043F\u043E\u0440\u0442\u043D\u044B\u043C \u043E\u043F\u0435\u0440\u0430\u0446\u0438\u044F\u043C", AR: "\u0645\u062F\u064A\u0631\u0629 \u0639\u0645\u0644\u064A\u0627\u062A \u0627\u0644\u062A\u0635\u062F\u064A\u0631", ES: "Directora de Operaciones de Exportaci\xF3n" }),
+      JSON.stringify({ AZ: "Sertifikasiya, g\xF6mr\xFCk prosedurlar\u0131 v\u0259 beyn\u0259lxalq lojistika sah\u0259sind\u0259 ixtisasla\u015Fm\u0131\u015F. 10 ild\u0259n \xE7ox sah\u0259 t\u0259cr\xFCb\u0259si var.", EN: "Specializes in product certification, customs regulations, and multimodal logistics across EU and GCC corridors.", TR: "Sertifikasyon, g\xFCmr\xFCk prosed\xFCrleri ve uluslararas\u0131 lojistik alan\u0131nda uzmanla\u015Fm\u0131\u015F.", RU: "\u0421\u043F\u0435\u0446\u0438\u0430\u043B\u0438\u0437\u0438\u0440\u0443\u0435\u0442\u0441\u044F \u043D\u0430 \u0441\u0435\u0440\u0442\u0438\u0444\u0438\u043A\u0430\u0446\u0438\u0438, \u0442\u0430\u043C\u043E\u0436\u0435\u043D\u043D\u044B\u0445 \u043F\u0440\u043E\u0446\u0435\u0434\u0443\u0440\u0430\u0445 \u0438 \u043C\u0435\u0436\u0434\u0443\u043D\u0430\u0440\u043E\u0434\u043D\u043E\u0439 \u043B\u043E\u0433\u0438\u0441\u0442\u0438\u043A\u0435.", AR: "\u0645\u062A\u062E\u0635\u0635\u0629 \u0641\u064A \u0627\u0644\u0634\u0647\u0627\u062F\u0627\u062A \u0648\u0627\u0644\u0625\u062C\u0631\u0627\u0621\u0627\u062A \u0627\u0644\u062C\u0645\u0631\u0643\u064A\u0629 \u0648\u0627\u0644\u0644\u0648\u062C\u0633\u062A\u064A\u0627\u062A \u0627\u0644\u062F\u0648\u0644\u064A\u0629.", ES: "Especializada en certificaci\xF3n, procedimientos aduaneros y log\xEDstica internacional." }),
+      "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80",
+      "export@azexbuy.com",
+      "https://linkedin.com",
+      2
+    );
+    ins.run(
+      "tm-003",
+      now,
+      now,
+      "Murad Quliyev",
+      JSON.stringify({ AZ: "Bazar Ara\u015Fd\u0131rmas\u0131 v\u0259 Al\u0131c\u0131 \u018Flaq\u0259l\u0259ri", EN: "Market Research & Buyer Relations", TR: "Pazar Ara\u015Ft\u0131rmas\u0131 ve Al\u0131c\u0131 \u0130li\u015Fkileri", RU: "\u0418\u0441\u0441\u043B\u0435\u0434\u043E\u0432\u0430\u043D\u0438\u0435 \u0440\u044B\u043D\u043A\u043E\u0432 \u0438 \u0440\u0430\u0431\u043E\u0442\u0430 \u0441 \u043F\u043E\u043A\u0443\u043F\u0430\u0442\u0435\u043B\u044F\u043C\u0438", AR: "\u0628\u062D\u0648\u062B \u0627\u0644\u0633\u0648\u0642 \u0648\u0639\u0644\u0627\u0642\u0627\u062A \u0627\u0644\u0645\u0634\u062A\u0631\u064A\u0646", ES: "Investigaci\xF3n de Mercado y Relaciones con Compradores" }),
+      JSON.stringify({ AZ: "Avropa, K\xF6rf\u0259z v\u0259 Asiya bazarlar\u0131nda al\u0131c\u0131 axtar\u0131\u015F\u0131 v\u0259 kommersiya dan\u0131\u015F\u0131qlar\u0131nda ixtisasla\u015Fm\u0131\u015Fd\u0131r.", EN: "Focuses on buyer sourcing, market intelligence, and structured commercial negotiations in European and Asian markets.", TR: "Avrupa, K\xF6rfez ve Asya pazarlar\u0131nda al\u0131c\u0131 arama ve ticari m\xFCzakerelerde uzmanla\u015Fm\u0131\u015Ft\u0131r.", RU: "\u0421\u043F\u0435\u0446\u0438\u0430\u043B\u0438\u0437\u0438\u0440\u0443\u0435\u0442\u0441\u044F \u043D\u0430 \u043F\u043E\u0438\u0441\u043A\u0435 \u043F\u043E\u043A\u0443\u043F\u0430\u0442\u0435\u043B\u0435\u0439 \u0438 \u043A\u043E\u043C\u043C\u0435\u0440\u0447\u0435\u0441\u043A\u0438\u0445 \u043F\u0435\u0440\u0435\u0433\u043E\u0432\u043E\u0440\u0430\u0445 \u043D\u0430 \u0435\u0432\u0440\u043E\u043F\u0435\u0439\u0441\u043A\u0438\u0445, \u0431\u043B\u0438\u0436\u043D\u0435\u0432\u043E\u0441\u0442\u043E\u0447\u043D\u044B\u0445 \u0438 \u0430\u0437\u0438\u0430\u0442\u0441\u043A\u0438\u0445 \u0440\u044B\u043D\u043A\u0430\u0445.", AR: "\u0645\u062A\u062E\u0635\u0635 \u0641\u064A \u0627\u0644\u0628\u062D\u062B \u0639\u0646 \u0627\u0644\u0645\u0634\u062A\u0631\u064A\u0646 \u0648\u0627\u0644\u062A\u0641\u0627\u0648\u0636 \u0627\u0644\u062A\u062C\u0627\u0631\u064A \u0641\u064A \u0627\u0644\u0623\u0633\u0648\u0627\u0642 \u0627\u0644\u0623\u0648\u0631\u0648\u0628\u064A\u0629 \u0648\u0623\u0633\u0648\u0627\u0642 \u0627\u0644\u062E\u0644\u064A\u062C \u0648\u0622\u0633\u064A\u0627.", ES: "Especializado en b\xFAsqueda de compradores y negociaciones comerciales en mercados europeos, del Golfo y asi\xE1ticos." }),
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80",
+      "buyers@azexbuy.com",
+      "https://linkedin.com",
+      3
+    );
+    ins.run(
+      "tm-004",
+      now,
+      now,
+      "N\u0259rgiz M\u0259mm\u0259dova",
+      JSON.stringify({ AZ: "Keyfiyy\u0259t v\u0259 Uy\u011Funluq M\xFCt\u0259x\u0259ssisi", EN: "Quality & Compliance Specialist", TR: "Kalite ve Uygunluk Uzman\u0131", RU: "\u0421\u043F\u0435\u0446\u0438\u0430\u043B\u0438\u0441\u0442 \u043F\u043E \u043A\u0430\u0447\u0435\u0441\u0442\u0432\u0443 \u0438 \u0441\u043E\u043E\u0442\u0432\u0435\u0442\u0441\u0442\u0432\u0438\u044E", AR: "\u0623\u062E\u0635\u0627\u0626\u064A\u0629 \u0627\u0644\u062C\u0648\u062F\u0629 \u0648\u0627\u0644\u0627\u0645\u062A\u062B\u0627\u0644", ES: "Especialista en Calidad y Cumplimiento" }),
+      JSON.stringify({ AZ: "ISO, HACCP, Halal v\u0259 GlobalGAP standartlar\u0131 \xFCzr\u0259 yoxlama v\u0259 akkreditasiya prosesl\u0259rini idar\u0259 edir.", EN: "Oversees product audit, AQTA phytosanitary licensing, and international conformity assessments (ISO, GlobalGAP, Halal).", TR: "ISO, HACCP, Helal ve GlobalGAP standartlar\u0131 \xFCzere denetim ve akreditasyon s\xFCre\xE7lerini y\xF6netir.", RU: "\u041A\u0443\u0440\u0438\u0440\u0443\u0435\u0442 \u043F\u0440\u043E\u0432\u0435\u0440\u043A\u0443 \u0441\u0442\u0430\u043D\u0434\u0430\u0440\u0442\u043E\u0432 \u043A\u0430\u0447\u0435\u0441\u0442\u0432\u0430, \u0444\u0438\u0442\u043E\u0441\u0430\u043D\u0438\u0442\u0430\u0440\u043D\u044B\u0435 \u0441\u0435\u0440\u0442\u0438\u0444\u0438\u043A\u0430\u0442\u044B AQTA \u0438 \u043C\u0435\u0436\u0434\u0443\u043D\u0430\u0440\u043E\u0434\u043D\u044B\u0439 \u043A\u043E\u043C\u043F\u043B\u0430\u0435\u043D\u0441.", AR: "\u062A\u0634\u0631\u0641 \u0639\u0644\u0649 \u0645\u0639\u0627\u064A\u064A\u0631 \u0627\u0644\u062C\u0648\u062F\u0629 \u0627\u0644\u062F\u0648\u0644\u064A\u0629 \u0648\u062A\u0631\u0627\u062E\u064A\u0635 \u0627\u0644\u0627\u0645\u062A\u062B\u0627\u0644 (ISO, GlobalGAP, \u062D\u0644\u0627\u0644).", ES: "Gestiona auditor\xEDas de producto, normativas de calidad y acreditaciones internacionales." }),
+      "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=80",
+      "compliance@azexbuy.com",
+      "https://linkedin.com",
+      4
+    );
+    console.log("[Seed] Team members seeded.");
+  }
+} catch (err) {
+  console.error("[Seed] Team members seed failed:", err);
+}
+try {
   const cols = azexbuyDb.prepare("PRAGMA table_info(azexbuy_articles)").all();
   if (!cols.find((c) => c.name === "is_featured")) {
     azexbuyDb.exec("ALTER TABLE azexbuy_articles ADD COLUMN is_featured INTEGER NOT NULL DEFAULT 0");
@@ -2882,6 +3758,20 @@ try {
     azexbuyDb.exec("ALTER TABLE azexbuy_articles ADD COLUMN view_count INTEGER NOT NULL DEFAULT 0");
     console.log("[DB] Migration: added view_count column to azexbuy_articles");
   }
+  if (!cols.find((c) => c.name === "source_name")) azexbuyDb.exec("ALTER TABLE azexbuy_articles ADD COLUMN source_name TEXT");
+  if (!cols.find((c) => c.name === "source_url")) azexbuyDb.exec("ALTER TABLE azexbuy_articles ADD COLUMN source_url TEXT");
+  if (!cols.find((c) => c.name === "source_country")) azexbuyDb.exec("ALTER TABLE azexbuy_articles ADD COLUMN source_country TEXT");
+  if (!cols.find((c) => c.name === "source_period")) azexbuyDb.exec("ALTER TABLE azexbuy_articles ADD COLUMN source_period TEXT");
+  if (!cols.find((c) => c.name === "pub_status")) azexbuyDb.exec("ALTER TABLE azexbuy_articles ADD COLUMN pub_status TEXT DEFAULT 'published'");
+  const prodCols = azexbuyDb.prepare("PRAGMA table_info(azexbuy_products)").all();
+  if (!prodCols.find((c) => c.name === "sort_order")) azexbuyDb.exec("ALTER TABLE azexbuy_products ADD COLUMN sort_order INTEGER NOT NULL DEFAULT 0");
+  const srvCols = azexbuyDb.prepare("PRAGMA table_info(azexbuy_services)").all();
+  if (!srvCols.find((c) => c.name === "category")) azexbuyDb.exec("ALTER TABLE azexbuy_services ADD COLUMN category TEXT DEFAULT 'Export'");
+  if (!srvCols.find((c) => c.name === "is_approved")) azexbuyDb.exec("ALTER TABLE azexbuy_services ADD COLUMN is_approved INTEGER NOT NULL DEFAULT 1");
+  if (!srvCols.find((c) => c.name === "rfq_slug")) azexbuyDb.exec("ALTER TABLE azexbuy_services ADD COLUMN rfq_slug TEXT DEFAULT ''");
+  const catCols = azexbuyDb.prepare("PRAGMA table_info(azexbuy_categories)").all();
+  if (!catCols.find((c) => c.name === "seo_title")) azexbuyDb.exec("ALTER TABLE azexbuy_categories ADD COLUMN seo_title TEXT");
+  if (!catCols.find((c) => c.name === "seo_description")) azexbuyDb.exec("ALTER TABLE azexbuy_categories ADD COLUMN seo_description TEXT");
 } catch (err) {
   console.error("[DB] Migration failed:", err);
 }
@@ -2961,11 +3851,14 @@ app.get("/api/azexbuy/categories", async (_req, res) => {
 });
 app.post("/api/azexbuy/categories", requireAuth, (req, res) => {
   const { name, slug, description, imageUrl, sortOrder } = req.body;
-  if (!name || !slug) return res.status(400).json({ error: "name and slug are required" });
+  const rawName = name;
+  const nameStr = typeof rawName === "string" ? rawName.trim() : rawName?.AZ || rawName?.EN || rawName?.TR || Object.values(rawName || {})[0] || "";
+  if (!nameStr || !slug) return res.status(400).json({ error: "name and slug are required" });
   const existing = azexbuyDb.prepare("SELECT id FROM azexbuy_categories WHERE slug = ?").get(slug);
   if (existing) return res.status(409).json({ error: "Slug already exists" });
   const id = `cat-${Date.now()}`;
-  azexbuyDb.prepare("INSERT INTO azexbuy_categories (id, created_at, name, slug, description, image_url, sort_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, 1)").run(id, (/* @__PURE__ */ new Date()).toISOString(), name.trim(), slug.trim().toLowerCase(), description || null, imageUrl || null, sortOrder || 0);
+  const storedName = typeof rawName === "object" ? JSON.stringify(rawName) : nameStr;
+  azexbuyDb.prepare("INSERT INTO azexbuy_categories (id, created_at, name, slug, description, image_url, sort_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, 1)").run(id, (/* @__PURE__ */ new Date()).toISOString(), storedName, slug.trim().toLowerCase(), description || null, imageUrl || null, sortOrder || 0);
   azDel("azexbuy:categories");
   res.status(201).json({ success: true, id });
 });
@@ -2973,7 +3866,10 @@ app.patch("/api/azexbuy/categories/:id", requireAuth, (req, res) => {
   const { name, slug, description, imageUrl, sortOrder, isActive } = req.body;
   const cat = azexbuyDb.prepare("SELECT id FROM azexbuy_categories WHERE id = ?").get(req.params.id);
   if (!cat) return res.status(404).json({ error: "Category not found" });
-  if (name !== void 0) azexbuyDb.prepare("UPDATE azexbuy_categories SET name = ? WHERE id = ?").run(name, req.params.id);
+  if (name !== void 0) {
+    const storedName = typeof name === "object" ? JSON.stringify(name) : String(name);
+    azexbuyDb.prepare("UPDATE azexbuy_categories SET name = ? WHERE id = ?").run(storedName, req.params.id);
+  }
   if (slug !== void 0) azexbuyDb.prepare("UPDATE azexbuy_categories SET slug = ? WHERE id = ?").run(slug.toLowerCase().trim(), req.params.id);
   if (description !== void 0) azexbuyDb.prepare("UPDATE azexbuy_categories SET description = ? WHERE id = ?").run(description, req.params.id);
   if (imageUrl !== void 0) azexbuyDb.prepare("UPDATE azexbuy_categories SET image_url = ? WHERE id = ?").run(imageUrl, req.params.id);
@@ -3009,7 +3905,8 @@ function mapProduct(r) {
     isActive: !!r.is_active,
     isFeatured: !!r.is_featured,
     seoTitle: r.seo_title,
-    seoDescription: r.seo_description
+    seoDescription: r.seo_description,
+    sortOrder: r.sort_order || 0
   };
 }
 app.get("/api/azexbuy/products", async (req, res) => {
@@ -3048,20 +3945,23 @@ app.get("/api/azexbuy/admin/products", requireAuth, async (_req, res) => {
   res.json(rows.map((r) => ({ ...mapProduct(r), categoryName: r.category_name, categorySlug: r.category_slug })));
 });
 app.post("/api/azexbuy/admin/products", requireAuth, (req, res) => {
-  const { categoryId, name, slug, shortDescription, description, technicalSpecs, images, moq, certificates, packagingInfo, hsCode, originRegion, isFeatured, seoTitle, seoDescription } = req.body;
-  if (!categoryId || !name || !slug) return res.status(400).json({ error: "categoryId, name and slug are required" });
+  const { categoryId, name, slug, shortDescription, description, technicalSpecs, images, moq, certificates, packagingInfo, hsCode, originRegion, isFeatured, seoTitle, seoDescription, sortOrder } = req.body;
+  const rawName = name;
+  const nameStr = typeof rawName === "string" ? rawName.trim() : rawName?.AZ || rawName?.EN || rawName?.TR || Object.values(rawName || {})[0] || "";
+  if (!categoryId || !nameStr || !slug) return res.status(400).json({ error: "categoryId, name and slug are required" });
   const existing = azexbuyDb.prepare("SELECT id FROM azexbuy_products WHERE slug = ?").get(slug);
   if (existing) return res.status(409).json({ error: "Product slug already exists" });
   const catExists = azexbuyDb.prepare("SELECT id FROM azexbuy_categories WHERE id = ?").get(categoryId);
   if (!catExists) return res.status(400).json({ error: "Category not found" });
   const id = `prod-${Date.now()}`;
   const now = (/* @__PURE__ */ new Date()).toISOString();
-  azexbuyDb.prepare(`INSERT INTO azexbuy_products (id, created_at, updated_at, category_id, name, slug, short_description, description, technical_specs, images, moq, certificates, packaging_info, hs_code, origin_region, is_active, is_featured, seo_title, seo_description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?)`).run(
+  const storedName = typeof rawName === "object" ? JSON.stringify(rawName) : nameStr;
+  azexbuyDb.prepare(`INSERT INTO azexbuy_products (id, created_at, updated_at, category_id, name, slug, short_description, description, technical_specs, images, moq, certificates, packaging_info, hs_code, origin_region, is_active, is_featured, seo_title, seo_description, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?)`).run(
     id,
     now,
     now,
     categoryId,
-    name.trim(),
+    storedName,
     slug.trim().toLowerCase(),
     shortDescription || null,
     description || null,
@@ -3074,7 +3974,8 @@ app.post("/api/azexbuy/admin/products", requireAuth, (req, res) => {
     originRegion || null,
     isFeatured ? 1 : 0,
     seoTitle || null,
-    seoDescription || null
+    seoDescription || null,
+    Number(sortOrder) || 0
   );
   azDel("azexbuy:products:all:0:50:0");
   res.status(201).json({ success: true, id });
@@ -3082,7 +3983,7 @@ app.post("/api/azexbuy/admin/products", requireAuth, (req, res) => {
 app.patch("/api/azexbuy/admin/products/:id", requireAuth, (req, res) => {
   const r = azexbuyDb.prepare("SELECT id, slug FROM azexbuy_products WHERE id = ?").get(req.params.id);
   if (!r) return res.status(404).json({ error: "Product not found" });
-  const fields = ["categoryId:category_id", "name", "slug", "shortDescription:short_description", "description", "moq", "packagingInfo:packaging_info", "hsCode:hs_code", "originRegion:origin_region", "seoTitle:seo_title", "seoDescription:seo_description"];
+  const fields = ["categoryId:category_id", "name", "slug", "shortDescription:short_description", "description", "moq", "packagingInfo:packaging_info", "hsCode:hs_code", "originRegion:origin_region", "seoTitle:seo_title", "seoDescription:seo_description", "sortOrder:sort_order"];
   const jsonFields = ["technicalSpecs:technical_specs", "images", "certificates"];
   const boolFields = ["isActive:is_active", "isFeatured:is_featured"];
   const body = req.body;
@@ -3090,7 +3991,10 @@ app.patch("/api/azexbuy/admin/products/:id", requireAuth, (req, res) => {
   azexbuyDb.prepare("UPDATE azexbuy_products SET updated_at = ? WHERE id = ?").run(now, req.params.id);
   for (const f of fields) {
     const [jsKey, dbCol] = f.includes(":") ? f.split(":") : [f, f];
-    if (body[jsKey] !== void 0) azexbuyDb.prepare(`UPDATE azexbuy_products SET ${dbCol} = ? WHERE id = ?`).run(body[jsKey], req.params.id);
+    if (body[jsKey] !== void 0) {
+      const val = jsKey === "name" && typeof body[jsKey] === "object" ? JSON.stringify(body[jsKey]) : body[jsKey];
+      azexbuyDb.prepare(`UPDATE azexbuy_products SET ${dbCol} = ? WHERE id = ?`).run(val, req.params.id);
+    }
   }
   for (const f of jsonFields) {
     const [jsKey, dbCol] = f.includes(":") ? f.split(":") : [f, f];
@@ -3128,7 +4032,12 @@ function mapArticle(r) {
     publishedAt: r.published_at,
     author: r.author,
     isFeatured: !!r.is_featured,
-    viewCount: r.view_count || 0
+    viewCount: r.view_count || 0,
+    sourceName: r.source_name || "",
+    sourceUrl: r.source_url || "",
+    sourceCountry: r.source_country || "",
+    sourcePeriod: r.source_period || "",
+    pubStatus: r.pub_status || (r.is_published ? "published" : "draft")
   };
 }
 app.get("/api/azexbuy/articles/featured", async (_req, res) => {
@@ -3185,7 +4094,7 @@ app.get("/api/azexbuy/admin/articles", requireAuth, async (_req, res) => {
   res.json(rows.map(mapArticle));
 });
 app.post("/api/azexbuy/admin/articles", requireAuth, (req, res) => {
-  const { title, slug, category, summary, content, coverImage, seoTitle, seoDescription, isPublished, publishedAt, author } = req.body;
+  const { title, slug, category, summary, content, coverImage, seoTitle, seoDescription, isPublished, publishedAt, author, sourceName, sourceUrl, sourceCountry, sourcePeriod, pubStatus } = req.body;
   if (!title || !slug) return res.status(400).json({ error: "title and slug are required" });
   if (category && !ARTICLE_CATEGORIES.includes(category)) return res.status(400).json({ error: `category must be one of: ${ARTICLE_CATEGORIES.join(", ")}` });
   const existing = azexbuyDb.prepare("SELECT id FROM azexbuy_articles WHERE slug = ?").get(slug);
@@ -3193,7 +4102,7 @@ app.post("/api/azexbuy/admin/articles", requireAuth, (req, res) => {
   const id = `art-${Date.now()}`;
   const now = (/* @__PURE__ */ new Date()).toISOString();
   const pubAt = isPublished ? publishedAt || now : null;
-  azexbuyDb.prepare(`INSERT INTO azexbuy_articles (id, created_at, updated_at, title, slug, category, summary, content, cover_image, seo_title, seo_description, is_published, published_at, author) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`).run(id, now, now, title.trim(), slug.trim().toLowerCase(), category || "Export Guides", summary || null, content || null, coverImage || null, seoTitle || null, seoDescription || null, isPublished ? 1 : 0, pubAt, author || "AZEXBUY");
+  azexbuyDb.prepare(`INSERT INTO azexbuy_articles (id, created_at, updated_at, title, slug, category, summary, content, cover_image, seo_title, seo_description, is_published, published_at, author, source_name, source_url, source_country, source_period, pub_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`).run(id, now, now, title.trim(), slug.trim().toLowerCase(), category || "Export Guides", summary || null, content || null, coverImage || null, seoTitle || null, seoDescription || null, isPublished ? 1 : 0, pubAt, author || "AZEXBUY", sourceName || null, sourceUrl || null, sourceCountry || null, sourcePeriod || null, pubStatus || (isPublished ? "published" : "draft"));
   azDel("azexbuy:articles:all:20:0");
   for (const cat of ARTICLE_CATEGORIES) azDel(`azexbuy:articles:${cat}:20:0`);
   res.status(201).json({ success: true, id });
@@ -3202,7 +4111,7 @@ app.patch("/api/azexbuy/admin/articles/:id", requireAuth, (req, res) => {
   const r = azexbuyDb.prepare("SELECT id, slug, published_at, is_featured FROM azexbuy_articles WHERE id = ?").get(req.params.id);
   if (!r) return res.status(404).json({ error: "Article not found" });
   if (req.body.category && !ARTICLE_CATEGORIES.includes(req.body.category)) return res.status(400).json({ error: `Invalid category` });
-  const textFields = ["title", "slug", "category", "summary", "content", "coverImage:cover_image", "seoTitle:seo_title", "seoDescription:seo_description", "publishedAt:published_at", "author"];
+  const textFields = ["title", "slug", "category", "summary", "content", "coverImage:cover_image", "seoTitle:seo_title", "seoDescription:seo_description", "publishedAt:published_at", "author", "sourceName:source_name", "sourceUrl:source_url", "sourceCountry:source_country", "sourcePeriod:source_period", "pubStatus:pub_status"];
   const now = (/* @__PURE__ */ new Date()).toISOString();
   azexbuyDb.prepare("UPDATE azexbuy_articles SET updated_at = ? WHERE id = ?").run(now, req.params.id);
   for (const f of textFields) {
@@ -3260,6 +4169,7 @@ app.get("/api/azexbuy/rfqs", requireAuth, async (req, res) => {
 });
 app.post("/api/azexbuy/rfqs", async (req, res) => {
   const d = req.body;
+  if (d._hp || d.website_url_check) return res.json({ success: true, id: d.id || "SPAM" });
   if (!d.id || !d.buyerCompany || !d.email) return res.status(400).json({ error: "Missing fields" });
   azexbuyDb.prepare(`INSERT OR REPLACE INTO azexbuy_rfqs
     (id,created_at,buyer_company,country,city,contact_name,email,phone,incoterm,destination_port,corridor_route,required_certifications,items,notes,status)
@@ -3346,6 +4256,7 @@ app.get("/api/azexbuy/producers", requireAuth, async (req, res) => {
 });
 app.post("/api/azexbuy/producers", async (req, res) => {
   const d = req.body;
+  if (d._hp || d.website_url_check) return res.json({ success: true, id: d.id || "SPAM" });
   if (!d.id || !d.companyName || !d.email) return res.status(400).json({ error: "Missing fields" });
   azexbuyDb.prepare(`INSERT OR REPLACE INTO azexbuy_producers
     (id,created_at,company_name,voen_tin,economic_region,city,contact_person,email,phone,product_name,hs_code,category_key,monthly_capacity,certifications,target_markets,outsourced_desk,readiness_score,status,products)
@@ -3466,7 +4377,8 @@ app.get("/api/azexbuy/contacts", requireAuth, async (req, res) => {
   })));
 });
 app.post("/api/azexbuy/contacts", async (req, res) => {
-  const { fullName, organization, email, inquiryType, message } = req.body;
+  const { fullName, organization, email, inquiryType, message, _hp, website_url_check } = req.body;
+  if (_hp || website_url_check) return res.json({ success: true, id: "SPAM" });
   if (!fullName || !organization || !email || !message) {
     return res.status(400).json({ error: "fullName, organization, email and message are required" });
   }
@@ -3721,6 +4633,98 @@ app.delete("/api/azexbuy/service-applications/:id", requireAuth, async (req, res
   azexbuyDb.prepare("DELETE FROM azexbuy_service_applications WHERE id = ?").run(req.params.id);
   res.json({ success: true });
 });
+app.get("/api/azexbuy/team", async (req, res) => {
+  try {
+    const cached = await azGet("azexbuy:team");
+    if (cached && req.query.fresh !== "1") return res.json(JSON.parse(cached));
+    const rows = azexbuyDb.prepare("SELECT * FROM azexbuy_team_members ORDER BY sort_order ASC, created_at ASC").all();
+    const result = rows.map((r) => ({
+      id: r.id,
+      createdAt: r.created_at,
+      updatedAt: r.updated_at,
+      name: r.name,
+      photo: r.photo,
+      email: r.email,
+      linkedin: r.linkedin,
+      sortOrder: r.sort_order,
+      isActive: Boolean(r.is_active),
+      role: (() => {
+        try {
+          return JSON.parse(r.role);
+        } catch {
+          return { AZ: r.role };
+        }
+      })(),
+      bio: (() => {
+        try {
+          return JSON.parse(r.bio);
+        } catch {
+          return { AZ: r.bio };
+        }
+      })()
+    }));
+    await azSet("azexbuy:team", JSON.stringify(result));
+    res.json(result);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+app.post("/api/azexbuy/team", requireAuth, async (req, res) => {
+  try {
+    const d = req.body;
+    if (!d.id || !d.name) return res.status(400).json({ error: "Missing id or name" });
+    const now = (/* @__PURE__ */ new Date()).toISOString();
+    azexbuyDb.prepare(`INSERT OR REPLACE INTO azexbuy_team_members
+      (id,created_at,updated_at,name,role,bio,photo,email,linkedin,sort_order,is_active)
+      VALUES (?,?,?,?,?,?,?,?,?,?,?)`).run(
+      d.id,
+      d.createdAt || now,
+      now,
+      d.name,
+      typeof d.role === "string" ? d.role : JSON.stringify(d.role || {}),
+      typeof d.bio === "string" ? d.bio : JSON.stringify(d.bio || {}),
+      d.photo || "",
+      d.email || "",
+      d.linkedin || "",
+      d.sortOrder ?? 0,
+      d.isActive !== false ? 1 : 0
+    );
+    await azDel("azexbuy:team");
+    res.json({ success: true, id: d.id });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+app.patch("/api/azexbuy/team/:id", requireAuth, async (req, res) => {
+  try {
+    const d = req.body;
+    const now = (/* @__PURE__ */ new Date()).toISOString();
+    const existing = azexbuyDb.prepare("SELECT * FROM azexbuy_team_members WHERE id=?").get(req.params.id);
+    if (!existing) return res.status(404).json({ error: "Team member not found" });
+    const name = d.name !== void 0 ? d.name : existing.name;
+    const role = d.role !== void 0 ? typeof d.role === "string" ? d.role : JSON.stringify(d.role) : existing.role;
+    const bio = d.bio !== void 0 ? typeof d.bio === "string" ? d.bio : JSON.stringify(d.bio) : existing.bio;
+    const photo = d.photo !== void 0 ? d.photo : existing.photo;
+    const email = d.email !== void 0 ? d.email : existing.email;
+    const linkedin = d.linkedin !== void 0 ? d.linkedin : existing.linkedin;
+    const sortOrder = d.sortOrder !== void 0 ? d.sortOrder : existing.sort_order;
+    const isActive = d.isActive !== void 0 ? d.isActive ? 1 : 0 : existing.is_active;
+    azexbuyDb.prepare(`UPDATE azexbuy_team_members SET updated_at=?,name=?,role=?,bio=?,photo=?,email=?,linkedin=?,sort_order=?,is_active=? WHERE id=?`).run(now, name, role, bio, photo, email, linkedin, sortOrder, isActive, req.params.id);
+    await azDel("azexbuy:team");
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+app.delete("/api/azexbuy/team/:id", requireAuth, async (req, res) => {
+  try {
+    azexbuyDb.prepare("DELETE FROM azexbuy_team_members WHERE id=?").run(req.params.id);
+    await azDel("azexbuy:team");
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
 app.all("/api/azexbuy/seed", async (_req, res) => {
   try {
     const stats = seedAzexbuyData(azexbuyDb);
@@ -3728,6 +4732,7 @@ app.all("/api/azexbuy/seed", async (_req, res) => {
     await azDel("azexbuy:categories:all");
     await azDel("azexbuy:services");
     await azDel("azexbuy:content");
+    await azDel("azexbuy:team");
     res.json({ success: true, message: "AZEXBUY data seeded successfully", stats });
   } catch (err) {
     console.error("Seed error:", err);
@@ -3871,23 +4876,82 @@ async function createTransport() {
   });
 }
 async function sendNotificationEmail(subject, html, toOverride) {
+  const logId = `eml-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+  const now = (/* @__PURE__ */ new Date()).toISOString();
+  const s = getSmtpSettings();
+  const to = toOverride || s?.notify_email || "desk@azexbuy.az";
   try {
-    const s = getSmtpSettings();
-    if (!s?.enabled) return;
-    const to = toOverride || s?.notify_email;
-    if (!to) return;
+    if (!s?.enabled) {
+      try {
+        mainDb.prepare("INSERT INTO email_logs (id, created_at, recipient, subject, status, error_message) VALUES (?, ?, ?, ?, ?, ?)").run(logId, now, to, subject, "skipped", "SMTP deaktivdir");
+      } catch {
+      }
+      return;
+    }
     const transporter = await createTransport();
-    if (!transporter) return;
+    if (!transporter) {
+      try {
+        mainDb.prepare("INSERT INTO email_logs (id, created_at, recipient, subject, status, error_message) VALUES (?, ?, ?, ?, ?, ?)").run(logId, now, to, subject, "skipped", "SMTP ba\u011Flant\u0131s\u0131 qurula bilm\u0259di");
+      } catch {
+      }
+      return;
+    }
     await transporter.sendMail({
       from: `"${s.from_name || "AZEXBUY"}" <${s.from_email || s.user}>`,
       to,
       subject,
       html
     });
+    try {
+      mainDb.prepare("INSERT INTO email_logs (id, created_at, recipient, subject, status, error_message) VALUES (?, ?, ?, ?, ?, ?)").run(logId, now, to, subject, "sent", null);
+    } catch {
+    }
   } catch (err) {
     console.error("[SMTP] Send failed:", err);
+    try {
+      mainDb.prepare("INSERT INTO email_logs (id, created_at, recipient, subject, status, error_message) VALUES (?, ?, ?, ?, ?, ?)").run(logId, now, to, subject, "failed", err?.message || String(err));
+    } catch {
+    }
   }
 }
+app.get("/api/email-logs", requireAuth, (_req, res) => {
+  try {
+    const rows = mainDb.prepare("SELECT * FROM email_logs ORDER BY created_at DESC LIMIT 100").all();
+    res.json(rows);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+app.get("/api/azexbuy/inquiries-by-product", requireAuth, (req, res) => {
+  try {
+    const query = String(req.query.q || "").toLowerCase();
+    const rows = azexbuyDb.prepare("SELECT * FROM azexbuy_rfqs ORDER BY created_at DESC").all();
+    const matched = rows.filter((r) => {
+      if (!query) return true;
+      let items = [];
+      try {
+        items = JSON.parse(r.items || "[]");
+      } catch {
+        items = [];
+      }
+      return items.some(
+        (it) => (it.productName || "").toLowerCase().includes(query) || (it.hsCode || "").toLowerCase().includes(query)
+      );
+    }).map((r) => ({
+      id: r.id,
+      createdAt: r.created_at,
+      buyerCompany: r.buyer_company,
+      country: r.country,
+      status: r.status,
+      items: JSON.parse(r.items || "[]"),
+      assignedTo: r.assigned_to || "",
+      internalNotes: r.internal_notes || ""
+    }));
+    res.json(matched);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
 app.get("/api/smtp-settings", requireAuth, (_req, res) => {
   const s = getSmtpSettings();
   res.json({ ...s, password: s?.password ? "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022" : "" });
@@ -3985,6 +5049,78 @@ app.get("/octo-emergency-reset-xK9mP2qL", (_req, res) => {
   } catch (e) {
     res.status(500).send("X\u0259ta: " + e.message);
   }
+});
+app.get("/robots.txt", (_req, res) => {
+  res.type("text/plain");
+  res.send(`User-agent: *
+Allow: /
+Disallow: /octo-admin/
+Disallow: /api/
+
+Sitemap: https://azexbuy.com/sitemap.xml
+`);
+});
+app.get("/sitemap.xml", (_req, res) => {
+  const baseUrl = "https://azexbuy.com";
+  const now = (/* @__PURE__ */ new Date()).toISOString().split("T")[0];
+  const locales = ["az", "en", "tr", "ru", "ar", "es"];
+  const routes = ["", "about", "products", "services", "how-it-works", "insights", "contact"];
+  let xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">`;
+  for (const r of routes) {
+    for (const loc of locales) {
+      const locPath = `${baseUrl}/${loc}${r ? `/${r}` : ""}`;
+      xml += `
+  <url>
+    <loc>${locPath}</loc>
+    <lastmod>${now}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>${r === "" ? "1.0" : "0.8"}</priority>`;
+      for (const altLoc of locales) {
+        const altPath = `${baseUrl}/${altLoc}${r ? `/${r}` : ""}`;
+        xml += `
+    <xhtml:link rel="alternate" hreflang="${altLoc}" href="${altPath}" />`;
+      }
+      xml += `
+  </url>`;
+    }
+  }
+  try {
+    const prods = azexbuyDb.prepare("SELECT slug, updated_at FROM azexbuy_products WHERE is_active = 1").all();
+    for (const p of prods) {
+      const pMod = (p.updated_at || now).split("T")[0];
+      for (const loc of locales) {
+        xml += `
+  <url>
+    <loc>${baseUrl}/${loc}/products/${p.slug}</loc>
+    <lastmod>${pMod}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>`;
+      }
+    }
+  } catch {
+  }
+  try {
+    const arts = azexbuyDb.prepare("SELECT slug, updated_at FROM azexbuy_articles WHERE is_published = 1").all();
+    for (const a of arts) {
+      const aMod = (a.updated_at || now).split("T")[0];
+      for (const loc of locales) {
+        xml += `
+  <url>
+    <loc>${baseUrl}/${loc}/insights/${a.slug}</loc>
+    <lastmod>${aMod}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>`;
+      }
+    }
+  } catch {
+  }
+  xml += "\n</urlset>";
+  res.type("application/xml");
+  res.send(xml);
 });
 app.get("/octo-admin", (_req, res) => {
   const idx = path3.join(clientDist, "index.html");

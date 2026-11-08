@@ -68,6 +68,7 @@ export const App: React.FC = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(getInitialSidebarCollapsed);
   const [activeTabId, setActiveTabId] = useState<string>(getInitialActiveTab);
   const [cmdOpen, setCmdOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Theme state
   const [currentTheme, setCurrentTheme] = useState<string>(getInitialTheme);
@@ -618,13 +619,13 @@ export const App: React.FC = () => {
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-slate-50 text-slate-900 font-sans antialiased">
-      {/* Sidebar */}
+      {/* Desktop Sidebar */}
       <Sidebar
         collapsed={sidebarCollapsed}
         onToggleCollapse={toggleSidebar}
         activeTabId={activeTabId}
         onSelectTab={openTab}
-        siteName={siteConfig?.name || 'Octotech Store'}
+        siteName={siteConfig?.name || 'AZEXBUY Admin'}
         uiLang={uiLang}
         adminName={adminUser.fullName || 'Admin'}
         adminEmail={adminUser.email}
@@ -634,45 +635,95 @@ export const App: React.FC = () => {
         }}
       />
 
+      {/* Mobile Drawer (Responsive AAA) */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <div className="fixed inset-0 z-[150000] flex md:hidden">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setMobileMenuOpen(false)}
+              className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs"
+            />
+            {/* Slide-in Drawer */}
+            <motion.div
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 250 }}
+              className="relative z-10 w-72 max-w-[85vw] h-full shadow-2xl"
+            >
+              <Sidebar
+                collapsed={false}
+                onToggleCollapse={() => {}}
+                activeTabId={activeTabId}
+                onSelectTab={(id, title, icon) => {
+                  openTab(id, title, icon);
+                  setMobileMenuOpen(false);
+                }}
+                siteName={siteConfig?.name || 'AZEXBUY Admin'}
+                uiLang={uiLang}
+                adminName={adminUser.fullName || 'Admin'}
+                adminEmail={adminUser.email}
+                sessionRemainingSeconds={sessionRemaining}
+                onLogout={() => {
+                  setMobileMenuOpen(false);
+                  handleLogout('Sessiya təhlükəsiz şəkildə sonlandırıldı');
+                }}
+                isMobileDrawer={true}
+                onCloseMobile={() => setMobileMenuOpen(false)}
+              />
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       {/* Main Viewport */}
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden bg-slate-50">
         {/* Workspace Multi-Tab Bar */}
         <TabsBar
           tabs={tabs}
           activeTabId={activeTabId}
-          onActivateTab={handleActivateTab}
+          onActivateTab={(id) => {
+            handleActivateTab(id);
+            setMobileMenuOpen(false);
+          }}
           onCloseTab={closeTab}
           onQuickAdd={() => openTab('seo-manager', 'Axtarış & SEO', 'search')}
           uiLang={uiLang}
+          onToggleMobileMenu={() => setMobileMenuOpen(prev => !prev)}
         />
 
         {/* Viewport Top Breadcrumb & Action Bar */}
-        <div className="h-10 px-4 bg-white border-b border-slate-200/90 flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
-            <span>Octotech LL.</span>
-            <span>/</span>
-            <span className="text-slate-900 font-semibold">{currentTab?.title || 'Canlı İcmal'}</span>
+        <div className="h-10 px-3 sm:px-4 bg-white border-b border-slate-200/90 flex items-center justify-between shrink-0 overflow-x-auto no-scrollbar gap-2">
+          <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium shrink-0">
+            <span className="hidden sm:inline">AZEXBUY</span>
+            <span className="hidden sm:inline">/</span>
+            <span className="text-slate-900 font-semibold truncate max-w-[130px] sm:max-w-none">{currentTab?.title || 'Canlı İcmal'}</span>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 shrink-0">
             {/* Azerbaijani Interactive Tutorial Button */}
             <button
               onClick={() => setTutorialOpen(true)}
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded-none border border-slate-300 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1 rounded-none border border-slate-300 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
               title="Sistem Bələdçisi (Tutorial) - 6 mərhələli bələdçi turu"
             >
               <Compass className="w-3.5 h-3.5 text-slate-700 dark:text-slate-300" />
-              <span>Bələdçi</span>
+              <span className="hidden sm:inline">Bələdçi</span>
             </button>
 
             {/* Theme Selector Top Bar Button - Flat & Sharp */}
             <button
               onClick={() => setThemeModalOpen(true)}
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded-none border border-slate-300 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1 rounded-none border border-slate-300 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
               title="Rəng sxemini dəyiş"
             >
               <Palette className="w-3.5 h-3.5 text-slate-700 dark:text-slate-300" />
-              <span>Tema</span>
+              <span className="hidden sm:inline">Tema</span>
               <span 
                 className="w-2.5 h-2.5 rounded-none border border-black/20" 
                 style={{ backgroundColor: COLOR_THEMES.find(t => t.id === currentTheme)?.colors.accent || '#0f172a' }} 
@@ -682,19 +733,19 @@ export const App: React.FC = () => {
             <a
               href="/api/backup/download"
               download
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded-none border border-slate-300 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1 rounded-none border border-slate-300 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
               title="Bütün saytın tam SQLite backupını endir"
             >
               <Database className="w-3.5 h-3.5 text-slate-700 dark:text-slate-300" />
-              <span>SQLite Backup</span>
+              <span className="hidden sm:inline">Backup</span>
             </a>
 
             <button
               onClick={() => setCmdOpen(true)}
-              className="flex items-center gap-2 px-2.5 py-1 rounded-none border border-slate-300 dark:border-slate-700 text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="flex items-center gap-2 px-2 sm:px-2.5 py-1 rounded-none border border-slate-300 dark:border-slate-700 text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
             >
               <Search className="w-3.5 h-3.5 text-slate-400" />
-              <span>{t['topbar.quickSearch'] || 'Axtarış (CMD+K)...'}</span>
+              <span className="hidden md:inline">{t['topbar.quickSearch'] || 'Axtarış (CMD+K)...'}</span>
             </button>
           </div>
         </div>

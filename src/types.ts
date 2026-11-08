@@ -170,3 +170,143 @@ export interface ProducerApplication {
   assignedTo?: string;
   internalNotes?: string[];
 }
+
+export interface TeamMember {
+  id: string;
+  createdAt?: string;
+  updatedAt?: string;
+  name: string;
+  role: LocalizedText | Record<string, string>;
+  bio: LocalizedText | Record<string, string>;
+  photo: string;
+  email: string;
+  linkedin: string;
+  sortOrder: number;
+  isActive: boolean;
+}
+
+export interface AboutPillar {
+  icon: string;
+  label: LocalizedText | Record<string, string>;
+}
+
+export interface AboutActivity {
+  icon: string;
+  color: string;
+  title: LocalizedText | Record<string, string>;
+  desc: LocalizedText | Record<string, string>;
+}
+
+export interface AboutValue {
+  icon: string;
+  color: string;
+  title: LocalizedText | Record<string, string>;
+  desc: LocalizedText | Record<string, string>;
+}
+
+export interface AboutSector {
+  icon: string;
+  color: string;
+  title: LocalizedText | Record<string, string>;
+  desc: LocalizedText | Record<string, string>;
+  image: string;
+}
+
+export interface AboutPartner {
+  icon: string;
+  color: string;
+  title: LocalizedText | Record<string, string>;
+  desc: LocalizedText | Record<string, string>;
+}
+
+export interface AboutGrowthItem {
+  num: string;
+  icon: string;
+  title: LocalizedText | Record<string, string>;
+  desc: LocalizedText | Record<string, string>;
+}
+
+export interface AboutStep {
+  step: string;
+  icon: string;
+  color: string;
+  borderColor: string;
+  bgColor: string;
+  title: LocalizedText | Record<string, string>;
+  desc: LocalizedText | Record<string, string>;
+}
+
+export interface AboutPageContent {
+  whoWeAre: {
+    badge: LocalizedText | Record<string, string>;
+    title: LocalizedText | Record<string, string>;
+    p1: LocalizedText | Record<string, string>;
+    p2: LocalizedText | Record<string, string>;
+    p3: LocalizedText | Record<string, string>;
+    pillars: AboutPillar[];
+    image: string;
+    imageTagline: LocalizedText | Record<string, string>;
+    imageSub: LocalizedText | Record<string, string>;
+  };
+  activities: {
+    badge: LocalizedText | Record<string, string>;
+    title: LocalizedText | Record<string, string>;
+    desc: LocalizedText | Record<string, string>;
+    items: AboutActivity[];
+  };
+  missionVision: {
+    missionBadge: LocalizedText | Record<string, string>;
+    missionTitle: LocalizedText | Record<string, string>;
+    missionDesc: LocalizedText | Record<string, string>;
+    missionImage: string;
+    visionBadge: LocalizedText | Record<string, string>;
+    visionTitle: LocalizedText | Record<string, string>;
+    visionDesc: LocalizedText | Record<string, string>;
+    visionImage: string;
+  };
+  serviceModel: {
+    badge: LocalizedText | Record<string, string>;
+    title: LocalizedText | Record<string, string>;
+    desc: LocalizedText | Record<string, string>;
+    steps: AboutStep[];
+    bottomNote: LocalizedText | Record<string, string>;
+  };
+  sectors: {
+    badge: LocalizedText | Record<string, string>;
+    title: LocalizedText | Record<string, string>;
+    desc: LocalizedText | Record<string, string>;
+    items: AboutSector[];
+  };
+  values: {
+    badge: LocalizedText | Record<string, string>;
+    title: LocalizedText | Record<string, string>;
+    desc: LocalizedText | Record<string, string>;
+    items: AboutValue[];
+  };
+  partnership: {
+    badge: LocalizedText | Record<string, string>;
+    title: LocalizedText | Record<string, string>;
+    desc: LocalizedText | Record<string, string>;
+    items: AboutPartner[];
+  };
+  growth: {
+    badge: LocalizedText | Record<string, string>;
+    title: LocalizedText | Record<string, string>;
+    desc: LocalizedText | Record<string, string>;
+    disclaimer: LocalizedText | Record<string, string>;
+    items: AboutGrowthItem[];
+  };
+  team: {
+    badge: LocalizedText | Record<string, string>;
+    title: LocalizedText | Record<string, string>;
+    desc: LocalizedText | Record<string, string>;
+  };
+  cta: {
+    badge: LocalizedText | Record<string, string>;
+    title: LocalizedText | Record<string, string>;
+    desc: LocalizedText | Record<string, string>;
+    buyerBtn: LocalizedText | Record<string, string>;
+    producerBtn: LocalizedText | Record<string, string>;
+    contactBtn: LocalizedText | Record<string, string>;
+  };
+}

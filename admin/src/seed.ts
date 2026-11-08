@@ -1,4 +1,5 @@
 import type BetterSqlite3 from 'better-sqlite3';
+import { ABOUT_PAGE_DEFAULT } from '../../src/data/translations';
 
 // ── 1. Categories ────────────────────────────────────────────────────────────
 export const SEED_CATEGORIES = [
@@ -1124,7 +1125,51 @@ export function seedAzexbuyData(db: BetterSqlite3.Database) {
     );
   }
 
-  // 5. CMS Content for Homepage Carousel
+  // 5. Team Members
+  const insertTeam = db.prepare(`
+    INSERT OR REPLACE INTO azexbuy_team_members
+    (id, created_at, updated_at, name, role, bio, photo, email, linkedin, sort_order, is_active)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `);
+  const SEED_TEAM = [
+    {
+      id: 'tm-001', name: 'Ali Əhmədov',
+      role: { AZ:'Baş İcraçı Direktor', EN:'Chief Executive Officer', TR:'Genel Müdür', RU:'Генеральный директор', AR:'الرئيس التنفيذي', ES:'Director Ejecutivo' },
+      bio: { AZ:'Beynəlxalq ticarət və ixrac sahəsində 15 ildən çox təcrübəyə malik. AZEXBUY-un quruluşundan bəri şirkətin inkişafına rəhbərlik edir.', EN:'Over 15 years of experience in international trade and export. Leading the strategic growth and global partnerships of AZEXBUY.', TR:'Uluslararası ticaret ve ihracat alanında 15 yılı aşkın deneyime sahip.', RU:'Более 15 лет опыта в международной торговле и экспорте.', AR:'أكثر من 15 عاماً من الخبرة في التجارة الدولية والتصدير.', ES:'Más de 15 años de experiencia en comercio internacional y exportación.' },
+      photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80',
+      email: 'ceo@azexbuy.com', linkedin: 'https://linkedin.com', sortOrder: 1
+    },
+    {
+      id: 'tm-002', name: 'Leyla Hüseynova',
+      role: { AZ:'İxrac Əməliyyatları Direktoru', EN:'Director of Export Operations', TR:'İhracat Operasyonları Direktörü', RU:'Директор по экспортным операциям', AR:'مديرة عمليات التصدير', ES:'Directora de Operaciones de Exportación' },
+      bio: { AZ:'Sertifikasiya, gömrük prosedurları və beynəlxalq lojistika sahəsində ixtisaslaşmış. 10 ildən çox sahə təcrübəsi var.', EN:'Specializes in product certification, customs regulations, and multimodal logistics across EU and GCC corridors.', TR:'Sertifikasyon, gümrük prosedürleri ve uluslararası lojistik alanında uzmanlaşmış.', RU:'Специализируется на сертификации, таможенных процедурах и международной логистике.', AR:'متخصصة في الشهادات والإجراءات الجمركية واللوجستيات الدولية.', ES:'Especializada en certificación, procedimientos aduaneros y logística internacional.' },
+      photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80',
+      email: 'export@azexbuy.com', linkedin: 'https://linkedin.com', sortOrder: 2
+    },
+    {
+      id: 'tm-003', name: 'Murad Quliyev',
+      role: { AZ:'Bazar Araşdırması və Alıcı Əlaqələri', EN:'Market Research & Buyer Relations', TR:'Pazar Araştırması ve Alıcı İlişkileri', RU:'Исследование рынков и работа с покупателями', AR:'بحوث السوق وعلاقات المشترين', ES:'Investigación de Mercado y Relaciones con Compradores' },
+      bio: { AZ:'Avropa, Körfəz və Asiya bazarlarında alıcı axtarışı və kommersiya danışıqlarında ixtisaslaşmışdır.', EN:'Focuses on buyer sourcing, market intelligence, and structured commercial negotiations in European and Asian markets.', TR:'Avrupa, Körfez ve Asya pazarlarında alıcı arama ve ticari müzakerelerde uzmanlaşmıştır.', RU:'Специализируется на поиске покупателей и коммерческих переговорах на европейских, ближневосточных и азиатских рынках.', AR:'متخصص في البحث عن المشترين والتفاوض التجاري في الأسواق الأوروبية وأسواق الخليج وآسيا.', ES:'Especializado en búsqueda de compradores y negociaciones comerciales en mercados europeos, del Golfo y asiáticos.' },
+      photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80',
+      email: 'buyers@azexbuy.com', linkedin: 'https://linkedin.com', sortOrder: 3
+    },
+    {
+      id: 'tm-004', name: 'Nərgiz Məmmədova',
+      role: { AZ:'Keyfiyyət və Uyğunluq Mütəxəssisi', EN:'Quality & Compliance Specialist', TR:'Kalite ve Uygunluk Uzmanı', RU:'Специалист по качеству и соответствию', AR:'أخصائية الجودة والامتثال', ES:'Especialista en Calidad y Cumplimiento' },
+      bio: { AZ:'ISO, HACCP, Halal və GlobalGAP standartları üzrə yoxlama və akkreditasiya proseslərini idarə edir.', EN:'Oversees product audit, AQTA phytosanitary licensing, and international conformity assessments (ISO, GlobalGAP, Halal).', TR:'ISO, HACCP, Helal ve GlobalGAP standartları üzere denetim ve akreditasyon süreçlerini yönetir.', RU:'Курирует проверку стандартов качества, фитосанитарные сертификаты AQTA и международный комплаенс.', AR:'تشرف على معايير الجودة الدولية وتراخيص الامتثال (ISO, GlobalGAP, حلال).', ES:'Gestiona auditorías de producto, normativas de calidad y acreditaciones internacionales.' },
+      photo: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=80',
+      email: 'compliance@azexbuy.com', linkedin: 'https://linkedin.com', sortOrder: 4
+    }
+  ];
+  for (const t of SEED_TEAM) {
+    insertTeam.run(
+      t.id, now, now, t.name,
+      JSON.stringify(t.role), JSON.stringify(t.bio),
+      t.photo, t.email, t.linkedin, t.sortOrder, 1
+    );
+  }
+
+  // 6. CMS Content for Homepage Carousel
   const existingKv = db.prepare("SELECT value FROM azexbuy_kv WHERE key = 'content'").get() as any;
   let cmsContent: any = {};
   if (existingKv) {
@@ -1132,6 +1177,9 @@ export function seedAzexbuyData(db: BetterSqlite3.Database) {
   }
   if (!cmsContent.products || cmsContent.products.length < 4) {
     cmsContent.products = SEED_CMS_PRODUCTS;
+  }
+  if (!cmsContent.about) {
+    cmsContent.about = ABOUT_PAGE_DEFAULT;
   }
   db.prepare("INSERT OR REPLACE INTO azexbuy_kv (key, value, updated_at) VALUES ('content', ?, ?)")
     .run(JSON.stringify(cmsContent), now);
@@ -1141,6 +1189,7 @@ export function seedAzexbuyData(db: BetterSqlite3.Database) {
     productsCount: SEED_PRODUCTS.length,
     servicesCount: SEED_SERVICES.length,
     articlesCount: SEED_ARTICLES.length,
+    teamCount: SEED_TEAM.length,
     cmsProductsCount: (cmsContent.products || []).length
   };
 }

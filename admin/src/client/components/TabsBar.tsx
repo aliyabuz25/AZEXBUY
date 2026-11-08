@@ -8,7 +8,17 @@ import {
   Globe, 
   Settings, 
   X,
-  Plus
+  Plus,
+  Menu,
+  Boxes,
+  PenLine,
+  Package,
+  BookOpen,
+  Briefcase,
+  Inbox,
+  Users,
+  Mail,
+  Activity
 } from 'lucide-react';
 import { TabItem, UiLanguage } from '../types';
 
@@ -19,6 +29,7 @@ interface TabsBarProps {
   onCloseTab: (id: string) => void;
   onQuickAdd: () => void;
   uiLang: UiLanguage;
+  onToggleMobileMenu?: () => void;
 }
 
 const iconMap: Record<string, React.FC<{ className?: string }>> = {
@@ -33,6 +44,15 @@ const iconMap: Record<string, React.FC<{ className?: string }>> = {
   globe: Globe,
   localization: Globe,
   settings: Settings,
+  azexbuy: Boxes,
+  'azexbuy-cms': PenLine,
+  'product-catalog': Package,
+  articles: BookOpen,
+  services: Briefcase,
+  inbox: Inbox,
+  'user-management': Users,
+  'smtp-settings': Mail,
+  logs: Activity,
 };
 
 export const TabsBar: React.FC<TabsBarProps> = ({
@@ -40,11 +60,22 @@ export const TabsBar: React.FC<TabsBarProps> = ({
   activeTabId,
   onActivateTab,
   onCloseTab,
-  onQuickAdd
+  onQuickAdd,
+  onToggleMobileMenu
 }) => {
   return (
-    <header className="h-10 bg-slate-50 border-b border-slate-200/90 px-3 flex items-center justify-between overflow-x-auto select-none">
+    <header className="h-10 bg-slate-50 border-b border-slate-200/90 px-2 sm:px-3 flex items-center justify-between overflow-x-auto select-none no-scrollbar">
       <div className="flex items-center gap-1">
+        {onToggleMobileMenu && (
+          <button
+            type="button"
+            onClick={onToggleMobileMenu}
+            className="md:hidden h-7 w-7 flex items-center justify-center rounded text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 transition-colors shrink-0 mr-1 cursor-pointer"
+            title="Menyu"
+          >
+            <Menu className="w-4 h-4" />
+          </button>
+        )}
         <AnimatePresence initial={false}>
           {tabs.map(tab => {
             const Icon = iconMap[tab.id] || LayoutGrid;

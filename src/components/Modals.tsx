@@ -1134,7 +1134,7 @@ export const PrintableDossierModal: React.FC<DossierPrintModalProps> = ({
                       <tr key={i} className="border-b border-slate-200">
                         <td className="p-2.5 tabular-nums text-slate-500">{i + 1}</td>
                         <td className="p-2.5 font-bold text-slate-900">{item.productName}</td>
-                        <td className="p-2.5 font-mono tabular-nums text-slate-700">{item.hsCode}</td>
+                        <td className="p-2.5 font-medium tabular-nums text-slate-700">{item.hsCode}</td>
                         <td className="p-2.5 text-right font-bold tabular-nums text-brandNavy">
                           {item.quantity} {item.unit}
                         </td>
@@ -1253,9 +1253,7 @@ export const PrintableDossierModal: React.FC<DossierPrintModalProps> = ({
           )}
 
           <div className="pt-4 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-500">
-            <span>
-              Digital Verification Hash: <code className="font-mono">SHA256-AZEXBUY-SOVEREIGN-2026</code>
-            </span>
+            <span>AZEXBUY Official B2B Trade Portal · National Export Network</span>
             <span>Incoterms® 2020 ICC Official Rules Compliant</span>
           </div>
         </div>
@@ -1342,8 +1340,8 @@ export const GlobalSearchModal: React.FC<SearchModalProps> = ({
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-bold text-slate-900">{getLocalizedText(p.name, locale)}</span>
-                    <span className="text-[11px] font-mono text-slate-500 tabular-nums">
-                      HS: {p.hsCode}
+                    <span className="text-[11px] font-medium text-slate-500 tabular-nums">
+                      HS {p.hsCode}
                     </span>
                   </div>
                   <p className="text-[11px] text-slate-500 line-clamp-1">{getLocalizedText(p.shortDesc, locale)}</p>

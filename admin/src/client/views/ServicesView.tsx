@@ -362,7 +362,7 @@ export const ServicesView: React.FC<ServicesViewProps> = () => {
                 {/* Title — all 6 languages */}
                 <div>
                   <div className="text-[10px] font-bold text-slate-500 uppercase mb-2">Başlıq / Title</div>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {LANGS.map(lang => (
                       <Field key={lang} label={LANG_LABELS[lang]}>
                         <input value={newSrv.title?.[lang] || ''} onChange={e => setNewSrv((p: any) => ({ ...p, title: { ...p.title, [lang]: e.target.value } }))} className={inputCls} placeholder={lang} />
@@ -384,7 +384,7 @@ export const ServicesView: React.FC<ServicesViewProps> = () => {
                 {/* Target Audience — all 6 languages */}
                 <div>
                   <div className="text-[10px] font-bold text-slate-500 uppercase mb-2">Hədəf Kitle / Target Audience</div>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {LANGS.map(lang => (
                       <Field key={lang} label={LANG_LABELS[lang]}>
                         <input value={newSrv.targetAudience?.[lang] || ''} onChange={e => setNewSrv((p: any) => ({ ...p, targetAudience: { ...p.targetAudience, [lang]: e.target.value } }))} className={inputCls} placeholder={lang} />
@@ -404,7 +404,7 @@ export const ServicesView: React.FC<ServicesViewProps> = () => {
                   </div>
                 </div>
                 {/* Meta */}
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <Field label="İkon">
                     <select value={newSrv.iconClass} onChange={e => setNewSrv((p: any) => ({ ...p, iconClass: e.target.value }))} className={inputCls}>
                       {ICON_OPTIONS.map(ic => <option key={ic} value={ic}>{ic}</option>)}
@@ -496,7 +496,7 @@ export const ServicesView: React.FC<ServicesViewProps> = () => {
                             <div className="space-y-4">
                               <div>
                                 <div className="text-[10px] font-bold text-slate-500 uppercase mb-2">Başlıq / Title</div>
-                                <div className="grid grid-cols-2 gap-2">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                   {LANGS.map(lang => (
                                     <Field key={lang} label={LANG_LABELS[lang]}>
                                       <input value={editData.title?.[lang] || ''} onChange={e => setEditData((p: any) => ({ ...p, title: { ...p.title, [lang]: e.target.value } }))} className={inputCls} />
@@ -516,7 +516,7 @@ export const ServicesView: React.FC<ServicesViewProps> = () => {
                               </div>
                               <div>
                                 <div className="text-[10px] font-bold text-slate-500 uppercase mb-2">Hədəf Kitle / Target Audience</div>
-                                <div className="grid grid-cols-2 gap-2">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                   {LANGS.map(lang => (
                                     <Field key={lang} label={LANG_LABELS[lang]}>
                                       <input value={editData.targetAudience?.[lang] || ''} onChange={e => setEditData((p: any) => ({ ...p, targetAudience: { ...p.targetAudience, [lang]: e.target.value } }))} className={inputCls} />
@@ -534,7 +534,7 @@ export const ServicesView: React.FC<ServicesViewProps> = () => {
                                   ))}
                                 </div>
                               </div>
-                              <div className="grid grid-cols-2 gap-3">
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <Field label="İkon">
                                   <select value={editData.iconClass || ''} onChange={e => setEditData((p: any) => ({ ...p, iconClass: e.target.value }))} className={inputCls}>
                                     {ICON_OPTIONS.map(ic => <option key={ic} value={ic}>{ic}</option>)}

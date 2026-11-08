@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import {
   Plus, Trash2, Edit2, Save, X, ChevronDown, ChevronRight,
   Package, Tag, Star, Eye, EyeOff, RefreshCw, CheckCircle,
+  FileText, ArrowUpDown, MessageSquare,
 } from 'lucide-react';
 import { UiLanguage } from '../types';
 
@@ -57,13 +58,32 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
   const [showNewCat, setShowNewCat] = useState(false);
   const [showNewProd, setShowNewProd] = useState(false);
   const blankML = () => ({ AZ: '', EN: '', TR: '', RU: '', AR: '', ES: '' });
-  const [newCat, setNewCat] = useState({ name: blankML(), slug: '', description: blankML(), imageUrl: '' });
+  const [newCat, setNewCat] = useState({ name: blankML(), slug: '', description: blankML(), imageUrl: '', sortOrder: 0 });
   const [newProd, setNewProd] = useState({
     categoryId: '', name: blankML(), slug: '', shortDescription: blankML(), description: blankML(),
     moq: '', hsCode: '', originRegion: '', packagingInfo: '', isFeatured: false,
     seoTitle: '', seoDescription: '', certificates: [] as string[], images: [] as string[],
+    sortOrder: 0,
   });
   const [filterCat, setFilterCat] = useState('');
+  const [inquiriesProd, setInquiriesProd] = useState<any | null>(null);
+  const [inquiriesList, setInquiriesList] = useState<any[]>([]);
+  const [inquiriesLoading, setInquiriesLoading] = useState(false);
+
+  const loadInquiriesForProd = async (prod: any) => {
+    setInquiriesProd(prod);
+    setInquiriesLoading(true);
+    try {
+      const q = typeof prod.name === 'object' ? (prod.name.AZ || prod.name.EN || prod.slug) : prod.name || prod.slug;
+      const res = await authFetch(`/api/azexbuy/inquiries-by-product?q=${encodeURIComponent(q)}`);
+      if (res.ok) setInquiriesList(await res.json());
+      else setInquiriesList([]);
+    } catch {
+      setInquiriesList([]);
+    } finally {
+      setInquiriesLoading(false);
+    }
+  };
 
   const loadCategories = useCallback(async () => {
     setLoading(true);
@@ -94,7 +114,7 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
       const r = await authFetch('/api/azexbuy/categories', {
         method: 'POST', body: JSON.stringify(catToCreate),
       });
-      if (r.ok) { setShowNewCat(false); setNewCat({ name: blankML(), slug: '', description: blankML(), imageUrl: '' }); loadCategories(); showSaved(); }
+      if (r.ok) { setShowNewCat(false); setNewCat({ name: blankML(), slug: '', description: blankML(), imageUrl: '', sortOrder: 0 }); loadCategories(); showSaved(); }
       else { const e = await r.json(); alert(e.error || 'Xəta'); }
     } finally { setSaving(false); }
   };
@@ -123,7 +143,7 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
       const r = await authFetch('/api/azexbuy/admin/products', {
         method: 'POST', body: JSON.stringify(newProd),
       });
-      if (r.ok) { setShowNewProd(false); setNewProd({ categoryId: '', name: blankML(), slug: '', shortDescription: blankML(), description: blankML(), moq: '', hsCode: '', originRegion: '', packagingInfo: '', isFeatured: false, seoTitle: '', seoDescription: '', certificates: [], images: [] }); loadProducts(); showSaved(); }
+      if (r.ok) { setShowNewProd(false); setNewProd({ categoryId: '', name: blankML(), slug: '', shortDescription: blankML(), description: blankML(), moq: '', hsCode: '', originRegion: '', packagingInfo: '', isFeatured: false, seoTitle: '', seoDescription: '', certificates: [], images: [], sortOrder: 0 }); loadProducts(); showSaved(); }
       else { const e = await r.json(); alert(e.error || 'Xəta'); }
     } finally { setSaving(false); }
   };
@@ -163,10 +183,10 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 border-b border-slate-200">
+      <div className="flex gap-1 border-b border-slate-200 overflow-x-auto no-scrollbar">
         {(['categories', 'products'] as const).map(t => (
           <button key={t} onClick={() => setTab(t)}
-            className={`px-4 py-2 text-xs font-medium border-b-2 transition-colors ${tab === t ? 'border-[#0f3156] text-[#0f3156]' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>
+            className={`px-4 py-2 text-xs font-medium border-b-2 transition-colors whitespace-nowrap cursor-pointer ${tab === t ? 'border-[#0f3156] text-[#0f3156]' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>
             {t === 'categories' ? `Kateqoriyalar (${categories.length})` : `Məhsullar (${products.length})`}
           </button>
         ))}
@@ -186,7 +206,7 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
             <div className="bg-blue-50 border border-blue-200 rounded p-4 space-y-4">
               <h3 className="text-xs font-bold text-blue-800">Yeni Kateqoriya</h3>
               {/* Slug */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Field label="Slug *">
                   <input value={newCat.slug} onChange={e => setNewCat(v => ({ ...v, slug: slugify(e.target.value) }))}
                     className={`${inCls} font-mono`} placeholder="food-products" />
@@ -199,7 +219,7 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
               {/* Name - all langs */}
               <div>
                 <div className="text-[10px] font-bold text-slate-500 uppercase mb-2">Ad / Name *</div>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {LANGS.map(lang => (
                     <Field key={lang} label={LANG_LABELS[lang]}>
                       <input value={(newCat.name as any)[lang] || ''} onChange={e => setNewCat(v => ({ ...v, name: { ...(v.name as any), [lang]: e.target.value }, slug: v.slug || slugify(lang === 'EN' ? e.target.value : (v.name as any).EN || '') }))}
@@ -237,7 +257,7 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
             <div key={cat.id} className="bg-white border border-slate-200 rounded overflow-hidden">
               {editingCat?.id === cat.id ? (
                 <div className="p-4 space-y-4">
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Slug</label>
                       <input value={editingCat.slug} onChange={e => setEditingCat((v: any) => ({ ...v, slug: slugify(e.target.value) }))}
@@ -251,7 +271,7 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
                   </div>
                   <div>
                     <div className="text-[10px] font-bold text-slate-500 uppercase mb-2">Ad / Name</div>
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {LANGS.map(lang => (
                         <div key={lang}>
                           <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">{LANG_LABELS[lang]}</label>
@@ -332,7 +352,7 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
             <div className="bg-blue-50 border border-blue-200 rounded p-4 space-y-4">
               <h3 className="text-xs font-bold text-blue-800">Yeni Məhsul</h3>
               {/* Meta */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Field label="Kateqoriya *" full>
                   <select value={newProd.categoryId} onChange={e => setNewProd(v => ({ ...v, categoryId: e.target.value }))}
                     className={`${inCls} bg-white`}>
@@ -360,7 +380,7 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
               {/* Name - all langs */}
               <div>
                 <div className="text-[10px] font-bold text-slate-500 uppercase mb-2">Ad / Name *</div>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {LANGS.map(lang => (
                     <Field key={lang} label={LANG_LABELS[lang]}>
                       <input value={(newProd.name as any)[lang] || ''} onChange={e => setNewProd(v => ({ ...v, name: { ...(v.name as any), [lang]: e.target.value }, slug: v.slug || (lang === 'EN' ? slugify(e.target.value) : v.slug) }))}
@@ -431,6 +451,10 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
                   </span>
                 </button>
                 <div className="flex items-center gap-1 ml-2 shrink-0">
+                  <button onClick={() => loadInquiriesForProd(prod)}
+                    className="p-1 text-slate-400 hover:text-[#0f3156] hover:bg-slate-100 rounded transition-colors" title="Bu məhsul üzrə gələn taleplər (RFQ)">
+                    <FileText className="w-3.5 h-3.5" />
+                  </button>
                   <button onClick={() => authFetch(`/api/azexbuy/admin/products/${prod.id}`, { method: 'PATCH', body: JSON.stringify({ isActive: !prod.isActive }) }).then(() => loadProducts())}
                     className="p-1 text-slate-300 hover:text-slate-600 rounded" title={prod.isActive ? 'Deaktiv et' : 'Aktiv et'}>
                     {prod.isActive ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
@@ -452,8 +476,8 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
                     <>
                       <div className="space-y-4">
                         {/* Meta fields */}
-                        <div className="grid grid-cols-2 gap-3">
-                          {[['Slug','slug'],['HS Kodu','hsCode'],['MOQ','moq'],['Mənşə Bölgəsi','originRegion'],['Qablaşdırma','packagingInfo']].map(([lbl, fld]) => (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          {[['Slug','slug'],['HS Kodu','hsCode'],['MOQ','moq'],['Mənşə Bölgəsi','originRegion'],['Qablaşdırma','packagingInfo'],['Sıralama (Sıra No)','sortOrder']].map(([lbl, fld]) => (
                             <div key={fld}>
                               <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">{lbl}</label>
                               <input value={(editingProd as any)[fld] || ''} onChange={e => setEditingProd((v: any) => ({ ...v, [fld]: fld === 'slug' ? slugify(e.target.value) : e.target.value }))}
@@ -471,7 +495,7 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
                         {/* Multilingual Name */}
                         <div>
                           <div className="text-[10px] font-bold text-slate-500 uppercase mb-2">Ad / Name</div>
-                          <div className="grid grid-cols-2 gap-2">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                             {LANGS.map(lang => (
                               <div key={lang}>
                                 <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">{LANG_LABELS[lang]}</label>
@@ -508,7 +532,7 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
                           </div>
                         </div>
                         {/* SEO */}
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                           <div>
                             <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">SEO Başlığı</label>
                             <input value={editingProd.seoTitle || ''} onChange={e => setEditingProd((v: any) => ({ ...v, seoTitle: e.target.value }))} className={inCls} />
@@ -553,6 +577,69 @@ export const ProductCatalogView: React.FC<ProductCatalogViewProps> = () => {
               )}
             </div>
           ))}
+        </div>
+      )}
+
+      {/* ── Product Inquiries Modal (Taleplər) ── */}
+      {inquiriesProd && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50">
+          <div className="bg-white border border-slate-200 rounded-lg max-w-2xl w-full max-h-[80vh] flex flex-col shadow-xl overflow-hidden">
+            <div className="px-5 py-3.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <FileText className="w-4 h-4 text-[#0f3156]" />
+                  Məhsul üzrə Gələn Taleplər (RFQ)
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  {typeof inquiriesProd.name === 'object' ? (inquiriesProd.name.AZ || inquiriesProd.name.EN) : inquiriesProd.name} · {inquiriesList.length} sorğu tapıldı
+                </p>
+              </div>
+              <button onClick={() => setInquiriesProd(null)} className="p-1 rounded text-slate-400 hover:text-slate-700">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="p-4 flex-1 overflow-y-auto space-y-2">
+              {inquiriesLoading && <div className="text-center py-8 text-xs text-slate-400">Yüklənir...</div>}
+              {!inquiriesLoading && inquiriesList.length === 0 && (
+                <div className="text-center py-8 text-xs text-slate-400">
+                  Bu məhsul üçün hələlik heç bir alıcı tələbi (RFQ) daxil olmayıb.
+                </div>
+              )}
+              {!inquiriesLoading && inquiriesList.map(rfq => (
+                <div key={rfq.id} className="bg-slate-50/70 border border-slate-200 rounded p-3 text-xs space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-slate-900">{rfq.buyerCompany}</span>
+                    <span className="text-[10px] font-mono text-slate-400">{rfq.id}</span>
+                  </div>
+                  <div className="text-[11px] text-slate-500">
+                    Ölkə: {rfq.country} · Tarix: {new Date(rfq.createdAt).toLocaleDateString('az-AZ')}
+                  </div>
+                  {rfq.items && rfq.items.length > 0 && (
+                    <div className="bg-white border border-slate-200/80 rounded p-2 text-[11px]">
+                      {rfq.items.map((it: any, i: number) => (
+                        <div key={i} className="flex justify-between">
+                          <span className="font-medium text-slate-800">{it.productName}</span>
+                          <span className="font-bold text-[#0f3156]">{it.quantity} {it.unit}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {rfq.internalNotes && (
+                    <div className="text-[10px] text-slate-600 bg-amber-50/60 border border-amber-200/60 rounded px-2 py-1">
+                      <b>Daxili qeyd:</b> {rfq.internalNotes}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <div className="p-3 bg-slate-50 border-t border-slate-200 flex justify-end">
+              <button onClick={() => setInquiriesProd(null)} className="h-8 px-4 bg-[#0f3156] text-white text-xs font-bold rounded-sm">
+                Bağla
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

@@ -2,7 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import {
   ShoppingCart, Factory, TrendingUp, Clock, Trash2, RefreshCw,
   CheckCircle, XCircle, ChevronDown, ChevronUp, Wifi, WifiOff,
-  Package, Globe, AlertCircle, Mail,
+  Package, Globe, AlertCircle, Mail, UserCheck, MessageSquare,
+  FileText, ArrowRight, BarChart3,
 } from 'lucide-react';
 import { UiLanguage } from '../types';
 
@@ -37,16 +38,52 @@ interface Stats {
   activeProducers: number; redis: string;
 }
 
+export const WORKFLOW_STATUSES = [
+  'Yeni',
+  'İncelemede',
+  'Ek bilgi bekleniyor',
+  'Tedarikçi/alıcı aramasında',
+  'Teklif hazırlanıyor',
+  'Müşteriye gönderildi',
+  'Tamamlandı',
+  'Kapatıldı',
+] as const;
+
 const STATUS_COLORS: Record<string, string> = {
+  // Standart 8 CRM Statusu
+  'Yeni': 'bg-blue-50 text-blue-700 border-blue-200',
+  'İncelemede': 'bg-purple-50 text-purple-700 border-purple-200',
+  'Ek bilgi bekleniyor': 'bg-amber-50 text-amber-700 border-amber-200',
+  'Tedarikçi/alıcı aramasında': 'bg-sky-50 text-sky-700 border-sky-200',
+  'Teklif hazırlanıyor': 'bg-indigo-50 text-indigo-700 border-indigo-200',
+  'Müşteriye gönderildi': 'bg-teal-50 text-teal-700 border-teal-200',
+  'Tamamlandı': 'bg-emerald-50 text-emerald-700 border-emerald-200',
+  'Kapatıldı': 'bg-slate-100 text-slate-600 border-slate-200',
+
+  // Əvvəlki qeydlərlə geriyə uyğunluq
   'Pending': 'bg-amber-50 text-amber-700 border-amber-200',
   'Verified & Routing to Suppliers': 'bg-blue-50 text-blue-700 border-blue-200',
+  'Under Review': 'bg-purple-50 text-purple-700 border-purple-200',
   'Audit Scheduled — Export Desk Assigned': 'bg-emerald-50 text-emerald-700 border-emerald-200',
-  'Completed': 'bg-slate-100 text-slate-600 border-slate-200',
+  'Documents Requested': 'bg-amber-50 text-amber-700 border-amber-200',
+  'Active — Listed': 'bg-emerald-50 text-emerald-700 border-emerald-200',
+  'Completed': 'bg-emerald-50 text-emerald-700 border-emerald-200',
   'Rejected': 'bg-red-50 text-red-700 border-red-200',
+  'New': 'bg-blue-50 text-blue-700 border-blue-200',
+  'In Progress': 'bg-purple-50 text-purple-700 border-purple-200',
+  'Responded': 'bg-teal-50 text-teal-700 border-teal-200',
+  'Closed': 'bg-slate-100 text-slate-600 border-slate-200',
 };
-const STATUS_OPTIONS_RFQ = ['Pending', 'Verified & Routing to Suppliers', 'Under Review', 'Matched with Suppliers', 'Completed', 'Rejected'];
-const STATUS_OPTIONS_PRODUCER = ['Pending', 'Audit Scheduled — Export Desk Assigned', 'Documents Requested', 'Active — Listed', 'Completed', 'Rejected'];
-const STATUS_OPTIONS_CONTACT = ["New", "In Progress", "Responded", "Closed"];
+
+const ALL_STATUS_OPTIONS = [
+  ...WORKFLOW_STATUSES,
+  'Pending',
+  'Verified & Routing to Suppliers',
+  'Under Review',
+  'Completed',
+  'Rejected',
+];
+const STATUS_OPTIONS_CONTACT = ['New', 'In Progress', 'Responded', 'Closed'];
 
 export const AzexbuyView: React.FC<AzexbuyViewProps> = ({ uiLang }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'rfqs' | 'producers' | 'contacts'>('overview');
@@ -156,9 +193,9 @@ export const AzexbuyView: React.FC<AzexbuyViewProps> = ({ uiLang }) => {
     <div className="flex flex-col h-full bg-slate-50/50">
 
       {/* Header */}
-      <div className="bg-white border-b border-slate-200/90 px-6 py-3 flex items-center justify-between shrink-0">
+      <div className="bg-white border-b border-slate-200/90 px-4 sm:px-6 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
         <div className="flex items-center gap-3">
-          <div className="w-7 h-7 bg-[#0f3156] flex items-center justify-center">
+          <div className="w-7 h-7 bg-[#0f3156] flex items-center justify-center shrink-0">
             <Globe className="w-4 h-4 text-white" />
           </div>
           <div>
@@ -168,27 +205,27 @@ export const AzexbuyView: React.FC<AzexbuyViewProps> = ({ uiLang }) => {
           {stats && (
             <div className={`flex items-center gap-1 text-[10px] font-medium ml-2 ${stats.redis === 'connected' ? 'text-emerald-600' : 'text-slate-400'}`}>
               {stats.redis === 'connected' ? <Wifi className="w-3 h-3" /> : <WifiOff className="w-3 h-3" />}
-              <span>Redis {stats.redis === 'connected' ? 'Active' : 'Off'}</span>
+              <span className="hidden sm:inline">Redis {stats.redis === 'connected' ? 'Active' : 'Off'}</span>
             </div>
           )}
         </div>
         <div className="flex items-center gap-2">
           <input type="text" value={searchQ} onChange={e => setSearchQ(e.target.value)}
-            placeholder="Axtar..." className="h-7 px-3 text-xs border border-slate-200 bg-white text-slate-900 focus:outline-none focus:border-slate-400 w-48 rounded-sm" />
+            placeholder="Axtar..." className="h-7 px-3 text-xs border border-slate-200 bg-white text-slate-900 focus:outline-none focus:border-slate-400 w-full sm:w-48 rounded-sm" />
           <button onClick={fetchAll} disabled={loading}
-            className="h-7 px-3 flex items-center gap-1.5 text-xs font-medium text-slate-600 border border-slate-200 hover:bg-slate-100 transition-colors rounded-sm">
+            className="h-7 px-3 flex items-center gap-1.5 text-xs font-medium text-slate-600 border border-slate-200 hover:bg-slate-100 transition-colors rounded-sm shrink-0 cursor-pointer">
             <RefreshCw className={`w-3 h-3 ${loading ? 'animate-spin' : ''}`} />
-            <span>Yenilə</span>
+            <span className="hidden sm:inline">Yenilə</span>
           </button>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="bg-white border-b border-slate-200/90 px-6 flex items-center shrink-0">
+      <div className="bg-white border-b border-slate-200/90 px-4 sm:px-6 flex items-center shrink-0 overflow-x-auto no-scrollbar">
         {(['overview', 'rfqs', 'producers', 'contacts'] as const).map(tab => (
           <button key={tab} onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2.5 text-xs font-semibold border-b-2 transition-colors ${activeTab === tab ? 'border-[#0f3156] text-[#0f3156]' : 'border-transparent text-slate-500 hover:text-slate-800'}`}>
-            {tab === 'overview' ? 'Icmal' : tab === 'rfqs' ? `RFQ (${rfqs.length})` : tab === 'producers' ? `Istehsalcilar (${producers.length})` : `Elaqeler (${contacts.length})`}
+            className={`px-3 sm:px-4 py-2.5 text-xs font-semibold border-b-2 transition-colors whitespace-nowrap cursor-pointer ${activeTab === tab ? 'border-[#0f3156] text-[#0f3156]' : 'border-transparent text-slate-500 hover:text-slate-800'}`}>
+            {tab === 'overview' ? 'İcmal' : tab === 'rfqs' ? `RFQ (${rfqs.length})` : tab === 'producers' ? `İstehsalçılar (${producers.length})` : `Əlaqələr (${contacts.length})`}
           </button>
         ))}
       </div>
@@ -197,78 +234,140 @@ export const AzexbuyView: React.FC<AzexbuyViewProps> = ({ uiLang }) => {
       <div className="flex-1 overflow-y-auto">
 
         {/* OVERVIEW */}
-        {activeTab === 'overview' && (
-          <div className="p-6 space-y-6">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {[
-                { label: 'Cemi RFQ',        value: stats?.rfqCount     ?? '—', icon: ShoppingCart, color: 'text-blue-600',     bg: 'bg-blue-50' },
-                { label: 'Goyleyen RFQ',    value: stats?.pendingRfqs  ?? '—', icon: Clock,        color: 'text-amber-600',    bg: 'bg-amber-50' },
-                { label: 'Istehsalcilar',   value: stats?.producerCount ?? '—', icon: Factory,      color: 'text-emerald-600',  bg: 'bg-emerald-50' },
-                { label: 'Aktiv Istehsalci',value: stats?.activeProducers ?? '—', icon: TrendingUp, color: 'text-[#0f3156]',   bg: 'bg-blue-50/60' },
-              ].map((s, i) => (
-                <div key={i} className="bg-white border border-slate-200/90 p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-[11px] font-medium text-slate-500 uppercase tracking-wide">{s.label}</span>
-                    <div className={`w-7 h-7 ${s.bg} flex items-center justify-center`}>
-                      <s.icon className={`w-4 h-4 ${s.color}`} />
+        {activeTab === 'overview' && (() => {
+          const totalSubmissions = rfqs.length + producers.length + contacts.length;
+          const isNewStatus = (s: string) => ['Yeni', 'New', 'Pending'].includes(s);
+          const isInReviewStatus = (s: string) => ['İncelemede', 'Under Review', 'Verified & Routing to Suppliers', 'Ek bilgi bekleniyor', 'Tedarikçi/alıcı aramasında', 'Teklif hazırlanıyor', 'In Progress', 'Audit Scheduled — Export Desk Assigned', 'Documents Requested'].includes(s);
+          const isCompletedStatus = (s: string) => ['Tamamlandı', 'Completed', 'Active — Listed', 'Responded', 'Closed', 'Kapatıldı'].includes(s);
+
+          const newSubmissionsCount = rfqs.filter(r => isNewStatus(r.status)).length +
+            producers.filter(p => isNewStatus(p.status)).length +
+            contacts.filter(c => isNewStatus(c.status)).length;
+
+          const inReviewCount = rfqs.filter(r => isInReviewStatus(r.status)).length +
+            producers.filter(p => isInReviewStatus(p.status)).length +
+            contacts.filter(c => isInReviewStatus(c.status)).length;
+
+          const completedCount = rfqs.filter(r => isCompletedStatus(r.status)).length +
+            producers.filter(p => isCompletedStatus(p.status)).length +
+            contacts.filter(c => isCompletedStatus(c.status)).length;
+
+          // Status breakdown counts
+          const statusBreakdown = WORKFLOW_STATUSES.map(st => {
+            const count = rfqs.filter(r => r.status === st || (st === 'Yeni' && isNewStatus(r.status)) || (st === 'Tamamlandı' && ['Completed', 'Tamamlandı'].includes(r.status))).length +
+              producers.filter(p => p.status === st || (st === 'Yeni' && isNewStatus(p.status)) || (st === 'Tamamlandı' && ['Completed', 'Tamamlandı'].includes(p.status))).length;
+            return { status: st, count };
+          });
+
+          // Unified recent submissions
+          const unifiedRecent = [
+            ...rfqs.map(r => ({ id: r.id, createdAt: r.createdAt, title: r.buyerCompany, subtitle: `${r.country} · Alıcı RFQ`, type: 'rfq' as const, status: r.status })),
+            ...producers.map(p => ({ id: p.id, createdAt: p.createdAt, title: p.companyName, subtitle: `${p.productName} · İstehsalçı`, type: 'producer' as const, status: p.status })),
+            ...contacts.map(c => ({ id: c.id, createdAt: c.createdAt, title: c.fullName, subtitle: `${c.organization} · Əlaqə Sorğusu`, type: 'contact' as const, status: c.status })),
+          ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 8);
+
+          return (
+            <div className="p-6 space-y-6">
+              {/* 1. Dashboard 4 Əsas Göstərici Kartları */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                {[
+                  { label: 'Toplam Başvuru Sayısı', value: totalSubmissions, icon: FileText, color: 'text-blue-600', bg: 'bg-blue-50' },
+                  { label: 'Yeni Başvurular', value: newSubmissionsCount, icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50' },
+                  { label: 'İncelemede Olanlar', value: inReviewCount, icon: TrendingUp, color: 'text-purple-600', bg: 'bg-purple-50' },
+                  { label: 'Tamamlanan Başvurular', value: completedCount, icon: CheckCircle, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+                ].map((s, i) => (
+                  <div key={i} className="bg-white border border-slate-200/90 p-4 shadow-2xs">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wide">{s.label}</span>
+                      <div className={`w-7 h-7 ${s.bg} flex items-center justify-center rounded`}>
+                        <s.icon className={`w-4 h-4 ${s.color}`} />
+                      </div>
                     </div>
+                    <div className="text-2xl font-bold text-slate-900 tabular-nums">{s.value}</div>
                   </div>
-                  <div className="text-2xl font-bold text-slate-900 tabular-nums">{s.value}</div>
+                ))}
+              </div>
+
+              {/* 2. Başvuru Durumlarına Göre İstatistikler */}
+              <div className="bg-white border border-slate-200/90 p-4 shadow-2xs">
+                <div className="flex items-center justify-between mb-3 border-b border-slate-100 pb-2">
+                  <div className="flex items-center gap-2">
+                    <BarChart3 className="w-4 h-4 text-[#0f3156]" />
+                    <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">Başvuru Durumlarına Göre İstatistikler</span>
+                  </div>
+                  <span className="text-[11px] text-slate-400 font-medium">8 Mərhələli CRM Axını</span>
                 </div>
-              ))}
-            </div>
-
-            <div className="bg-white border border-slate-200/90">
-              <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">Son RFQ Sorqulari</span>
-                <button onClick={() => setActiveTab('rfqs')} className="text-[11px] text-[#0f3156] hover:underline font-medium">Hamisina bax</button>
-              </div>
-              <div className="divide-y divide-slate-100">
-                {rfqs.slice(0, 5).map(r => (
-                  <div key={r.id} className="px-4 py-3 flex items-center justify-between gap-4 hover:bg-slate-50">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <ShoppingCart className="w-3.5 h-3.5 text-[#0f3156] shrink-0" />
-                      <div className="min-w-0">
-                        <div className="text-xs font-semibold text-slate-900 truncate">{r.buyerCompany}</div>
-                        <div className="text-[10px] text-slate-500">{r.country} · {r.id}</div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1">
+                  {statusBreakdown.map(item => (
+                    <div key={item.status} className="bg-slate-50/70 border border-slate-200/80 rounded p-2.5">
+                      <div className="text-[10px] font-semibold text-slate-500 truncate mb-1">{item.status}</div>
+                      <div className="flex items-baseline justify-between">
+                        <span className="text-base font-bold text-slate-900 tabular-nums">{item.count}</span>
+                        {totalSubmissions > 0 && (
+                          <span className="text-[10px] text-slate-400 font-mono">
+                            {Math.round((item.count / totalSubmissions) * 100)}%
+                          </span>
+                        )}
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      {badge(r.status)}
-                      <span className="text-[10px] text-slate-400">{fmt(r.createdAt)}</span>
-                    </div>
-                  </div>
-                ))}
-                {rfqs.length === 0 && <div className="px-4 py-8 text-center text-xs text-slate-400">Hec bir RFQ tapilmadi</div>}
+                  ))}
+                </div>
               </div>
-            </div>
 
-            <div className="bg-white border border-slate-200/90">
-              <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">Son Istehsalcilar</span>
-                <button onClick={() => setActiveTab('producers')} className="text-[11px] text-[#0f3156] hover:underline font-medium">Hamisina bax</button>
-              </div>
-              <div className="divide-y divide-slate-100">
-                {producers.slice(0, 5).map(p => (
-                  <div key={p.id} className="px-4 py-3 flex items-center justify-between gap-4 hover:bg-slate-50">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <Factory className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                      <div className="min-w-0">
-                        <div className="text-xs font-semibold text-slate-900 truncate">{p.companyName}</div>
-                        <div className="text-[10px] text-slate-500">{p.productName} · {p.economicRegion}</div>
+              {/* 3. Son Başvuruların Listesi (Unified Recent Submissions) */}
+              <div className="bg-white border border-slate-200/90 shadow-2xs">
+                <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-[#0f3156]" />
+                    <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">Son Başvuruların Listesi</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <button onClick={() => setActiveTab('rfqs')} className="text-[11px] text-[#0f3156] hover:underline font-medium">RFQ-lər ({rfqs.length})</button>
+                    <span className="text-slate-300">·</span>
+                    <button onClick={() => setActiveTab('producers')} className="text-[11px] text-emerald-700 hover:underline font-medium">İstehsalçılar ({producers.length})</button>
+                  </div>
+                </div>
+                <div className="divide-y divide-slate-100">
+                  {unifiedRecent.map(item => (
+                    <div key={item.id} className="px-4 py-3 flex items-center justify-between gap-4 hover:bg-slate-50/70 transition-colors">
+                      <div className="flex items-center gap-3 min-w-0">
+                        {item.type === 'rfq' && <ShoppingCart className="w-4 h-4 text-[#0f3156] shrink-0" />}
+                        {item.type === 'producer' && <Factory className="w-4 h-4 text-emerald-600 shrink-0" />}
+                        {item.type === 'contact' && <Mail className="w-4 h-4 text-purple-600 shrink-0" />}
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-semibold text-slate-900 truncate">{item.title}</span>
+                            <span className="text-[9px] font-mono text-slate-400">{item.id}</span>
+                          </div>
+                          <div className="text-[10px] text-slate-500 truncate">{item.subtitle}</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        {badge(item.status)}
+                        <span className="text-[10px] text-slate-400 hidden sm:inline">{fmt(item.createdAt)}</span>
+                        <button
+                          onClick={() => {
+                            if (item.type === 'rfq') setActiveTab('rfqs');
+                            else if (item.type === 'producer') setActiveTab('producers');
+                            else setActiveTab('contacts');
+                            setExpandedId(item.id);
+                          }}
+                          className="text-[11px] text-[#0f3156] hover:bg-slate-100 p-1 rounded"
+                          title="Bax"
+                        >
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </button>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      {badge(p.status)}
-                      <span className="text-[10px] text-slate-400">{fmt(p.createdAt)}</span>
-                    </div>
-                  </div>
-                ))}
-                {producers.length === 0 && <div className="px-4 py-8 text-center text-xs text-slate-400">Hec bir istehsalci tapilmadi</div>}
+                  ))}
+                  {unifiedRecent.length === 0 && (
+                    <div className="px-4 py-8 text-center text-xs text-slate-400">Heç bir müraciət tapılmadı</div>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* RFQs */}
         {activeTab === 'rfqs' && (
@@ -397,7 +496,7 @@ export const AzexbuyView: React.FC<AzexbuyViewProps> = ({ uiLang }) => {
                           <>
                             <select value={statusEdit.value} onChange={e => setStatusEdit({ ...statusEdit, value: e.target.value })}
                               className="h-7 px-2 text-xs border border-slate-300 bg-white text-slate-900 focus:outline-none rounded-sm">
-                              {STATUS_OPTIONS_RFQ.map(s => <option key={s}>{s}</option>)}
+                              {ALL_STATUS_OPTIONS.map(s => <option key={s}>{s}</option>)}
                             </select>
                             <button onClick={handleStatusSave} className="h-7 px-2.5 bg-[#0f3156] text-white text-xs font-bold hover:bg-[#081c33] flex items-center gap-1 rounded-sm">
                               <CheckCircle className="w-3 h-3" /> Saxla
@@ -541,7 +640,7 @@ export const AzexbuyView: React.FC<AzexbuyViewProps> = ({ uiLang }) => {
                           <>
                             <select value={statusEdit.value} onChange={e => setStatusEdit({ ...statusEdit, value: e.target.value })}
                               className="h-7 px-2 text-xs border border-slate-300 bg-white text-slate-900 focus:outline-none rounded-sm">
-                              {STATUS_OPTIONS_PRODUCER.map(s => <option key={s}>{s}</option>)}
+                              {ALL_STATUS_OPTIONS.map(s => <option key={s}>{s}</option>)}
                             </select>
                             <button onClick={handleStatusSave} className="h-7 px-2.5 bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-700 flex items-center gap-1 rounded-sm">
                               <CheckCircle className="w-3 h-3" /> Saxla

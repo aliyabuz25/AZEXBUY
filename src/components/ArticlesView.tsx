@@ -152,7 +152,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ article, onClose }) => {
         <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl p-2.5">
           <div className="flex-1 min-w-0">
             <span className="block text-[10px] text-slate-400 font-medium mb-0.5">Article Link</span>
-            <span className="block text-xs text-slate-700 font-mono truncate">{shareUrl}</span>
+            <span className="block text-xs text-slate-700 font-medium truncate">{shareUrl}</span>
           </div>
           <button
             type="button"

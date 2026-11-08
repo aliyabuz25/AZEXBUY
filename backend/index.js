@@ -121,7 +121,53 @@ db.exec(`
     readiness_score INTEGER DEFAULT 0,
     status TEXT DEFAULT 'Pending'
   );
+
+  CREATE TABLE IF NOT EXISTS azexbuy_team_members (
+    id TEXT PRIMARY KEY,
+    created_at TEXT NOT NULL,
+    updated_at TEXT,
+    name TEXT NOT NULL DEFAULT '',
+    role TEXT DEFAULT '{}',
+    bio TEXT DEFAULT '{}',
+    photo TEXT DEFAULT '',
+    email TEXT DEFAULT '',
+    linkedin TEXT DEFAULT '',
+    sort_order INTEGER DEFAULT 0,
+    is_active INTEGER DEFAULT 1
+  );
 `);
+
+// Seed team members if table empty in local backend db
+try {
+  const teamCount = (db.prepare('SELECT COUNT(*) as c FROM azexbuy_team_members').get() || {}).c;
+  if (!teamCount) {
+    const now = new Date().toISOString();
+    const ins = db.prepare('INSERT OR IGNORE INTO azexbuy_team_members (id,created_at,updated_at,name,role,bio,photo,email,linkedin,sort_order,is_active) VALUES (?,?,?,?,?,?,?,?,?,?,1)');
+    ins.run('tm-001', now, now, 'Ali Əhmədov',
+      JSON.stringify({ AZ:'Baş İcraçı Direktor', EN:'Chief Executive Officer', TR:'Genel Müdür', RU:'Генеральный директор', AR:'الرئيس التنفيذي', ES:'Director Ejecutivo' }),
+      JSON.stringify({ AZ:'Beynəlxalq ticarət və ixrac sahəsində 15 ildən çox təcrübəyə malik. AZEXBUY-un quruluşundan bəri şirkətin inkişafına rəhbərlik edir.', EN:'Over 15 years of experience in international trade and export. Leading the strategic growth and global partnerships of AZEXBUY.', TR:'Uluslararası ticaret ve ihracat alanında 15 yılı aşkın deneyime sahip.', RU:'Более 15 лет опыта в международной торговле и экспорте.', AR:'أكثر من 15 عاماً من الخبرة في التجارة الدولية والتصدير.', ES:'Más de 15 años de experiencia en comercio internacional y exportación.' }),
+      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80',
+      'ceo@azexbuy.com', 'https://linkedin.com', 1);
+    ins.run('tm-002', now, now, 'Leyla Hüseynova',
+      JSON.stringify({ AZ:'İxrac Əməliyyatları Direktoru', EN:'Director of Export Operations', TR:'İhracat Operasyonları Direktörü', RU:'Директор по экспортным операциям', AR:'مديرة عمليات التصدير', ES:'Directora de Operaciones de Exportación' }),
+      JSON.stringify({ AZ:'Sertifikasiya, gömrük prosedurları və beynəlxalq lojistika sahəsində ixtisaslaşmış. 10 ildən çox sahə təcrübəsi var.', EN:'Specializes in product certification, customs regulations, and multimodal logistics across EU and GCC corridors.', TR:'Sertifikasyon, gümrük prosedürleri ve uluslararası lojistik alanında uzmanlaşmış.', RU:'Специализируется на сертификации, таможенных процедурах и международной логистике.', AR:'متخصصة في الشهادات والإجراءات الجمركية واللوجستيات الدولية.', ES:'Especializada en certificación, procedimientos aduaneros y logística internacional.' }),
+      'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80',
+      'export@azexbuy.com', 'https://linkedin.com', 2);
+    ins.run('tm-003', now, now, 'Murad Quliyev',
+      JSON.stringify({ AZ:'Bazar Araşdırması və Alıcı Əlaqələri', EN:'Market Research & Buyer Relations', TR:'Pazar Araştırması ve Alıcı İlişkileri', RU:'Исследование рынков и работа с покупателями', AR:'بحوث السوق وعلاقات المشترين', ES:'Investigación de Mercado y Relaciones con Compradores' }),
+      JSON.stringify({ AZ:'Avropa, Körfəz və Asiya bazarlarında alıcı axtarışı və kommersiya danışıqlarında ixtisaslaşmışdır.', EN:'Focuses on buyer sourcing, market intelligence, and structured commercial negotiations in European and Asian markets.', TR:'Avrupa, Körfez ve Asya pazarlarında alıcı arama ve ticari müzakerelerde uzmanlaşmıştır.', RU:'Специализируется на поиске покупателей и коммерческих переговорах на европейских, ближневосточных и азиатских рынках.', AR:'متخصص في البحث عن المشترين والتفاوض التجاري في الأسواق الأوروبية وأسواق الخليج وآسيا.', ES:'Especializado en búsqueda de compradores y negociaciones comerciales en mercados europeos, del Golfo y asiáticos.' }),
+      'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80',
+      'buyers@azexbuy.com', 'https://linkedin.com', 3);
+    ins.run('tm-004', now, now, 'Nərgiz Məmmədova',
+      JSON.stringify({ AZ:'Keyfiyyət və Uyğunluq Mütəxəssisi', EN:'Quality & Compliance Specialist', TR:'Kalite ve Uygunluk Uzmanı', RU:'Специалист по качеству и соответствию', AR:'أخصائية الجودة والامتثال', ES:'Especialista en Calidad y Cumplimiento' }),
+      JSON.stringify({ AZ:'ISO, HACCP, Halal və GlobalGAP standartları üzrə yoxlama və akkreditasiya proseslərini idarə edir.', EN:'Oversees product audit, AQTA phytosanitary licensing, and international conformity assessments (ISO, GlobalGAP, Halal).', TR:'ISO, HACCP, Helal ve GlobalGAP standartları üzere denetim ve akreditasyon süreçlerini yönetir.', RU:'Курирует проверку стандартов качества, фитосанитарные сертификаты AQTA и международный комплаенс.', AR:'تشرف على معايير الجودة الدولية وتراخيص الامتثال (ISO, GlobalGAP, حلال).', ES:'Gestiona auditorías de producto, normativas de calidad y acreditaciones internacionales.' }),
+      'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=80',
+      'compliance@azexbuy.com', 'https://linkedin.com', 4);
+    console.log('[Backend] Demo team members seeded.');
+  }
+} catch (e) {
+  console.warn('[Backend] Team seed warning:', e.message);
+}
 
 // ─── Schema migrations (safe, idempotent) ────────────────────────
 ['is_featured INTEGER DEFAULT 0', 'seo_title TEXT', 'seo_description TEXT'].forEach(col => {
@@ -543,6 +589,102 @@ app.delete('/api/azexbuy/service-applications/:id', async (req, res) => {
   await delCache('service_applications:all');
   res.json({ success: true });
 });
+
+// ─── Team Members Routes ──────────────────────────────────────────
+const getTeamHandler = async (req, res) => {
+  try {
+    const cached = await getCache('azexbuy:team');
+    if (cached && req.query.fresh !== '1') return res.json(JSON.parse(cached));
+    const targetDb = (adminDb ? adminDb : db);
+    const rows = targetDb.prepare('SELECT * FROM azexbuy_team_members ORDER BY sort_order ASC, created_at ASC').all();
+    const result = rows.map(r => ({
+      id: r.id, createdAt: r.created_at, updatedAt: r.updated_at,
+      name: r.name, photo: r.photo, email: r.email, linkedin: r.linkedin,
+      sortOrder: r.sort_order, isActive: Boolean(r.is_active),
+      role: (() => { try { return JSON.parse(r.role); } catch { return { AZ: r.role }; } })(),
+      bio: (() => { try { return JSON.parse(r.bio); } catch { return { AZ: r.bio }; } })(),
+    }));
+    await setCache('azexbuy:team', JSON.stringify(result));
+    res.json(result);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+};
+app.get('/api/azexbuy/team', getTeamHandler);
+app.get('/api/team', getTeamHandler);
+
+const postTeamHandler = async (req, res) => {
+  try {
+    const d = req.body;
+    if (!d.id || !d.name) return res.status(400).json({ error: 'Missing id or name' });
+    const now = new Date().toISOString();
+    const query = `INSERT OR REPLACE INTO azexbuy_team_members
+      (id,created_at,updated_at,name,role,bio,photo,email,linkedin,sort_order,is_active)
+      VALUES (?,?,?,?,?,?,?,?,?,?,?)`;
+    const params = [
+      d.id, d.createdAt || now, now, d.name,
+      typeof d.role === 'string' ? d.role : JSON.stringify(d.role || {}),
+      typeof d.bio === 'string' ? d.bio : JSON.stringify(d.bio || {}),
+      d.photo || '', d.email || '', d.linkedin || '',
+      d.sortOrder ?? 0, d.isActive !== false ? 1 : 0
+    ];
+    db.prepare(query).run(...params);
+    if (adminDbRw) {
+      try { adminDbRw.prepare(query).run(...params); } catch {}
+    }
+    await delCache('azexbuy:team');
+    res.json({ success: true, id: d.id });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+};
+app.post('/api/azexbuy/team', postTeamHandler);
+app.post('/api/team', postTeamHandler);
+
+const patchTeamHandler = async (req, res) => {
+  try {
+    const d = req.body;
+    const now = new Date().toISOString();
+    const existing = db.prepare('SELECT * FROM azexbuy_team_members WHERE id=?').get(req.params.id);
+    if (!existing) return res.status(404).json({ error: 'Team member not found' });
+    const name = d.name !== undefined ? d.name : existing.name;
+    const role = d.role !== undefined ? (typeof d.role === 'string' ? d.role : JSON.stringify(d.role)) : existing.role;
+    const bio = d.bio !== undefined ? (typeof d.bio === 'string' ? d.bio : JSON.stringify(d.bio)) : existing.bio;
+    const photo = d.photo !== undefined ? d.photo : existing.photo;
+    const email = d.email !== undefined ? d.email : existing.email;
+    const linkedin = d.linkedin !== undefined ? d.linkedin : existing.linkedin;
+    const sortOrder = d.sortOrder !== undefined ? d.sortOrder : existing.sort_order;
+    const isActive = d.isActive !== undefined ? (d.isActive ? 1 : 0) : existing.is_active;
+
+    const query = `UPDATE azexbuy_team_members SET updated_at=?,name=?,role=?,bio=?,photo=?,email=?,linkedin=?,sort_order=?,is_active=? WHERE id=?`;
+    const params = [now, name, role, bio, photo, email, linkedin, sortOrder, isActive, req.params.id];
+    db.prepare(query).run(...params);
+    if (adminDbRw) {
+      try { adminDbRw.prepare(query).run(...params); } catch {}
+    }
+    await delCache('azexbuy:team');
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+};
+app.patch('/api/azexbuy/team/:id', patchTeamHandler);
+app.patch('/api/team/:id', patchTeamHandler);
+
+const deleteTeamHandler = async (req, res) => {
+  try {
+    db.prepare('DELETE FROM azexbuy_team_members WHERE id=?').run(req.params.id);
+    if (adminDbRw) {
+      try { adminDbRw.prepare('DELETE FROM azexbuy_team_members WHERE id=?').run(req.params.id); } catch {}
+    }
+    await delCache('azexbuy:team');
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+};
+app.delete('/api/azexbuy/team/:id', deleteTeamHandler);
+app.delete('/api/team/:id', deleteTeamHandler);
 
 // ─── Seed Default Services ────────────────────────────────────────
 const existingServices = db.prepare('SELECT COUNT(*) as cnt FROM services').get();

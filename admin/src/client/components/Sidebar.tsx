@@ -14,6 +14,7 @@ import {
   Package,
   BookOpen,
   Briefcase,
+  X,
 } from 'lucide-react';
 import { UiLanguage } from '../types';
 import { DICTIONARIES } from '../i18n';
@@ -29,6 +30,8 @@ interface SidebarProps {
   adminEmail?: string;
   onLogout?: () => void;
   sessionRemainingSeconds?: number;
+  isMobileDrawer?: boolean;
+  onCloseMobile?: () => void;
 }
 
 const NAV_SECTIONS = [
@@ -65,6 +68,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   adminEmail,
   onLogout,
   sessionRemainingSeconds = 600,
+  isMobileDrawer = false,
+  onCloseMobile,
 }) => {
   const t = DICTIONARIES[uiLang] || DICTIONARIES.az;
   void t;
@@ -139,16 +144,23 @@ export const Sidebar: React.FC<SidebarProps> = ({
     return 0;
   };
 
+  const handleTabClick = (item: { id: string; label: string; icon: any }) => {
+    onSelectTab(item.id, item.label, item.id);
+    if (isMobileDrawer) {
+      onCloseMobile?.();
+    }
+  };
+
   const renderNavButton = (item: { id: string; label: string; icon: any }) => {
     const Icon = item.icon;
     const isActive = activeTabId === item.id;
     const badge = getBadge(item.id);
 
-    if (collapsed) {
+    if (collapsed && !isMobileDrawer) {
       return (
         <div key={item.id} className="relative group flex justify-center">
           <button
-            onClick={() => onSelectTab(item.id, item.label, item.id)}
+            onClick={() => handleTabClick(item)}
             className={`w-10 h-10 flex items-center justify-center rounded-lg transition-all relative cursor-pointer ${
               isActive
                 ? 'bg-[#0f3156] text-white shadow-sm'
@@ -173,17 +185,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
     return (
       <button
         key={item.id}
-        onClick={() => onSelectTab(item.id, item.label, item.id)}
-        className={`w-full flex items-center gap-3 py-2.5 px-3 rounded-lg text-sm font-medium transition-all text-left cursor-pointer ${
+        onClick={() => handleTabClick(item)}
+        className={`group w-full flex items-center gap-2.5 py-2 px-3 rounded-md text-[13px] font-medium transition-all duration-150 text-left cursor-pointer ${
           isActive
-            ? 'bg-[#0f3156] text-white shadow-sm'
-            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+            ? 'bg-[#0f3156] text-white shadow-xs'
+            : 'text-slate-600 hover:bg-slate-100/70 hover:text-slate-900'
         }`}
       >
-        <Icon className={`shrink-0 transition-colors ${isActive ? 'text-white' : 'text-slate-400'}`} style={{ width: '16px', height: '16px' }} />
-        <span className="truncate flex-1">{item.label}</span>
+        <Icon className={`shrink-0 transition-colors ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-slate-600'}`} style={{ width: '16px', height: '16px' }} />
+        <span className="truncate flex-1 tracking-tight">{item.label}</span>
         {badge > 0 && (
-          <span className={`min-w-[20px] h-5 px-1.5 text-[10px] font-bold rounded-full flex items-center justify-center leading-none shrink-0 ${isActive ? 'bg-white/20 text-white' : 'bg-red-500 text-white'}`}>
+          <span className={`min-w-[18px] h-4 px-1 text-[9px] font-bold rounded-full flex items-center justify-center leading-none shrink-0 ${isActive ? 'bg-white/20 text-white' : 'bg-red-500 text-white'}`}>
             {badge > 99 ? '99+' : badge}
           </span>
         )}
@@ -193,20 +205,47 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <aside
-      className={`bg-white border-r border-slate-200 flex flex-col shrink-0 transition-[width] duration-200 ease-in-out z-40 select-none ${
-        collapsed ? 'w-16 min-w-[64px]' : 'w-56 min-w-[224px]'
+      className={`${
+        isMobileDrawer
+          ? 'h-full w-full bg-white flex flex-col z-40 select-none shadow-2xl'
+          : `hidden md:flex bg-white border-r border-slate-200/80 flex-col shrink-0 transition-[width] duration-200 ease-in-out z-40 select-none ${
+              collapsed ? 'w-16 min-w-[64px]' : 'w-56 min-w-[224px]'
+            }`
       }`}
     >
       {/* Brand Header */}
-      <div className="h-12 px-3 flex items-center justify-between border-b border-slate-200 shrink-0">
-        {!collapsed ? (
+      <div className="h-12 px-3.5 flex items-center justify-between border-b border-slate-100 shrink-0">
+        {isMobileDrawer ? (
           <>
-            <span className="text-sm font-bold text-slate-900 truncate tracking-tight">
-              {siteName || 'AZEXBUY Admin'}
-            </span>
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="w-6 h-6 rounded bg-[#0f3156] text-white flex items-center justify-center font-bold text-[11px] shrink-0">
+                A
+              </div>
+              <span className="text-xs font-bold text-slate-900 truncate tracking-tight">
+                {siteName || 'AZEXBUY Admin'}
+              </span>
+            </div>
+            <button
+              onClick={onCloseMobile}
+              className="p-1 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors shrink-0 cursor-pointer"
+              title="Bağla"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </>
+        ) : !collapsed ? (
+          <>
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="w-6 h-6 rounded bg-[#0f3156] text-white flex items-center justify-center font-bold text-[11px] shrink-0">
+                A
+              </div>
+              <span className="text-xs font-bold text-slate-900 truncate tracking-tight">
+                {siteName || 'AZEXBUY Admin'}
+              </span>
+            </div>
             <button
               onClick={onToggleCollapse}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors shrink-0 cursor-pointer"
+              className="p-1 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors shrink-0 cursor-pointer"
               title="Yığ"
             >
               <ChevronLeft className="w-4 h-4" />
@@ -215,7 +254,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         ) : (
           <button
             onClick={onToggleCollapse}
-            className="w-full h-full flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer"
+            className="w-full h-full flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-50 rounded-md transition-colors cursor-pointer"
             title="Genişləndir"
           >
             <Menu className="w-4 h-4" />
@@ -225,10 +264,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-4">
-        {!collapsed ? (
+        {!collapsed || isMobileDrawer ? (
           NAV_SECTIONS.map((section, idx) => (
             <div key={idx}>
-              <div className="px-3 mb-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+              <div className="px-3 mb-1.5 text-[9px] font-bold text-slate-400 uppercase tracking-wider">
                 {section.title}
               </div>
               <div className="space-y-0.5">
@@ -251,21 +290,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </nav>
 
       {/* Bottom Profile & Session */}
-      {!collapsed ? (
-        <div className="border-t border-slate-200 bg-white shrink-0">
-          <div className="p-3 flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2.5 min-w-0">
+      {!collapsed || isMobileDrawer ? (
+        <div className="border-t border-slate-100 bg-white shrink-0">
+          <div className="p-2.5 flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 min-w-0">
               <div
-                className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs select-none shrink-0 relative"
-                style={{ backgroundColor: '#e8f0fe', color: '#0f3156' }}
+                className="w-7 h-7 rounded-full flex items-center justify-center font-bold text-[11px] select-none shrink-0 relative bg-slate-100 text-[#0f3156]"
                 title={adminName}
               >
                 <span>{getInitials(adminName)}</span>
-                <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white bg-emerald-500" />
+                <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full border-2 border-white bg-emerald-500" />
               </div>
               <div className="min-w-0 flex-1">
-                <div className="text-xs font-semibold text-slate-900 truncate leading-tight">{adminName}</div>
-                <div className="flex items-center gap-1 text-[10px] text-slate-400 font-mono mt-0.5">
+                <div className="text-xs font-semibold text-slate-800 truncate leading-tight">{adminName}</div>
+                <div className="flex items-center gap-1 text-[10px] text-slate-400 font-mono">
                   <Clock className="w-2.5 h-2.5 shrink-0" />
                   <span>{formatSessionTime(sessionSeconds)}</span>
                 </div>
@@ -273,30 +311,29 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
             <button
               onClick={onLogout}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors shrink-0 cursor-pointer"
+              className="p-1.5 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors shrink-0 cursor-pointer"
               title="Çıxış"
             >
-              <LogOut className="w-4 h-4" />
+              <LogOut className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
       ) : (
-        <div className="border-t border-slate-200 py-3 flex flex-col items-center gap-2 bg-white shrink-0 relative group">
+        <div className="border-t border-slate-100 py-2.5 flex flex-col items-center gap-2 bg-white shrink-0 relative group">
           <div
-            className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs select-none relative cursor-pointer"
-            style={{ backgroundColor: '#e8f0fe', color: '#0f3156' }}
+            className="w-7 h-7 rounded-full flex items-center justify-center font-bold text-[11px] select-none relative cursor-pointer bg-slate-100 text-[#0f3156]"
             title={adminName}
           >
             <span>{getInitials(adminName)}</span>
             <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full border border-white bg-emerald-500" />
           </div>
-          <button onClick={onLogout} className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer" title="Çıxış">
+          <button onClick={onLogout} className="p-1 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer" title="Çıxış">
             <LogOut className="w-3.5 h-3.5" />
           </button>
           {/* Tooltip */}
-          <div className="absolute left-full ml-2 bottom-2 px-3 py-2 bg-slate-900 text-white text-xs rounded-lg shadow-xl pointer-events-none opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50 whitespace-nowrap space-y-1">
-            <div className="font-semibold">{adminName}</div>
-            <div className="text-[10px] text-slate-400 font-mono flex items-center gap-1">
+          <div className="absolute left-full ml-2 bottom-2 px-2.5 py-1.5 bg-slate-900 text-white text-xs rounded-md shadow-xl pointer-events-none opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50 whitespace-nowrap space-y-0.5">
+            <div className="font-semibold text-[11px]">{adminName}</div>
+            <div className="text-[9px] text-slate-400 font-mono flex items-center gap-1">
               <Clock className="w-2.5 h-2.5" /> {formatSessionTime(sessionSeconds)}
             </div>
           </div>

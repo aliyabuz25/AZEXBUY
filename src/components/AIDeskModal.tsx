@@ -68,10 +68,10 @@ export const AIDeskModal: React.FC<AIDeskModalProps> = ({
       sender: 'assistant',
       text:
         locale === 'AZ'
-          ? 'Salam! Mən AZEXBUY Süni İntellekt İxrac və Sourcing Məsləhətçisiyəm. Azərbaycanın ixrac məhsulları, HS kodları, Orta Dəhliz logistikası, Incoterms və AQTA sertifikatlaşdırması üzrə sizə kömək edə bilərəm.'
+          ? 'Salam! AZEXBUY İxrac və Təchizat Masasına xoş gəlmisiniz. Azərbaycanın ixrac məhsulları, HS kodları, Orta Dəhliz logistikası, Incoterms və sertifikatlaşdırma üzrə sizə operativ məlumat verə bilərəm.'
           : locale === 'RU'
-          ? 'Здравствуйте! Я ИИ-консультант по экспорту и закупкам AZEXBUY. Помогу вам с подбором товаров, кодами ТН ВЭД, маршрутами Среднего коридора, Инкотермс и сертификатами AQTA.'
-          : 'Welcome to the AZEXBUY Sovereign Trade AI Desk. I can provide authoritative guidance on Azerbaijani export commodities, HS tariff codes, Middle Corridor logistics, Incoterms 2020, and institutional export compliance.',
+          ? 'Здравствуйте! Добро пожаловать в центр закупок и экспорта AZEXBUY. Помогу вам с подбором товаров, кодами ТН ВЭД, логистическими маршрутами, Инкотермс и сертификатами.'
+          : 'Welcome to the AZEXBUY Sovereign Trade Desk. I can provide authoritative guidance on Azerbaijani export commodities, HS tariff codes, Middle Corridor logistics, Incoterms 2020, and institutional export compliance.',
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     },
   ]);
@@ -149,15 +149,15 @@ export const AIDeskModal: React.FC<AIDeskModalProps> = ({
         <div className="bg-brandNavy text-white px-4 sm:px-5 py-4 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-full bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-400">
-              <i className="fa-solid fa-brain text-lg"></i>
+              <i className="fa-solid fa-headset text-base"></i>
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-base font-extrabold tracking-tight">
-                  AZEXBUY AI Trade & Sourcing Consultant
+                  AZEXBUY Trade & Sourcing Desk
                 </h3>
-                <span className="text-[10px] font-extrabold uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-2 py-0.5 rounded-full">
-                  Gemini Powered
+                <span className="text-[10px] font-bold uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-2.5 py-0.5 rounded-full">
+                  Online Desk
                 </span>
               </div>
               <p className="text-[11px] text-slate-300">
@@ -170,7 +170,7 @@ export const AIDeskModal: React.FC<AIDeskModalProps> = ({
               type="button"
               onClick={() => setShowSettings(!showSettings)}
               className="text-slate-300 hover:text-white p-1.5 rounded transition-colors text-xs font-semibold flex items-center gap-1 bg-white/10 hover:bg-white/20"
-              title="AI Settings & API Key"
+              title="Settings & Key"
             >
               <i className="fa-solid fa-gear"></i>
               <span className="hidden sm:inline">Settings</span>

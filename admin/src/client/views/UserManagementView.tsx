@@ -124,7 +124,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = () => {
     <div className="flex flex-col h-full bg-slate-50/50">
 
       {/* Header */}
-      <div className="bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between shrink-0">
+      <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-7 h-7 bg-[#0f3156] flex items-center justify-center">
             <Users className="w-4 h-4 text-white" />

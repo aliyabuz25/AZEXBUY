@@ -34,6 +34,11 @@ export function bbcodeToHtml(input: string): string {
     // URL
     .replace(/\[url=([^\]]+)\]([\s\S]*?)\[\/url\]/gi, '<a href="$1" target="_blank" rel="noopener noreferrer" style="color:#2563eb;text-decoration:underline">$2</a>')
     .replace(/\[url\]([\s\S]*?)\[\/url\]/gi, '<a href="$1" target="_blank" rel="noopener noreferrer" style="color:#2563eb;text-decoration:underline">$1</a>')
+    // Table
+    .replace(/\[table\]([\s\S]*?)\[\/table\]/gi, '<table style="border-collapse:collapse;width:100%;margin:1em 0;border:1px solid #cbd5e1;font-size:0.9em">$1</table>')
+    .replace(/\[tr\]([\s\S]*?)\[\/tr\]/gi, '<tr>$1</tr>')
+    .replace(/\[th\]([\s\S]*?)\[\/th\]/gi, '<th style="border:1px solid #cbd5e1;padding:6px 10px;background:#f8fafc;text-align:left;font-weight:700">$1</th>')
+    .replace(/\[td\]([\s\S]*?)\[\/td\]/gi, '<td style="border:1px solid #cbd5e1;padding:6px 10px">$1</td>')
     // Image
     .replace(/\[img\]([\s\S]*?)\[\/img\]/gi, '<img src="$1" alt="" style="max-width:100%;height:auto;border-radius:4px" />')
     .replace(/\[img=(\d+)x(\d+)\]([\s\S]*?)\[\/img\]/gi, '<img src="$3" width="$1" height="$2" alt="" style="max-width:100%;height:auto;border-radius:4px" />')
@@ -83,6 +88,8 @@ const BUTTONS: Btn[] = [
   { label: 'Kod',         tag: 'code',  icon: '</>' },
   { label: 'URL', tag: 'url', icon: '🔗', hasPrompt: true, promptMsg: 'URL girin:', promptDefault: 'https://' },
   { label: 'Resim',       tag: 'img',   icon: '🖼' },
+  { label: 'Tablo Əlavə Et', tag: 'table', icon: '⊞ Tablo' },
+  { label: 'İnfoqrafik',  tag: 'infographic', icon: '📊 İnfoqrafik' },
   { label: 'H1',          tag: 'h1',    icon: 'H1' },
   { label: 'H2',          tag: 'h2',    icon: 'H2' },
   { label: 'H3',          tag: 'h3',    icon: 'H3' },
@@ -123,6 +130,16 @@ export const BBCodeEditor: React.FC<BBCodeEditorProps> = ({
 
   const handleBtn = useCallback((btn: Btn) => {
     if (btn.tag === 'hr') { insert('[hr]', ''); return; }
+    if (btn.tag === 'table') {
+      insert('[table]\n[tr][th]Parametr[/th][th]Dəyər[/th][th]Qeyd[/th][/tr]\n[tr][td]Məhsul[/td][td]100 Ton[/td][td]Yüksək Keyfiyyət[/td][/tr]\n[/table]\n', '');
+      return;
+    }
+    if (btn.tag === 'infographic') {
+      const val = prompt('İnfoqrafika / Şəkil URL-i daxil edin:', 'https://');
+      if (!val) return;
+      insert(`\n[center][img]${val}[/img]\n[size=12][color=#64748b]İnfoqrafika: İxrac Göstəriciləri[/color][/size][/center]\n`, '');
+      return;
+    }
     if (btn.tag === 'list') { insert('[list]\n[*]', '\n[/list]'); return; }
     if (btn.tag === '*') { insert('[*]', ''); return; }
     if (btn.hasPrompt) {

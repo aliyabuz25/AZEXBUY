@@ -973,6 +973,14 @@ try { mainDb.exec(`
     updated_at TEXT
   );
   INSERT OR IGNORE INTO active_session (id, token) VALUES (1, NULL);
+  CREATE TABLE IF NOT EXISTS email_logs (
+    id TEXT PRIMARY KEY,
+    created_at TEXT NOT NULL,
+    recipient TEXT NOT NULL,
+    subject TEXT NOT NULL,
+    status TEXT NOT NULL,
+    error_message TEXT
+  );
 `); } catch (err) { console.error('[DB] admin_users schema init failed:', err); process.exit(1); }
 
 // Session persistence helpers
@@ -1164,6 +1172,55 @@ try { azexbuyDb.exec(`
   );
 `); } catch (err) { console.error('[DB] Product/Article/Services schema init failed:', err); }
 
+// ── Team Members table ────────────────────────────────────────────────────────
+try {
+  azexbuyDb.exec(`
+    CREATE TABLE IF NOT EXISTS azexbuy_team_members (
+      id TEXT PRIMARY KEY,
+      created_at TEXT NOT NULL,
+      updated_at TEXT,
+      name TEXT NOT NULL DEFAULT '',
+      role TEXT DEFAULT '{}',
+      bio TEXT DEFAULT '{}',
+      photo TEXT DEFAULT '',
+      email TEXT DEFAULT '',
+      linkedin TEXT DEFAULT '',
+      sort_order INTEGER DEFAULT 0,
+      is_active INTEGER DEFAULT 1
+    );
+  `);
+} catch (err) { console.error('[DB] Team members table init failed:', err); }
+
+// Seed team members if empty
+try {
+  const teamCount = (azexbuyDb.prepare('SELECT COUNT(*) as c FROM azexbuy_team_members').get() as any).c;
+  if (teamCount === 0) {
+    const now = new Date().toISOString();
+    const ins = azexbuyDb.prepare('INSERT OR IGNORE INTO azexbuy_team_members (id,created_at,updated_at,name,role,bio,photo,email,linkedin,sort_order,is_active) VALUES (?,?,?,?,?,?,?,?,?,?,1)');
+    ins.run('tm-001', now, now, 'Ali Əhmədov',
+      JSON.stringify({ AZ:'Baş İcraçı Direktor', EN:'Chief Executive Officer', TR:'Genel Müdür', RU:'Генеральный директор', AR:'الرئيس التنفيذي', ES:'Director Ejecutivo' }),
+      JSON.stringify({ AZ:'Beynəlxalq ticarət və ixrac sahəsində 15 ildən çox təcrübəyə malik. AZEXBUY-un quruluşundan bəri şirkətin inkişafına rəhbərlik edir.', EN:'Over 15 years of experience in international trade and export. Leading the strategic growth and global partnerships of AZEXBUY.', TR:'Uluslararası ticaret ve ihracat alanında 15 yılı aşkın deneyime sahip.', RU:'Более 15 лет опыта в международной торговле и экспорте.', AR:'أكثر من 15 عاماً من الخبرة في التجارة الدولية والتصدير.', ES:'Más de 15 años de experiencia en comercio internacional y exportación.' }),
+      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80',
+      'ceo@azexbuy.com', 'https://linkedin.com', 1);
+    ins.run('tm-002', now, now, 'Leyla Hüseynova',
+      JSON.stringify({ AZ:'İxrac Əməliyyatları Direktoru', EN:'Director of Export Operations', TR:'İhracat Operasyonları Direktörü', RU:'Директор по экспортным операциям', AR:'مديرة عمليات التصدير', ES:'Directora de Operaciones de Exportación' }),
+      JSON.stringify({ AZ:'Sertifikasiya, gömrük prosedurları və beynəlxalq lojistika sahəsində ixtisaslaşmış. 10 ildən çox sahə təcrübəsi var.', EN:'Specializes in product certification, customs regulations, and multimodal logistics across EU and GCC corridors.', TR:'Sertifikasyon, gümrük prosedürleri ve uluslararası lojistik alanında uzmanlaşmış.', RU:'Специализируется на сертификации, таможенных процедурах и международной логистике.', AR:'متخصصة في الشهادات والإجراءات الجمركية واللوجستيات الدولية.', ES:'Especializada en certificación, procedimientos aduaneros y logística internacional.' }),
+      'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80',
+      'export@azexbuy.com', 'https://linkedin.com', 2);
+    ins.run('tm-003', now, now, 'Murad Quliyev',
+      JSON.stringify({ AZ:'Bazar Araşdırması və Alıcı Əlaqələri', EN:'Market Research & Buyer Relations', TR:'Pazar Araştırması ve Alıcı İlişkileri', RU:'Исследование рынков и работа с покупателями', AR:'بحوث السوق وعلاقات المشترين', ES:'Investigación de Mercado y Relaciones con Compradores' }),
+      JSON.stringify({ AZ:'Avropa, Körfəz və Asiya bazarlarında alıcı axtarışı və kommersiya danışıqlarında ixtisaslaşmışdır.', EN:'Focuses on buyer sourcing, market intelligence, and structured commercial negotiations in European and Asian markets.', TR:'Avrupa, Körfez ve Asya pazarlarında alıcı arama ve ticari müzakerelerde uzmanlaşmıştır.', RU:'Специализируется на поиске покупателей и коммерческих переговорах на европейских, ближневосточных и азиатских рынках.', AR:'متخصص في البحث عن المشترين والتفاوض التجاري في الأسواق الأوروبية وأسواق الخليج وآسيا.', ES:'Especializado en búsqueda de compradores y negociaciones comerciales en mercados europeos, del Golfo y asiáticos.' }),
+      'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80',
+      'buyers@azexbuy.com', 'https://linkedin.com', 3);
+    ins.run('tm-004', now, now, 'Nərgiz Məmmədova',
+      JSON.stringify({ AZ:'Keyfiyyət və Uyğunluq Mütəxəssisi', EN:'Quality & Compliance Specialist', TR:'Kalite ve Uygunluk Uzmanı', RU:'Специалист по качеству и соответствию', AR:'أخصائية الجودة والامتثال', ES:'Especialista en Calidad y Cumplimiento' }),
+      JSON.stringify({ AZ:'ISO, HACCP, Halal və GlobalGAP standartları üzrə yoxlama və akkreditasiya proseslərini idarə edir.', EN:'Oversees product audit, AQTA phytosanitary licensing, and international conformity assessments (ISO, GlobalGAP, Halal).', TR:'ISO, HACCP, Helal ve GlobalGAP standartları üzere denetim ve akreditasyon süreçlerini yönetir.', RU:'Курирует проверку стандартов качества, фитосанитарные сертификаты AQTA и международный комплаенс.', AR:'تشرف على معايير الجودة الدولية وتراخيص الامتثال (ISO, GlobalGAP, حلال).', ES:'Gestiona auditorías de producto, normativas de calidad y acreditaciones internacionales.' }),
+      'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=80',
+      'compliance@azexbuy.com', 'https://linkedin.com', 4);
+    console.log('[Seed] Team members seeded.');
+  }
+} catch (err) { console.error('[Seed] Team members seed failed:', err); }
+
 // ── Migration: add is_featured to azexbuy_articles if missing ────────────────
 try {
   const cols = azexbuyDb.prepare("PRAGMA table_info(azexbuy_articles)").all() as any[];
@@ -1175,6 +1232,23 @@ try {
     azexbuyDb.exec('ALTER TABLE azexbuy_articles ADD COLUMN view_count INTEGER NOT NULL DEFAULT 0');
     console.log('[DB] Migration: added view_count column to azexbuy_articles');
   }
+  if (!cols.find((c: any) => c.name === 'source_name')) azexbuyDb.exec('ALTER TABLE azexbuy_articles ADD COLUMN source_name TEXT');
+  if (!cols.find((c: any) => c.name === 'source_url')) azexbuyDb.exec('ALTER TABLE azexbuy_articles ADD COLUMN source_url TEXT');
+  if (!cols.find((c: any) => c.name === 'source_country')) azexbuyDb.exec('ALTER TABLE azexbuy_articles ADD COLUMN source_country TEXT');
+  if (!cols.find((c: any) => c.name === 'source_period')) azexbuyDb.exec('ALTER TABLE azexbuy_articles ADD COLUMN source_period TEXT');
+  if (!cols.find((c: any) => c.name === 'pub_status')) azexbuyDb.exec("ALTER TABLE azexbuy_articles ADD COLUMN pub_status TEXT DEFAULT 'published'");
+
+  const prodCols = azexbuyDb.prepare("PRAGMA table_info(azexbuy_products)").all() as any[];
+  if (!prodCols.find((c: any) => c.name === 'sort_order')) azexbuyDb.exec('ALTER TABLE azexbuy_products ADD COLUMN sort_order INTEGER NOT NULL DEFAULT 0');
+
+  const srvCols = azexbuyDb.prepare("PRAGMA table_info(azexbuy_services)").all() as any[];
+  if (!srvCols.find((c: any) => c.name === 'category')) azexbuyDb.exec("ALTER TABLE azexbuy_services ADD COLUMN category TEXT DEFAULT 'Export'");
+  if (!srvCols.find((c: any) => c.name === 'is_approved')) azexbuyDb.exec('ALTER TABLE azexbuy_services ADD COLUMN is_approved INTEGER NOT NULL DEFAULT 1');
+  if (!srvCols.find((c: any) => c.name === 'rfq_slug')) azexbuyDb.exec("ALTER TABLE azexbuy_services ADD COLUMN rfq_slug TEXT DEFAULT ''");
+
+  const catCols = azexbuyDb.prepare("PRAGMA table_info(azexbuy_categories)").all() as any[];
+  if (!catCols.find((c: any) => c.name === 'seo_title')) azexbuyDb.exec('ALTER TABLE azexbuy_categories ADD COLUMN seo_title TEXT');
+  if (!catCols.find((c: any) => c.name === 'seo_description')) azexbuyDb.exec('ALTER TABLE azexbuy_categories ADD COLUMN seo_description TEXT');
 } catch (err) { console.error('[DB] Migration failed:', err); }
 
 // Seed default categories if empty
@@ -1242,12 +1316,15 @@ app.get('/api/azexbuy/categories', async (_req: Request, res: Response) => {
 
 app.post('/api/azexbuy/categories', requireAuth, (req: Request, res: Response) => {
   const { name, slug, description, imageUrl, sortOrder } = req.body;
-  if (!name || !slug) return res.status(400).json({ error: 'name and slug are required' });
+  const rawName = name;
+  const nameStr = typeof rawName === 'string' ? rawName.trim() : (rawName?.AZ || rawName?.EN || rawName?.TR || Object.values(rawName || {})[0] || '');
+  if (!nameStr || !slug) return res.status(400).json({ error: 'name and slug are required' });
   const existing = azexbuyDb.prepare('SELECT id FROM azexbuy_categories WHERE slug = ?').get(slug);
   if (existing) return res.status(409).json({ error: 'Slug already exists' });
   const id = `cat-${Date.now()}`;
+  const storedName = typeof rawName === 'object' ? JSON.stringify(rawName) : nameStr;
   azexbuyDb.prepare('INSERT INTO azexbuy_categories (id, created_at, name, slug, description, image_url, sort_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, 1)')
-    .run(id, new Date().toISOString(), name.trim(), slug.trim().toLowerCase(), description || null, imageUrl || null, sortOrder || 0);
+    .run(id, new Date().toISOString(), storedName, slug.trim().toLowerCase(), description || null, imageUrl || null, sortOrder || 0);
   azDel('azexbuy:categories');
   res.status(201).json({ success: true, id });
 });
@@ -1256,7 +1333,10 @@ app.patch('/api/azexbuy/categories/:id', requireAuth, (req: Request, res: Respon
   const { name, slug, description, imageUrl, sortOrder, isActive } = req.body;
   const cat = azexbuyDb.prepare('SELECT id FROM azexbuy_categories WHERE id = ?').get(req.params.id);
   if (!cat) return res.status(404).json({ error: 'Category not found' });
-  if (name !== undefined) azexbuyDb.prepare('UPDATE azexbuy_categories SET name = ? WHERE id = ?').run(name, req.params.id);
+  if (name !== undefined) {
+    const storedName = typeof name === 'object' ? JSON.stringify(name) : String(name);
+    azexbuyDb.prepare('UPDATE azexbuy_categories SET name = ? WHERE id = ?').run(storedName, req.params.id);
+  }
   if (slug !== undefined) azexbuyDb.prepare('UPDATE azexbuy_categories SET slug = ? WHERE id = ?').run(slug.toLowerCase().trim(), req.params.id);
   if (description !== undefined) azexbuyDb.prepare('UPDATE azexbuy_categories SET description = ? WHERE id = ?').run(description, req.params.id);
   if (imageUrl !== undefined) azexbuyDb.prepare('UPDATE azexbuy_categories SET image_url = ? WHERE id = ?').run(imageUrl, req.params.id);
@@ -1286,7 +1366,8 @@ function mapProduct(r: any) {
     moq: r.moq, certificates: r.certificates ? JSON.parse(r.certificates) : [],
     packagingInfo: r.packaging_info, hsCode: r.hs_code, originRegion: r.origin_region,
     isActive: !!r.is_active, isFeatured: !!r.is_featured,
-    seoTitle: r.seo_title, seoDescription: r.seo_description
+    seoTitle: r.seo_title, seoDescription: r.seo_description,
+    sortOrder: r.sort_order || 0
   };
 }
 
@@ -1330,19 +1411,22 @@ app.get('/api/azexbuy/admin/products', requireAuth, async (_req: Request, res: R
 
 // Admin: create product
 app.post('/api/azexbuy/admin/products', requireAuth, (req: Request, res: Response) => {
-  const { categoryId, name, slug, shortDescription, description, technicalSpecs, images, moq, certificates, packagingInfo, hsCode, originRegion, isFeatured, seoTitle, seoDescription } = req.body;
-  if (!categoryId || !name || !slug) return res.status(400).json({ error: 'categoryId, name and slug are required' });
+  const { categoryId, name, slug, shortDescription, description, technicalSpecs, images, moq, certificates, packagingInfo, hsCode, originRegion, isFeatured, seoTitle, seoDescription, sortOrder } = req.body;
+  const rawName = name;
+  const nameStr = typeof rawName === 'string' ? rawName.trim() : (rawName?.AZ || rawName?.EN || rawName?.TR || Object.values(rawName || {})[0] || '');
+  if (!categoryId || !nameStr || !slug) return res.status(400).json({ error: 'categoryId, name and slug are required' });
   const existing = azexbuyDb.prepare('SELECT id FROM azexbuy_products WHERE slug = ?').get(slug);
   if (existing) return res.status(409).json({ error: 'Product slug already exists' });
   const catExists = azexbuyDb.prepare('SELECT id FROM azexbuy_categories WHERE id = ?').get(categoryId);
   if (!catExists) return res.status(400).json({ error: 'Category not found' });
   const id = `prod-${Date.now()}`;
   const now = new Date().toISOString();
-  azexbuyDb.prepare(`INSERT INTO azexbuy_products (id, created_at, updated_at, category_id, name, slug, short_description, description, technical_specs, images, moq, certificates, packaging_info, hs_code, origin_region, is_active, is_featured, seo_title, seo_description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?)`)
-    .run(id, now, now, categoryId, name.trim(), slug.trim().toLowerCase(), shortDescription || null, description || null,
+  const storedName = typeof rawName === 'object' ? JSON.stringify(rawName) : nameStr;
+  azexbuyDb.prepare(`INSERT INTO azexbuy_products (id, created_at, updated_at, category_id, name, slug, short_description, description, technical_specs, images, moq, certificates, packaging_info, hs_code, origin_region, is_active, is_featured, seo_title, seo_description, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?)`)
+    .run(id, now, now, categoryId, storedName, slug.trim().toLowerCase(), shortDescription || null, description || null,
       JSON.stringify(technicalSpecs || {}), JSON.stringify(images || []), moq || null,
       JSON.stringify(certificates || []), packagingInfo || null, hsCode || null, originRegion || null,
-      isFeatured ? 1 : 0, seoTitle || null, seoDescription || null);
+      isFeatured ? 1 : 0, seoTitle || null, seoDescription || null, Number(sortOrder) || 0);
   azDel('azexbuy:products:all:0:50:0');
   res.status(201).json({ success: true, id });
 });
@@ -1351,7 +1435,7 @@ app.post('/api/azexbuy/admin/products', requireAuth, (req: Request, res: Respons
 app.patch('/api/azexbuy/admin/products/:id', requireAuth, (req: Request, res: Response) => {
   const r = azexbuyDb.prepare('SELECT id, slug FROM azexbuy_products WHERE id = ?').get(req.params.id) as any;
   if (!r) return res.status(404).json({ error: 'Product not found' });
-  const fields = ['categoryId:category_id','name','slug','shortDescription:short_description','description','moq','packagingInfo:packaging_info','hsCode:hs_code','originRegion:origin_region','seoTitle:seo_title','seoDescription:seo_description'];
+  const fields = ['categoryId:category_id','name','slug','shortDescription:short_description','description','moq','packagingInfo:packaging_info','hsCode:hs_code','originRegion:origin_region','seoTitle:seo_title','seoDescription:seo_description','sortOrder:sort_order'];
   const jsonFields = ['technicalSpecs:technical_specs','images','certificates'];
   const boolFields = ['isActive:is_active','isFeatured:is_featured'];
   const body = req.body;
@@ -1359,7 +1443,10 @@ app.patch('/api/azexbuy/admin/products/:id', requireAuth, (req: Request, res: Re
   azexbuyDb.prepare('UPDATE azexbuy_products SET updated_at = ? WHERE id = ?').run(now, req.params.id);
   for (const f of fields) {
     const [jsKey, dbCol] = f.includes(':') ? f.split(':') : [f, f];
-    if (body[jsKey] !== undefined) azexbuyDb.prepare(`UPDATE azexbuy_products SET ${dbCol} = ? WHERE id = ?`).run(body[jsKey], req.params.id);
+    if (body[jsKey] !== undefined) {
+      const val = jsKey === 'name' && typeof body[jsKey] === 'object' ? JSON.stringify(body[jsKey]) : body[jsKey];
+      azexbuyDb.prepare(`UPDATE azexbuy_products SET ${dbCol} = ? WHERE id = ?`).run(val, req.params.id);
+    }
   }
   for (const f of jsonFields) {
     const [jsKey, dbCol] = f.includes(':') ? f.split(':') : [f, f];
@@ -1394,6 +1481,11 @@ function mapArticle(r: any) {
     seoTitle: r.seo_title, seoDescription: r.seo_description,
     isPublished: !!r.is_published, publishedAt: r.published_at, author: r.author,
     isFeatured: !!r.is_featured, viewCount: r.view_count || 0,
+    sourceName: r.source_name || '',
+    sourceUrl: r.source_url || '',
+    sourceCountry: r.source_country || '',
+    sourcePeriod: r.source_period || '',
+    pubStatus: r.pub_status || (r.is_published ? 'published' : 'draft'),
   };
 }
 
@@ -1464,7 +1556,7 @@ app.get('/api/azexbuy/admin/articles', requireAuth, async (_req: Request, res: R
 
 // Admin: create article
 app.post('/api/azexbuy/admin/articles', requireAuth, (req: Request, res: Response) => {
-  const { title, slug, category, summary, content, coverImage, seoTitle, seoDescription, isPublished, publishedAt, author } = req.body;
+  const { title, slug, category, summary, content, coverImage, seoTitle, seoDescription, isPublished, publishedAt, author, sourceName, sourceUrl, sourceCountry, sourcePeriod, pubStatus } = req.body;
   if (!title || !slug) return res.status(400).json({ error: 'title and slug are required' });
   if (category && !ARTICLE_CATEGORIES.includes(category)) return res.status(400).json({ error: `category must be one of: ${ARTICLE_CATEGORIES.join(', ')}` });
   const existing = azexbuyDb.prepare('SELECT id FROM azexbuy_articles WHERE slug = ?').get(slug);
@@ -1472,8 +1564,8 @@ app.post('/api/azexbuy/admin/articles', requireAuth, (req: Request, res: Respons
   const id = `art-${Date.now()}`;
   const now = new Date().toISOString();
   const pubAt = isPublished ? (publishedAt || now) : null;
-  azexbuyDb.prepare(`INSERT INTO azexbuy_articles (id, created_at, updated_at, title, slug, category, summary, content, cover_image, seo_title, seo_description, is_published, published_at, author) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
-    .run(id, now, now, title.trim(), slug.trim().toLowerCase(), category || 'Export Guides', summary || null, content || null, coverImage || null, seoTitle || null, seoDescription || null, isPublished ? 1 : 0, pubAt, author || 'AZEXBUY');
+  azexbuyDb.prepare(`INSERT INTO azexbuy_articles (id, created_at, updated_at, title, slug, category, summary, content, cover_image, seo_title, seo_description, is_published, published_at, author, source_name, source_url, source_country, source_period, pub_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+    .run(id, now, now, title.trim(), slug.trim().toLowerCase(), category || 'Export Guides', summary || null, content || null, coverImage || null, seoTitle || null, seoDescription || null, isPublished ? 1 : 0, pubAt, author || 'AZEXBUY', sourceName || null, sourceUrl || null, sourceCountry || null, sourcePeriod || null, pubStatus || (isPublished ? 'published' : 'draft'));
   // BUG-5 fix: invalidate list caches on article creation
   azDel('azexbuy:articles:all:20:0');
   for (const cat of ARTICLE_CATEGORIES) azDel(`azexbuy:articles:${cat}:20:0`);
@@ -1486,7 +1578,7 @@ app.patch('/api/azexbuy/admin/articles/:id', requireAuth, (req: Request, res: Re
   const r = azexbuyDb.prepare('SELECT id, slug, published_at, is_featured FROM azexbuy_articles WHERE id = ?').get(req.params.id) as any;
   if (!r) return res.status(404).json({ error: 'Article not found' });
   if (req.body.category && !ARTICLE_CATEGORIES.includes(req.body.category)) return res.status(400).json({ error: `Invalid category` });
-  const textFields = ['title','slug','category','summary','content','coverImage:cover_image','seoTitle:seo_title','seoDescription:seo_description','publishedAt:published_at','author'];
+  const textFields = ['title','slug','category','summary','content','coverImage:cover_image','seoTitle:seo_title','seoDescription:seo_description','publishedAt:published_at','author','sourceName:source_name','sourceUrl:source_url','sourceCountry:source_country','sourcePeriod:source_period','pubStatus:pub_status'];
   const now = new Date().toISOString();
   azexbuyDb.prepare('UPDATE azexbuy_articles SET updated_at = ? WHERE id = ?').run(now, req.params.id);
   for (const f of textFields) {
@@ -1545,6 +1637,7 @@ app.get('/api/azexbuy/rfqs', requireAuth, async (req: Request, res: Response) =>
 
 app.post('/api/azexbuy/rfqs', async (req: Request, res: Response) => {
   const d = req.body;
+  if (d._hp || d.website_url_check) return res.json({ success: true, id: d.id || 'SPAM' });
   if (!d.id || !d.buyerCompany || !d.email) return res.status(400).json({ error: 'Missing fields' });
   azexbuyDb.prepare(`INSERT OR REPLACE INTO azexbuy_rfqs
     (id,created_at,buyer_company,country,city,contact_name,email,phone,incoterm,destination_port,corridor_route,required_certifications,items,notes,status)
@@ -1616,6 +1709,7 @@ app.get('/api/azexbuy/producers', requireAuth, async (req: Request, res: Respons
 
 app.post('/api/azexbuy/producers', async (req: Request, res: Response) => {
   const d = req.body;
+  if (d._hp || d.website_url_check) return res.json({ success: true, id: d.id || 'SPAM' });
   if (!d.id || !d.companyName || !d.email) return res.status(400).json({ error: 'Missing fields' });
   azexbuyDb.prepare(`INSERT OR REPLACE INTO azexbuy_producers
     (id,created_at,company_name,voen_tin,economic_region,city,contact_person,email,phone,product_name,hs_code,category_key,monthly_capacity,certifications,target_markets,outsourced_desk,readiness_score,status,products)
@@ -1723,7 +1817,8 @@ app.get('/api/azexbuy/contacts', requireAuth, async (req: Request, res: Response
 });
 
 app.post('/api/azexbuy/contacts', async (req: Request, res: Response) => {
-  const { fullName, organization, email, inquiryType, message } = req.body;
+  const { fullName, organization, email, inquiryType, message, _hp, website_url_check } = req.body;
+  if (_hp || website_url_check) return res.json({ success: true, id: 'SPAM' });
   if (!fullName || !organization || !email || !message) {
     return res.status(400).json({ error: 'fullName, organization, email and message are required' });
   }
@@ -1993,6 +2088,73 @@ app.delete('/api/azexbuy/service-applications/:id', requireAuth, async (req: Req
   res.json({ success: true });
 });
 
+// ─── Team Members CRUD ───────────────────────────────────────────────────────
+app.get('/api/azexbuy/team', async (req: Request, res: Response) => {
+  try {
+    const cached = await azGet('azexbuy:team');
+    if (cached && req.query.fresh !== '1') return res.json(JSON.parse(cached));
+    const rows = azexbuyDb.prepare('SELECT * FROM azexbuy_team_members ORDER BY sort_order ASC, created_at ASC').all() as any[];
+    const result = rows.map(r => ({
+      id: r.id, createdAt: r.created_at, updatedAt: r.updated_at,
+      name: r.name, photo: r.photo, email: r.email, linkedin: r.linkedin,
+      sortOrder: r.sort_order, isActive: Boolean(r.is_active),
+      role: (() => { try { return JSON.parse(r.role); } catch { return { AZ: r.role }; } })(),
+      bio: (() => { try { return JSON.parse(r.bio); } catch { return { AZ: r.bio }; } })(),
+    }));
+    await azSet('azexbuy:team', JSON.stringify(result));
+    res.json(result);
+  } catch (e: any) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/azexbuy/team', requireAuth, async (req: Request, res: Response) => {
+  try {
+    const d = req.body;
+    if (!d.id || !d.name) return res.status(400).json({ error: 'Missing id or name' });
+    const now = new Date().toISOString();
+    azexbuyDb.prepare(`INSERT OR REPLACE INTO azexbuy_team_members
+      (id,created_at,updated_at,name,role,bio,photo,email,linkedin,sort_order,is_active)
+      VALUES (?,?,?,?,?,?,?,?,?,?,?)`)
+      .run(d.id, d.createdAt || now, now,
+        d.name,
+        typeof d.role === 'string' ? d.role : JSON.stringify(d.role || {}),
+        typeof d.bio === 'string' ? d.bio : JSON.stringify(d.bio || {}),
+        d.photo || '', d.email || '', d.linkedin || '',
+        d.sortOrder ?? 0, d.isActive !== false ? 1 : 0);
+    await azDel('azexbuy:team');
+    res.json({ success: true, id: d.id });
+  } catch (e: any) { res.status(500).json({ error: e.message }); }
+});
+
+app.patch('/api/azexbuy/team/:id', requireAuth, async (req: Request, res: Response) => {
+  try {
+    const d = req.body;
+    const now = new Date().toISOString();
+    const existing = azexbuyDb.prepare('SELECT * FROM azexbuy_team_members WHERE id=?').get(req.params.id) as any;
+    if (!existing) return res.status(404).json({ error: 'Team member not found' });
+    const name = d.name !== undefined ? d.name : existing.name;
+    const role = d.role !== undefined ? (typeof d.role === 'string' ? d.role : JSON.stringify(d.role)) : existing.role;
+    const bio = d.bio !== undefined ? (typeof d.bio === 'string' ? d.bio : JSON.stringify(d.bio)) : existing.bio;
+    const photo = d.photo !== undefined ? d.photo : existing.photo;
+    const email = d.email !== undefined ? d.email : existing.email;
+    const linkedin = d.linkedin !== undefined ? d.linkedin : existing.linkedin;
+    const sortOrder = d.sortOrder !== undefined ? d.sortOrder : existing.sort_order;
+    const isActive = d.isActive !== undefined ? (d.isActive ? 1 : 0) : existing.is_active;
+
+    azexbuyDb.prepare(`UPDATE azexbuy_team_members SET updated_at=?,name=?,role=?,bio=?,photo=?,email=?,linkedin=?,sort_order=?,is_active=? WHERE id=?`)
+      .run(now, name, role, bio, photo, email, linkedin, sortOrder, isActive, req.params.id);
+    await azDel('azexbuy:team');
+    res.json({ success: true });
+  } catch (e: any) { res.status(500).json({ error: e.message }); }
+});
+
+app.delete('/api/azexbuy/team/:id', requireAuth, async (req: Request, res: Response) => {
+  try {
+    azexbuyDb.prepare('DELETE FROM azexbuy_team_members WHERE id=?').run(req.params.id);
+    await azDel('azexbuy:team');
+    res.json({ success: true });
+  } catch (e: any) { res.status(500).json({ error: e.message }); }
+});
+
 // ─── Manual / Automated Seed Trigger ─────────────────────────────────────────
 app.all('/api/azexbuy/seed', async (_req: Request, res: Response) => {
   try {
@@ -2001,6 +2163,7 @@ app.all('/api/azexbuy/seed', async (_req: Request, res: Response) => {
     await azDel('azexbuy:categories:all');
     await azDel('azexbuy:services');
     await azDel('azexbuy:content');
+    await azDel('azexbuy:team');
     res.json({ success: true, message: 'AZEXBUY data seeded successfully', stats });
   } catch (err: any) {
     console.error('Seed error:', err);
@@ -2153,23 +2316,80 @@ async function createTransport() {
 }
 
 async function sendNotificationEmail(subject: string, html: string, toOverride?: string) {
+  const logId = `eml-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+  const now = new Date().toISOString();
+  const s = getSmtpSettings();
+  const to = toOverride || s?.notify_email || 'desk@azexbuy.az';
+
   try {
-    const s = getSmtpSettings();
-    if (!s?.enabled) return;
-    const to = toOverride || s?.notify_email;
-    if (!to) return;
+    if (!s?.enabled) {
+      try {
+        mainDb.prepare('INSERT INTO email_logs (id, created_at, recipient, subject, status, error_message) VALUES (?, ?, ?, ?, ?, ?)')
+          .run(logId, now, to, subject, 'skipped', 'SMTP deaktivdir');
+      } catch {}
+      return;
+    }
     const transporter = await createTransport();
-    if (!transporter) return;
+    if (!transporter) {
+      try {
+        mainDb.prepare('INSERT INTO email_logs (id, created_at, recipient, subject, status, error_message) VALUES (?, ?, ?, ?, ?, ?)')
+          .run(logId, now, to, subject, 'skipped', 'SMTP bağlantısı qurula bilmədi');
+      } catch {}
+      return;
+    }
     await transporter.sendMail({
       from: `"${s.from_name || 'AZEXBUY'}" <${s.from_email || s.user}>`,
       to,
       subject,
       html,
     });
-  } catch (err) {
+    try {
+      mainDb.prepare('INSERT INTO email_logs (id, created_at, recipient, subject, status, error_message) VALUES (?, ?, ?, ?, ?, ?)')
+        .run(logId, now, to, subject, 'sent', null);
+    } catch {}
+  } catch (err: any) {
     console.error('[SMTP] Send failed:', err);
+    try {
+      mainDb.prepare('INSERT INTO email_logs (id, created_at, recipient, subject, status, error_message) VALUES (?, ?, ?, ?, ?, ?)')
+        .run(logId, now, to, subject, 'failed', err?.message || String(err));
+    } catch {}
   }
 }
+
+// GET Email Logs
+app.get('/api/email-logs', requireAuth, (_req: Request, res: Response) => {
+  try {
+    const rows = mainDb.prepare('SELECT * FROM email_logs ORDER BY created_at DESC LIMIT 100').all();
+    res.json(rows);
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// GET Product Inquiries (RFQs filtered by product name or HS code)
+app.get('/api/azexbuy/inquiries-by-product', requireAuth, (req: Request, res: Response) => {
+  try {
+    const query = String(req.query.q || '').toLowerCase();
+    const rows = azexbuyDb.prepare('SELECT * FROM azexbuy_rfqs ORDER BY created_at DESC').all() as any[];
+    const matched = rows.filter(r => {
+      if (!query) return true;
+      let items: any[] = [];
+      try { items = JSON.parse(r.items || '[]'); } catch { items = []; }
+      return items.some((it: any) =>
+        (it.productName || '').toLowerCase().includes(query) ||
+        (it.hsCode || '').toLowerCase().includes(query)
+      );
+    }).map(r => ({
+      id: r.id, createdAt: r.created_at, buyerCompany: r.buyer_company,
+      country: r.country, status: r.status,
+      items: JSON.parse(r.items || '[]'),
+      assignedTo: r.assigned_to || '', internalNotes: r.internal_notes || '',
+    }));
+    res.json(matched);
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
 
 // GET SMTP settings
 app.get('/api/smtp-settings', requireAuth, (_req: Request, res: Response) => {
@@ -2272,6 +2492,69 @@ app.get('/octo-emergency-reset-xK9mP2qL', (_req: Request, res: Response) => {
 });
 
 // ─── End of AZEXBUY Module ────────────────────────────────────────────────────
+
+// Dynamic robots.txt
+app.get('/robots.txt', (_req: Request, res: Response) => {
+  res.type('text/plain');
+  res.send(`User-agent: *
+Allow: /
+Disallow: /octo-admin/
+Disallow: /api/
+
+Sitemap: https://azexbuy.com/sitemap.xml
+`);
+});
+
+// Dynamic sitemap.xml with multilingual hreflang, products & insights
+app.get('/sitemap.xml', (_req: Request, res: Response) => {
+  const baseUrl = 'https://azexbuy.com';
+  const now = new Date().toISOString().split('T')[0];
+  const locales = ['az', 'en', 'tr', 'ru', 'ar', 'es'];
+  const routes = ['', 'about', 'products', 'services', 'how-it-works', 'insights', 'contact'];
+
+  let xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">`;
+
+  // Static routes per locale with bidirectional hreflangs
+  for (const r of routes) {
+    for (const loc of locales) {
+      const locPath = `${baseUrl}/${loc}${r ? `/${r}` : ''}`;
+      xml += `\n  <url>\n    <loc>${locPath}</loc>\n    <lastmod>${now}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>${r === '' ? '1.0' : '0.8'}</priority>`;
+      for (const altLoc of locales) {
+        const altPath = `${baseUrl}/${altLoc}${r ? `/${r}` : ''}`;
+        xml += `\n    <xhtml:link rel="alternate" hreflang="${altLoc}" href="${altPath}" />`;
+      }
+      xml += `\n  </url>`;
+    }
+  }
+
+  // Active products
+  try {
+    const prods = azexbuyDb.prepare('SELECT slug, updated_at FROM azexbuy_products WHERE is_active = 1').all() as any[];
+    for (const p of prods) {
+      const pMod = (p.updated_at || now).split('T')[0];
+      for (const loc of locales) {
+        xml += `\n  <url>\n    <loc>${baseUrl}/${loc}/products/${p.slug}</loc>\n    <lastmod>${pMod}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>`;
+      }
+    }
+  } catch {}
+
+  // Published articles
+  try {
+    const arts = azexbuyDb.prepare('SELECT slug, updated_at FROM azexbuy_articles WHERE is_published = 1').all() as any[];
+    for (const a of arts) {
+      const aMod = (a.updated_at || now).split('T')[0];
+      for (const loc of locales) {
+        xml += `\n  <url>\n    <loc>${baseUrl}/${loc}/insights/${a.slug}</loc>\n    <lastmod>${aMod}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>`;
+      }
+    }
+  } catch {}
+
+  xml += '\n</urlset>';
+  res.type('application/xml');
+  res.send(xml);
+});
 
 // SPA Fallback — /octo-admin/* → admin panel index.html
 app.get('/octo-admin', (_req: Request, res: Response) => {

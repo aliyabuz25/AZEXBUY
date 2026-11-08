@@ -323,7 +323,7 @@ export default function App() {
     showToast('Producer record removed from registry.');
   };
 
-  const { strings, heroImage, buyerCardImage, producerCardImage, whyAzImage, products: cmsProducts, services: cmsServicesPillars, buyerSteps: cmsBuyerSteps, producerSteps: cmsProducerSteps, cmsServices } = useLocalization();
+  const { strings, heroImage, buyerCardImage, producerCardImage, whyAzImage, products: cmsProducts, services: cmsServicesPillars, buyerSteps: cmsBuyerSteps, producerSteps: cmsProducerSteps, cmsServices, contact } = useLocalization();
   const t = strings[locale];
   const featuredProducts = cmsProducts.filter((p: any) => p.featured);
 
@@ -1121,9 +1121,9 @@ export default function App() {
               </h4>
               <p className="text-slate-400 leading-relaxed mb-2">{t.footer.hqAddress}</p>
               <p className="text-slate-300 font-semibold tabular-nums">
-                Tel: +994 (12) 404 85 00
+                Tel: {contact.phone}
               </p>
-              <p className="text-slate-300 font-semibold">Email: desk@azexbuy.az</p>
+              <p className="text-slate-300 font-semibold">Email: {contact.email}</p>
             </div>
           </div>
 

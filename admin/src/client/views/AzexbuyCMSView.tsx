@@ -3,11 +3,13 @@ import {
   Save, Upload, RefreshCw, CheckCircle, ChevronDown, ChevronRight,
   Trash2, Plus, Eye, X, Image as ImgIcon, Package,
   Star, Footprints, Layers, LayoutTemplate, Menu as MenuIcon,
-  Anchor, HelpCircle, Info, Map, Users, FileText,
+  Anchor, HelpCircle, Info, Map, Users, FileText, Pencil, Mail, ExternalLink, UserPlus,
+  Search, Phone, Copy, RotateCcw, BarChart3, Target, Workflow, ShieldCheck, Globe2, TrendingUp, Building2, ArrowRight,
+  MapPin, Share2,
 } from 'lucide-react';
 import { UiLanguage } from '../types';
 import { flattenStrings } from '../utils/flattenStrings';
-import { UI_STRINGS } from '../../../../src/data/translations';
+import { UI_STRINGS, ABOUT_PAGE_DEFAULT } from '../../../../src/data/translations';
 
 interface AzexbuyCMSViewProps { uiLang: UiLanguage; }
 
@@ -41,6 +43,31 @@ async function apiPost(path: string, body: any): Promise<{ ok: boolean; data: an
   } catch { return { ok: false, data: null }; }
 }
 
+async function apiPatch(path: string, body: any): Promise<{ ok: boolean; data: any }> {
+  try {
+    const r = await fetch(`${OCTO}${path}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getToken()}`,
+      },
+      body: JSON.stringify(body),
+    });
+    const data = await r.json().catch(() => null);
+    return { ok: r.ok, data };
+  } catch { return { ok: false, data: null }; }
+}
+
+async function apiDelete(path: string): Promise<boolean> {
+  try {
+    const r = await fetch(`${OCTO}${path}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${getToken()}` },
+    });
+    return r.ok;
+  } catch { return false; }
+}
+
 // ── Default strings — UI_STRINGS'den flat key formatına çevrilir (tüm 6 dil) ──
 const DEFAULT_STRINGS: Record<string, Record<string, string>> = (() => {
   const result: Record<string, Record<string, string>> = {};
@@ -52,22 +79,34 @@ const DEFAULT_STRINGS: Record<string, Record<string, string>> = (() => {
 })();
 
 const CMS_PAGES = [
-  { key: 'images',            label: 'Görseller',              icon: ImgIcon },
-  { key: 'navbar',            label: 'Naviqasiya Menyusu',     icon: MenuIcon },
-  { key: 'hero',              label: 'Hero Bolmesi',           icon: LayoutTemplate },
-  { key: 'why_azexbuy',      label: 'Niye AZEXBUY',           icon: Star },
-  { key: 'audience',          label: 'Alici / Istehsalci',     icon: Users },
-  { key: 'services',          label: 'Xidmetler',              icon: Anchor },
-  { key: 'how_it_works',     label: 'Nece Isleyir',            icon: HelpCircle },
-  { key: 'featured_products', label: 'One Cixan Mehsullar',    icon: FileText },
-  { key: 'why_azerbaijan',   label: 'Niye Azerbaycan',         icon: Map },
-  { key: 'footer',            label: 'Footer',                 icon: Info },
-  { key: 'products_catalog',  label: 'Mehsullar Kataloqu',     icon: Package },
-  { key: 'buyer_steps',      label: 'Alici Addimlari',         icon: Footprints },
-  { key: 'producer_steps',   label: 'Istehsalci Addimlari',    icon: Layers },
-  { key: 'media_library',    label: 'Sekil Kitabxanasi',       icon: ImgIcon },
+  // ── Əsas Səhifə ──
+  { key: 'navbar',            label: 'Naviqasiya Menyusu',         icon: MenuIcon,       group: 'Əsas Səhifə' },
+  { key: 'hero',              label: 'Hero Bölməsi',               icon: LayoutTemplate, group: 'Əsas Səhifə' },
+  { key: 'audience',          label: 'Alıcı və İstehsalçı Masası', icon: Users,          group: 'Əsas Səhifə' },
+  { key: 'why_azexbuy',       label: 'Niyə AZEXBUY',               icon: Star,           group: 'Əsas Səhifə' },
+  { key: 'services',          label: 'İxrac Xidmətləri',           icon: Anchor,         group: 'Əsas Səhifə' },
+  { key: 'how_it_works',      label: 'Necə İşləyir (7 & 10)',      icon: HelpCircle,     group: 'Əsas Səhifə' },
+  { key: 'featured_products', label: 'Önə Çıxan Məhsullar',        icon: FileText,       group: 'Əsas Səhifə' },
+  { key: 'why_azerbaijan',    label: 'Niyə Azərbaycan',            icon: Map,            group: 'Əsas Səhifə' },
+  { key: 'footer',            label: 'Footer & Rekvizitlər',       icon: Info,           group: 'Əsas Səhifə' },
+
+  // ── Daxili Səhifələr ──
+  { key: 'about',             label: 'Haqqımızda',                 icon: Info,           group: 'Daxili Səhifələr' },
+  { key: 'team',              label: 'Komanda (Ekip)',             icon: Users,          group: 'Daxili Səhifələr' },
+  { key: 'contact',           label: 'Əlaqə & Ofis Məlumatları',   icon: Phone,          group: 'Daxili Səhifələr' },
+
+  // ── Kataloq və Axınlar ──
+  { key: 'products_catalog',  label: 'Məhsullar Kataloqu',         icon: Package,        group: 'Kataloq və Axınlar' },
+  { key: 'buyer_steps',       label: 'Alıcı Addımları',            icon: Footprints,     group: 'Kataloq və Axınlar' },
+  { key: 'producer_steps',    label: 'İstehsalçı Addımları',       icon: Layers,         group: 'Kataloq və Axınlar' },
+
+  // ── Qlobal Redaktor və Görsəllər ──
+  { key: 'images',            label: 'Bütün Görsəllər',            icon: ImgIcon,        group: 'Qlobal Redaktor' },
+  { key: 'media_library',     label: 'Şəkil Kitabxanası',          icon: ImgIcon,        group: 'Qlobal Redaktor' },
+  { key: 'all_strings',       label: 'Bütün Sözlər (Axtarış)',     icon: FileText,       group: 'Qlobal Redaktor' },
 ] as const;
 type PageKey = typeof CMS_PAGES[number]['key'];
+const CMS_GROUPS = ['Əsas Səhifə', 'Daxili Səhifələr', 'Kataloq və Axınlar', 'Qlobal Redaktor'] as const;
 
 const IMAGE_KEYS = [
   { key: 'HERO_IMAGE',                   label: 'Hero Arxa Fon',                    defaultUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB9ZWqLLmb30gHFdTBf7cfY60pAMzYSTWRn2keRDZ7k8a3eQicd1I5xuOR1U44ux_eyOl79BjhxRaXdEbzovzXexqRo8oDy3gVECJAAKnDsq1DYgw7oR-p-U-VjFeMqmdwPl27SJVIP7hTVWchM1LYBR1EY2hy5C8iSkUcytv0qKVFgxmbifXswWW8UTnyUsQw5XBb81qNG2tremLOg_k5EPGCl-K_AWwSN8UQ3T1EN7HyePk3pvGD9' },
@@ -88,16 +127,16 @@ interface FProps {
   onChange: (k: string, val: string) => void;
 }
 const F = React.memo(({ label, k, multi = false, value, onChange }: FProps) => (
-  <div className="bg-white border border-slate-200 rounded p-3">
-    <div className="flex items-center justify-between mb-1.5">
-      <label className="text-[10px] font-bold text-slate-400 font-mono uppercase">{label}</label>
-      <span className="text-[9px] text-slate-300 font-mono">{value.length}c</span>
+  <div className="bg-white border border-slate-200/90 rounded-lg p-3 space-y-1.5 shadow-2xs">
+    <div className="flex items-center justify-between">
+      <label className="text-xs font-semibold text-slate-800">{label}</label>
+      <span className="text-[10px] text-slate-400 font-mono">{value.length} simvol</span>
     </div>
     {multi
       ? <textarea value={value} onChange={e => onChange(k, e.target.value)} rows={3}
-          className="w-full text-xs text-slate-900 bg-slate-50 border border-slate-200 px-2.5 py-2 focus:outline-none focus:border-[#0f3156] resize-none rounded-sm" />
+          className="w-full text-xs text-slate-900 bg-slate-50/70 border border-slate-200 rounded-md px-3 py-2 focus:outline-none focus:bg-white focus:border-[#0f3156] focus:ring-1 focus:ring-[#0f3156]/20 transition-all resize-none" />
       : <input value={value} onChange={e => onChange(k, e.target.value)}
-          className="w-full h-8 text-xs text-slate-900 bg-slate-50 border border-slate-200 px-2.5 focus:outline-none focus:border-[#0f3156] rounded-sm" />
+          className="w-full h-8 text-xs text-slate-900 bg-slate-50/70 border border-slate-200 rounded-md px-3 focus:outline-none focus:bg-white focus:border-[#0f3156] focus:ring-1 focus:ring-[#0f3156]/20 transition-all" />
     }
   </div>
 ));
@@ -110,20 +149,40 @@ interface MultiLocFProps {
   onChange: (loc: string, k: string, val: string) => void;
 }
 const MultiLocF = React.memo(({ label, strKey, multi = false, locData, onChange }: MultiLocFProps) => (
-  <div className="bg-white border border-slate-200 rounded p-3">
-    <div className="text-[10px] font-bold text-slate-500 uppercase font-mono mb-2">{label}</div>
-    <div className="grid grid-cols-2 gap-2">
+  <div className="bg-white border border-slate-200/90 rounded-lg p-3.5 space-y-2.5 shadow-2xs">
+    <div className="flex items-center justify-between pb-1 border-b border-slate-100">
+      <span className="text-xs font-bold text-slate-800">{label}</span>
+      <span className="text-[10px] text-slate-400 font-mono select-all bg-slate-50 px-2 py-0.5 rounded border border-slate-200">{strKey}</span>
+    </div>
+    <div className="space-y-2">
       {LOCALES.map(l => {
         const val = locData[l]?.[strKey] || DEFAULT_STRINGS[l]?.[strKey] || '';
         return (
-          <div key={l}>
-            <div className="text-[9px] font-bold text-slate-400 mb-0.5">{l}</div>
-            {multi
-              ? <textarea value={val} onChange={e => onChange(l, strKey, e.target.value)} rows={2}
-                  className="w-full text-xs bg-slate-50 border border-slate-200 px-2 py-1.5 focus:outline-none focus:border-[#0f3156] resize-none rounded-sm" />
-              : <input value={val} onChange={e => onChange(l, strKey, e.target.value)}
-                  className="w-full h-7 text-xs bg-slate-50 border border-slate-200 px-2 focus:outline-none focus:border-[#0f3156] rounded-sm" />
-            }
+          <div key={l} className="flex items-start gap-2.5">
+            <div className="w-10 sm:w-12 h-8 rounded bg-slate-100 border border-slate-200 text-slate-700 font-bold text-[11px] font-mono flex items-center justify-center shrink-0 mt-0.5">
+              {l}
+            </div>
+            <div className="flex-1 min-w-0">
+              {multi ? (
+                <textarea
+                  value={val}
+                  onChange={e => onChange(l, strKey, e.target.value)}
+                  rows={2}
+                  className="w-full text-xs bg-slate-50/70 border border-slate-200 rounded-md px-3 py-1.5 focus:outline-none focus:bg-white focus:border-[#0f3156] focus:ring-1 focus:ring-[#0f3156]/20 transition-all resize-none"
+                  placeholder={`${l} dilində daxil edin...`}
+                />
+              ) : (
+                <input
+                  value={val}
+                  onChange={e => onChange(l, strKey, e.target.value)}
+                  className="w-full h-8 text-xs bg-slate-50/70 border border-slate-200 rounded-md px-3 focus:outline-none focus:bg-white focus:border-[#0f3156] focus:ring-1 focus:ring-[#0f3156]/20 transition-all"
+                  placeholder={`${l} dilində...`}
+                />
+              )}
+            </div>
+            <span className="text-[10px] text-slate-400 font-mono self-center shrink-0 min-w-[32px] text-right">
+              {val.length}c
+            </span>
           </div>
         );
       })}
@@ -161,10 +220,17 @@ interface LocaleTabsProps {
   onSelect: (l: Loc) => void;
 }
 const LocaleTabs = React.memo(({ locale, onSelect }: LocaleTabsProps) => (
-  <div className="flex items-center gap-1 mb-4">
+  <div className="flex items-center gap-1.5 mb-4 p-1 bg-slate-100/80 rounded-lg w-fit border border-slate-200/60 select-none">
     {LOCALES.map(l => (
-      <button key={l} onClick={() => onSelect(l)}
-        className={`px-2.5 py-1 text-[10px] font-bold rounded-sm transition-colors ${locale === l ? 'bg-[#0f3156] text-white' : 'text-slate-500 bg-white border border-slate-200 hover:bg-slate-100'}`}>
+      <button
+        key={l}
+        onClick={() => onSelect(l)}
+        className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-150 cursor-pointer ${
+          locale === l
+            ? 'bg-[#0f3156] text-white shadow-xs'
+            : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
+        }`}
+      >
         {l}
       </button>
     ))}
@@ -249,7 +315,7 @@ const ImageField = React.memo(({ imgKey, label, content, uploading, onSaveConten
 
 // ── Main Component ─────────────────────────────────────────────────────────────
 export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
-  const [page, setPage] = useState<PageKey>('images');
+  const [page, setPage] = useState<PageKey>('navbar');
   const [locale, setLocale] = useState<Loc>('EN');
 
   const [locData, setLocData] = useState<Record<string, Record<string, string>>>(DEFAULT_STRINGS);
@@ -261,15 +327,105 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
   const [uploading, setUploading] = useState<string | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [stringSearch, setStringSearch] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('ALL');
+  const [newKeyName, setNewKeyName] = useState('');
+  const [showAddKey, setShowAddKey] = useState(false);
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
+
+  const allKeys = React.useMemo(() => {
+    const set = new Set<string>();
+    for (const loc of LOCALES) {
+      if (DEFAULT_STRINGS[loc]) {
+        Object.keys(DEFAULT_STRINGS[loc]).forEach(k => set.add(k));
+      }
+      if (locData[loc]) {
+        Object.keys(locData[loc]).forEach(k => set.add(k));
+      }
+    }
+    return Array.from(set).sort();
+  }, [locData]);
+
+  const filteredKeys = React.useMemo(() => {
+    const query = stringSearch.trim().toLowerCase();
+    return allKeys.filter(k => {
+      if (selectedCategory !== 'ALL') {
+        if (selectedCategory === 'other') {
+          const standardPrefixes = ['nav.', 'hero.', 'whyAzexbuy.', 'bilateral.', 'services.', 'howItWorks.', 'featuredProducts.', 'whyAzerbaijan.', 'footer.'];
+          if (standardPrefixes.some(p => k.startsWith(p))) return false;
+        } else if (!k.startsWith(`${selectedCategory}.`)) {
+          return false;
+        }
+      }
+      if (!query) return true;
+      if (k.toLowerCase().includes(query)) return true;
+      for (const loc of LOCALES) {
+        const val = locData[loc]?.[k] || DEFAULT_STRINGS[loc]?.[k] || '';
+        if (val.toLowerCase().includes(query)) return true;
+      }
+      return false;
+    });
+  }, [allKeys, stringSearch, selectedCategory, locData]);
+
+  const handleCopyKey = (k: string) => {
+    navigator.clipboard?.writeText(k);
+    setCopiedKey(k);
+    setTimeout(() => setCopiedKey(null), 1800);
+  };
+
+  const handleAddCustomKey = () => {
+    const trimmed = newKeyName.trim();
+    if (!trimmed) return;
+    setLocData(prev => {
+      const next = { ...prev };
+      for (const loc of LOCALES) {
+        next[loc] = { ...(next[loc] || {}), [trimmed]: next[loc]?.[trimmed] || '' };
+      }
+      return next;
+    });
+    setNewKeyName('');
+    setShowAddKey(false);
+    setStringSearch(trimmed);
+  };
+
+  const handleResetKey = (k: string) => {
+    if (!window.confirm(`"${k}" açarını varsayılan dəyərinə qaytarmaq istəyirsiniz?`)) return;
+    setLocData(prev => {
+      const next = { ...prev };
+      for (const loc of LOCALES) {
+        if (next[loc]) {
+          const copy = { ...next[loc] };
+          delete copy[k];
+          next[loc] = copy;
+        }
+      }
+      return next;
+    });
+  };
+
+  // Team members state
+  const [teamMembers, setTeamMembers] = useState<any[]>([]);
+  const [teamLoading, setTeamLoading] = useState(false);
+  const [editingMember, setEditingMember] = useState<any | null>(null);
+  const [showNewMember, setShowNewMember] = useState(false);
+  const [newMember, setNewMember] = useState({ id: '', name: '', photo: '', email: '', linkedin: '', sortOrder: 0, isActive: true, role: { AZ:'', EN:'', TR:'', RU:'', AR:'', ES:'' }, bio: { AZ:'', EN:'', TR:'', RU:'', AR:'', ES:'' } });
 
   const fileRef = useRef<HTMLInputElement>(null);
   const [pendingKey, setPendingKey] = useState<string | null>(null);
 
+  const loadTeam = useCallback(async () => {
+    setTeamLoading(true);
+    const tm = await apiGet('/api/azexbuy/team?fresh=1');
+    if (Array.isArray(tm)) setTeamMembers(tm);
+    setTeamLoading(false);
+  }, []);
+
   const load = useCallback(async () => {
-    const [l, c, imgs] = await Promise.all([
+    const [l, c, imgs, tm] = await Promise.all([
       apiGet('/api/azexbuy/localization'),
       apiGet('/api/azexbuy/content'),
       apiGet('/api/azexbuy/images'),
+      apiGet('/api/azexbuy/team?fresh=1'),
     ]);
     if (l && Object.keys(l).length > 0) {
       const merged: Record<string, Record<string, string>> = {};
@@ -280,6 +436,7 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
     }
     if (c) setContent(c);
     if (imgs) setImages(imgs);
+    if (Array.isArray(tm)) setTeamMembers(tm);
   }, []);
 
   useEffect(() => { load(); }, [load]);
@@ -300,6 +457,51 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
     if (result.ok) { flash(); } else { alert('Saxlama xətası. Zəhmət olmasa yenidən cəhd edin.'); }
     setSaving(false);
   }, []);
+
+  const handleToggleMemberActive = async (member: any) => {
+    const updated = !member.isActive;
+    const res = await apiPatch(`/api/azexbuy/team/${member.id}`, { isActive: updated });
+    if (res.ok) {
+      setTeamMembers(prev => prev.map(m => m.id === member.id ? { ...m, isActive: updated } : m));
+      flash();
+    }
+  };
+
+  const handleDeleteMember = async (id: string) => {
+    if (!window.confirm('Bu komanda üzvünü silmək istədiyinizdən əminsiniz?')) return;
+    const ok = await apiDelete(`/api/azexbuy/team/${id}`);
+    if (ok) {
+      setTeamMembers(prev => prev.filter(m => m.id !== id));
+      flash();
+    }
+  };
+
+  const handleSaveNewMember = async () => {
+    if (!newMember.name) { alert('Ad və Soyad daxil edilməlidir'); return; }
+    const id = newMember.id || `tm-${Date.now().toString(36)}`;
+    const payload = { ...newMember, id };
+    const res = await apiPost('/api/azexbuy/team', payload);
+    if (res.ok) {
+      setShowNewMember(false);
+      setNewMember({ id: '', name: '', photo: '', email: '', linkedin: '', sortOrder: teamMembers.length + 1, isActive: true, role: { AZ:'', EN:'', TR:'', RU:'', AR:'', ES:'' }, bio: { AZ:'', EN:'', TR:'', RU:'', AR:'', ES:'' } });
+      loadTeam();
+      flash();
+    } else {
+      alert('Saxlama xətası baş verdi.');
+    }
+  };
+
+  const handleSaveEditMember = async () => {
+    if (!editingMember || !editingMember.name) return;
+    const res = await apiPatch(`/api/azexbuy/team/${editingMember.id}`, editingMember);
+    if (res.ok) {
+      setEditingMember(null);
+      loadTeam();
+      flash();
+    } else {
+      alert('Yeniləmə xətası baş verdi.');
+    }
+  };
 
   // Stable string change handler
   const handleStrChange = useCallback((k: string, val: string) => {
@@ -326,9 +528,33 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
       });
       if (r.ok) {
         const { url } = await r.json();
-        const updated = { ...content, images: { ...(content.images || {}), [key]: url } };
-        await saveContent(updated);
-        load();
+        if (key === 'team_new') {
+          setNewMember(prev => ({ ...prev, photo: url }));
+        } else if (key === 'team_edit') {
+          setEditingMember((prev: any) => ({ ...prev, photo: url }));
+        } else {
+          const curAbout = content.about ? { ...ABOUT_PAGE_DEFAULT, ...content.about } : { ...ABOUT_PAGE_DEFAULT };
+          if (key === 'about_whoWeAreImage' || key === 'ABOUT_WHO_WE_ARE_IMAGE') {
+            curAbout.whoWeAre = { ...(curAbout.whoWeAre || {}), image: url };
+          } else if (key === 'about_missionImage' || key === 'ABOUT_MISSION_IMAGE') {
+            curAbout.missionVision = { ...(curAbout.missionVision || {}), missionImage: url };
+          } else if (key === 'about_visionImage' || key === 'ABOUT_VISION_IMAGE') {
+            curAbout.missionVision = { ...(curAbout.missionVision || {}), visionImage: url };
+          } else if (key.startsWith('about_sector_') || key.startsWith('ABOUT_SECTOR_')) {
+            const numStr = key.replace('about_sector_', '').replace('ABOUT_SECTOR_', '').replace('_IMAGE', '');
+            const sIdx = parseInt(numStr, 10);
+            if (!isNaN(sIdx) && curAbout.sectors?.items?.[sIdx]) {
+              curAbout.sectors.items[sIdx] = { ...curAbout.sectors.items[sIdx], image: url };
+            }
+          }
+          const updated = {
+            ...content,
+            images: { ...(content.images || {}), [key]: url },
+            about: curAbout,
+          };
+          await saveContent(updated);
+          load();
+        }
       }
     } catch {}
     setUploading(null); setPendingKey(null);
@@ -356,35 +582,407 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
       )}
 
       {/* Header */}
-      <div className="bg-white border-b border-slate-200 px-5 py-3 flex items-center justify-between shrink-0">
+      <div className="bg-white border-b border-slate-200 px-3 sm:px-5 py-3 flex items-center justify-between shrink-0">
         <div>
           <h1 className="text-sm font-bold text-slate-900">AZEXBUY — Tam Məzmun İdarəetməsi</h1>
           <p className="text-[10px] text-slate-400 mt-0.5">Sitenin başdan sona bütün mətnləri, görsəlləri, məhsulları düzənleyin</p>
         </div>
-        <button onClick={load} className="h-7 px-3 flex items-center gap-1.5 text-xs border border-slate-200 hover:bg-slate-100 text-slate-600 rounded-sm">
-          <RefreshCw className="w-3 h-3" /> Yenilə
+        <button onClick={load} className="h-7 px-3 flex items-center gap-1.5 text-xs border border-slate-200 hover:bg-slate-100 text-slate-600 rounded-sm cursor-pointer shrink-0">
+          <RefreshCw className="w-3 h-3" /> <span className="hidden sm:inline">Yenilə</span>
         </button>
       </div>
 
-      <div className="flex flex-1 overflow-hidden">
-        {/* Left nav */}
-        <div className="w-52 shrink-0 bg-white border-r border-slate-200 overflow-y-auto">
-          {CMS_PAGES.map(p => (
-            <button key={p.key} onClick={() => setPage(p.key as PageKey)}
-              className={`w-full text-left px-3.5 py-2.5 text-xs font-medium border-b border-slate-100 transition-colors ${page === p.key ? 'bg-[#0f3156] text-white' : 'text-slate-600 hover:bg-slate-50'}`}>
-              {p.label}
-            </button>
-          ))}
+      <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
+        {/* Desktop Left Nav: Smooth, grouped with Lucide icons */}
+        <div className="hidden md:flex flex-col w-60 shrink-0 bg-white border-r border-slate-200/80 overflow-y-auto py-2.5 px-2 space-y-3 select-none">
+          {CMS_GROUPS.map(grp => {
+            const pagesInGroup = CMS_PAGES.filter(p => p.group === grp);
+            return (
+              <div key={grp} className="space-y-0.5">
+                <div className="px-2.5 py-1 text-[9px] font-bold text-slate-400 uppercase tracking-wider">
+                  {grp}
+                </div>
+                {pagesInGroup.map(p => {
+                  const Icon = p.icon;
+                  const isActive = page === p.key;
+                  return (
+                    <button
+                      key={p.key}
+                      onClick={() => setPage(p.key as PageKey)}
+                      className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-md text-xs font-medium transition-all duration-150 text-left cursor-pointer ${
+                        isActive
+                          ? 'bg-[#0f3156] text-white shadow-2xs font-semibold'
+                          : 'text-slate-600 hover:bg-slate-100/70 hover:text-slate-900'
+                      }`}
+                    >
+                      <Icon className={`w-3.5 h-3.5 shrink-0 transition-colors ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                      <span className="truncate flex-1 tracking-tight">{p.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Mobile Horizontal Pill Strip with Lucide icons */}
+        <div className="flex md:hidden w-full bg-white border-b border-slate-200 overflow-x-auto p-2 gap-1.5 no-scrollbar shrink-0 select-none">
+          {CMS_PAGES.map(p => {
+            const Icon = p.icon;
+            const isActive = page === p.key;
+            return (
+              <button
+                key={p.key}
+                onClick={() => setPage(p.key as PageKey)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all shrink-0 cursor-pointer ${
+                  isActive
+                    ? 'bg-[#0f3156] text-white shadow-2xs'
+                    : 'bg-slate-100/80 text-slate-600 hover:bg-slate-200/80'
+                }`}
+              >
+                <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-white' : 'text-slate-500'}`} />
+                <span>{p.label}</span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Main content */}
-        <div className="flex-1 overflow-y-auto p-5 space-y-4 pb-4">
+        <div className="flex-1 overflow-y-auto p-3 sm:p-5 space-y-4 pb-4">
+
+          {/* ── ALL STRINGS (UNIVERSAL SEARCH & LIVE EDITOR) ── */}
+          {page === 'all_strings' && (
+            <>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-7 h-7 rounded bg-[#0f3156]/10 text-[#0f3156] flex items-center justify-center shrink-0">
+                    <Search className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h2 className="text-sm font-bold text-slate-900">Bütün Sayt Mətnləri (Universal Canlı Redaktə)</h2>
+                    <p className="text-xs text-slate-500">Saytın istənilən mətnini açar sözlə və ya açar adı ilə tapın və 6 dildə redaktə edin.</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowAddKey(!showAddKey)}
+                  className="h-8 px-3.5 flex items-center gap-1.5 text-xs font-bold bg-[#0f3156] text-white hover:bg-[#081c33] rounded-md shrink-0 self-start sm:self-auto cursor-pointer shadow-xs transition-colors"
+                >
+                  <Plus className="w-3.5 h-3.5" /> Yeni Mətn Açarı
+                </button>
+              </div>
+
+              {showAddKey && (
+                <div className="bg-white border border-slate-300 rounded-lg p-4 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-800">Yeni Xüsusi Mətn Açarı Əlavə Et</span>
+                    <button onClick={() => setShowAddKey(false)} className="text-slate-400 hover:text-slate-600"><X className="w-4 h-4" /></button>
+                  </div>
+                  <p className="text-[11px] text-slate-500">Nöqtəli formatda açar adı yazın (məs: <code>custom.promoBanner</code>, <code>buyers.urgentNotice</code>). Bu açar dərhal 6 dildə redaktə edilə bilər.</p>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={newKeyName}
+                      onChange={e => setNewKeyName(e.target.value)}
+                      placeholder="məs: header.bannerNote"
+                      className="flex-1 h-8 text-xs bg-slate-50 border border-slate-200 px-3 rounded-md font-mono focus:outline-none focus:border-[#0f3156]"
+                    />
+                    <button
+                      onClick={handleAddCustomKey}
+                      disabled={!newKeyName.trim()}
+                      className="h-8 px-4 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white rounded-md cursor-pointer"
+                    >
+                      Əlavə Et
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Search & Filter Toolbar */}
+              <div className="bg-white border border-slate-200/90 rounded-lg p-3 space-y-3 shadow-2xs">
+                <div className="relative">
+                  <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={stringSearch}
+                    onChange={e => setStringSearch(e.target.value)}
+                    placeholder="İstənilən söz və ya açar adı axtarın (məs: KOBİA, Hazelnuts, hero.title, Bakı, Escrow...)"
+                    className="w-full h-9 pl-9 pr-8 text-xs bg-slate-50/80 border border-slate-200 rounded-md focus:outline-none focus:bg-white focus:border-[#0f3156] focus:ring-1 focus:ring-[#0f3156]/20 transition-all"
+                  />
+                  {stringSearch && (
+                    <button onClick={() => setStringSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer">
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+
+                {/* Category Pills */}
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs">
+                  {[
+                    { key: 'ALL', label: 'Bütün Mətnlər' },
+                    { key: 'nav', label: 'Naviqasiya' },
+                    { key: 'hero', label: 'Hero' },
+                    { key: 'whyAzexbuy', label: 'Niyə AZEXBUY' },
+                    { key: 'bilateral', label: 'Alıcı / İstehsalçı' },
+                    { key: 'services', label: 'Xidmətlər' },
+                    { key: 'howItWorks', label: 'Necə İşləyir' },
+                    { key: 'featuredProducts', label: 'Məhsullar' },
+                    { key: 'whyAzerbaijan', label: 'Niyə Azərbaycan' },
+                    { key: 'footer', label: 'Footer & Ünvan' },
+                    { key: 'other', label: 'Digər / Xüsusi' },
+                  ].map(cat => (
+                    <button
+                      key={cat.key}
+                      onClick={() => setSelectedCategory(cat.key)}
+                      className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all shrink-0 cursor-pointer ${selectedCategory === cat.key ? 'bg-[#0f3156] text-white shadow-2xs' : 'bg-slate-100/90 text-slate-600 hover:bg-slate-200/80'}`}
+                    >
+                      {cat.label}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1 border-t border-slate-100">
+                  <span>Göstərilən nəticələr: <strong className="text-slate-800">{filteredKeys.length}</strong> / {allKeys.length} mətn açarı</span>
+                  {stringSearch && <span className="text-amber-600 font-medium">"{stringSearch}" süzgəci aktivdir</span>}
+                </div>
+              </div>
+
+              {/* Key Cards */}
+              {filteredKeys.length === 0 ? (
+                <div className="p-8 text-center bg-white border border-slate-200 rounded-lg text-slate-500 text-xs">
+                  Axtarışınıza uyğun heç bir mətn tapılmadı. Fərqli söz və ya açar axtarın.
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {filteredKeys.map(k => {
+                    const isModified = LOCALES.some(loc => {
+                      const curVal = locData[loc]?.[k];
+                      const defVal = DEFAULT_STRINGS[loc]?.[k];
+                      return curVal !== undefined && curVal !== defVal;
+                    });
+                    const isLong = LOCALES.some(loc => {
+                      const val = locData[loc]?.[k] || DEFAULT_STRINGS[loc]?.[k] || '';
+                      return val.length > 50 || val.includes('\n');
+                    });
+
+                    return (
+                      <div key={k} className="bg-white border border-slate-200/90 rounded-lg p-3.5 shadow-2xs space-y-2.5">
+                        <div className="flex items-center justify-between flex-wrap gap-2 pb-2 border-b border-slate-100">
+                          <div className="flex items-center gap-2">
+                            <span className="font-mono text-xs font-bold text-slate-800 select-all">{k}</span>
+                            <button
+                              onClick={() => handleCopyKey(k)}
+                              title="Açar adını kopyala"
+                              className="p-1 text-slate-400 hover:text-slate-600 rounded cursor-pointer"
+                            >
+                              <Copy className="w-3.5 h-3.5" />
+                            </button>
+                            {copiedKey === k && (
+                              <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-1.5 py-0.5 rounded">Kopyalandı!</span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {isModified && (
+                              <span className="text-[9px] px-2 py-0.5 bg-amber-50 border border-amber-200 text-amber-700 font-bold rounded-sm">
+                                DƏYİŞDİRİLDİ
+                              </span>
+                            )}
+                            {isModified && (
+                              <button
+                                onClick={() => handleResetKey(k)}
+                                title="Varsayılan dəyərə qaytar"
+                                className="text-[10px] text-slate-400 hover:text-red-600 flex items-center gap-1 cursor-pointer"
+                              >
+                                <RotateCcw className="w-3 h-3" /> Sıfırla
+                              </button>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* 6 Locales Inputs - Alt-Alta Userfriendly Stack */}
+                        <div className="space-y-2 pt-0.5">
+                          {LOCALES.map(loc => {
+                            const val = locData[loc]?.[k] !== undefined ? locData[loc][k] : (DEFAULT_STRINGS[loc]?.[k] || '');
+                            return (
+                              <div key={loc} className="flex items-start gap-2.5 bg-slate-50/70 border border-slate-200/80 rounded-md p-2">
+                                <div className="w-10 sm:w-12 h-8 rounded bg-white border border-slate-200 text-slate-700 font-bold text-[11px] font-mono flex items-center justify-center shrink-0 mt-0.5">
+                                  {loc}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  {isLong ? (
+                                    <textarea
+                                      value={val}
+                                      onChange={e => handleMultiLocChange(loc, k, e.target.value)}
+                                      rows={2}
+                                      className="w-full text-xs bg-white border border-slate-200 rounded px-2.5 py-1.5 focus:outline-none focus:border-[#0f3156] focus:ring-1 focus:ring-[#0f3156]/20 transition-all resize-none"
+                                      placeholder={`${loc} dilində mətni daxil edin...`}
+                                    />
+                                  ) : (
+                                    <input
+                                      type="text"
+                                      value={val}
+                                      onChange={e => handleMultiLocChange(loc, k, e.target.value)}
+                                      className="w-full h-8 text-xs bg-white border border-slate-200 rounded px-2.5 focus:outline-none focus:border-[#0f3156] focus:ring-1 focus:ring-[#0f3156]/20 transition-all"
+                                      placeholder={`${loc} dilində...`}
+                                    />
+                                  )}
+                                </div>
+                                <span className="text-[10px] text-slate-400 font-mono self-center shrink-0 min-w-[32px] text-right">
+                                  {val.length}c
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              <SaveBar onSave={() => saveStrings(locData)} saving={saving} saved={saved} />
+            </>
+          )}
+
+          {/* ── CONTACT & OFFICE DETAILS ── */}
+          {page === 'contact' && (
+            <>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-7 h-7 rounded bg-[#0f3156]/10 text-[#0f3156] flex items-center justify-center shrink-0">
+                    <Phone className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h2 className="text-sm font-bold text-slate-900">Əlaqə, Ofis və Rekvizit Məlumatları</h2>
+                    <p className="text-xs text-slate-500">Saytın footer, əlaqə bölmələri və rəsmi ünvan məlumatlarını bütün 6 dildə tənzimləyin.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 1: Rəsmi Əlaqə Kanalları */}
+              <div className="bg-white border border-slate-200/90 rounded-lg p-4 space-y-4 shadow-2xs">
+                <div className="border-b border-slate-100 pb-2 flex items-center gap-2">
+                  <Building2 className="w-4 h-4 text-[#0f3156]" />
+                  <div>
+                    <h3 className="text-xs font-bold text-slate-800 uppercase font-mono">1. Rəsmi Əlaqə Kanalları & Qaynar Xətlər</h3>
+                    <p className="text-[11px] text-slate-400">Footer və Əlaqə Masasında görünən telefon və poçt ünvanları</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Telefon (Direct Trade Desk)</label>
+                    <input
+                      type="text"
+                      value={content.contact?.phone || '+994 (12) 404 85 00'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phone: v } }));
+                      }}
+                      placeholder="+994 (12) 404 85 00"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">İkinci Telefon / Qaynar Xətt</label>
+                    <input
+                      type="text"
+                      value={content.contact?.phoneAlt || '+994 (50) 290 45 00'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phoneAlt: v } }));
+                      }}
+                      placeholder="+994 (50) 290 45 00"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Elektron Poçt (Official Dispatch)</label>
+                    <input
+                      type="text"
+                      value={content.contact?.email || 'desk@azexbuy.az'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), email: v } }));
+                      }}
+                      placeholder="desk@azexbuy.az"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Satınalma / Tender Emaili</label>
+                    <input
+                      type="text"
+                      value={content.contact?.emailAlt || 'procurement@azexbuy.az'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), emailAlt: v } }));
+                      }}
+                      placeholder="procurement@azexbuy.az"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">İş Qrafiki & Saatları</label>
+                    <input
+                      type="text"
+                      value={content.contact?.hours || '09:00 – 18:00 (AZT / UTC+4) · B.e – Cümə'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), hours: v } }));
+                      }}
+                      placeholder="09:00 – 18:00 (AZT / UTC+4)"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 2: Baş Qərargah və Hüquqi Məlumatlar (6 Dillərdə) */}
+              <div className="space-y-3">
+                <div className="bg-slate-100 p-2.5 rounded text-xs font-bold text-slate-700">
+                  2. Baş Qərargah Ünvanı və Çoxdilli Rekvizitlər (6 Dildə)
+                </div>
+
+                <MultiLocF label="Qərargah Bölmə Başlığı" strKey="footer.hqTitle" locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label="Tam Ünvan (Baku Alliance Business Center...)" strKey="footer.hqAddress" multi locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label="Şirkət Mandatı / Qısa Təsvir" strKey="footer.description" multi locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label="Müəllif Hüquqları (Copyright)" strKey="footer.rights" multi locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label='"Sürətli Keçidlər" Bölmə Başlığı' strKey="footer.quickLinks" locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label='"Tənzimləmə və Uyğunluq" Başlığı' strKey="footer.complianceTitle" locData={locData} onChange={handleMultiLocChange} />
+              </div>
+
+              <SaveBar
+                onSave={async () => {
+                  setSaving(true);
+                  await Promise.all([
+                    apiPost('/api/azexbuy/localization', locData),
+                    apiPost('/api/azexbuy/content', content),
+                  ]);
+                  flash();
+                  setSaving(false);
+                }}
+                saving={saving}
+                saved={saved}
+              />
+            </>
+          )}
 
           {/* ── IMAGES ── */}
           {page === 'images' && (
             <>
-              <h2 className="text-sm font-bold text-slate-800">Əsas Görsellər</h2>
-              <p className="text-xs text-slate-500">URL yazın ya da yükləyin, sonra Saxla düyməsinə basın.</p>
+              <div className="flex items-center gap-2.5 mb-1">
+                <div className="w-7 h-7 rounded bg-[#0f3156]/10 text-[#0f3156] flex items-center justify-center shrink-0">
+                  <ImgIcon className="w-4 h-4" />
+                </div>
+                <div>
+                  <h2 className="text-sm font-bold text-slate-900">Bütün Sayt Görsəlləri</h2>
+                  <p className="text-xs text-slate-500">Əsas səhifə, haqqımızda və ixrac sektorlarının 15 əsas şəklini buradan idarə edin.</p>
+                </div>
+              </div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {IMAGE_KEYS.map(img => (
                   <ImageField key={img.key} imgKey={img.key} label={img.label}
@@ -400,21 +998,177 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
           {/* ── NAVBAR ── */}
           {page === 'navbar' && (
             <>
-              <h2 className="text-sm font-bold text-slate-800">Naviqasiya Menyusu</h2>
+              <div className="flex items-center gap-2.5 mb-1">
+                <div className="w-7 h-7 rounded bg-[#0f3156]/10 text-[#0f3156] flex items-center justify-center shrink-0">
+                  <MenuIcon className="w-4 h-4" />
+                </div>
+                <div>
+                  <h2 className="text-sm font-bold text-slate-900">Naviqasiya Menyusu</h2>
+                  <p className="text-xs text-slate-500">Saytın yuxarı menyusundakı keçidlərin mətnlərini 6 dildə tənzimləyin.</p>
+                </div>
+              </div>
               <LocaleTabs locale={locale} onSelect={setLocale} />
-              <div className="space-y-2">
-                {['home','forBuyers','forProducers','services','products','howItWorks','aboutUs','insights','contact','requestQuote','dossiers'].map(k => (
-                  <F key={k} label={k} k={`nav.${k}`} value={str(`nav.${k}`)} onChange={handleStrChange} />
+              <div className="space-y-2.5">
+                {[
+                  { k: 'home', label: 'Ana Səhifə (Home)' },
+                  { k: 'forBuyers', label: 'Alıcılar Üçün (For Buyers)' },
+                  { k: 'forProducers', label: 'İstehsalçılar Üçün (For Producers)' },
+                  { k: 'services', label: 'Xidmətlər (Services)' },
+                  { k: 'products', label: 'Məhsullar (Products)' },
+                  { k: 'howItWorks', label: 'Necə İşləyir (How It Works)' },
+                  { k: 'aboutUs', label: 'Haqqımızda (About Us)' },
+                  { k: 'insights', label: 'Bazar İcmalları (Insights)' },
+                  { k: 'contact', label: 'Əlaqə (Contact)' },
+                  { k: 'requestQuote', label: 'Qiymət Sorğusu Butonu (Request Quote)' },
+                  { k: 'dossiers', label: 'Dosyelər / Sənədlər (Dossiers)' },
+                ].map(item => (
+                  <F key={item.k} label={item.label} k={`nav.${item.k}`} value={str(`nav.${item.k}`)} onChange={handleStrChange} />
                 ))}
               </div>
               <SaveBar onSave={() => saveStrings(locData)} saving={saving} saved={saved} />
             </>
           )}
 
+          {/* ── CONTACT & OFFICE DETAILS ── */}
+          {page === 'contact' && (
+            <>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-7 h-7 rounded bg-[#0f3156]/10 text-[#0f3156] flex items-center justify-center shrink-0">
+                    <Phone className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h2 className="text-sm font-bold text-slate-900">Əlaqə, Ofis və Rekvizit Məlumatları</h2>
+                    <p className="text-xs text-slate-500">Saytın footer, əlaqə bölmələri və rəsmi ünvan məlumatlarını bütün 6 dildə tənzimləyin.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 1: Rəsmi Əlaqə Kanalları */}
+              <div className="bg-white border border-slate-200/90 rounded-lg p-4 space-y-4 shadow-2xs">
+                <div className="border-b border-slate-100 pb-2 flex items-center gap-2">
+                  <Building2 className="w-4 h-4 text-[#0f3156]" />
+                  <div>
+                    <h3 className="text-xs font-bold text-slate-800 uppercase font-mono">1. Rəsmi Əlaqə Kanalları & Qaynar Xətlər</h3>
+                    <p className="text-[11px] text-slate-400">Footer və Əlaqə Masasında görünən telefon və poçt ünvanları</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Telefon (Direct Trade Desk)</label>
+                    <input
+                      type="text"
+                      value={content.contact?.phone || '+994 (12) 404 85 00'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phone: v } }));
+                      }}
+                      placeholder="+994 (12) 404 85 00"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">İkinci Telefon / Qaynar Xətt</label>
+                    <input
+                      type="text"
+                      value={content.contact?.phoneAlt || '+994 (50) 290 45 00'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phoneAlt: v } }));
+                      }}
+                      placeholder="+994 (50) 290 45 00"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Elektron Poçt (Official Dispatch)</label>
+                    <input
+                      type="text"
+                      value={content.contact?.email || 'desk@azexbuy.az'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), email: v } }));
+                      }}
+                      placeholder="desk@azexbuy.az"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Satınalma / Tender Emaili</label>
+                    <input
+                      type="text"
+                      value={content.contact?.emailAlt || 'procurement@azexbuy.az'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), emailAlt: v } }));
+                      }}
+                      placeholder="procurement@azexbuy.az"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">İş Qrafiki & Saatları</label>
+                    <input
+                      type="text"
+                      value={content.contact?.hours || '09:00 – 18:00 (AZT / UTC+4) · B.e – Cümə'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), hours: v } }));
+                      }}
+                      placeholder="09:00 – 18:00 (AZT / UTC+4)"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 2: Baş Qərargah və Hüquqi Məlumatlar (6 Dillərdə) */}
+              <div className="space-y-3">
+                <div className="bg-slate-100 p-2.5 rounded text-xs font-bold text-slate-700">
+                  2. Baş Qərargah Ünvanı və Çoxdilli Rekvizitlər (6 Dildə)
+                </div>
+
+                <MultiLocF label="Qərargah Bölmə Başlığı" strKey="footer.hqTitle" locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label="Tam Ünvan (Baku Alliance Business Center...)" strKey="footer.hqAddress" multi locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label="Şirkət Mandatı / Qısa Təsvir" strKey="footer.description" multi locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label="Müəllif Hüquqları (Copyright)" strKey="footer.rights" multi locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label='"Sürətli Keçidlər" Bölmə Başlığı' strKey="footer.quickLinks" locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label='"Tənzimləmə və Uyğunluq" Başlığı' strKey="footer.complianceTitle" locData={locData} onChange={handleMultiLocChange} />
+              </div>
+
+              <SaveBar
+                onSave={async () => {
+                  setSaving(true);
+                  await Promise.all([
+                    apiPost('/api/azexbuy/localization', locData),
+                    apiPost('/api/azexbuy/content', content),
+                  ]);
+                  flash();
+                  setSaving(false);
+                }}
+                saving={saving}
+                saved={saved}
+              />
+            </>
+          )}
+
           {/* ── HERO ── */}
           {page === 'hero' && (
             <>
-              <h2 className="text-sm font-bold text-slate-800">Hero Bölməsi</h2>
+              <div className="flex items-center gap-2.5 mb-1">
+                <div className="w-7 h-7 rounded bg-[#0f3156]/10 text-[#0f3156] flex items-center justify-center shrink-0">
+                  <LayoutTemplate className="w-4 h-4" />
+                </div>
+                <div>
+                  <h2 className="text-sm font-bold text-slate-900">Hero Bölməsi</h2>
+                  <p className="text-xs text-slate-500">Əsas səhifənin ən üstündəki arxa fon şəkli, şüarlar və hərəkətə çağırış (CTA) butonları.</p>
+                </div>
+              </div>
               <ImageField imgKey="HERO_IMAGE" label="Hero Arxa Fon Şəkli"
                 content={content} uploading={uploading}
                 onSaveContent={saveContent} onTriggerUpload={triggerUpload}
@@ -447,6 +1201,134 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                 </div>
               ))}
               <SaveBar onSave={() => saveStrings(locData)} saving={saving} saved={saved} />
+            </>
+          )}
+
+          {/* ── CONTACT & OFFICE DETAILS ── */}
+          {page === 'contact' && (
+            <>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-7 h-7 rounded bg-[#0f3156]/10 text-[#0f3156] flex items-center justify-center shrink-0">
+                    <Phone className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h2 className="text-sm font-bold text-slate-900">Əlaqə, Ofis və Rekvizit Məlumatları</h2>
+                    <p className="text-xs text-slate-500">Saytın footer, əlaqə bölmələri və rəsmi ünvan məlumatlarını bütün 6 dildə tənzimləyin.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 1: Rəsmi Əlaqə Kanalları */}
+              <div className="bg-white border border-slate-200/90 rounded-lg p-4 space-y-4 shadow-2xs">
+                <div className="border-b border-slate-100 pb-2 flex items-center gap-2">
+                  <Building2 className="w-4 h-4 text-[#0f3156]" />
+                  <div>
+                    <h3 className="text-xs font-bold text-slate-800 uppercase font-mono">1. Rəsmi Əlaqə Kanalları & Qaynar Xətlər</h3>
+                    <p className="text-[11px] text-slate-400">Footer və Əlaqə Masasında görünən telefon və poçt ünvanları</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Telefon (Direct Trade Desk)</label>
+                    <input
+                      type="text"
+                      value={content.contact?.phone || '+994 (12) 404 85 00'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phone: v } }));
+                      }}
+                      placeholder="+994 (12) 404 85 00"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">İkinci Telefon / Qaynar Xətt</label>
+                    <input
+                      type="text"
+                      value={content.contact?.phoneAlt || '+994 (50) 290 45 00'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phoneAlt: v } }));
+                      }}
+                      placeholder="+994 (50) 290 45 00"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Elektron Poçt (Official Dispatch)</label>
+                    <input
+                      type="text"
+                      value={content.contact?.email || 'desk@azexbuy.az'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), email: v } }));
+                      }}
+                      placeholder="desk@azexbuy.az"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Satınalma / Tender Emaili</label>
+                    <input
+                      type="text"
+                      value={content.contact?.emailAlt || 'procurement@azexbuy.az'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), emailAlt: v } }));
+                      }}
+                      placeholder="procurement@azexbuy.az"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">İş Qrafiki & Saatları</label>
+                    <input
+                      type="text"
+                      value={content.contact?.hours || '09:00 – 18:00 (AZT / UTC+4) · B.e – Cümə'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), hours: v } }));
+                      }}
+                      placeholder="09:00 – 18:00 (AZT / UTC+4)"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 2: Baş Qərargah və Hüquqi Məlumatlar (6 Dillərdə) */}
+              <div className="space-y-3">
+                <div className="bg-slate-100 p-2.5 rounded text-xs font-bold text-slate-700">
+                  2. Baş Qərargah Ünvanı və Çoxdilli Rekvizitlər (6 Dildə)
+                </div>
+
+                <MultiLocF label="Qərargah Bölmə Başlığı" strKey="footer.hqTitle" locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label="Tam Ünvan (Baku Alliance Business Center...)" strKey="footer.hqAddress" multi locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label="Şirkət Mandatı / Qısa Təsvir" strKey="footer.description" multi locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label="Müəllif Hüquqları (Copyright)" strKey="footer.rights" multi locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label='"Sürətli Keçidlər" Bölmə Başlığı' strKey="footer.quickLinks" locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label='"Tənzimləmə və Uyğunluq" Başlığı' strKey="footer.complianceTitle" locData={locData} onChange={handleMultiLocChange} />
+              </div>
+
+              <SaveBar
+                onSave={async () => {
+                  setSaving(true);
+                  await Promise.all([
+                    apiPost('/api/azexbuy/localization', locData),
+                    apiPost('/api/azexbuy/content', content),
+                  ]);
+                  flash();
+                  setSaving(false);
+                }}
+                saving={saving}
+                saved={saved}
+              />
             </>
           )}
 
@@ -484,6 +1366,134 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
             </>
           )}
 
+          {/* ── CONTACT & OFFICE DETAILS ── */}
+          {page === 'contact' && (
+            <>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-7 h-7 rounded bg-[#0f3156]/10 text-[#0f3156] flex items-center justify-center shrink-0">
+                    <Phone className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h2 className="text-sm font-bold text-slate-900">Əlaqə, Ofis və Rekvizit Məlumatları</h2>
+                    <p className="text-xs text-slate-500">Saytın footer, əlaqə bölmələri və rəsmi ünvan məlumatlarını bütün 6 dildə tənzimləyin.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 1: Rəsmi Əlaqə Kanalları */}
+              <div className="bg-white border border-slate-200/90 rounded-lg p-4 space-y-4 shadow-2xs">
+                <div className="border-b border-slate-100 pb-2 flex items-center gap-2">
+                  <Building2 className="w-4 h-4 text-[#0f3156]" />
+                  <div>
+                    <h3 className="text-xs font-bold text-slate-800 uppercase font-mono">1. Rəsmi Əlaqə Kanalları & Qaynar Xətlər</h3>
+                    <p className="text-[11px] text-slate-400">Footer və Əlaqə Masasında görünən telefon və poçt ünvanları</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Telefon (Direct Trade Desk)</label>
+                    <input
+                      type="text"
+                      value={content.contact?.phone || '+994 (12) 404 85 00'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phone: v } }));
+                      }}
+                      placeholder="+994 (12) 404 85 00"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">İkinci Telefon / Qaynar Xətt</label>
+                    <input
+                      type="text"
+                      value={content.contact?.phoneAlt || '+994 (50) 290 45 00'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phoneAlt: v } }));
+                      }}
+                      placeholder="+994 (50) 290 45 00"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Elektron Poçt (Official Dispatch)</label>
+                    <input
+                      type="text"
+                      value={content.contact?.email || 'desk@azexbuy.az'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), email: v } }));
+                      }}
+                      placeholder="desk@azexbuy.az"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Satınalma / Tender Emaili</label>
+                    <input
+                      type="text"
+                      value={content.contact?.emailAlt || 'procurement@azexbuy.az'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), emailAlt: v } }));
+                      }}
+                      placeholder="procurement@azexbuy.az"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">İş Qrafiki & Saatları</label>
+                    <input
+                      type="text"
+                      value={content.contact?.hours || '09:00 – 18:00 (AZT / UTC+4) · B.e – Cümə'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), hours: v } }));
+                      }}
+                      placeholder="09:00 – 18:00 (AZT / UTC+4)"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 2: Baş Qərargah və Hüquqi Məlumatlar (6 Dillərdə) */}
+              <div className="space-y-3">
+                <div className="bg-slate-100 p-2.5 rounded text-xs font-bold text-slate-700">
+                  2. Baş Qərargah Ünvanı və Çoxdilli Rekvizitlər (6 Dildə)
+                </div>
+
+                <MultiLocF label="Qərargah Bölmə Başlığı" strKey="footer.hqTitle" locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label="Tam Ünvan (Baku Alliance Business Center...)" strKey="footer.hqAddress" multi locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label="Şirkət Mandatı / Qısa Təsvir" strKey="footer.description" multi locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label="Müəllif Hüquqları (Copyright)" strKey="footer.rights" multi locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label='"Sürətli Keçidlər" Bölmə Başlığı' strKey="footer.quickLinks" locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label='"Tənzimləmə və Uyğunluq" Başlığı' strKey="footer.complianceTitle" locData={locData} onChange={handleMultiLocChange} />
+              </div>
+
+              <SaveBar
+                onSave={async () => {
+                  setSaving(true);
+                  await Promise.all([
+                    apiPost('/api/azexbuy/localization', locData),
+                    apiPost('/api/azexbuy/content', content),
+                  ]);
+                  flash();
+                  setSaving(false);
+                }}
+                saving={saving}
+                saved={saved}
+              />
+            </>
+          )}
+
           {/* ── SERVICES ── */}
           {page === 'services' && (
             <>
@@ -497,6 +1507,134 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
               <MultiLocF label="Açıqlama" strKey="services.outsourcedDesc" multi locData={locData} onChange={handleMultiLocChange} />
               <MultiLocF label="CTA Mətni" strKey="services.outsourcedCta" locData={locData} onChange={handleMultiLocChange} />
               <SaveBar onSave={() => saveStrings(locData)} saving={saving} saved={saved} />
+            </>
+          )}
+
+          {/* ── CONTACT & OFFICE DETAILS ── */}
+          {page === 'contact' && (
+            <>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-7 h-7 rounded bg-[#0f3156]/10 text-[#0f3156] flex items-center justify-center shrink-0">
+                    <Phone className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h2 className="text-sm font-bold text-slate-900">Əlaqə, Ofis və Rekvizit Məlumatları</h2>
+                    <p className="text-xs text-slate-500">Saytın footer, əlaqə bölmələri və rəsmi ünvan məlumatlarını bütün 6 dildə tənzimləyin.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 1: Rəsmi Əlaqə Kanalları */}
+              <div className="bg-white border border-slate-200/90 rounded-lg p-4 space-y-4 shadow-2xs">
+                <div className="border-b border-slate-100 pb-2 flex items-center gap-2">
+                  <Building2 className="w-4 h-4 text-[#0f3156]" />
+                  <div>
+                    <h3 className="text-xs font-bold text-slate-800 uppercase font-mono">1. Rəsmi Əlaqə Kanalları & Qaynar Xətlər</h3>
+                    <p className="text-[11px] text-slate-400">Footer və Əlaqə Masasında görünən telefon və poçt ünvanları</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Telefon (Direct Trade Desk)</label>
+                    <input
+                      type="text"
+                      value={content.contact?.phone || '+994 (12) 404 85 00'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phone: v } }));
+                      }}
+                      placeholder="+994 (12) 404 85 00"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">İkinci Telefon / Qaynar Xətt</label>
+                    <input
+                      type="text"
+                      value={content.contact?.phoneAlt || '+994 (50) 290 45 00'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phoneAlt: v } }));
+                      }}
+                      placeholder="+994 (50) 290 45 00"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Elektron Poçt (Official Dispatch)</label>
+                    <input
+                      type="text"
+                      value={content.contact?.email || 'desk@azexbuy.az'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), email: v } }));
+                      }}
+                      placeholder="desk@azexbuy.az"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Satınalma / Tender Emaili</label>
+                    <input
+                      type="text"
+                      value={content.contact?.emailAlt || 'procurement@azexbuy.az'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), emailAlt: v } }));
+                      }}
+                      placeholder="procurement@azexbuy.az"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">İş Qrafiki & Saatları</label>
+                    <input
+                      type="text"
+                      value={content.contact?.hours || '09:00 – 18:00 (AZT / UTC+4) · B.e – Cümə'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), hours: v } }));
+                      }}
+                      placeholder="09:00 – 18:00 (AZT / UTC+4)"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 2: Baş Qərargah və Hüquqi Məlumatlar (6 Dillərdə) */}
+              <div className="space-y-3">
+                <div className="bg-slate-100 p-2.5 rounded text-xs font-bold text-slate-700">
+                  2. Baş Qərargah Ünvanı və Çoxdilli Rekvizitlər (6 Dildə)
+                </div>
+
+                <MultiLocF label="Qərargah Bölmə Başlığı" strKey="footer.hqTitle" locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label="Tam Ünvan (Baku Alliance Business Center...)" strKey="footer.hqAddress" multi locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label="Şirkət Mandatı / Qısa Təsvir" strKey="footer.description" multi locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label="Müəllif Hüquqları (Copyright)" strKey="footer.rights" multi locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label='"Sürətli Keçidlər" Bölmə Başlığı' strKey="footer.quickLinks" locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label='"Tənzimləmə və Uyğunluq" Başlığı' strKey="footer.complianceTitle" locData={locData} onChange={handleMultiLocChange} />
+              </div>
+
+              <SaveBar
+                onSave={async () => {
+                  setSaving(true);
+                  await Promise.all([
+                    apiPost('/api/azexbuy/localization', locData),
+                    apiPost('/api/azexbuy/content', content),
+                  ]);
+                  flash();
+                  setSaving(false);
+                }}
+                saving={saving}
+                saved={saved}
+              />
             </>
           )}
 
@@ -543,6 +1681,134 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
             </>
           )}
 
+          {/* ── CONTACT & OFFICE DETAILS ── */}
+          {page === 'contact' && (
+            <>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-7 h-7 rounded bg-[#0f3156]/10 text-[#0f3156] flex items-center justify-center shrink-0">
+                    <Phone className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h2 className="text-sm font-bold text-slate-900">Əlaqə, Ofis və Rekvizit Məlumatları</h2>
+                    <p className="text-xs text-slate-500">Saytın footer, əlaqə bölmələri və rəsmi ünvan məlumatlarını bütün 6 dildə tənzimləyin.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 1: Rəsmi Əlaqə Kanalları */}
+              <div className="bg-white border border-slate-200/90 rounded-lg p-4 space-y-4 shadow-2xs">
+                <div className="border-b border-slate-100 pb-2 flex items-center gap-2">
+                  <Building2 className="w-4 h-4 text-[#0f3156]" />
+                  <div>
+                    <h3 className="text-xs font-bold text-slate-800 uppercase font-mono">1. Rəsmi Əlaqə Kanalları & Qaynar Xətlər</h3>
+                    <p className="text-[11px] text-slate-400">Footer və Əlaqə Masasında görünən telefon və poçt ünvanları</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Telefon (Direct Trade Desk)</label>
+                    <input
+                      type="text"
+                      value={content.contact?.phone || '+994 (12) 404 85 00'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phone: v } }));
+                      }}
+                      placeholder="+994 (12) 404 85 00"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">İkinci Telefon / Qaynar Xətt</label>
+                    <input
+                      type="text"
+                      value={content.contact?.phoneAlt || '+994 (50) 290 45 00'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phoneAlt: v } }));
+                      }}
+                      placeholder="+994 (50) 290 45 00"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Elektron Poçt (Official Dispatch)</label>
+                    <input
+                      type="text"
+                      value={content.contact?.email || 'desk@azexbuy.az'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), email: v } }));
+                      }}
+                      placeholder="desk@azexbuy.az"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Satınalma / Tender Emaili</label>
+                    <input
+                      type="text"
+                      value={content.contact?.emailAlt || 'procurement@azexbuy.az'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), emailAlt: v } }));
+                      }}
+                      placeholder="procurement@azexbuy.az"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">İş Qrafiki & Saatları</label>
+                    <input
+                      type="text"
+                      value={content.contact?.hours || '09:00 – 18:00 (AZT / UTC+4) · B.e – Cümə'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), hours: v } }));
+                      }}
+                      placeholder="09:00 – 18:00 (AZT / UTC+4)"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 2: Baş Qərargah və Hüquqi Məlumatlar (6 Dillərdə) */}
+              <div className="space-y-3">
+                <div className="bg-slate-100 p-2.5 rounded text-xs font-bold text-slate-700">
+                  2. Baş Qərargah Ünvanı və Çoxdilli Rekvizitlər (6 Dildə)
+                </div>
+
+                <MultiLocF label="Qərargah Bölmə Başlığı" strKey="footer.hqTitle" locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label="Tam Ünvan (Baku Alliance Business Center...)" strKey="footer.hqAddress" multi locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label="Şirkət Mandatı / Qısa Təsvir" strKey="footer.description" multi locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label="Müəllif Hüquqları (Copyright)" strKey="footer.rights" multi locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label='"Sürətli Keçidlər" Bölmə Başlığı' strKey="footer.quickLinks" locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label='"Tənzimləmə və Uyğunluq" Başlığı' strKey="footer.complianceTitle" locData={locData} onChange={handleMultiLocChange} />
+              </div>
+
+              <SaveBar
+                onSave={async () => {
+                  setSaving(true);
+                  await Promise.all([
+                    apiPost('/api/azexbuy/localization', locData),
+                    apiPost('/api/azexbuy/content', content),
+                  ]);
+                  flash();
+                  setSaving(false);
+                }}
+                saving={saving}
+                saved={saved}
+              />
+            </>
+          )}
+
           {/* ── WHY AZERBAIJAN ── */}
           {page === 'why_azerbaijan' && (
             <>
@@ -578,6 +1844,134 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
               <MultiLocF label='"Uyğunluq" Başlığı' strKey="footer.complianceTitle" locData={locData} onChange={handleMultiLocChange} />
               <MultiLocF label="Copyright Mətni" strKey="footer.rights" multi locData={locData} onChange={handleMultiLocChange} />
               <SaveBar onSave={() => saveStrings(locData)} saving={saving} saved={saved} />
+            </>
+          )}
+
+          {/* ── CONTACT & OFFICE DETAILS ── */}
+          {page === 'contact' && (
+            <>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-7 h-7 rounded bg-[#0f3156]/10 text-[#0f3156] flex items-center justify-center shrink-0">
+                    <Phone className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h2 className="text-sm font-bold text-slate-900">Əlaqə, Ofis və Rekvizit Məlumatları</h2>
+                    <p className="text-xs text-slate-500">Saytın footer, əlaqə bölmələri və rəsmi ünvan məlumatlarını bütün 6 dildə tənzimləyin.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 1: Rəsmi Əlaqə Kanalları */}
+              <div className="bg-white border border-slate-200/90 rounded-lg p-4 space-y-4 shadow-2xs">
+                <div className="border-b border-slate-100 pb-2 flex items-center gap-2">
+                  <Building2 className="w-4 h-4 text-[#0f3156]" />
+                  <div>
+                    <h3 className="text-xs font-bold text-slate-800 uppercase font-mono">1. Rəsmi Əlaqə Kanalları & Qaynar Xətlər</h3>
+                    <p className="text-[11px] text-slate-400">Footer və Əlaqə Masasında görünən telefon və poçt ünvanları</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Telefon (Direct Trade Desk)</label>
+                    <input
+                      type="text"
+                      value={content.contact?.phone || '+994 (12) 404 85 00'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phone: v } }));
+                      }}
+                      placeholder="+994 (12) 404 85 00"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">İkinci Telefon / Qaynar Xətt</label>
+                    <input
+                      type="text"
+                      value={content.contact?.phoneAlt || '+994 (50) 290 45 00'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phoneAlt: v } }));
+                      }}
+                      placeholder="+994 (50) 290 45 00"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Elektron Poçt (Official Dispatch)</label>
+                    <input
+                      type="text"
+                      value={content.contact?.email || 'desk@azexbuy.az'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), email: v } }));
+                      }}
+                      placeholder="desk@azexbuy.az"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Satınalma / Tender Emaili</label>
+                    <input
+                      type="text"
+                      value={content.contact?.emailAlt || 'procurement@azexbuy.az'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), emailAlt: v } }));
+                      }}
+                      placeholder="procurement@azexbuy.az"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">İş Qrafiki & Saatları</label>
+                    <input
+                      type="text"
+                      value={content.contact?.hours || '09:00 – 18:00 (AZT / UTC+4) · B.e – Cümə'}
+                      onChange={e => {
+                        const v = e.target.value;
+                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), hours: v } }));
+                      }}
+                      placeholder="09:00 – 18:00 (AZT / UTC+4)"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 2: Baş Qərargah və Hüquqi Məlumatlar (6 Dillərdə) */}
+              <div className="space-y-3">
+                <div className="bg-slate-100 p-2.5 rounded text-xs font-bold text-slate-700">
+                  2. Baş Qərargah Ünvanı və Çoxdilli Rekvizitlər (6 Dildə)
+                </div>
+
+                <MultiLocF label="Qərargah Bölmə Başlığı" strKey="footer.hqTitle" locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label="Tam Ünvan (Baku Alliance Business Center...)" strKey="footer.hqAddress" multi locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label="Şirkət Mandatı / Qısa Təsvir" strKey="footer.description" multi locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label="Müəllif Hüquqları (Copyright)" strKey="footer.rights" multi locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label='"Sürətli Keçidlər" Bölmə Başlığı' strKey="footer.quickLinks" locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label='"Tənzimləmə və Uyğunluq" Başlığı' strKey="footer.complianceTitle" locData={locData} onChange={handleMultiLocChange} />
+              </div>
+
+              <SaveBar
+                onSave={async () => {
+                  setSaving(true);
+                  await Promise.all([
+                    apiPost('/api/azexbuy/localization', locData),
+                    apiPost('/api/azexbuy/content', content),
+                  ]);
+                  flash();
+                  setSaving(false);
+                }}
+                saving={saving}
+                saved={saved}
+              />
             </>
           )}
 
@@ -836,6 +2230,1116 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                   </div>
                 ))}
               </div>
+            </>
+          )}
+
+          {/* ── ABOUT PAGE (HAQQIMIZDA) ── */}
+          {page === 'about' && (() => {
+            const ab = content.about ? { ...ABOUT_PAGE_DEFAULT, ...content.about } : { ...ABOUT_PAGE_DEFAULT };
+            const updateAb = (fn: (prev: typeof ABOUT_PAGE_DEFAULT) => typeof ABOUT_PAGE_DEFAULT) => {
+              const next = fn(ab);
+              setContent((c: any) => ({ ...c, about: next }));
+            };
+
+            return (
+              <>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-sm font-bold text-slate-800">Haqqımızda Səhifəsi Məzmunu</h2>
+                    <p className="text-xs text-slate-500">About səhifəsinin bütün bölmələrinin mətnlərini və görsəllərini buradan redaktə edin.</p>
+                  </div>
+                  <SaveBar onSave={() => saveContent(content)} saving={saving} saved={saved} />
+                </div>
+
+                {/* 01 — Biz Kimik? */}
+                <div className="bg-white border border-slate-200 rounded overflow-hidden">
+                  <button onClick={() => setExpandedId(expandedId === 'ab_who' ? null : 'ab_who')}
+                    className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-50 text-left">
+                    <span className="text-xs font-bold text-slate-900">01. Biz Kimik? (Who We Are)</span>
+                    {expandedId === 'ab_who' ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
+                  </button>
+                  {expandedId === 'ab_who' && (
+                    <div className="border-t border-slate-100 p-4 space-y-3 bg-slate-50/50">
+                      {/* Image */}
+                      <div className="bg-white border border-slate-200 rounded p-3">
+                        <label className="block text-[10px] font-bold text-slate-400 font-mono mb-1.5 uppercase">Bölmə Görsəli URL</label>
+                        <div className="flex gap-2">
+                          <input value={ab.whoWeAre?.image || ''} onChange={e => {
+                            const val = e.target.value;
+                            updateAb(p => ({ ...p, whoWeAre: { ...p.whoWeAre, image: val } }));
+                          }} className="flex-1 h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm" />
+                          <button onClick={() => triggerUpload('about_whoWeAreImage')} className="h-8 px-3 bg-[#0f3156] text-white text-xs font-bold rounded-sm flex items-center gap-1.5">
+                            <Upload className="w-3 h-3" /> Yüklə
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Multilingual Text Fields */}
+                      {[
+                        { label: 'Kicker / Badge', fld: 'badge', multi: false },
+                        { label: 'Əsas Başlıq', fld: 'title', multi: false },
+                        { label: 'Paraqraf 1', fld: 'p1', multi: true },
+                        { label: 'Paraqraf 2', fld: 'p2', multi: true },
+                        { label: 'Paraqraf 3', fld: 'p3', multi: true },
+                        { label: 'Görsəl Şüarı (Tagline)', fld: 'imageTagline', multi: false },
+                        { label: 'Görsəl Alt Yazısı', fld: 'imageSub', multi: false },
+                      ].map(item => (
+                        <div key={item.fld} className="bg-white border border-slate-200 rounded p-3">
+                          <div className="text-[10px] font-bold text-slate-500 uppercase mb-2 font-mono">{item.label}</div>
+                          <div className="grid grid-cols-2 gap-2">
+                            {LOCALES.map(loc => (
+                              <div key={loc}>
+                                <div className="text-[9px] font-bold text-slate-400 mb-0.5">{loc}</div>
+                                {item.multi ? (
+                                  <textarea
+                                    value={(ab.whoWeAre as any)?.[item.fld]?.[loc] || ''}
+                                    onChange={e => {
+                                      const v = e.target.value;
+                                      updateAb(p => ({
+                                        ...p,
+                                        whoWeAre: {
+                                          ...p.whoWeAre,
+                                          [item.fld]: { ...((p.whoWeAre as any)[item.fld] || {}), [loc]: v }
+                                        }
+                                      }));
+                                    }}
+                                    rows={2}
+                                    className="w-full text-xs bg-slate-50 border border-slate-200 px-2 py-1 rounded-sm focus:outline-none focus:border-[#0f3156]"
+                                  />
+                                ) : (
+                                  <input
+                                    value={(ab.whoWeAre as any)?.[item.fld]?.[loc] || ''}
+                                    onChange={e => {
+                                      const v = e.target.value;
+                                      updateAb(p => ({
+                                        ...p,
+                                        whoWeAre: {
+                                          ...p.whoWeAre,
+                                          [item.fld]: { ...((p.whoWeAre as any)[item.fld] || {}), [loc]: v }
+                                        }
+                                      }));
+                                    }}
+                                    className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2 rounded-sm focus:outline-none focus:border-[#0f3156]"
+                                  />
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                      <SaveBar onSave={() => saveContent(content)} saving={saving} saved={saved} />
+                    </div>
+                  )}
+                </div>
+
+                {/* 02 — Fəaliyyətimiz */}
+                <div className="bg-white border border-slate-200 rounded overflow-hidden">
+                  <button onClick={() => setExpandedId(expandedId === 'ab_act' ? null : 'ab_act')}
+                    className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-50 text-left">
+                    <span className="text-xs font-bold text-slate-900">02. Fəaliyyətimiz (Our Activities)</span>
+                    {expandedId === 'ab_act' ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
+                  </button>
+                  {expandedId === 'ab_act' && (
+                    <div className="border-t border-slate-100 p-4 space-y-3 bg-slate-50/50">
+                      {[
+                        { label: 'Badge', fld: 'badge', multi: false },
+                        { label: 'Başlıq', fld: 'title', multi: false },
+                        { label: 'Təsvir', fld: 'desc', multi: true },
+                      ].map(item => (
+                        <div key={item.fld} className="bg-white border border-slate-200 rounded p-3">
+                          <div className="text-[10px] font-bold text-slate-500 uppercase mb-2 font-mono">{item.label}</div>
+                          <div className="grid grid-cols-2 gap-2">
+                            {LOCALES.map(loc => (
+                              <div key={loc}>
+                                <div className="text-[9px] font-bold text-slate-400 mb-0.5">{loc}</div>
+                                {item.multi ? (
+                                  <textarea
+                                    value={(ab.activities as any)?.[item.fld]?.[loc] || ''}
+                                    onChange={e => {
+                                      const v = e.target.value;
+                                      updateAb(p => ({
+                                        ...p,
+                                        activities: {
+                                          ...p.activities,
+                                          [item.fld]: { ...((p.activities as any)[item.fld] || {}), [loc]: v }
+                                        }
+                                      }));
+                                    }}
+                                    rows={2}
+                                    className="w-full text-xs bg-slate-50 border border-slate-200 px-2 py-1 rounded-sm focus:outline-none focus:border-[#0f3156]"
+                                  />
+                                ) : (
+                                  <input
+                                    value={(ab.activities as any)?.[item.fld]?.[loc] || ''}
+                                    onChange={e => {
+                                      const v = e.target.value;
+                                      updateAb(p => ({
+                                        ...p,
+                                        activities: {
+                                          ...p.activities,
+                                          [item.fld]: { ...((p.activities as any)[item.fld] || {}), [loc]: v }
+                                        }
+                                      }));
+                                    }}
+                                    className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2 rounded-sm focus:outline-none focus:border-[#0f3156]"
+                                  />
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+
+                      {/* Items */}
+                      <div className="space-y-2 mt-2">
+                        <div className="text-xs font-bold text-slate-700">Fəaliyyət Maddələri (5 ədəd)</div>
+                        {(ab.activities.items || []).map((act: any, idx: number) => (
+                          <div key={idx} className="bg-white border border-slate-200 rounded p-3 space-y-2">
+                            <div className="text-[11px] font-bold text-brandNavy flex items-center justify-between">
+                              <span>Maddə {idx + 1}: {act.title?.EN || act.title?.AZ || ''}</span>
+                              <span className="text-[10px] text-slate-400 font-mono">{act.icon}</span>
+                            </div>
+                            <div className="grid grid-cols-2 gap-2">
+                              {LOCALES.map(loc => (
+                                <div key={loc}>
+                                  <div className="text-[9px] font-bold text-slate-400">{loc} Başlıq</div>
+                                  <input
+                                    value={act.title?.[loc] || ''}
+                                    onChange={e => {
+                                      const v = e.target.value;
+                                      updateAb(p => {
+                                        const items = [...(p.activities.items || [])];
+                                        items[idx] = { ...items[idx], title: { ...(items[idx].title || {}), [loc]: v } };
+                                        return { ...p, activities: { ...p.activities, items } };
+                                      });
+                                    }}
+                                    className="w-full h-7 text-xs bg-slate-50 border border-slate-200 px-2 rounded-sm mb-1"
+                                  />
+                                  <div className="text-[9px] font-bold text-slate-400">{loc} Təsvir</div>
+                                  <textarea
+                                    value={act.desc?.[loc] || ''}
+                                    onChange={e => {
+                                      const v = e.target.value;
+                                      updateAb(p => {
+                                        const items = [...(p.activities.items || [])];
+                                        items[idx] = { ...items[idx], desc: { ...(items[idx].desc || {}), [loc]: v } };
+                                        return { ...p, activities: { ...p.activities, items } };
+                                      });
+                                    }}
+                                    rows={2}
+                                    className="w-full text-xs bg-slate-50 border border-slate-200 px-2 py-1 rounded-sm resize-none"
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <SaveBar onSave={() => saveContent(content)} saving={saving} saved={saved} />
+                    </div>
+                  )}
+                </div>
+
+                {/* 03 — Missiya və Vizyon */}
+                <div className="bg-white border border-slate-200 rounded overflow-hidden">
+                  <button onClick={() => setExpandedId(expandedId === 'ab_mv' ? null : 'ab_mv')}
+                    className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-50 text-left">
+                    <span className="text-xs font-bold text-slate-900">03. Missiya və Vizyon (Mission & Vision)</span>
+                    {expandedId === 'ab_mv' ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
+                  </button>
+                  {expandedId === 'ab_mv' && (
+                    <div className="border-t border-slate-100 p-4 space-y-3 bg-slate-50/50">
+                      {/* Mission image */}
+                      <div className="bg-white border border-slate-200 rounded p-3">
+                        <label className="block text-[10px] font-bold text-slate-400 font-mono mb-1.5 uppercase">Missiya Şəkli URL</label>
+                        <div className="flex gap-2">
+                          <input value={ab.missionVision?.missionImage || ''} onChange={e => {
+                            const val = e.target.value;
+                            updateAb(p => ({ ...p, missionVision: { ...p.missionVision, missionImage: val } }));
+                          }} className="flex-1 h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm" />
+                          <button onClick={() => triggerUpload('about_missionImage')} className="h-8 px-3 bg-[#0f3156] text-white text-xs font-bold rounded-sm flex items-center gap-1.5">
+                            <Upload className="w-3 h-3" /> Yüklə
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Vision image */}
+                      <div className="bg-white border border-slate-200 rounded p-3">
+                        <label className="block text-[10px] font-bold text-slate-400 font-mono mb-1.5 uppercase">Vizyon Şəkli URL</label>
+                        <div className="flex gap-2">
+                          <input value={ab.missionVision?.visionImage || ''} onChange={e => {
+                            const val = e.target.value;
+                            updateAb(p => ({ ...p, missionVision: { ...p.missionVision, visionImage: val } }));
+                          }} className="flex-1 h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm" />
+                          <button onClick={() => triggerUpload('about_visionImage')} className="h-8 px-3 bg-[#0f3156] text-white text-xs font-bold rounded-sm flex items-center gap-1.5">
+                            <Upload className="w-3 h-3" /> Yüklə
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Multilingual MV */}
+                      {[
+                        { label: 'Missiya Badge', fld: 'missionBadge', multi: false },
+                        { label: 'Missiya Başlıq', fld: 'missionTitle', multi: false },
+                        { label: 'Missiya Mətni', fld: 'missionDesc', multi: true },
+                        { label: 'Vizyon Badge', fld: 'visionBadge', multi: false },
+                        { label: 'Vizyon Başlıq', fld: 'visionTitle', multi: false },
+                        { label: 'Vizyon Mətni', fld: 'visionDesc', multi: true },
+                      ].map(item => (
+                        <div key={item.fld} className="bg-white border border-slate-200 rounded p-3">
+                          <div className="text-[10px] font-bold text-slate-500 uppercase mb-2 font-mono">{item.label}</div>
+                          <div className="grid grid-cols-2 gap-2">
+                            {LOCALES.map(loc => (
+                              <div key={loc}>
+                                <div className="text-[9px] font-bold text-slate-400 mb-0.5">{loc}</div>
+                                {item.multi ? (
+                                  <textarea
+                                    value={(ab.missionVision as any)?.[item.fld]?.[loc] || ''}
+                                    onChange={e => {
+                                      const v = e.target.value;
+                                      updateAb(p => ({
+                                        ...p,
+                                        missionVision: {
+                                          ...p.missionVision,
+                                          [item.fld]: { ...((p.missionVision as any)[item.fld] || {}), [loc]: v }
+                                        }
+                                      }));
+                                    }}
+                                    rows={2}
+                                    className="w-full text-xs bg-slate-50 border border-slate-200 px-2 py-1 rounded-sm"
+                                  />
+                                ) : (
+                                  <input
+                                    value={(ab.missionVision as any)?.[item.fld]?.[loc] || ''}
+                                    onChange={e => {
+                                      const v = e.target.value;
+                                      updateAb(p => ({
+                                        ...p,
+                                        missionVision: {
+                                          ...p.missionVision,
+                                          [item.fld]: { ...((p.missionVision as any)[item.fld] || {}), [loc]: v }
+                                        }
+                                      }));
+                                    }}
+                                    className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2 rounded-sm"
+                                  />
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                      <SaveBar onSave={() => saveContent(content)} saving={saving} saved={saved} />
+                    </div>
+                  )}
+                </div>
+
+                {/* 04 — Xidmət Modelimiz */}
+                <div className="bg-white border border-slate-200 rounded overflow-hidden">
+                  <button onClick={() => setExpandedId(expandedId === 'ab_srv' ? null : 'ab_srv')}
+                    className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-50 text-left">
+                    <span className="text-xs font-bold text-slate-900">04. Xidmət Modelimiz (Service Model)</span>
+                    {expandedId === 'ab_srv' ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
+                  </button>
+                  {expandedId === 'ab_srv' && (
+                    <div className="border-t border-slate-100 p-4 space-y-3 bg-slate-50/50">
+                      {[
+                        { label: 'Badge', fld: 'badge', multi: false },
+                        { label: 'Başlıq', fld: 'title', multi: false },
+                        { label: 'Təsvir', fld: 'desc', multi: true },
+                        { label: 'Alt Qeyd (Bottom Note)', fld: 'bottomNote', multi: true },
+                      ].map(item => (
+                        <div key={item.fld} className="bg-white border border-slate-200 rounded p-3">
+                          <div className="text-[10px] font-bold text-slate-500 uppercase mb-2 font-mono">{item.label}</div>
+                          <div className="grid grid-cols-2 gap-2">
+                            {LOCALES.map(loc => (
+                              <div key={loc}>
+                                <div className="text-[9px] font-bold text-slate-400 mb-0.5">{loc}</div>
+                                {item.multi ? (
+                                  <textarea
+                                    value={(ab.serviceModel as any)?.[item.fld]?.[loc] || ''}
+                                    onChange={e => {
+                                      const v = e.target.value;
+                                      updateAb(p => ({
+                                        ...p,
+                                        serviceModel: {
+                                          ...p.serviceModel,
+                                          [item.fld]: { ...((p.serviceModel as any)[item.fld] || {}), [loc]: v }
+                                        }
+                                      }));
+                                    }}
+                                    rows={2}
+                                    className="w-full text-xs bg-slate-50 border border-slate-200 px-2 py-1 rounded-sm"
+                                  />
+                                ) : (
+                                  <input
+                                    value={(ab.serviceModel as any)?.[item.fld]?.[loc] || ''}
+                                    onChange={e => {
+                                      const v = e.target.value;
+                                      updateAb(p => ({
+                                        ...p,
+                                        serviceModel: {
+                                          ...p.serviceModel,
+                                          [item.fld]: { ...((p.serviceModel as any)[item.fld] || {}), [loc]: v }
+                                        }
+                                      }));
+                                    }}
+                                    className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2 rounded-sm"
+                                  />
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                      <SaveBar onSave={() => saveContent(content)} saving={saving} saved={saved} />
+                    </div>
+                  )}
+                </div>
+
+                {/* 05 — Strateji İstiqamətlər */}
+                <div className="bg-white border border-slate-200 rounded overflow-hidden">
+                  <button onClick={() => setExpandedId(expandedId === 'ab_pillars' ? null : 'ab_pillars')}
+                    className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-50 text-left">
+                    <span className="text-xs font-bold text-slate-900">05. Strateji İstiqamətlər (Strategic Pillars)</span>
+                    {expandedId === 'ab_pillars' ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
+                  </button>
+                  {expandedId === 'ab_pillars' && (
+                    <div className="border-t border-slate-100 p-4 space-y-3 bg-slate-50/50">
+                      {[
+                        { label: 'Bölmə Badge', fld: 'badge', multi: false },
+                        { label: 'Bölmə Başlığı', fld: 'title', multi: false },
+                        { label: 'Bölmə Təsviri', fld: 'desc', multi: true },
+                      ].map(item => (
+                        <div key={item.fld} className="bg-white border border-slate-200 rounded p-3">
+                          <div className="text-[10px] font-bold text-slate-500 uppercase mb-2 font-mono">{item.label}</div>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            {LOCALES.map(loc => (
+                              <div key={loc}>
+                                <div className="text-[9px] font-bold text-slate-400 mb-0.5">{loc}</div>
+                                {item.multi ? (
+                                  <textarea
+                                    value={(ab.activities as any)?.[item.fld]?.[loc] || ''}
+                                    onChange={e => {
+                                      const v = e.target.value;
+                                      updateAb(p => ({
+                                        ...p,
+                                        activities: {
+                                          ...p.activities,
+                                          [item.fld]: { ...((p.activities as any)[item.fld] || {}), [loc]: v }
+                                        }
+                                      }));
+                                    }}
+                                    rows={2}
+                                    className="w-full text-xs bg-slate-50 border border-slate-200 px-2 py-1 rounded-sm"
+                                  />
+                                ) : (
+                                  <input
+                                    value={(ab.activities as any)?.[item.fld]?.[loc] || ''}
+                                    onChange={e => {
+                                      const v = e.target.value;
+                                      updateAb(p => ({
+                                        ...p,
+                                        activities: {
+                                          ...p.activities,
+                                          [item.fld]: { ...((p.activities as any)[item.fld] || {}), [loc]: v }
+                                        }
+                                      }));
+                                    }}
+                                    className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2 rounded-sm"
+                                  />
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                      <SaveBar onSave={() => saveContent(content)} saving={saving} saved={saved} />
+                    </div>
+                  )}
+                </div>
+
+                {/* 06 — İnstitusional Dəyərlər */}
+                <div className="bg-white border border-slate-200 rounded overflow-hidden">
+                  <button onClick={() => setExpandedId(expandedId === 'ab_values' ? null : 'ab_values')}
+                    className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-50 text-left">
+                    <span className="text-xs font-bold text-slate-900">06. İnstitusional Dəyərlər (Core Values)</span>
+                    {expandedId === 'ab_values' ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
+                  </button>
+                  {expandedId === 'ab_values' && (
+                    <div className="border-t border-slate-100 p-4 space-y-3 bg-slate-50/50">
+                      {[
+                        { label: 'Bölmə Badge', fld: 'badge', multi: false },
+                        { label: 'Bölmə Başlığı', fld: 'title', multi: false },
+                        { label: 'Bölmə Təsviri', fld: 'desc', multi: true },
+                      ].map(item => (
+                        <div key={item.fld} className="bg-white border border-slate-200 rounded p-3">
+                          <div className="text-[10px] font-bold text-slate-500 uppercase mb-2 font-mono">{item.label}</div>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            {LOCALES.map(loc => (
+                              <div key={loc}>
+                                <div className="text-[9px] font-bold text-slate-400 mb-0.5">{loc}</div>
+                                {item.multi ? (
+                                  <textarea
+                                    value={(ab.values as any)?.[item.fld]?.[loc] || ''}
+                                    onChange={e => {
+                                      const v = e.target.value;
+                                      updateAb(p => ({
+                                        ...p,
+                                        values: {
+                                          ...p.values,
+                                          [item.fld]: { ...((p.values as any)[item.fld] || {}), [loc]: v }
+                                        }
+                                      }));
+                                    }}
+                                    rows={2}
+                                    className="w-full text-xs bg-slate-50 border border-slate-200 px-2 py-1 rounded-sm"
+                                  />
+                                ) : (
+                                  <input
+                                    value={(ab.values as any)?.[item.fld]?.[loc] || ''}
+                                    onChange={e => {
+                                      const v = e.target.value;
+                                      updateAb(p => ({
+                                        ...p,
+                                        values: {
+                                          ...p.values,
+                                          [item.fld]: { ...((p.values as any)[item.fld] || {}), [loc]: v }
+                                        }
+                                      }));
+                                    }}
+                                    className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2 rounded-sm"
+                                  />
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                      <SaveBar onSave={() => saveContent(content)} saving={saving} saved={saved} />
+                    </div>
+                  )}
+                </div>
+
+                {/* 07 — Prioritet İxrac Sektorları */}
+                <div className="bg-white border border-slate-200 rounded overflow-hidden">
+                  <button onClick={() => setExpandedId(expandedId === 'ab_sectors' ? null : 'ab_sectors')}
+                    className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-50 text-left">
+                    <span className="text-xs font-bold text-slate-900">07. Prioritet İxrac Sektorları (Priority Export Sectors & Images)</span>
+                    {expandedId === 'ab_sectors' ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
+                  </button>
+                  {expandedId === 'ab_sectors' && (
+                    <div className="border-t border-slate-100 p-4 space-y-4 bg-slate-50/50">
+                      {[
+                        { label: 'Bölmə Badge', fld: 'badge', multi: false },
+                        { label: 'Bölmə Başlığı', fld: 'title', multi: false },
+                        { label: 'Bölmə Təsviri', fld: 'desc', multi: true },
+                      ].map(item => (
+                        <div key={item.fld} className="bg-white border border-slate-200 rounded p-3">
+                          <div className="text-[10px] font-bold text-slate-500 uppercase mb-2 font-mono">{item.label}</div>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            {LOCALES.map(loc => (
+                              <div key={loc}>
+                                <div className="text-[9px] font-bold text-slate-400 mb-0.5">{loc}</div>
+                                {item.multi ? (
+                                  <textarea
+                                    value={(ab.sectors as any)?.[item.fld]?.[loc] || ''}
+                                    onChange={e => {
+                                      const v = e.target.value;
+                                      updateAb(p => ({
+                                        ...p,
+                                        sectors: {
+                                          ...p.sectors,
+                                          [item.fld]: { ...((p.sectors as any)[item.fld] || {}), [loc]: v }
+                                        }
+                                      }));
+                                    }}
+                                    rows={2}
+                                    className="w-full text-xs bg-slate-50 border border-slate-200 px-2 py-1 rounded-sm"
+                                  />
+                                ) : (
+                                  <input
+                                    value={(ab.sectors as any)?.[item.fld]?.[loc] || ''}
+                                    onChange={e => {
+                                      const v = e.target.value;
+                                      updateAb(p => ({
+                                        ...p,
+                                        sectors: {
+                                          ...p.sectors,
+                                          [item.fld]: { ...((p.sectors as any)[item.fld] || {}), [loc]: v }
+                                        }
+                                      }));
+                                    }}
+                                    className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2 rounded-sm"
+                                  />
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+
+                      {/* 6 Sector cards with Image Upload */}
+                      <div className="space-y-3 pt-2">
+                        <div className="text-xs font-bold text-slate-800 uppercase tracking-wider">6 İxrac Sektorunun Şəkilləri və Mətnləri</div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          {(ab.sectors?.items || []).map((sec: any, idx: number) => {
+                            const imgUrl = sec.image || '';
+                            return (
+                              <div key={idx} className="bg-white border border-slate-200 rounded p-3 space-y-2">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-[11px] font-bold text-slate-700">Sektor #{idx + 1} — {sec.title?.AZ || sec.title?.EN || `Sektor ${idx + 1}`}</span>
+                                  <span className="text-[10px] text-slate-400 font-mono">ID: {idx}</span>
+                                </div>
+                                <div>
+                                  <label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">Şəkil URL & Yükləmə</label>
+                                  <div className="flex gap-2">
+                                    <input
+                                      value={imgUrl}
+                                      onChange={e => {
+                                        const v = e.target.value;
+                                        updateAb(p => {
+                                          const items = [...(p.sectors?.items || [])];
+                                          if (items[idx]) items[idx] = { ...items[idx], image: v };
+                                          return { ...p, sectors: { ...p.sectors, items } };
+                                        });
+                                      }}
+                                      className="flex-1 h-7 text-xs bg-slate-50 border border-slate-200 px-2 rounded-sm"
+                                    />
+                                    <button
+                                      type="button"
+                                      onClick={() => triggerUpload(`about_sector_${idx}`)}
+                                      className="h-7 px-2.5 bg-[#0f3156] text-white text-[11px] font-bold rounded-sm flex items-center gap-1 hover:bg-[#081c33] shrink-0"
+                                    >
+                                      <Upload className="w-3 h-3" /> Yüklə
+                                    </button>
+                                  </div>
+                                  {imgUrl && (
+                                    <div className="mt-1.5 flex items-center gap-2">
+                                      <img src={imgUrl} alt="Sector" className="w-10 h-10 object-cover rounded border border-slate-200" referrerPolicy="no-referrer" />
+                                      <span className="text-[10px] text-slate-400 truncate flex-1 font-mono">{imgUrl}</span>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      <SaveBar onSave={() => saveContent(content)} saving={saving} saved={saved} />
+                    </div>
+                  )}
+                </div>
+
+                {/* 08 — Dəhlizlər və Tərəfdaşlar */}
+                <div className="bg-white border border-slate-200 rounded overflow-hidden">
+                  <button onClick={() => setExpandedId(expandedId === 'ab_corridors' ? null : 'ab_corridors')}
+                    className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-50 text-left">
+                    <span className="text-xs font-bold text-slate-900">08. Logistika Dəhlizləri və Tərəfdaşlar (Trade Corridors)</span>
+                    {expandedId === 'ab_corridors' ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
+                  </button>
+                  {expandedId === 'ab_corridors' && (
+                    <div className="border-t border-slate-100 p-4 space-y-3 bg-slate-50/50">
+                      {[
+                        { label: 'Bölmə Badge', fld: 'badge', multi: false },
+                        { label: 'Bölmə Başlığı', fld: 'title', multi: false },
+                        { label: 'Bölmə Təsviri', fld: 'desc', multi: true },
+                      ].map(item => (
+                        <div key={item.fld} className="bg-white border border-slate-200 rounded p-3">
+                          <div className="text-[10px] font-bold text-slate-500 uppercase mb-2 font-mono">{item.label}</div>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            {LOCALES.map(loc => (
+                              <div key={loc}>
+                                <div className="text-[9px] font-bold text-slate-400 mb-0.5">{loc}</div>
+                                {item.multi ? (
+                                  <textarea
+                                    value={(ab.partnership as any)?.[item.fld]?.[loc] || ''}
+                                    onChange={e => {
+                                      const v = e.target.value;
+                                      updateAb(p => ({
+                                        ...p,
+                                        partnership: {
+                                          ...p.partnership,
+                                          [item.fld]: { ...((p.partnership as any)[item.fld] || {}), [loc]: v }
+                                        }
+                                      }));
+                                    }}
+                                    rows={2}
+                                    className="w-full text-xs bg-slate-50 border border-slate-200 px-2 py-1 rounded-sm"
+                                  />
+                                ) : (
+                                  <input
+                                    value={(ab.partnership as any)?.[item.fld]?.[loc] || ''}
+                                    onChange={e => {
+                                      const v = e.target.value;
+                                      updateAb(p => ({
+                                        ...p,
+                                        partnership: {
+                                          ...p.partnership,
+                                          [item.fld]: { ...((p.partnership as any)[item.fld] || {}), [loc]: v }
+                                        }
+                                      }));
+                                    }}
+                                    className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2 rounded-sm"
+                                  />
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                      <SaveBar onSave={() => saveContent(content)} saving={saving} saved={saved} />
+                    </div>
+                  )}
+                </div>
+
+                {/* 09 — Komanda Bölməsi Başlığı */}
+                <div className="bg-white border border-slate-200 rounded overflow-hidden">
+                  <button onClick={() => setExpandedId(expandedId === 'ab_team_head' ? null : 'ab_team_head')}
+                    className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-50 text-left">
+                    <span className="text-xs font-bold text-slate-900">09. Komanda Bölməsi Başlıqları (Team Section Header)</span>
+                    {expandedId === 'ab_team_head' ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
+                  </button>
+                  {expandedId === 'ab_team_head' && (
+                    <div className="border-t border-slate-100 p-4 space-y-3 bg-slate-50/50">
+                      {[
+                        { label: 'Badge', fld: 'badge', multi: false },
+                        { label: 'Başlıq', fld: 'title', multi: false },
+                        { label: 'Açıqlama', fld: 'desc', multi: true },
+                      ].map(item => (
+                        <div key={item.fld} className="bg-white border border-slate-200 rounded p-3">
+                          <div className="text-[10px] font-bold text-slate-500 uppercase mb-2 font-mono">{item.label}</div>
+                          <div className="grid grid-cols-2 gap-2">
+                            {LOCALES.map(loc => (
+                              <div key={loc}>
+                                <div className="text-[9px] font-bold text-slate-400 mb-0.5">{loc}</div>
+                                {item.multi ? (
+                                  <textarea
+                                    value={(ab.team as any)?.[item.fld]?.[loc] || ''}
+                                    onChange={e => {
+                                      const v = e.target.value;
+                                      updateAb(p => ({
+                                        ...p,
+                                        team: {
+                                          ...p.team,
+                                          [item.fld]: { ...((p.team as any)[item.fld] || {}), [loc]: v }
+                                        }
+                                      }));
+                                    }}
+                                    rows={2}
+                                    className="w-full text-xs bg-slate-50 border border-slate-200 px-2 py-1 rounded-sm"
+                                  />
+                                ) : (
+                                  <input
+                                    value={(ab.team as any)?.[item.fld]?.[loc] || ''}
+                                    onChange={e => {
+                                      const v = e.target.value;
+                                      updateAb(p => ({
+                                        ...p,
+                                        team: {
+                                          ...p.team,
+                                          [item.fld]: { ...((p.team as any)[item.fld] || {}), [loc]: v }
+                                        }
+                                      }));
+                                    }}
+                                    className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2 rounded-sm"
+                                  />
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                      <SaveBar onSave={() => saveContent(content)} saving={saving} saved={saved} />
+                    </div>
+                  )}
+                </div>
+
+                {/* 10 — Əməkdaşlığa Dəvət (CTA) */}
+                <div className="bg-white border border-slate-200 rounded overflow-hidden">
+                  <button onClick={() => setExpandedId(expandedId === 'ab_cta' ? null : 'ab_cta')}
+                    className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-50 text-left">
+                    <span className="text-xs font-bold text-slate-900">10. Əməkdaşlığa Dəvət (CTA)</span>
+                    {expandedId === 'ab_cta' ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
+                  </button>
+                  {expandedId === 'ab_cta' && (
+                    <div className="border-t border-slate-100 p-4 space-y-3 bg-slate-50/50">
+                      {[
+                        { label: 'Badge', fld: 'badge', multi: false },
+                        { label: 'Başlıq', fld: 'title', multi: false },
+                        { label: 'Mətn', fld: 'desc', multi: true },
+                        { label: 'Alıcı Butonu', fld: 'buyerBtn', multi: false },
+                        { label: 'İstehsalçı Butonu', fld: 'producerBtn', multi: false },
+                        { label: 'Əlaqə Butonu', fld: 'contactBtn', multi: false },
+                      ].map(item => (
+                        <div key={item.fld} className="bg-white border border-slate-200 rounded p-3">
+                          <div className="text-[10px] font-bold text-slate-500 uppercase mb-2 font-mono">{item.label}</div>
+                          <div className="grid grid-cols-2 gap-2">
+                            {LOCALES.map(loc => (
+                              <div key={loc}>
+                                <div className="text-[9px] font-bold text-slate-400 mb-0.5">{loc}</div>
+                                {item.multi ? (
+                                  <textarea
+                                    value={(ab.cta as any)?.[item.fld]?.[loc] || ''}
+                                    onChange={e => {
+                                      const v = e.target.value;
+                                      updateAb(p => ({
+                                        ...p,
+                                        cta: {
+                                          ...p.cta,
+                                          [item.fld]: { ...((p.cta as any)[item.fld] || {}), [loc]: v }
+                                        }
+                                      }));
+                                    }}
+                                    rows={2}
+                                    className="w-full text-xs bg-slate-50 border border-slate-200 px-2 py-1 rounded-sm"
+                                  />
+                                ) : (
+                                  <input
+                                    value={(ab.cta as any)?.[item.fld]?.[loc] || ''}
+                                    onChange={e => {
+                                      const v = e.target.value;
+                                      updateAb(p => ({
+                                        ...p,
+                                        cta: {
+                                          ...p.cta,
+                                          [item.fld]: { ...((p.cta as any)[item.fld] || {}), [loc]: v }
+                                        }
+                                      }));
+                                    }}
+                                    className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2 rounded-sm"
+                                  />
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                      <SaveBar onSave={() => saveContent(content)} saving={saving} saved={saved} />
+                    </div>
+                  )}
+                </div>
+
+                <SaveBar onSave={() => saveContent(content)} saving={saving} saved={saved} />
+              </>
+            );
+          })()}
+
+          {/* ── TEAM MANAGEMENT (KOMANDA) ── */}
+          {page === 'team' && (
+            <>
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h2 className="text-sm font-bold text-slate-800">Komanda İdarəetməsi (Ekip)</h2>
+                  <p className="text-xs text-slate-500">Haqqımızda səhifəsində görünən komanda üzvlərini, vəzifələrini və əlaqə məlumatlarını idarə edin.</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={loadTeam}
+                    disabled={teamLoading}
+                    className="h-8 px-3 flex items-center gap-1.5 text-xs border border-slate-200 hover:bg-slate-100 text-slate-600 rounded-sm"
+                  >
+                    <RefreshCw className={`w-3.5 h-3.5 ${teamLoading ? 'animate-spin' : ''}`} /> Yenilə
+                  </button>
+                  <button
+                    onClick={() => {
+                      setNewMember({
+                        id: `tm-${Date.now().toString(36)}`,
+                        name: '',
+                        photo: '',
+                        email: '',
+                        linkedin: '',
+                        sortOrder: teamMembers.length + 1,
+                        isActive: true,
+                        role: { AZ:'', EN:'', TR:'', RU:'', AR:'', ES:'' },
+                        bio: { AZ:'', EN:'', TR:'', RU:'', AR:'', ES:'' }
+                      });
+                      setShowNewMember(true);
+                    }}
+                    className="h-8 px-3.5 flex items-center gap-1.5 text-xs font-bold bg-[#0f3156] text-white hover:bg-[#081c33] rounded-sm"
+                  >
+                    <UserPlus className="w-3.5 h-3.5" /> Yeni Komanda Üzvü
+                  </button>
+                </div>
+              </div>
+
+              {/* Stats Bar */}
+              <div className="grid grid-cols-3 gap-3 mb-4">
+                <div className="bg-white border border-slate-200 p-3 rounded">
+                  <div className="text-[10px] font-bold text-slate-400 uppercase font-mono">Ümumi Üzvlər</div>
+                  <div className="text-xl font-black text-slate-800 mt-0.5">{teamMembers.length}</div>
+                </div>
+                <div className="bg-white border border-slate-200 p-3 rounded">
+                  <div className="text-[10px] font-bold text-slate-400 uppercase font-mono">Aktiv Üzvlər</div>
+                  <div className="text-xl font-black text-emerald-600 mt-0.5">
+                    {teamMembers.filter(m => m.isActive).length}
+                  </div>
+                </div>
+                <div className="bg-white border border-slate-200 p-3 rounded">
+                  <div className="text-[10px] font-bold text-slate-400 uppercase font-mono">Deaktiv Üzvlər</div>
+                  <div className="text-xl font-black text-slate-400 mt-0.5">
+                    {teamMembers.filter(m => !m.isActive).length}
+                  </div>
+                </div>
+              </div>
+
+              {/* Members List */}
+              {teamLoading && (
+                <div className="py-12 text-center text-xs text-slate-400">
+                  <RefreshCw className="w-5 h-5 mx-auto animate-spin mb-2" /> Komanda üzvləri yüklənir...
+                </div>
+              )}
+
+              {!teamLoading && teamMembers.length === 0 && (
+                <div className="bg-white border border-dashed border-slate-200 rounded p-8 text-center text-xs text-slate-400">
+                  <Users className="w-8 h-8 mx-auto mb-2 text-slate-300" /> Hələ heç bir komanda üzvü əlavə edilməyib.
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {teamMembers.map(m => {
+                  const roleTxt = m.role?.[locale] || m.role?.AZ || m.role?.EN || '';
+                  const bioTxt = m.bio?.[locale] || m.bio?.AZ || m.bio?.EN || '';
+
+                  return (
+                    <div key={m.id} className="bg-white border border-slate-200 rounded-lg p-4 flex flex-col justify-between hover:shadow-sm transition-shadow">
+                      <div>
+                        <div className="flex items-start gap-3 mb-3">
+                          <div className="w-14 h-14 rounded-lg bg-slate-100 border border-slate-200 overflow-hidden shrink-0">
+                            {m.photo ? (
+                              <img src={m.photo} alt={m.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-slate-400">
+                                <Users className="w-6 h-6" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between gap-1">
+                              <h3 className="text-xs font-bold text-slate-900 truncate">{m.name}</h3>
+                              <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${m.isActive ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-500'}`}>
+                                {m.isActive ? 'Aktiv' : 'Passiv'}
+                              </span>
+                            </div>
+                            <div className="text-[11px] font-medium text-emerald-700 truncate mt-0.5">{roleTxt || 'Vəzifə qeyd edilməyib'}</div>
+                            <div className="text-[10px] text-slate-400 font-mono mt-0.5">Sıra: #{m.sortOrder ?? 0}</div>
+                          </div>
+                        </div>
+
+                        {bioTxt && (
+                          <p className="text-[11px] text-slate-500 line-clamp-2 leading-relaxed mb-3 bg-slate-50 p-2 rounded border border-slate-100">
+                            {bioTxt}
+                          </p>
+                        )}
+
+                        <div className="space-y-1 text-[10px] text-slate-500 font-mono mb-3">
+                          {m.email && <div className="truncate"><span className="text-slate-400">Email:</span> {m.email}</div>}
+                          {m.linkedin && <div className="truncate"><span className="text-slate-400">LinkedIn:</span> {m.linkedin}</div>}
+                        </div>
+                      </div>
+
+                      <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                        <button
+                          onClick={() => handleToggleMemberActive(m)}
+                          className={`h-7 px-2 text-[10px] font-bold border rounded-sm transition-colors ${m.isActive ? 'border-amber-300 text-amber-700 hover:bg-amber-50' : 'border-emerald-300 text-emerald-700 hover:bg-emerald-50'}`}
+                        >
+                          {m.isActive ? 'Deaktiv Et' : 'Aktivləşdir'}
+                        </button>
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            onClick={() => setEditingMember(m)}
+                            className="h-7 px-2.5 flex items-center gap-1 text-[11px] font-medium border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-sm"
+                          >
+                            <Pencil className="w-3 h-3" /> Redaktə
+                          </button>
+                          <button
+                            onClick={() => handleDeleteMember(m.id)}
+                            className="h-7 px-2 text-red-500 hover:bg-red-50 border border-red-200 rounded-sm"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Add/Edit Modal */}
+              {(showNewMember || editingMember !== null) && (() => {
+                const isNew = showNewMember;
+                const cur = isNew ? newMember : editingMember;
+                const setCur = isNew ? setNewMember : setEditingMember;
+
+                return (
+                  <div className="fixed inset-0 z-[9999] bg-black/70 flex items-center justify-center p-4 backdrop-blur-xs">
+                    <div className="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden">
+                      {/* Modal Header */}
+                      <div className="px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between shrink-0">
+                        <div className="flex items-center gap-2">
+                          <Users className="w-4 h-4 text-emerald-400" />
+                          <h3 className="text-xs font-bold uppercase tracking-wider">
+                            {isNew ? 'Yeni Komanda Üzvü Əlavə Et' : `Redaktə: ${cur.name}`}
+                          </h3>
+                        </div>
+                        <button onClick={() => { setShowNewMember(false); setEditingMember(null); }} className="text-slate-400 hover:text-white">
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+
+                      {/* Modal Body */}
+                      <div className="p-5 overflow-y-auto space-y-4 flex-1">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Ad və Soyad *</label>
+                            <input
+                              value={cur.name || ''}
+                              onChange={e => setCur((p: any) => ({ ...p, name: e.target.value }))}
+                              placeholder="Məs: Ali Əhmədov"
+                              className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156]"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Sıralama (Order)</label>
+                            <input
+                              type="number"
+                              value={cur.sortOrder ?? 0}
+                              onChange={e => setCur((p: any) => ({ ...p, sortOrder: parseInt(e.target.value) || 0 }))}
+                              className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156]"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Photo URL + upload */}
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Şəkil URL</label>
+                          <div className="flex gap-2">
+                            <input
+                              value={cur.photo || ''}
+                              onChange={e => setCur((p: any) => ({ ...p, photo: e.target.value }))}
+                              placeholder="https://..."
+                              className="flex-1 h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156]"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => triggerUpload(isNew ? 'team_new' : 'team_edit')}
+                              className="h-8 px-3 bg-[#0f3156] text-white text-xs font-bold rounded-sm flex items-center gap-1.5 hover:bg-[#081c33]"
+                            >
+                              <Upload className="w-3 h-3" /> Yüklə
+                            </button>
+                          </div>
+                          {cur.photo && (
+                            <div className="mt-2 flex items-center gap-3">
+                              <img src={cur.photo} alt="Preview" className="w-12 h-12 object-cover rounded border border-slate-200" referrerPolicy="no-referrer" />
+                              <span className="text-[10px] text-slate-400 truncate font-mono">{cur.photo}</span>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Email</label>
+                            <input
+                              value={cur.email || ''}
+                              onChange={e => setCur((p: any) => ({ ...p, email: e.target.value }))}
+                              placeholder="ad@azexbuy.com"
+                              className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156]"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">LinkedIn URL</label>
+                            <input
+                              value={cur.linkedin || ''}
+                              onChange={e => setCur((p: any) => ({ ...p, linkedin: e.target.value }))}
+                              placeholder="https://linkedin.com/in/..."
+                              className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156]"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 pt-1">
+                          <input
+                            type="checkbox"
+                            id="m_active"
+                            checked={cur.isActive !== false}
+                            onChange={e => setCur((p: any) => ({ ...p, isActive: e.target.checked }))}
+                            className="rounded border-slate-300 text-[#0f3156] focus:ring-0"
+                          />
+                          <label htmlFor="m_active" className="text-xs font-bold text-slate-700 cursor-pointer">
+                            Saytda Aktiv Göstərilsin
+                          </label>
+                        </div>
+
+                        {/* Multilingual Roles */}
+                        <div className="bg-slate-50 border border-slate-200 p-3 rounded-lg space-y-2">
+                          <div className="text-[10px] font-bold text-slate-600 uppercase font-mono">Vəzifə / Rol (Bütün dillərdə)</div>
+                          <div className="space-y-1.5">
+                            {LOCALES.map(loc => (
+                              <div key={loc} className="flex items-center gap-2">
+                                <div className="w-10 h-7 rounded bg-white border border-slate-200 text-slate-700 font-bold text-[11px] font-mono flex items-center justify-center shrink-0">
+                                  {loc}
+                                </div>
+                                <input
+                                  value={cur.role?.[loc] || ''}
+                                  onChange={e => {
+                                    const val = e.target.value;
+                                    setCur((p: any) => ({ ...p, role: { ...(p.role || {}), [loc]: val } }));
+                                  }}
+                                  className="flex-1 h-7 text-xs bg-white border border-slate-200 px-2 rounded-sm focus:outline-none focus:border-[#0f3156]"
+                                  placeholder={`${loc} dilində vəzifə...`}
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Multilingual Bio */}
+                        <div className="bg-slate-50 border border-slate-200 p-3 rounded-lg space-y-2">
+                          <div className="text-[10px] font-bold text-slate-600 uppercase font-mono">Bio / Təcrübə (Bütün dillərdə)</div>
+                          <div className="space-y-1.5">
+                            {LOCALES.map(loc => (
+                              <div key={loc} className="flex items-start gap-2">
+                                <div className="w-10 h-7 rounded bg-white border border-slate-200 text-slate-700 font-bold text-[11px] font-mono flex items-center justify-center shrink-0 mt-0.5">
+                                  {loc}
+                                </div>
+                                <textarea
+                                  value={cur.bio?.[loc] || ''}
+                                  onChange={e => {
+                                    const val = e.target.value;
+                                    setCur((p: any) => ({ ...p, bio: { ...(p.bio || {}), [loc]: val } }));
+                                  }}
+                                  rows={2}
+                                  className="flex-1 text-xs bg-white border border-slate-200 px-2 py-1 rounded-sm focus:outline-none focus:border-[#0f3156] resize-none"
+                                  placeholder={`${loc} dilində bio...`}
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Modal Footer */}
+                      <div className="px-5 py-3 bg-slate-100 border-t border-slate-200 flex items-center justify-end gap-2 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => { setShowNewMember(false); setEditingMember(null); }}
+                          className="h-8 px-4 text-xs font-medium border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 rounded-sm"
+                        >
+                          İmtina
+                        </button>
+                        <button
+                          type="button"
+                          onClick={isNew ? handleSaveNewMember : handleSaveEditMember}
+                          className="h-8 px-5 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-sm"
+                        >
+                          {isNew ? 'Əlavə Et' : 'Dəyişiklikləri Saxla'}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
             </>
           )}
 
