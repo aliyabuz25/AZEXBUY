@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Locale, ViewMode, TeamMember, getLocalizedText } from '../types';
+import React, { useState } from 'react';
+import { Locale, ViewMode, getLocalizedText } from '../types';
 import { useLocalization } from '../context/LocalizationContext';
-import { DEFAULT_TEAM_MEMBERS } from '../data/translations';
 
 interface AboutViewProps {
   locale: Locale;
@@ -11,46 +10,13 @@ interface AboutViewProps {
 }
 
 export const AboutView: React.FC<AboutViewProps> = ({ locale, onOpenRFQ, onOpenProducer, onNavigate }) => {
-  const { about, team: contextTeam } = useLocalization();
+  const { about } = useLocalization();
   const [activeActivity, setActiveActivity] = useState<number | null>(null);
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>(contextTeam && contextTeam.length > 0 ? contextTeam : DEFAULT_TEAM_MEMBERS);
-  const [teamLoading, setTeamLoading] = useState<boolean>(true);
 
   // Helper for localized text
   const t = (textObj: any): string => {
     return getLocalizedText(textObj, locale);
   };
-
-  // Fetch live team members from API on mount
-  useEffect(() => {
-    let isMounted = true;
-    fetch('/api/azexbuy/team')
-      .then(res => (res.ok ? res.json() : null))
-      .then(data => {
-        if (!isMounted) return;
-        if (Array.isArray(data) && data.length > 0) {
-          const active = data.filter((m: TeamMember) => m.isActive !== false);
-          if (active.length > 0) {
-            setTeamMembers(active);
-          }
-        }
-        setTeamLoading(false);
-      })
-      .catch(() => {
-        if (isMounted) setTeamLoading(false);
-      });
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  // Update if context changes
-  useEffect(() => {
-    if (contextTeam && contextTeam.length > 0) {
-      setTeamMembers(contextTeam);
-      setTeamLoading(false);
-    }
-  }, [contextTeam]);
 
   return (
     <div className="bg-white">
@@ -400,12 +366,6 @@ export const AboutView: React.FC<AboutViewProps> = ({ locale, onOpenRFQ, onOpenP
             <p className="text-sm text-gray-600 leading-relaxed">
               {t(about.growth.desc)}
             </p>
-            {about.growth.disclaimer && (
-              <p className="text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-3.5 py-2 mt-3 inline-flex items-center gap-2 shadow-xs">
-                <i className="fa-solid fa-flag text-xs text-amber-600"></i>
-                <span>{t(about.growth.disclaimer)}</span>
-              </p>
-            )}
           </div>
 
           <div className="space-y-4">
@@ -422,133 +382,6 @@ export const AboutView: React.FC<AboutViewProps> = ({ locale, onOpenRFQ, onOpenP
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════════════
-          09 — DYNAMIC TEAM CARDS (Peşəkar Komanda)
-      ═══════════════════════════════════════════════════════════ */}
-      <section className="py-16 sm:py-20 border-b border-gray-100 bg-white" id="team">
-        <div className="custom-container">
-          <div className="max-w-2xl mb-12">
-            <span className="text-[11px] font-extrabold tracking-widest uppercase text-brandGreen block mb-2">
-              {t(about.team.badge)}
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-brandNavy mb-3">
-              {t(about.team.title)}
-            </h2>
-            <p className="text-sm text-gray-600 leading-relaxed">
-              {t(about.team.desc)}
-            </p>
-          </div>
-
-          {/* Loading Skeleton */}
-          {teamLoading && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[1, 2, 3, 4].map(n => (
-                <div key={n} className="bg-slate-50 border border-slate-200 rounded-2xl p-5 animate-pulse">
-                  <div className="w-full h-56 bg-slate-200 rounded-xl mb-4"></div>
-                  <div className="h-4 bg-slate-200 rounded w-2/3 mb-2"></div>
-                  <div className="h-3 bg-slate-200 rounded w-1/2 mb-3"></div>
-                  <div className="h-12 bg-slate-200 rounded w-full"></div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Live Team Grid */}
-          {!teamLoading && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {teamMembers.map((member) => {
-                const memberRole = t(member.role);
-                const memberBio = t(member.bio);
-                return (
-                  <div
-                    key={member.id}
-                    className="group bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-xl hover:border-brandGreen/40 transition-all duration-300 flex flex-col"
-                  >
-                    {/* Member photo container */}
-                    <div className="relative h-64 bg-slate-100 overflow-hidden">
-                      {member.photo ? (
-                        <img
-                          src={member.photo}
-                          alt={member.name}
-                          referrerPolicy="no-referrer"
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-slate-100 to-slate-200 text-slate-400">
-                          <i className="fa-solid fa-user-tie text-5xl mb-2"></i>
-                          <span className="text-[11px] font-bold text-slate-500">{member.name}</span>
-                        </div>
-                      )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    </div>
-
-                    {/* Member details */}
-                    <div className="p-5 flex-1 flex flex-col justify-between bg-white">
-                      <div>
-                        <h3 className="text-base font-extrabold text-brandNavy mb-1 group-hover:text-brandGreen transition-colors">
-                          {member.name}
-                        </h3>
-                        {memberRole && (
-                          <div className="mb-3">
-                            <span className="inline-block text-[11px] font-bold text-brandGreen bg-emerald-50 border border-emerald-100 rounded-md px-2 py-0.5">
-                              {memberRole}
-                            </span>
-                          </div>
-                        )}
-                        {memberBio && (
-                          <p className="text-xs text-gray-600 leading-relaxed line-clamp-3 mb-4">
-                            {memberBio}
-                          </p>
-                        )}
-                      </div>
-
-                      {/* Contact / Social links */}
-                      <div className="pt-3 border-t border-gray-100 flex items-center justify-between text-xs">
-                        <div className="flex items-center gap-2">
-                          {member.email && (
-                            <a
-                              href={`mailto:${member.email}`}
-                              title={member.email}
-                              className="w-8 h-8 rounded-full bg-slate-100 hover:bg-brandNavy hover:text-white text-slate-600 flex items-center justify-center transition-colors text-xs"
-                            >
-                              <i className="fa-solid fa-envelope"></i>
-                            </a>
-                          )}
-                          {member.linkedin && (
-                            <a
-                              href={member.linkedin}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              title="LinkedIn"
-                              className="w-8 h-8 rounded-full bg-slate-100 hover:bg-[#0077b5] hover:text-white text-slate-600 flex items-center justify-center transition-colors text-xs"
-                            >
-                              <i className="fa-brands fa-linkedin-in"></i>
-                            </a>
-                          )}
-                        </div>
-                        <span className="text-[10px] text-slate-400 font-semibold tracking-wider">AZEXBUY</span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-
-          {!teamLoading && teamMembers.length === 0 && (
-            <div className="text-center py-12 bg-slate-50 border border-dashed border-slate-300 rounded-2xl p-8">
-              <i className="fa-solid fa-users text-3xl text-slate-300 mb-3"></i>
-              <h3 className="text-base font-bold text-slate-600 mb-1">
-                {locale === 'AZ' ? 'Komanda məlumatları yenilənir' : locale === 'TR' ? 'Ekip bilgileri güncelleniyor' : 'Team information updating'}
-              </h3>
-              <p className="text-xs text-slate-400 max-w-sm mx-auto">
-                {locale === 'AZ' ? 'Komandamız haqqında məlumatlar tezliklə burada əks olunacaq.' : 'Team details will be displayed here shortly.'}
-              </p>
-            </div>
-          )}
         </div>
       </section>
 

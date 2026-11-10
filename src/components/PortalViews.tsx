@@ -961,7 +961,7 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
   onOpenServiceApp,
   onNavigate,
 }) => {
-  const { strings, buyerSteps: cmsBuyerSteps, producerSteps: cmsProducerSteps, cmsServices, howItWorksBuyersImage, howItWorksSellersImage, contact } = useLocalization();
+  const { strings, buyerSteps: cmsBuyerSteps, producerSteps: cmsProducerSteps, cmsServices, howItWorksBuyersImage, howItWorksSellersImage, buyerHeroImage, producerHeroImage, contact } = useLocalization();
   const [selectedBuyerStep, setSelectedBuyerStep] = useState<number>(1);
   const [selectedProducerStep, setSelectedProducerStep] = useState<number>(1);
   const [contactSubmitted, setContactSubmitted] = useState(false);
@@ -976,23 +976,14 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
 
   // ── BUYERS PAGE ────────────────────────────────────────────────
   if (activeView === 'buyers') {
-    const heroTitle = locale === 'AZ' ? 'Azərbaycandan tədarük edin' : locale === 'TR' ? "Azerbaycan'dan tedarik edin" : locale === 'RU' ? 'Закупайте из Азербайджана' : 'Source from Azerbaijan';
-    const heroDesc = locale === 'AZ'
-      ? 'Tələbinizi bildirin; uyğun tədarükçüləri arayaq, mümkün olduqda təklifləri toplayıb müqayisə üçün təqdim edək və ixrac prosesini koordinasiya edək.'
-      : locale === 'TR'
-      ? 'İhtiyacınızı bildirin; uygun tedarikçileri arayalım, mümkün olduğunda teklifleri toplayıp karşılaştırma için sunalım ve ihracat sürecini koordine edelim.'
-      : locale === 'RU'
-      ? 'Сообщите о потребности; найдём поставщиков, соберём предложения и скоординируем экспортный процесс.'
-      : 'Share your needs; we will find suitable suppliers, collect offers for comparison, and coordinate the export process.';
-
     const BUYER_STEPS_AZ = [
-      { num:'01', title:'Tələbinizi bildirin', desc:'Axtardığınız məhsul, istədiyiniz miqdar, texniki xüsusiyyətlər və çatdırılma şərtləri barədə məlumat göndərin.', azexbuy:'Tələbinizi qəbul edir, lazımi əlavə məlumatları dəqiqləşdirir və uyğun tədarükçülərin axtarışına başlayır.', client:'Məhsulun adı, texniki xüsusiyyətlər, istənilən miqdar, hədəf liman/ölkə', result:'Tələb qeydə alınır, əməkdaşlıq prosesi başlayır', next:'Azərbaycanda uyğun tədarükçüləri axtarırıq' },
-      { num:'02', title:'Azərbaycanda uyğun tədarükçüləri axtarırıq', desc:'Təqdim etdiyiniz tələblərə görə Azərbaycanda uyğun istehsalçı və tədarükçüləri araşdırırıq.', azexbuy:'Məhsulun xüsusiyyətlərinə, istehsal imkânlarına və istənilən həcmə uyğun potensial tərəfləri müəyyən edirik.', client:'Əlavə məhsul spesifikasiyaları (tələb olunarsa)', result:'Potensial tədarükçülərin ilkin siyahısı', next:'Tədarükçüləri ön yoxlamadan keçiririk' },
-      { num:'03', title:'Tədarükçüləri ön yoxlamadan keçiririk', desc:'Potensial tədarükçülərin şirkət məlumatlarını, fəaliyyət istiqamətlərini, məhsul çeşidlərini araşdırırıq.', azexbuy:'İstehsal imkânları, mövcud sertifikatlar və əməkdaşlıq imkânları ön qiymətləndirmədən keçirilir.', client:'Xüsusi keyfiyyət tələbləri (varsa)', result:'Əməkdaşlığa uyğun tədarükçülərin qısaldılmış siyahısı', next:'Qiymət və kommersiya təkliflərini toplayırıq' },
-      { num:'04', title:'Qiymət və kommersiya təkliflərini toplayırıq', desc:'Uyğun tədarükçülərdən qiymət, mövcud miqdar, istehsal müddəti, qablaşdırma və çatdırılma şərtləri barədə kommersiya təklifləri alırıq.', azexbuy:'Mümkün olduqda bir neçə tədarükçüdən (hədəf: 3–4 tədarükçü) təklif toplayırıq.', client:'Çatdırılma şərtləri üzrə prioritetlər (Incoterms®)', result:'Müqayisə üçün kommersiya təklifləri toplusu', next:'Təklifləri müqayisəli şəkildə təqdim edirik' },
-      { num:'05', title:'Təklifləri müqayisəli şəkildə təqdim edirik', desc:'Toplanmış təklifləri qiymət, keyfiyyət göstəriciləri, tədarük imkânları və kommersiya şərtləri üzrə müqayisə edərək sizə təqdim edirik.', azexbuy:'Alternativləri qiymətləndirib ehtiyaclarınıza uyğun seçim etməyinizə yardım edirik.', client:'Təkliflər üzrə rəy və prioritetlər', result:'Sizin üçün ən uyğun tədarükçünün seçilməsi', next:'Sifarişi koordinasiya edirik' },
-      { num:'06', title:'Sifarişi koordinasiya edirik', desc:'Seçdiyiniz tədarükçü ilə növbəti kommersiya danışıqları, sifariş təfərrüatları, müqavilə şərtləri və ödəniş razılaşmalarının aparılmasına dəstək veririk.', azexbuy:'Tərəflər arasında məlumat mübadiləsini və sifariş prosesinin koordinasiyasını təmin edirik.', client:'Sifariş təsdiqi, ödəniş şərtləri üzrə razılaşma', result:'Sifariş təsdiqlənir, istehsal/hazırlıq başlayır', next:'İxrac, gömrük və çatdırılma mərhələlərinə dəstək veririk' },
-      { num:'07', title:'İxrac, gömrük və çatdırılma mərhələlərinə dəstək veririk', desc:'Sifarişin ixraca hazırlanmasından məhsulun göndərilməsinə qədər sənədləşdirmə, sertifikasiya, gömrük prosedurları və beynəlxalq logistika proseslərinin koordinasiyasına dəstək veririk.', azexbuy:'Məhsulun razılaşdırılmış çatdırılma şərtlərinə uyğun şəkildə alıcıya çatdırılması prosesini koordinasiya edirik.', client:'Çatdırılma ünvanı, gömrük məlumatları', result:'Məhsul alıcıya çatdırılır', next:null },
+      { num:'01', title:'Azərbaycanda uyğun tədarükçüləri axtarırıq', desc:'Axtardığınız məhsula görə Azərbaycanda uyğun istehsalçı və tədarükçüləri araşdırırıq.', azexbuy:'Məhsulun xüsusiyyətlərinə, istehsal imkânlarına və istənilən həcmə uyğun potensial tərəfləri müəyyən edirik.', client:'Məhsulun adı, texniki xüsusiyyətlər, istənilən miqdar, hədəf liman/ölkə', result:'Potensial tədarükçülərin ilkin siyahısı', next:'Tədarükçüləri ön yoxlamadan keçiririk' },
+      { num:'02', title:'Tədarükçüləri ön yoxlamadan keçiririk', desc:'Potensial tədarükçülərin şirkət məlumatlarını, fəaliyyət istiqamətlərini, məhsul çeşidlərini araşdırırıq.', azexbuy:'İstehsal imkânları, mövcud sertifikatlar və əməkdaşlıq imkânları ön qiymətləndirmədən keçirilir.', client:'Xüsusi keyfiyyət tələbləri (varsa)', result:'Əməkdaşlıq və uyğunluq üzrə tədarükçülərin qısaldılmış siyahısı', next:'Qiymət və kommersiya təkliflərini toplayırıq' },
+      { num:'03', title:'Qiymət və kommersiya təkliflərini toplayırıq', desc:'Uyğun tədarükçülərdən qiymət, mövcud miqdar, istehsal müddəti, qablaşdırma və çatdırılma şərtləri barədə kommersiya təklifləri alırıq.', azexbuy:'Mümkün olduqda bir neçə tədarükçüdən (hədəf: 3–4 tədarükçü) təklif toplayırıq.', client:'Çatdırılma şərtləri üzrə prioritetlər (Incoterms®)', result:'Müqayisə üçün kommersiya təklifləri toplusu', next:'Təklifləri müqayisəli şəkildə təqdim edirik' },
+      { num:'04', title:'Təklifləri müqayisəli şəkildə təqdim edirik', desc:'Toplanmış təklifləri qiymət, keyfiyyət göstəriciləri, tədarük imkânları və kommersiya şərtləri üzrə müqayisə edərək sizə təqdim edirik.', azexbuy:'Alternativləri qiymətləndirib ehtiyaclarınıza uyğun seçim etməyinizə yardım edirik.', client:'Təkliflər üzrə rəy və prioritetlər', result:'Sizin üçün ən uyğun tədarükçünün seçilməsi', next:'Sifarişi koordinasiya edirik' },
+      { num:'05', title:'Sifarişi koordinasiya edirik', desc:'Seçdiyiniz tədarükçü ilə növbəti kommersiya danışıqları, sifariş təfərrüatları, müqavilə şərtləri və ödəniş razılaşmalarının aparılmasına dəstək veririk.', azexbuy:'Tərəflər arasında məlumat mübadiləsini və sifariş prosesinin koordinasiyasını təmin edirik.', client:'Sifariş təsdiqi, ödəniş şərtləri üzrə razılaşma', result:'Sifariş təsdiqlənir, istehsal/hazırlıq başlayır', next:'İxrac, gömrük və çatdırılma mərhələlərinə dəstək veririk' },
+      { num:'06', title:'İxrac, gömrük və çatdırılma mərhələlərinə dəstək veririk', desc:'Sifarişin ixraca hazırlanmasından məhsulun göndərilməsinə qədər sənədləşdirmə, sertifikasiya, gömrük prosedurları və beynəlxalq logistika proseslərinin koordinasiyasına dəstək veririk.', azexbuy:'Məhsulun razılaşdırılmış çatdırılma şərtlərinə uyğun şəkildə alıcıya çatdırılması prosesini koordinasiya edirik.', client:'Çatdırılma ünvanı, gömrük məlumatları', result:'Məhsul alıcıya çatdırılır', next:'Rəsmi RFQ qeydiyyatı' },
+      { num:'07', title:'Rəsmi RFQ qeydiyyatı', desc:'Seçim və logistika təsdiqləndikdən sonra sorğunuz rəsmiləşdirilir və Rəsmi RFQ Dosyeniz qeydiyyatdan keçir.', azexbuy:'Yekun RFQ sənədini hazırlayır və Rəsmi RFQ Dosye Nömrəsi ilə qeydiyyatdan keçirir.', client:'Əksik sənəd və təsdiqlər (varsa)', result:'Qeydiyyatdan keçmiş Rəsmi RFQ Dosye Nömrəsi', next:null },
     ];
 
     const clientLabel = locale === 'AZ' ? 'Alıcı nə təqdim etməlidir?' : locale === 'TR' ? 'Alıcı ne sunmalıdır?' : locale === 'RU' ? 'Что предоставляет покупатель?' : 'What does the buyer provide?';
@@ -1003,18 +994,39 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
     const infoTitle = locale === 'AZ' ? 'Faydalı məlumatlar' : locale === 'TR' ? 'Faydalı bilgiler' : locale === 'RU' ? 'Полезная информация' : 'Useful Information';
     const ctaRFQ = locale === 'AZ' ? 'Alıcı sorğusu göndər' : locale === 'TR' ? 'Alıcı sorgusu gönder' : locale === 'RU' ? 'Отправить запрос' : 'Send Buyer Inquiry';
     const ctaCatalog = locale === 'AZ' ? 'Məhsul kataloquna bax' : locale === 'TR' ? 'Ürün kataloğuna bak' : locale === 'RU' ? 'Смотреть каталог' : 'View Product Catalog';
+    const heroTitle = locale === 'AZ' ? 'Azərbaycandan tədarük edin' : locale === 'TR' ? 'Azerbaycan’dan tedarik edin' : locale === 'RU' ? 'Закупки из Азербайджана' : 'Source from Azerbaijan';
+    const heroDesc = locale === 'AZ'
+      ? 'Tələbinizi bildirin; uyğun tədarükçüləri arayaq, təklifləri toplayıb müqayisə üçün təqdim edək və ixrac prosesini koordinasiya edək.'
+      : locale === 'TR'
+      ? 'İhtiyacınızı bildirin; uygun tedarikçileri arayalım, teklifleri toplayıp karşılaştırma için sunalım ve ihracat sürecini koordine edelim.'
+      : locale === 'RU'
+      ? 'Сообщите о потребности; найдём поставщиков, соберём предложения и скоординируем экспортный процесс.'
+      : 'Share your needs; we will find suitable suppliers, collect offers for comparison, and coordinate the export process.';
 
     return (
       <div className="bg-[#F8FAFC] min-h-screen">
-        {/* Hero */}
-        <div className="bg-white border-b border-slate-100">
-          <div className="custom-container py-10 sm:py-14">
-            <div className="max-w-2xl">
-              <h1 className="text-2xl sm:text-3xl font-bold text-[#171717] mb-3">{heroTitle}</h1>
-              <p className="text-base text-[#555] leading-relaxed mb-6">{heroDesc}</p>
-              <div className="flex flex-wrap gap-3">
-                <button type="button" onClick={onOpenRFQ} className="bg-slate-800 hover:bg-slate-900 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors cursor-pointer">{ctaRFQ}</button>
-                <button type="button" onClick={() => onNavigate('products')} className="border border-slate-300 hover:border-slate-400 text-slate-700 text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors cursor-pointer">{ctaCatalog}</button>
+        {/* Hero — full-width image, flush to topbar (admin-editable BUYER_HERO_IMAGE) */}
+        <div className="relative w-full overflow-hidden bg-[#0b2440]">
+          <img
+            src={buyerHeroImage}
+            alt="AZEXBUY Baku headquarters"
+            className="w-full h-[420px] object-cover object-center"
+            referrerPolicy="no-referrer"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0b2440] via-[#0b2440]/45 to-[#0b2440]/15"></div>
+          <div className="absolute inset-x-0 bottom-0 z-10">
+            <div className="custom-container py-10">
+              <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-3 leading-tight max-w-2xl">{heroTitle}</h1>
+              <p className="text-base sm:text-lg text-slate-100/90 leading-relaxed mb-7 max-w-xl">{heroDesc}</p>
+              <div className="flex flex-wrap gap-3.5">
+                <button type="button" onClick={onOpenRFQ} className="bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold px-6 py-3 rounded-lg shadow-lg shadow-emerald-900/30 transition-all cursor-pointer flex items-center gap-2">
+                  <span>{ctaRFQ}</span>
+                  <i className="fa-solid fa-arrow-right text-xs"></i>
+                </button>
+                <button type="button" onClick={() => onNavigate('products')} className="bg-white/10 hover:bg-white/20 text-white border border-white/25 text-sm font-bold px-6 py-3 rounded-lg backdrop-blur-sm transition-all cursor-pointer flex items-center gap-2">
+                  <i className="fa-solid fa-boxes-stacked text-xs text-slate-200"></i>
+                  <span>{ctaCatalog}</span>
+                </button>
               </div>
             </div>
           </div>
@@ -1180,6 +1192,12 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
     const clientProvides = locale === 'AZ' ? 'Müştəri nə təqdim etməlidir?' : locale === 'TR' ? 'Müşteri ne sunmalıdır?' : locale === 'RU' ? 'Что предоставляет клиент?' : 'What does the client provide?';
     const expectedResult = locale === 'AZ' ? 'Gözlənilən nəticə' : locale === 'TR' ? 'Beklenen sonuç' : locale === 'RU' ? 'Ожидаемый результат' : 'Expected result';
     const nextStepLabel = locale === 'AZ' ? 'Növbəti mərhələ' : locale === 'TR' ? 'Sonraki aşama' : locale === 'RU' ? 'Следующий этап' : 'Next step';
+    const ctaBuyerTitle = locale === 'AZ' ? 'Azərbaycandan məhsul almaq istəyirsiniz?' : locale === 'TR' ? "Azerbaycan'dan ürün almak mı istiyorsunuz?" : locale === 'RU' ? 'Хотите закупать товары из Азербайджана?' : 'Looking to source products from Azerbaijan?';
+    const ctaBuyerDesc = locale === 'AZ' ? 'Tələbinizi bizə göndərin, uyğun Azərbaycan tədarükçülərinin araşdırılması prosesinə başlayaq.' : locale === 'TR' ? 'Talebinizi bize gönderin, uygun Azerbaycanlı tedarikçilerin araştırılması sürecini başlatalım.' : locale === 'RU' ? 'Отправьте нам запрос, и мы начнём поиск подходящих азербайджанских поставщиков.' : 'Send us your request and we will start searching for suitable Azerbaijani suppliers.';
+    const ctaBuyerBtn = locale === 'AZ' ? 'Alıcı kimi müraciət et' : locale === 'TR' ? 'Alıcı olarak başvur' : locale === 'RU' ? 'Подать заявку как покупатель' : 'Apply as a buyer';
+    const ctaSellerTitle = locale === 'AZ' ? 'Məhsullarınızı ixrac etmək istəyirsiniz?' : locale === 'TR' ? 'Ürünlerinizi ihraç etmek mi istiyorsunuz?' : locale === 'RU' ? 'Хотите экспортировать свою продукцию?' : 'Looking to export your products?';
+    const ctaSellerDesc = locale === 'AZ' ? 'Şirkətiniz və məhsullarınız haqqında məlumat verin, ixrac imkanlarını birlikdə araşdıraq.' : locale === 'TR' ? 'Şirketiniz ve ürünleriniz hakkında bilgi sunun, ihracat imkânlarını birlikte araştıralım.' : locale === 'RU' ? 'Расскажите о своей компании и продукции, вместе исследуем экспортные возможности.' : 'Share information about your company and products, and we will explore export opportunities together.';
+    const ctaSellerBtn = locale === 'AZ' ? 'Satıcı kimi müraciət et' : locale === 'TR' ? 'Satıcı olarak başvur' : locale === 'RU' ? 'Подать заявку как продавец' : 'Apply as a seller';
 
     return (
       <section className="py-8 bg-[#F5F6F7]">
@@ -1194,198 +1212,174 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
                 <p className="text-base font-normal text-[#666]">{howSubtitle}</p>
               </div>
 
-              {/* Two-column image + header area */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
-                {/* LEFT — Buyers */}
-                <div>
-                  <div className="rounded-[18px] overflow-hidden w-full aspect-[1.81/1] bg-[#dbeafe]">
-                    <img
-                      src={howItWorksBuyersImage}
-                      alt="Buyers"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="mt-4">
-                    <p className="text-[20px] font-normal text-[#171717] uppercase tracking-wide mb-4">{buyersLabel}</p>
-                    <span className="inline-block bg-[#DBEAFE] text-[#1D4ED8] text-[12px] font-normal px-2.5 py-[4px] rounded-full mb-3">
+              {/* Split in two — Buyers (navy tones) | Sellers (green tones) */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-7">
+
+                {/* ── LEFT: BUYERS ── */}
+                <div className="rounded-[18px] overflow-hidden bg-gradient-to-br from-brandNavy to-[#0b2440] p-6 sm:p-7 flex flex-col gap-5 min-h-[480px]">
+                  <div>
+                    <div className="rounded-[14px] overflow-hidden w-full aspect-[1.81/1] mb-4">
+                      <img src={howItWorksBuyersImage} alt="Buyers" className="w-full h-full object-cover" />
+                    </div>
+                    <p className="text-[20px] font-normal text-white uppercase tracking-wide mb-3">{buyersLabel}</p>
+                    <span className="inline-block bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-[12px] font-medium px-2.5 py-[4px] rounded-full mb-3">
                       {cmsBuyerSteps.length} {stepsLabel}
                     </span>
-                    <p className="text-[16px] font-normal text-[#555] leading-[21px]">{buyersDesc}</p>
+                    <p className="text-[15px] font-normal text-slate-200 leading-[21px] mb-4">{buyersDesc}</p>
+                  </div>
+
+                  {/* Buyer step accordion */}
+                  <div className="flex-1 bg-white/5 border border-white/10 rounded-[14px] p-4">
+                    {cmsBuyerSteps.map((step, idx) => {
+                      const isOpen = selectedBuyerStep === step.number;
+                      return (
+                        <div key={step.number}>
+                          <button
+                            type="button"
+                            className="w-full text-left py-3 cursor-pointer group"
+                            onClick={() => setSelectedBuyerStep(isOpen ? 0 : step.number)}
+                          >
+                            <div className="flex items-start justify-between gap-3">
+                              <div>
+                                <p className="text-[16px] font-bold text-white leading-snug">
+                                  {String(idx + 1).padStart(2, '0')}. {getLocalizedText(step.title, locale)}
+                                </p>
+                                {!isOpen && (
+                                  <p className="text-[13px] text-slate-300 mt-1.5 leading-relaxed">
+                                    {getLocalizedText(step.description, locale).slice(0, 80)}…
+                                  </p>
+                                )}
+                              </div>
+                              <i className={`fa-solid fa-chevron-${isOpen ? 'up' : 'down'} text-slate-400 text-xs mt-1.5 shrink-0`}></i>
+                            </div>
+                            {isOpen && (
+                              <div className="mt-3 space-y-3">
+                                <p className="text-[13px] text-slate-200 leading-relaxed">
+                                  {getLocalizedText(step.description, locale)}
+                                </p>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                  <div className="bg-emerald-500/15 border border-emerald-400/20 rounded-lg p-3">
+                                    <p className="text-[11px] font-bold text-emerald-300 uppercase tracking-wider mb-1">{azexbuyDoes}</p>
+                                    <p className="text-[13px] text-slate-100">{getLocalizedText(step.detailTitle, locale)}</p>
+                                  </div>
+                                  <div className="bg-white/10 border border-white/15 rounded-lg p-3">
+                                    <p className="text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1">{expectedResult}</p>
+                                    <p className="text-[13px] text-slate-100">{getLocalizedText(step.deliverable, locale)}</p>
+                                  </div>
+                                </div>
+                                {idx < cmsBuyerSteps.length - 1 && (
+                                  <p className="text-[12px] text-slate-400 mt-1">
+                                    {nextStepLabel}: {getLocalizedText(cmsBuyerSteps[idx + 1].title, locale)}
+                                  </p>
+                                )}
+                              </div>
+                            )}
+                          </button>
+                          <div className="border-t border-white/10"></div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Buyer CTA */}
+                  <div className="bg-white text-[#171717] rounded-[14px] p-5 flex flex-col gap-3">
+                    <div>
+                      <h3 className="text-[16px] font-bold mb-1">{ctaBuyerTitle}</h3>
+                      <p className="text-[13px] text-[#555] leading-relaxed">{ctaBuyerDesc}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={onOpenRFQ}
+                      className="self-start px-5 py-2.5 bg-brandNavy hover:bg-brandNavyDark text-white text-[14px] font-bold rounded-full transition-colors cursor-pointer"
+                    >
+                      {ctaBuyerBtn}
+                    </button>
                   </div>
                 </div>
 
-                {/* RIGHT — Sellers */}
-                <div>
-                  <div className="rounded-[18px] overflow-hidden w-full aspect-[1.81/1] bg-[#dcfce7]">
-                    <img
-                      src={howItWorksSellersImage}
-                      alt="Sellers"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="mt-4">
-                    <p className="text-[20px] font-normal text-[#171717] uppercase tracking-wide mb-4">{sellersLabel}</p>
-                    <span className="inline-block bg-[#DCFCE7] text-[#15803D] text-[12px] font-normal px-2.5 py-[4px] rounded-full mb-3">
+                {/* ── RIGHT: SELLERS ── */}
+                <div className="rounded-[18px] overflow-hidden bg-gradient-to-br from-emerald-700 to-emerald-950 p-6 sm:p-7 flex flex-col gap-5 min-h-[480px]">
+                  <div>
+                    <div className="rounded-[14px] overflow-hidden w-full aspect-[1.81/1] mb-4">
+                      <img src={howItWorksSellersImage} alt="Sellers" className="w-full h-full object-cover" />
+                    </div>
+                    <p className="text-[20px] font-normal text-white uppercase tracking-wide mb-3">{sellersLabel}</p>
+                    <span className="inline-block bg-white/15 border border-white/20 text-white/90 text-[12px] font-medium px-2.5 py-[4px] rounded-full mb-3">
                       {cmsProducerSteps.length} {stepsLabel}
                     </span>
-                    <p className="text-[16px] font-normal text-[#555] leading-[21px]">{sellersDesc}</p>
+                    <p className="text-[15px] font-normal text-emerald-50/95 leading-[21px] mb-4">{sellersDesc}</p>
                   </div>
-                </div>
-              </div>
 
-              {/* Divider */}
-              <div className="border-t border-[#E5E7EB] mt-6 mb-6"></div>
-
-              {/* Two-column step lists — independent accordion */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
-                {/* LEFT — Buyer steps */}
-                <div>
-                  {cmsBuyerSteps.map((step, idx) => {
-                    const isOpen = selectedBuyerStep === step.number;
-                    return (
-                      <div key={step.number}>
-                        <button
-                          type="button"
-                          className="w-full text-left py-[18px] cursor-pointer group"
-                          onClick={() => setSelectedBuyerStep(isOpen ? 0 : step.number)}
-                        >
-                          <div className="flex items-start justify-between gap-3">
-                            <div>
-                              <p className="text-[18px] font-bold text-[#171717] leading-snug">
-                                {String(idx + 1).padStart(2, '0')}. {getLocalizedText(step.title, locale)}
-                              </p>
-                              {!isOpen && (
-                                <p className="text-[14px] text-[#666] mt-2.5 leading-relaxed">
-                                  {getLocalizedText(step.description, locale).slice(0, 80)}…
+                  {/* Seller step accordion */}
+                  <div className="flex-1 bg-white/5 border border-white/10 rounded-[14px] p-4">
+                    {cmsProducerSteps.map((step, idx) => {
+                      const isOpen = selectedProducerStep === step.number;
+                      return (
+                        <div key={step.number}>
+                          <button
+                            type="button"
+                            className="w-full text-left py-3 cursor-pointer group"
+                            onClick={() => setSelectedProducerStep(isOpen ? 0 : step.number)}
+                          >
+                            <div className="flex items-start justify-between gap-3">
+                              <div>
+                                <p className="text-[16px] font-bold text-white leading-snug">
+                                  {String(idx + 1).padStart(2, '0')}. {getLocalizedText(step.title, locale)}
                                 </p>
-                              )}
-                            </div>
-                            <i className={`fa-solid fa-chevron-${isOpen ? 'up' : 'down'} text-[#999] text-xs mt-1.5 shrink-0`}></i>
-                          </div>
-                          {isOpen && (
-                            <div className="mt-4 space-y-3">
-                              <p className="text-[14px] text-[#444] leading-relaxed">
-                                {getLocalizedText(step.description, locale)}
-                              </p>
-                              <div className="grid grid-cols-2 gap-3 mt-3">
-                                <div className="bg-[#EFF6FF] rounded-lg p-3">
-                                  <p className="text-[11px] font-bold text-[#1D4ED8] uppercase tracking-wider mb-1">{azexbuyDoes}</p>
-                                  <p className="text-[13px] text-[#333]">{getLocalizedText(step.detailTitle, locale)}</p>
-                                </div>
-                                <div className="bg-[#EFF6FF] rounded-lg p-3">
-                                  <p className="text-[11px] font-bold text-[#1D4ED8] uppercase tracking-wider mb-1">{expectedResult}</p>
-                                  <p className="text-[13px] text-[#333]">{getLocalizedText(step.deliverable, locale)}</p>
-                                </div>
+                                {!isOpen && (
+                                  <p className="text-[13px] text-emerald-100/80 mt-1.5 leading-relaxed">
+                                    {getLocalizedText(step.description, locale).slice(0, 80)}…
+                                  </p>
+                                )}
                               </div>
-                              {idx < cmsBuyerSteps.length - 1 && (
-                                <p className="text-[12px] text-[#888] mt-1">
-                                  {nextStepLabel}: {getLocalizedText(cmsBuyerSteps[idx + 1].title, locale)}
-                                </p>
-                              )}
+                              <i className={`fa-solid fa-chevron-${isOpen ? 'up' : 'down'} text-emerald-200/70 text-xs mt-1.5 shrink-0`}></i>
                             </div>
-                          )}
-                        </button>
-                        <div className="border-t border-[#E5E7EB]"></div>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {/* RIGHT — Producer steps */}
-                <div>
-                  {cmsProducerSteps.map((step, idx) => {
-                    const isOpen = selectedProducerStep === step.number;
-                    return (
-                      <div key={step.number}>
-                        <button
-                          type="button"
-                          className="w-full text-left py-[18px] cursor-pointer group"
-                          onClick={() => setSelectedProducerStep(isOpen ? 0 : step.number)}
-                        >
-                          <div className="flex items-start justify-between gap-3">
-                            <div>
-                              <p className="text-[18px] font-bold text-[#171717] leading-snug">
-                                {String(idx + 1).padStart(2, '0')}. {getLocalizedText(step.title, locale)}
-                              </p>
-                              {!isOpen && (
-                                <p className="text-[14px] text-[#666] mt-2.5 leading-relaxed">
-                                  {getLocalizedText(step.description, locale).slice(0, 80)}…
+                            {isOpen && (
+                              <div className="mt-3 space-y-3">
+                                <p className="text-[13px] text-emerald-50 leading-relaxed">
+                                  {getLocalizedText(step.description, locale)}
                                 </p>
-                              )}
-                            </div>
-                            <i className={`fa-solid fa-chevron-${isOpen ? 'up' : 'down'} text-[#999] text-xs mt-1.5 shrink-0`}></i>
-                          </div>
-                          {isOpen && (
-                            <div className="mt-4 space-y-3">
-                              <p className="text-[14px] text-[#444] leading-relaxed">
-                                {getLocalizedText(step.description, locale)}
-                              </p>
-                              <div className="grid grid-cols-2 gap-3 mt-3">
-                                <div className="bg-[#F0FDF4] rounded-lg p-3">
-                                  <p className="text-[11px] font-bold text-[#15803D] uppercase tracking-wider mb-1">{azexbuyDoes}</p>
-                                  <p className="text-[13px] text-[#333]">{getLocalizedText(step.detailTitle, locale)}</p>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                  <div className="bg-white/15 border border-white/15 rounded-lg p-3">
+                                    <p className="text-[11px] font-bold text-emerald-100 uppercase tracking-wider mb-1">{azexbuyDoes}</p>
+                                    <p className="text-[13px] text-white">{getLocalizedText(step.detailTitle, locale)}</p>
+                                  </div>
+                                  <div className="bg-emerald-950/40 border border-emerald-400/20 rounded-lg p-3">
+                                    <p className="text-[11px] font-bold text-emerald-300 uppercase tracking-wider mb-1">{expectedResult}</p>
+                                    <p className="text-[13px] text-emerald-50">{getLocalizedText(step.deliverable, locale)}</p>
+                                  </div>
                                 </div>
-                                <div className="bg-[#F0FDF4] rounded-lg p-3">
-                                  <p className="text-[11px] font-bold text-[#15803D] uppercase tracking-wider mb-1">{expectedResult}</p>
-                                  <p className="text-[13px] text-[#333]">{getLocalizedText(step.deliverable, locale)}</p>
-                                </div>
+                                {idx < cmsProducerSteps.length - 1 && (
+                                  <p className="text-[12px] text-emerald-200/70 mt-1">
+                                    {nextStepLabel}: {getLocalizedText(cmsProducerSteps[idx + 1].title, locale)}
+                                  </p>
+                                )}
                               </div>
-                              {idx < cmsProducerSteps.length - 1 && (
-                                <p className="text-[12px] text-[#888] mt-1">
-                                  {nextStepLabel}: {getLocalizedText(cmsProducerSteps[idx + 1].title, locale)}
-                                </p>
-                              )}
-                            </div>
-                          )}
-                        </button>
-                        <div className="border-t border-[#E5E7EB]"></div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* CTA Buttons */}
-              <div className="border-t border-[#E5E7EB] mt-6 pt-6 grid grid-cols-1 md:grid-cols-2 gap-5">
-                {/* Buyer CTA */}
-                <div className="bg-[#F5F9FF] border border-[#DBEAFE] rounded-2xl p-6 flex flex-col gap-4">
-                  <div>
-                    <h3 className="text-[18px] font-bold text-[#171717] mb-2">
-                      {locale === 'AZ' ? 'Azərbaycandan məhsul almaq istəyirsiniz?' : locale === 'TR' ? "Azerbaycan'dan ürün almak mı istiyorsunuz?" : locale === 'RU' ? 'Хотите закупать товары из Азербайджана?' : 'Looking to source products from Azerbaijan?'}
-                    </h3>
-                    <p className="text-[15px] text-[#555] leading-relaxed">
-                      {locale === 'AZ' ? 'Tələbinizi bizə göndərin, uyğun Azərbaycan tədarükçülərinin araşdırılması prosesinə başlayaq.' : locale === 'TR' ? 'Talebinizi bize gönderin, uygun Azerbaycanlı tedarikçilerin araştırılması sürecini başlatalım.' : locale === 'RU' ? 'Отправьте нам запрос, и мы начнём поиск подходящих азербайджанских поставщиков.' : 'Send us your request and we will start searching for suitable Azerbaijani suppliers.'}
-                    </p>
+                            )}
+                          </button>
+                          <div className="border-t border-white/10"></div>
+                        </div>
+                      );
+                    })}
                   </div>
-                  <button
-                    type="button"
-                    onClick={onOpenRFQ}
-                    className="self-start px-6 py-3 bg-brandNavy hover:bg-brandNavyDark text-white text-[15px] font-bold rounded-full transition-colors cursor-pointer"
-                  >
-                    {locale === 'AZ' ? 'Alıcı kimi müraciət et' : locale === 'TR' ? 'Alıcı olarak başvur' : locale === 'RU' ? 'Подать заявку как покупатель' : 'Apply as a buyer'}
-                  </button>
-                </div>
 
-                {/* Seller CTA */}
-                <div className="bg-[#F0FDF4] border border-[#DCFCE7] rounded-2xl p-6 flex flex-col gap-4">
-                  <div>
-                    <h3 className="text-[18px] font-bold text-[#171717] mb-2">
-                      {locale === 'AZ' ? 'Məhsullarınızı ixrac etmək istəyirsiniz?' : locale === 'TR' ? 'Ürünlerinizi ihraç etmek mi istiyorsunuz?' : locale === 'RU' ? 'Хотите экспортировать свою продукцию?' : 'Looking to export your products?'}
-                    </h3>
-                    <p className="text-[15px] text-[#555] leading-relaxed">
-                      {locale === 'AZ' ? 'Şirkətiniz və məhsullarınız haqqında məlumat verin, ixrac imkanlarını birlikdə araşdıraq.' : locale === 'TR' ? 'Şirketiniz ve ürünleriniz hakkında bilgi sunun, ihracat imkânlarını birlikte araştıralım.' : locale === 'RU' ? 'Расскажите о своей компании и продукции, вместе исследуем экспортные возможности.' : 'Share information about your company and products, and we will explore export opportunities together.'}
-                    </p>
+                  {/* Seller CTA */}
+                  <div className="bg-white text-[#171717] rounded-[14px] p-5 flex flex-col gap-3">
+                    <div>
+                      <h3 className="text-[16px] font-bold mb-1">{ctaSellerTitle}</h3>
+                      <p className="text-[13px] text-[#555] leading-relaxed">{ctaSellerDesc}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={onOpenProducer}
+                      className="self-start px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-[14px] font-bold rounded-full transition-colors cursor-pointer"
+                    >
+                      {ctaSellerBtn}
+                    </button>
                   </div>
-                  <button
-                    type="button"
-                    onClick={onOpenProducer}
-                    className="self-start px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-[15px] font-bold rounded-full transition-colors cursor-pointer"
-                  >
-                    {locale === 'AZ' ? 'Satıcı kimi müraciət et' : locale === 'TR' ? 'Satıcı olarak başvur' : locale === 'RU' ? 'Подать заявку как продавец' : 'Apply as a seller'}
-                  </button>
                 </div>
-              </div>
 
+              </div>
             </div>
           </div>
         </div>
@@ -1393,28 +1387,20 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
     );
   }
 
+
   // ── PRODUCERS PAGE ────────────────────────────────────────────
   if (activeView === 'producers') {
-    const heroTitle = locale === 'AZ' ? 'Məhsullarınızı dünya bazarlarına çıxarın' : locale === 'TR' ? 'Ürünlerinizi dünya pazarlarına çıkarın' : locale === 'RU' ? 'Выведите продукцию на мировые рынки' : 'Take Your Products to World Markets';
-    const heroDesc = locale === 'AZ'
-      ? 'Şirkətiniz və məhsullarınız haqqında məlumat verin; ixrac imkânlarını birlikdə araşdıraq, potensial xarici alıcıları tapaq və beynəlxalq ticarət prosesini koordinasiya edək.'
-      : locale === 'TR'
-      ? 'Şirketiniz ve ürünleriniz hakkında bilgi verin; ihracat imkânlarını birlikte araştıralım, potansiyel yabancı alıcıları bulalım ve uluslararası ticaret sürecini koordine edelim.'
-      : locale === 'RU'
-      ? 'Предоставьте информацию о компании и продукции; исследуем экспортные возможности, найдём покупателей и скоординируем торговый процесс.'
-      : 'Share information about your company and products; we will research export opportunities, find buyers, and coordinate the trade process.';
-
     const PRODUCER_STEPS = [
-      { num:'01', title:'Məhsul və şirkət məlumatlarınızı bildirin', desc:'Şirkətiniz, istehsal etdiyiniz məhsullar və ixrac etmək istədiyiniz məhsullar haqqında ilkin məlumat göndərin.', azexbuy:'Məlumatları qəbul edir, ilkin qiymətləndirməni aparır.', client:'Şirkət adı, fəaliyyət istiqaməti, məhsulların adı, mövcud sertifikatlar, əlaqə məlumatları', result:'İlkin əməkdaşlıq imkânı qiymətləndirilir', next:'İstehsal imkânları netləşdirilir' },
-      { num:'02', title:'İstehsal imkânları və məhsul məlumatları netləşdirilir', desc:'İstehsal gücünüzü, məhsul çeşitlərini, minimum sifariş miqdarını, qablaşdırma imkânlarını netləşdiririk.', azexbuy:'Məhsulun potensial xarici alıcılara düzgün təqdim edilməsini təmin edirik.', client:'Texniki spesifikasiyalar, istehsal həcmi, qablaşdırma növləri', result:'Tam məhsul profili hazırlanır', next:'İxrac hazırlığı qiymətləndirilir' },
-      { num:'03', title:'İxrac hazırlığı qiymətləndirilir', desc:'Şirkətinizin və məhsullarınızın xarici bazarlara çıxış üçün hazırlıq səviyyəsi ön qiymətləndirmədən keçirilir.', azexbuy:'Keyfiyyət, istehsal davamlılığı, qablaşdırma, etiketləmə, sertifikatlar yoxlanır. Lazım olduqda inkişaf tövsiyələri verilir.', client:'Mövcud sertifikat sənədləri, nümunələr (tələb olunarsa)', result:'İxrac hazırlığı hesabatı', next:'Hədəf bazarlar araşdırılır' },
-      { num:'04', title:'Hədəf bazarlar araşdırılır', desc:'Məhsulunuzun xüsusiyyətlərinə uyğun beynəlxalq bazarları araşdırırıq.', azexbuy:'Hədəf ölkələrdə tələb, bazar meylləri, rəqabət mühiti, qiymət səviyyəsi, idxal şərtləri araşdırılır.', client:'Prioritet ölkələr (varsa), ixrac məhdudiyyətləri barədə məlumat', result:'Tövsiyə edilən hədəf bazarların siyahısı', next:'Potensial xarici alıcılar axtarılır' },
-      { num:'05', title:'Potensial xarici alıcılar axtarılır', desc:'Seçilmiş hədəf bazarlarda məhsulunuza uyğun potensial alıcıları, distribütorları, idxalçıları araşdırırıq.', azexbuy:'Müəyyən edilmiş şirkətlərin fəaliyyət istiqamətləri və məhsul tələbləri yoxlanılır.', client:'Üstünlük verilən alıcı tipi (varsa)', result:'Potensial alıcıların siyahısı', next:'Kommersiya danışıqları dəstəklənir' },
-      { num:'06', title:'Kommersiya danışıqları dəstəklənir', desc:'Potensial alıcılarla ilk əlaqələrin qurulmasına, məhsul məlumatlarının və kommersiya təkliflərinin təqdim edilməsinə dəstək veririk.', azexbuy:'Qiymət, sifariş həcmi, istehsal müddəti, qablaşdırma, ödəniş və çatdırılma şərtləri üzrə danışıqların aparılmasına yardım edirik.', client:'Kommersiya təklifi, qiymət siyahısı', result:'Alıcı ilə ilkin razılaşma', next:'Müqavilə və sənədlərə dəstək verilir' },
-      { num:'07', title:'Müqavilə, proforma və sənədlərə dəstək verilir', desc:'Satış üzrə razılaşma əldə edildikdən sonra müqavilə, proforma-invoice və digər ticarət sənədlərinin hazırlanmasına dəstək veririk.', azexbuy:'Sənədlərdə məhsul məlumatlarının, miqdarin, qiymətin, ödəniş və çatdırılma şərtlərinin düzgün əks etdirilməsinə diqqət yetiririk.', client:'Şirkət rekvizitləri, məhsul məlumatları', result:'İmzalı müqavilə / təsdiqlənmiş sifariş', next:'Sertifikat prosesləri koordinasiya edilir' },
-      { num:'08', title:'Sertifikat və uyğunluq prosesləri koordinasiya edilir', desc:'Hədəf bazarın tələblərinə uyğun sertifikat və uyğunluq sənədlərinin əldə edilməsinə yardım edirik.', azexbuy:'İlgili sertifikasiya qurumları ilə əlaqənin koordinasiyasına, müraciət və sənədləşdirmə prosesinin izlənməsinə dəstək veririk.', client:'Lazımi sınaq nümunələri, şirkət sənədləri', result:'Tələb olunan sertifikatlar əldə edilir', next:'Gömrük prosedurlarına dəstək verilir' },
-      { num:'09', title:'Gömrük prosedurlarına dəstək verilir', desc:'Məhsulun ixracı üçün tələb olunan gömrük sənədləri və prosedurları barədə məlumat veririk.', azexbuy:'İxrac sənədlərinin hazırlanması, ilgili tərəflərlə əlaqə və gömrük əməliyyatlarının mərhələlərinin izlənməsinə yardım edirik.', client:'Gömrük üçün tələb olunan şirkət və məhsul sənədləri', result:'Gömrük sənədləri tamamlanır', next:'Logistika koordinasiya edilir' },
-      { num:'10', title:'Logistika və çatdırılma koordinasiya edilir', desc:'Məhsulun hədəf ölkəyə çatdırılması üçün uyğun beynəlxalq logistika həllərinin araşdırılmasına dəstək veririk.', azexbuy:'Daşıma növü, marşrut, çatdırılma müddəti, yükün xüsusiyyətləri və razılaşdırılmış Incoterms® 2020 şərtləri nəzərə alınaraq daşıma mərhələlərinin koordinasiyasına yardım edirik.', client:'Yükün çəkisi, həcmi, xüsusi saxlama tələbləri', result:'Məhsul alıcıya çatdırılır, proses tamamlanır', next:null },
+      { num:'01', title:'İstehsal imkânları və məhsul məlumatları netləşdirilir', desc:'İstehsal gücünüzü, məhsul çeşitlərini, minimum sifariş miqdarını, qablaşdırma imkânlarını netləşdiririk.', azexbuy:'Məhsulun potensial xarici alıcılara düzgün təqdim edilməsini təmin edirik.', client:'Şirkət adı, fəaliyyət istiqaməti, texniki spesifikasiyalar, istehsal həcmi, qablaşdırma növləri', result:'Tam məhsul profili hazırlanır', next:'İxrac hazırlığı qiymətləndirilir' },
+      { num:'02', title:'İxrac hazırlığı qiymətləndirilir', desc:'Şirkətinizin və məhsullarınızın xarici bazarlara çıxış üçün hazırlıq səviyyəsi ön qiymətləndirmədən keçirilir.', azexbuy:'Keyfiyyət, istehsal davamlılığı, qablaşdırma, etiketləmə, sertifikatlar yoxlanır. Lazım olduqda inkişaf tövsiyələri verilir.', client:'Mövcud sertifikat sənədləri, nümunələr (tələb olunarsa)', result:'İxrac hazırlığı hesabatı', next:'Hədəf bazarlar araşdırılır' },
+      { num:'03', title:'Hədəf bazarlar araşdırılır', desc:'Məhsulunuzun xüsusiyyətlərinə uyğun beynəlxalq bazarları araşdırırıq.', azexbuy:'Hədəf ölkələrdə tələb, bazar meylləri, rəqabət mühiti, qiymət səviyyəsi, idxal şərtləri araşdırılır.', client:'Prioritet ölkələr (varsa), ixrac məhdudiyyətləri barədə məlumat', result:'Tövsiyə edilən hədəf bazarların siyahısı', next:'Potensial xarici alıcılar axtarılır' },
+      { num:'04', title:'Potensial xarici alıcılar axtarılır', desc:'Seçilmiş hədəf bazarlarda məhsulunuza uyğun potensial alıcıları, distribütorları, idxalçıları araşdırırıq.', azexbuy:'Müəyyən edilmiş şirkətlərin fəaliyyət istiqamətləri və məhsul tələbləri yoxlanılır.', client:'Üstünlük verilən alıcı tipi (varsa)', result:'Potensial alıcıların siyahısı', next:'Kommersiya danışıqları dəstəklənir' },
+      { num:'05', title:'Kommersiya danışıqları dəstəklənir', desc:'Potensial alıcılarla ilk əlaqələrin qurulmasına, məhsul məlumatlarının və kommersiya təkliflərinin təqdim edilməsinə dəstək veririk.', azexbuy:'Qiymət, sifariş həcmi, istehsal müddəti, qablaşdırma, ödəniş və çatdırılma şərtləri üzrə danışıqların aparılmasına yardım edirik.', client:'Kommersiya təklifi, qiymət siyahısı', result:'Alıcı ilə ilkin razılaşma', next:'Müqavilə və sənədlərə dəstək verilir' },
+      { num:'06', title:'Müqavilə, proforma və sənədlərə dəstək verilir', desc:'Satış üzrə razılaşma əldə edildikdən sonra müqavilə, proforma-invoice və digər ticarət sənədlərinin hazırlanmasına dəstək veririk.', azexbuy:'Sənədlərdə məhsul məlumatlarının, miqdarin, qiymətin, ödəniş və çatdırılma şərtlərinin düzgün əks etdirilməsinə diqqət yetiririk.', client:'Şirkət rekvizitləri, məhsul məlumatları', result:'İmzalı müqavilə / təsdiqlənmiş sifariş', next:'Sertifikat prosesləri koordinasiya edilir' },
+      { num:'07', title:'Sertifikat və uyğunluq prosesləri koordinasiya edilir', desc:'Hədəf bazarın tələblərinə uyğun sertifikat və uyğunluq sənədlərinin əldə edilməsinə yardım edirik.', azexbuy:'İlgili sertifikasiya qurumları ilə əlaqənin koordinasiyasına, müraciət və sənədləşdirmə prosesinin izlənməsinə dəstək veririk.', client:'Lazımi sınaq nümunələri, şirkət sənədləri', result:'Tələb olunan sertifikatlar əldə edilir', next:'Gömrük prosedurlarına dəstək verilir' },
+      { num:'08', title:'Gömrük prosedurlarına dəstək verilir', desc:'Məhsulun ixracı üçün tələb olunan gömrük sənədləri və prosedurları barədə məlumat veririk.', azexbuy:'İxrac sənədlərinin hazırlanması, ilgili tərəflərlə əlaqə və gömrük əməliyyatlarının mərhələlərinin izlənməsinə yardım edirik.', client:'Gömrük üçün tələb olunan şirkət və məhsul sənədləri', result:'Gömrük sənədləri tamamlanır', next:'Logistika koordinasiya edilir' },
+      { num:'09', title:'Logistika və çatdırılma koordinasiya edilir', desc:'Məhsulun hədəf ölkəyə çatdırılması üçün uyğun beynəlxalq logistika həllərinin araşdırılmasına dəstək veririk.', azexbuy:'Daşıma növü, marşrut, çatdırılma müddəti, yükün xüsusiyyətləri və razılaşdırılmış Incoterms® 2020 şərtləri nəzərə alınaraq daşıma mərhələlərinin koordinasiyasına yardım edirik.', client:'Yükün çəkisi, həcmi, xüsusi saxlama tələbləri', result:'Məhsul alıcıya çatdırılır', next:'Rəsmi Məhsul RFQ qeydiyyatı' },
+      { num:'10', title:'Rəsmi Məhsul RFQ qeydiyyatı', desc:'İxrac logistikası və sertifikatlaşdırma təsdiqləndikdən sonra məhsul təklifiniz rəsmiləşdirilir və Rəsmi İstehsalçı RFQ Dosyeniz qeydiyyatdan keçir.', azexbuy:'Yekun Məhsul RFQ sənədini hazırlayır və Rəsmi İstehsalçı RFQ Dosye Nömrəsi ilə qeydiyyatdan keçirir.', client:'Əksik sənəd və təsdiqlər (varsa)', result:'Qeydiyyatdan keçmiş Rəsmi İstehsalçı RFQ Dosye Nömrəsi', next:null },
     ];
 
     const clientLabel = locale === 'AZ' ? 'İstehsalçı nə təqdim etməlidir?' : locale === 'TR' ? 'Üretici ne sunmalıdır?' : locale === 'RU' ? 'Что предоставляет производитель?' : 'What does the producer provide?';
@@ -1424,18 +1410,39 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
     const stepsTitle = locale === 'AZ' ? '10 mərhələli istehsalçı prosesi' : locale === 'TR' ? '10 adımlı üretici süreci' : locale === 'RU' ? '10-этапный процесс производителя' : '10-Step Producer Process';
     const ctaRegister = locale === 'AZ' ? 'İstehsalçı kimi qeydiyyat' : locale === 'TR' ? 'Üretici olarak kayıt' : locale === 'RU' ? 'Регистрация производителя' : 'Register as Producer';
     const ctaServices = locale === 'AZ' ? 'Xidmətlərə bax' : locale === 'TR' ? 'Hizmetlere bak' : locale === 'RU' ? 'Смотреть услуги' : 'View Services';
+    const heroTitle = locale === 'AZ' ? 'Məhsullarınızı dünya bazarlarına çıxarın' : locale === 'TR' ? 'Ürünlerinizi dünya pazarlarına çıkarın' : locale === 'RU' ? 'Выведите продукцию на мировые рынки' : 'Take your products to global markets';
+    const heroDesc = locale === 'AZ'
+      ? 'Şirkətiniz və məhsullarınız haqqında məlumat verin; ixrac imkanlarını birlikdə araşdıraq, potensial xarici alıcıları tapaq və beynəlxalq ticarət prosesini koordinasiya edək.'
+      : locale === 'TR'
+      ? 'Şirketiniz ve ürünleriniz hakkında bilgi verin; ihracat imkânlarını birlikte araştıralım, potansiyel yabancı alıcıları bulalım ve uluslararası ticaret sürecini koordine edelim.'
+      : locale === 'RU'
+      ? 'Предоставьте информацию о компании и продукции; исследуем экспортные возможности, найдём покупателей и скоординируем торговый процесс.'
+      : 'Share information about your company and products; we will research export opportunities, find buyers, and coordinate the trade process.';
 
     return (
       <div className="bg-[#F8FAFC] min-h-screen">
-        {/* Hero */}
-        <div className="bg-white border-b border-slate-100">
-          <div className="custom-container py-10 sm:py-14">
-            <div className="max-w-2xl">
-              <h1 className="text-2xl sm:text-3xl font-bold text-[#171717] mb-3">{heroTitle}</h1>
-              <p className="text-base text-[#555] leading-relaxed mb-6">{heroDesc}</p>
-              <div className="flex flex-wrap gap-3">
-                <button type="button" onClick={onOpenProducer} className="bg-slate-800 hover:bg-slate-900 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors cursor-pointer">{ctaRegister}</button>
-                <button type="button" onClick={() => onNavigate('services')} className="border border-slate-300 hover:border-slate-400 text-slate-700 text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors cursor-pointer">{ctaServices}</button>
+        {/* Hero — full-width image, flush to topbar (admin-editable PRODUCER_HERO_IMAGE) */}
+        <div className="relative w-full overflow-hidden bg-[#0b2440]">
+          <img
+            src={producerHeroImage}
+            alt="AZEXBUY Baku headquarters"
+            className="w-full h-[420px] object-cover object-center"
+            referrerPolicy="no-referrer"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0b2440] via-[#0b2440]/45 to-[#0b2440]/15"></div>
+          <div className="absolute inset-x-0 bottom-0 z-10">
+            <div className="custom-container py-10">
+              <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-3 leading-tight max-w-2xl">{heroTitle}</h1>
+              <p className="text-base sm:text-lg text-slate-100/90 leading-relaxed mb-7 max-w-xl">{heroDesc}</p>
+              <div className="flex flex-wrap gap-3.5">
+                <button type="button" onClick={onOpenProducer} className="bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold px-6 py-3 rounded-lg shadow-lg shadow-emerald-900/30 transition-all cursor-pointer flex items-center gap-2">
+                  <span>{ctaRegister}</span>
+                  <i className="fa-solid fa-arrow-right text-xs"></i>
+                </button>
+                <button type="button" onClick={() => onNavigate('services')} className="bg-white/10 hover:bg-white/20 text-white border border-white/25 text-sm font-bold px-6 py-3 rounded-lg backdrop-blur-sm transition-all cursor-pointer flex items-center gap-2">
+                  <i className="fa-solid fa-handshake-angle text-xs text-slate-200"></i>
+                  <span>{ctaServices}</span>
+                </button>
               </div>
             </div>
           </div>
@@ -1716,8 +1723,21 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
       : 'Anchored by the Baku International Sea Trade Port at Alat, the Baku-Tbilisi-Kars (BTK) railway, and 14 regional agro-industrial clusters, AZEXBUY connects Eurasian supply chains with institutional assurance.';
 
   return (
-    <section className="py-8 bg-slate-50/70">
-      <div className="custom-container space-y-8">
+    <section className="bg-slate-50/70">
+      {/* Google Maps — full-width, flush to topbar (contact view only) */}
+      {activeView === 'contact' && (
+        <div className="no-print w-full bg-[#e5e5e5]">
+          <iframe
+            title="AZEXBUY Baku Headquarters — Contact Location"
+            src="https://maps.google.com/maps?q=Baku%20Alliance%20Business%20Center%2C%20Heydar%20Aliyev%20Ave%2095%2C%20Baku%20AZ1033%2C%20Azerbaijan&z=15&output=embed"
+            width="100%"
+            height="420"
+            style={{ border: 0, display: 'block', minHeight: 420, filter: 'grayscale(1) contrast(0.95)' }}
+          />
+        </div>
+      )}
+
+      <div className="custom-container space-y-8 py-8">
         {/* Strategic KPIs — hidden on contact-only view */}
         {activeView !== 'contact' && <div className="bg-brandNavy text-white rounded-xl p-6 sm:p-8">
           
@@ -1797,36 +1817,21 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
         {activeView !== 'insights' && 
         <div className="bg-white border border-slate-200 rounded-lg p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-brandGreen block mb-1">
-              INSTITUTIONAL CORRESPONDENCE DESK
-            </span>
-            <h2 className="text-xl font-extrabold text-brandNavy mb-2">
+            <h2 className="text-lg font-bold text-slate-900 mb-3">
               Contact AZEXBUY Trade Facilitation Authority
             </h2>
-            <p className="text-xs text-slate-600 leading-relaxed mb-4">
-              For bilateral trade delegations, state procurement tenders, customs green-corridor inquiries, or escrow settlement structuring, reach our Baku headquarters directly.
-            </p>
-            <div className="space-y-3 text-xs text-slate-700">
+            <div className="space-y-2.5 text-xs text-slate-600">
               <div className="flex items-start gap-3">
-                <i className="fa-solid fa-location-dot text-brandNavy mt-0.5"></i>
-                <div>
-                  <strong className="block text-slate-900">Headquarters Address</strong>
-                  <span>{strings[locale]?.footer?.hqAddress || strings.AZ?.footer?.hqAddress || 'Baku, Azerbaijan'}</span>
-                </div>
+                <i className="fa-solid fa-location-dot text-slate-400 mt-0.5"></i>
+                <span>{strings[locale]?.footer?.hqAddress || strings.AZ?.footer?.hqAddress || 'Baku, Azerbaijan'}</span>
               </div>
               <div className="flex items-start gap-3">
-                <i className="fa-solid fa-phone text-brandNavy mt-0.5"></i>
-                <div>
-                  <strong className="block text-slate-900">Direct Trade Desk Telephone</strong>
-                  <span className="tabular-nums">{contact.phone} {contact.phoneAlt ? `· ${contact.phoneAlt}` : ''}</span>
-                </div>
+                <i className="fa-solid fa-phone text-slate-400 mt-0.5"></i>
+                <span className="tabular-nums">{contact.phone} {contact.phoneAlt ? `· ${contact.phoneAlt}` : ''}</span>
               </div>
               <div className="flex items-start gap-3">
-                <i className="fa-solid fa-envelope text-brandNavy mt-0.5"></i>
-                <div>
-                  <strong className="block text-slate-900">Official Electronic Dispatch</strong>
-                  <span>{contact.email} {contact.emailAlt ? `· ${contact.emailAlt}` : ''}</span>
-                </div>
+                <i className="fa-solid fa-envelope text-slate-400 mt-0.5"></i>
+                <span>{contact.email} {contact.emailAlt ? `· ${contact.emailAlt}` : ''}</span>
               </div>
             </div>
           </div>

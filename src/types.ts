@@ -305,7 +305,6 @@ export interface AboutPageContent {
     badge: LocalizedText | Record<string, string>;
     title: LocalizedText | Record<string, string>;
     desc: LocalizedText | Record<string, string>;
-    disclaimer: LocalizedText | Record<string, string>;
     items: AboutGrowthItem[];
   };
   team: {

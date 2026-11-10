@@ -37,23 +37,7 @@ const FILTER_MAP: Record<FilterLabel, string | null> = {
 };
 
 // Locale-aware category labels
-const CATEGORY_LABELS: Record<FilterLabel, Record<string, string>> = {
-  'All':             { AZ: 'Hamısı', TR: 'Tümü', EN: 'All', RU: 'Все' },
-  'Export Guides':   { AZ: 'İxracat məlumatları', TR: 'İhracat bilgileri', EN: 'Export Guides', RU: 'Экспортные гиды' },
-  'Market Research': { AZ: 'Bazar araşdırmaları', TR: 'Pazar araştırmaları', EN: 'Market Research', RU: 'Исследования рынка' },
-  'Trade Terms':     { AZ: 'Ticarət şərtləri', TR: 'Ticaret terimleri', EN: 'Trade Terms & Incoterms', RU: 'Торговые термины' },
-  'Regulations':     { AZ: 'Mevzuat', TR: 'Mevzuat ve gümrük', EN: 'Regulations & Customs', RU: 'Нормативы и таможня' },
-  'Product Analysis':{ AZ: 'Məhsul analizləri', TR: 'Ürün analizleri', EN: 'Product & Sector Analysis', RU: 'Анализ продуктов' },
-};
-
-const CATEGORY_ICONS: Record<FilterLabel, string> = {
-  'All':             'fa-solid fa-border-all',
-  'Export Guides':   'fa-solid fa-box-open',
-  'Market Research': 'fa-solid fa-magnifying-glass-chart',
-  'Trade Terms':     'fa-solid fa-file-contract',
-  'Regulations':     'fa-solid fa-building-columns',
-  'Product Analysis':'fa-solid fa-chart-pie',
-};
+// Category filter pills removed from the Insights view.
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 function fmtDate(iso: string | null | undefined): string {
@@ -650,32 +634,6 @@ export const InsightsView: React.FC<InsightsViewProps> = ({ locale, onNavigateHo
                   </button>
                 )}
               </div>
-            </div>
-
-            {/* Filter pills — ~280px wide × 30px high */}
-            <div style={{
-              display: 'inline-flex', flexWrap: 'wrap', alignItems: 'center', gap: '4px',
-              backgroundColor: '#EDEEE8', borderRadius: '999px',
-              padding: '3px',
-            }}>
-              {FILTER_LABELS.map(f => (
-                <button
-                  key={f}
-                  type="button"
-                  onClick={() => { setActiveFilter(f); setVisibleCount(PAGE_SIZE); setSearchQuery(''); }}
-                  style={{
-                    fontSize: '11px', fontWeight: activeFilter === f ? 600 : 400,
-                    padding: '0 10px', height: '24px', borderRadius: '999px',
-                    cursor: 'pointer', border: 'none', transition: 'all 0.15s',
-                    backgroundColor: activeFilter === f ? '#fff' : 'transparent',
-                    color: activeFilter === f ? '#17231D' : '#7C857D',
-                    boxShadow: activeFilter === f ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
-                    whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: '5px',
-                  }}>
-                  <i className={CATEGORY_ICONS[f]} style={{ fontSize: '9px' }}></i>
-                  {CATEGORY_LABELS[f][loc] || f}
-                </button>
-              ))}
             </div>
           </div>
 

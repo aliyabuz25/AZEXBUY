@@ -8,6 +8,8 @@ import {
   HERO_IMAGE as HERO_IMAGE_DEFAULT,
   BUYER_CARD_IMAGE as BUYER_CARD_DEFAULT,
   PRODUCER_CARD_IMAGE as PRODUCER_CARD_DEFAULT,
+  BUYER_HERO_IMAGE as BUYER_HERO_DEFAULT,
+  PRODUCER_HERO_IMAGE as PRODUCER_HERO_DEFAULT,
   WHY_AZERBAIJAN_IMAGE as WHY_AZ_DEFAULT,
   HOW_IT_WORKS_BUYERS_IMAGE as HOW_BUYERS_DEFAULT,
   HOW_IT_WORKS_SELLERS_IMAGE as HOW_SELLERS_DEFAULT,
@@ -73,6 +75,8 @@ type LocalizationContextType = {
   heroImage: string;
   buyerCardImage: string;
   producerCardImage: string;
+  buyerHeroImage: string;
+  producerHeroImage: string;
   whyAzImage: string;
   howItWorksBuyersImage: string;
   howItWorksSellersImage: string;
@@ -98,6 +102,8 @@ const LocalizationContext = createContext<LocalizationContextType>({
   heroImage: HERO_IMAGE_DEFAULT,
   buyerCardImage: BUYER_CARD_DEFAULT,
   producerCardImage: PRODUCER_CARD_DEFAULT,
+  buyerHeroImage: BUYER_HERO_DEFAULT,
+  producerHeroImage: PRODUCER_HERO_DEFAULT,
   whyAzImage: WHY_AZ_DEFAULT,
   howItWorksBuyersImage: HOW_BUYERS_DEFAULT,
   howItWorksSellersImage: HOW_SELLERS_DEFAULT,
@@ -227,6 +233,8 @@ function applyContentOverrides(content: any) {
     heroImage: images['HERO_IMAGE'] || HERO_IMAGE_DEFAULT,
     buyerCardImage: images['BUYER_CARD_IMAGE'] || BUYER_CARD_DEFAULT,
     producerCardImage: images['PRODUCER_CARD_IMAGE'] || PRODUCER_CARD_DEFAULT,
+    buyerHeroImage: images['BUYER_HERO_IMAGE'] || BUYER_HERO_DEFAULT,
+    producerHeroImage: images['PRODUCER_HERO_IMAGE'] || PRODUCER_HERO_DEFAULT,
     whyAzImage: images['WHY_AZERBAIJAN_IMAGE'] || WHY_AZ_DEFAULT,
     howItWorksBuyersImage: images['HOW_IT_WORKS_BUYERS_IMAGE'] || HOW_BUYERS_DEFAULT,
     howItWorksSellersImage: images['HOW_IT_WORKS_SELLERS_IMAGE'] || HOW_SELLERS_DEFAULT,

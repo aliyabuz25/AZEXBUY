@@ -9,6 +9,11 @@ export const BUYER_CARD_IMAGE =
 export const PRODUCER_CARD_IMAGE =
   'https://lh3.googleusercontent.com/aida-public/AB6AXuDgrvRVBxN_YV05A8C2ZBQC2V2WHmgN9IrmvxhBvoVre7FKYjEbaR95Ew5PqX6-T-FG67u-0fHLCX6KeLtUrAkBIiJfWZGu7t3Ez2RyKvMerWTAHV1ROVLxhP4wE2oqLK-k9t1i6hrPmq-YJ-GDzjbqNDrNf2-SyjbXUmuQAJa5ScuKsRahZQdVKWyzFzRNPNYzxr3XOkiIb2BLWy4KJO-b-RWiNaaRqebQkQINqnQZfyBkDjpvxMId';
 
+export const BUYER_HERO_IMAGE =
+  'https://images.unsplash.com/photo-1494412574643-71b2511b1f07?w=1600&q=80';
+export const PRODUCER_HERO_IMAGE =
+  'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=1600&q=80';
+
 export const WHY_AZERBAIJAN_IMAGE =
   'https://lh3.googleusercontent.com/aida/AEtjO1WtUBR_2hOeUbRABsre_R7H-yW12FldWdxDp_6_abkiZuNwgF3fMTiwxdQCKdfEbdEWa-6CSQc0bQgUbjojei2itk13mAz_e09yOnKuFWP_7AO2BpMiNUQByyYnqtrPMywT0b4g4COdLkLc5_L75NtOsKv5OOgHz7VdAMCF-WDWgmhqccS9HdQKKY8cwD4AeVg_Z5AczT8rfvCVFXyJrgDuQKAsNiyYL54OeN2_HoFxHi9ltf4bUcbHSmM';
 
@@ -30,28 +35,40 @@ export const SERVICES_PILLARS: ServicePillar[] = [
       EN: 'Market Access',
       AZ: 'Bazarlara Çıxış',
       RU: 'Доступ к рынкам',
+      TR: 'Pazarlara Erişim',
+      AR: 'الوصول إلى الأسواق',
+      ES: 'Acceso a Mercados',
     },
     subtitle: {
-      EN: 'Strategic export route modeling, tariff analysis, and destination regulatory alignment.',
-      AZ: 'Strateji ixrac marşrutlarının modelləşdirilməsi, tarif təhlili və tənzimləyici uyğunluq.',
-      RU: 'Моделирование экспортных маршрутов, тарифный анализ и соответствие регламентам целевых стран.',
+      EN: 'Strategic export route modeling, tariff analysis, destination regulatory alignment, and target market intelligence to open your products into priority global corridors.',
+      AZ: 'Strateji ixrac marşrutlarının modelləşdirilməsi, tarif təhlili, hədəf ölkələrin tənzimləyici uyğunluğu və bazar intellekti ilə məhsullarınızı prioritet qlobal dəhlizlərə açma.',
+      RU: 'Моделирование экспортных маршрутов, тарифный анализ, соответствие регуляторным требованиям стран назначения и аналитика целевых рынков для выхода на приоритетные глобальные коридоры.',
+      TR: 'Stratejik ihracat koridoru modellemesi, tarif analizi, hedef ülkelerin mevzuat uyumu ve pazar istihbaratıyla ürünlerinizi öncelikli küresel koridorlara açma.',
+      AR: 'نمذجة مسارات التصدير الاستراتيجية، وتحليل التعريفات الجمركية، والتوافق التنظيمي لبلدان الوجهة، وذكاء السوق للوصول إلى الممرات العالمية ذات الأولوية.',
+      ES: 'Modelado de rutas de exportación estratégicas, análisis arancelario, alineación regulatoria de los destinos y inteligencia de mercado para abrir sus productos a los corredores globales prioritarios.',
     },
     items: [
-      { EN: 'Market Research', AZ: 'Bazar Araşdırması', RU: 'Исследование рынков' },
-      { EN: 'Target Market Selection', AZ: 'Hədəf Bazar Seçimi', RU: 'Выбор целевых рынков' },
-      { EN: 'Export Potential Analysis', AZ: 'İxrac Potensialının Təhlili', RU: 'Анализ экспортного потенциала' },
-      { EN: 'Market Entry Strategy', AZ: 'Bazara Giriş Strategiyası', RU: 'Стратегия выхода на рынок' },
+      { EN: 'Market Research', AZ: 'Bazar Araşdırması', RU: 'Исследование рынков', TR: 'Pazar Araştırması', AR: 'أبحاث السوق', ES: 'Investigación de Mercados' },
+      { EN: 'Target Market Selection', AZ: 'Hədəf Bazar Seçimi', RU: 'Выбор целевых рынков', TR: 'Hedef Pazar Seçimi', AR: 'اختيار الأسواق المستهدفة', ES: 'Selección de Mercados Objetivo' },
+      { EN: 'Export Potential Analysis', AZ: 'İxrac Potensialının Təhlili', RU: 'Анализ экспортного потенциала', TR: 'İhracat Potansiyeli Analizi', AR: 'تحليل إمكانات التصدير', ES: 'Análisis del Potencial de Exportación' },
+      { EN: 'Market Entry Strategy', AZ: 'Bazara Giriş Strategiyası', RU: 'Стратегия выхода на рынок', TR: 'Pazara Giriş Stratejisi', AR: 'استراتيجية دخول السوق', ES: 'Estrategia de Entrada al Mercado' },
     ],
     deliverables: [
       {
         EN: 'HS-6 Tariff & Preferential Duty Matrix (EU GSP+, CIS FTA, Turkey PTA)',
         AZ: 'HS-6 Tarif və Güzəştli Gömrük Matrisi (Aİ, MDB, Türkiyə)',
         RU: 'Матрица тарифов и преференциальных пошлин по коду ТН ВЭД',
+        TR: 'HS-6 Tarif ve Tercihli Gümrük Matrisi (AB GSP+, DTÖ FTA, Türkiye STA)',
+        AR: 'مصفوفة التعريفات الجمركية والتفضيلية (GSP+ للاتحاد الأوروبي، FTA لرابطة الدول المستقلة، PTA لتركيا)',
+        ES: 'Matriz de tarifas y derechos arancelarios preferenciales (GSP+ UE, FTA de la CIS, PTA de Turquía)',
       },
       {
         EN: 'Competitor Landed-Cost Benchmark Report',
         AZ: 'Rəqiblərin Çatdırılma Qiyməti Hesabatı',
         RU: 'Отчет по себестоимости с учетом логистики конкурентов',
+        TR: 'Rakiplerin Teslimat Maliyeti Karşılaştırma Raporu',
+        AR: 'تقرير مقارنة التكلفة الإجمالية للمنافسين',
+        ES: 'Informe de Coste Completo de la Competencia',
       },
     ],
     turnaround: '5 Business Days',
@@ -65,30 +82,42 @@ export const SERVICES_PILLARS: ServicePillar[] = [
       EN: 'Buyer & Sales',
       AZ: 'Alıcı Axtarışı və Satış',
       RU: 'Поиск покупателей и продажи',
+      TR: 'Alıcı ve Satış',
+      AR: 'البحث عن المشتريات والمبيعات',
+      ES: 'Compra y Venta',
     },
     subtitle: {
-      EN: 'Direct B2B matchmaking with vetted international procurement desks and regional distributors.',
-      AZ: 'Yoxlanılmış beynəlxalq satınalma mərkəzləri və дистрибьюторlarla birbaşa B2B əlaqələr.',
-      RU: 'Прямой B2B-подбор проверенных международных закупщиков и дистрибьюторов.',
+      EN: 'Direct B2B matchmaking with vetted international procurement desks, regional distributors, and retail chains — from qualified buyer sourcing to contract-ready negotiation support.',
+      AZ: 'Yoxlanılmış beynəlxalq satınalma mərkəzləri, regional distribyutorlar və ticarət şəbəkələri ilə birbaşa B2B əlaqələr — təsdiq edilmiş alıcı axtarışından müqaviləyə hazır danışıq dəstəyinə qədər.',
+      RU: 'Прямой B2B-подбор проверенных международных закупщиков, дистрибьюторов и торговых сетей — от скрининга контрагентов до поддержки переговоров на стадии заключения контракта.',
+      TR: 'Doğrulanmış uluslararası satın alma masaları, bölgesel dağıtıcılar ve perakende zincirleriyle doğrudan B2B eşleştirme — nitelikli alıcı bulmadan sözleşmeye hazır pazarlık desteğine kadar.',
+      AR: 'تطابق تجاري مباشر (B2B) مع مكاتب المشتريات الدولية والدistributors الإقليمية وسلاسل التجزئة — من تصفية المشترين المؤهلين إلى دعم التفاوض حتى توقيع العقود.',
+      ES: 'Intermediación B2B directa con despachos de compras internacionales verificados, distribuidores regionales y cadenas minoristas: desde la captación de compradores cualificados hasta el apoyo en negociaciones listos para firmar.',
     },
     items: [
-      { EN: 'Buyer Search', AZ: 'Alıcı Axtarışı', RU: 'Поиск покупателей' },
-      { EN: 'Buyer Verification', AZ: 'Alıcıların Yoxlanılması', RU: 'Проверка контрагентов (KYB)' },
-      { EN: 'Distributor Search', AZ: 'Distribütor Axtarışı', RU: 'Поиск дистрибьюторов' },
-      { EN: 'Lead Generation', AZ: 'Potensial Müştəri Cəlbi', RU: 'Лидогенерация B2B' },
-      { EN: 'B2B Meetings', AZ: 'B2B Görüşlərin Təşkili', RU: 'Организация B2B-встреч' },
-      { EN: 'Negotiation Support', AZ: 'Danışıqların Dəstəklənməsi', RU: 'Сопровождение переговоров' },
+      { EN: 'Buyer Search', AZ: 'Alıcı Axtarışı', RU: 'Поиск покупателей', TR: 'Alıcı Araması', AR: 'البحث عن المشترين', ES: 'Búsqueda de Compradores' },
+      { EN: 'Buyer Verification', AZ: 'Alıcıların Yoxlanılması', RU: 'Проверка контрагентов (KYB)', TR: 'Alıcı Doğrulama', AR: 'توثيق المشترين (KYB)', ES: 'Verificación de Compradores' },
+      { EN: 'Distributor Search', AZ: 'Distribütor Axtarışı', RU: 'Поиск дистрибьюторов', TR: 'Dağıtıcı Araması', AR: 'البحث عن الموزعين', ES: 'Búsqueda de Distribuidores' },
+      { EN: 'Lead Generation', AZ: 'Potensial Müştəri Cəlbi', RU: 'Лидогенерация B2B', TR: 'Potansiyel Müşteri Üretimi', AR: 'توليد العملاء المحتملين B2B', ES: 'Generación de Leads' },
+      { EN: 'B2B Meetings', AZ: 'B2B Görüşlərin Təşkili', RU: 'Организация B2B-встреч', TR: 'B2B Görüş Organizasyonu', AR: 'تنظيم اجتماعات B2B', ES: 'Reuniones B2B' },
+      { EN: 'Negotiation Support', AZ: 'Danışıqların Dəstəklənməsi', RU: 'Сопровождение переговоров', TR: 'Müzakere Desteği', AR: 'دعم التفاوض', ES: 'Apoyo en Negociaciones' },
     ],
     deliverables: [
       {
         EN: 'KYB-Verified Buyer Shortlist & Creditworthiness Dossier',
         AZ: 'KYB-təsdiqli Alıcı Siyahısı və Ödəmə Qabiliyyəti Dosyesi',
         RU: 'Досье проверенных закупщиков с финансовым скорингом',
+        TR: 'KYB Doğrulamalı Alıcı Listesi ve Ödeme Gücü Dosyası',
+        AR: 'قائمة المشترين الموثقين مع ملف جدارة الائتمان',
+        ES: 'Lista de Compradores Verificados y Dossier de Solvencia',
       },
       {
         EN: 'Multilingual Commercial Offer & Sample Dispatch Coordination',
         AZ: 'Çoxdilli Kommersiya Təklifi və Nümunə Göndərişi Koordinasiyası',
         RU: 'Мультиязычное коммерческое предложение и отправка образцов',
+        TR: 'Çok Dilli Ticari Teklif ve Numune Gönderimi Koordinasyonu',
+        AR: 'عرض تجاري متعدد اللغات وتنسيق إرسال العينات',
+        ES: 'Oferta Comercial Multilingüe y Coordinación de Envío de Muestras',
       },
     ],
     turnaround: '48 Hours (RFQ Match)',
@@ -102,28 +131,40 @@ export const SERVICES_PILLARS: ServicePillar[] = [
       EN: 'Export Management',
       AZ: 'İxracın İdarə Edilməsi',
       RU: 'Управление экспортом',
+      TR: 'İhracat Yönetimi',
+      AR: 'إدارة التصدير',
+      ES: 'Gestión de Exportación',
     },
     subtitle: {
-      EN: 'Complete regulatory compliance, phytosanitary certificates, origin documentation, and customs clearance.',
-      AZ: 'Tam tənzimləyici uyğunluq, fitosanitar sertifikatlar, mənşə sənədləri və gömrük rəsmiləşdirilməsi.',
-      RU: 'Полное нормативное сопровождение, фитосанитарные сертификаты, СТ-1/EUR.1 и таможенное оформление.',
+      EN: 'Complete regulatory compliance, phytosanitary certification, origin documentation, and customs clearance — end-to-end export administration handled for you.',
+      AZ: 'Tam tənzimləyici uyğunluq, fitosanitar sertifikatlaşdırma, mənşə sənədləri və gömrük rəsmiləşdirilməsi — uçdan-uca ixrac idarəetməsi sizin yerinizə görülür.',
+      RU: 'Полное нормативное сопровождение, фитосанитарная сертификация, оформление сертификатов происхождения и таможенное оформление — весь экспортный администрирующий цикл под ключ.',
+      TR: 'Kapsamlı mevzuat uyumu, bitki sağlığı sertifikasyonu, menşe belgeleri ve gümrük işlemleri — uçtan uca ihracat idaresi sizin adınıza yürütülür.',
+      AR: 'اتساق تنظيمي شامل، وشهادات الصحة النباتية، ووثائق المنشأ، والجمارك — إدارة التصدير من البداية إلى النهاية من أجلكم.',
+      ES: 'Cumplimiento normativo completo, certificación fitosanitaria, documentación de origen y despacho aduanero: toda la administración exportadora de principio a fin.',
     },
     items: [
-      { EN: 'Documentation', AZ: 'Sənədləşmə', RU: 'Экспортная документация' },
-      { EN: 'Certification & Compliance', AZ: 'Sertifikatlaşdırma və Uyğunluq', RU: 'Сертификация и комплаенс' },
-      { EN: 'Permits & Approvals', AZ: 'İcazələr və Təsdiqlər', RU: 'Разрешения и лицензии' },
-      { EN: 'Customs Clearance', AZ: 'Gömrük Rəsmiləşdirilməsi', RU: 'Таможенная очистка' },
+      { EN: 'Documentation', AZ: 'Sənədləşmə', RU: 'Экспортная документация', TR: 'Dokümantasyon', AR: 'الوثائق', ES: 'Documentación' },
+      { EN: 'Certification & Compliance', AZ: 'Sertifikatlaşdırma və Uyğunluq', RU: 'Сертификация и комплаенс', TR: 'Sertifikasyon ve Uygunluk', AR: 'الشهادات والامتثال', ES: 'Certificación y Cumplimiento' },
+      { EN: 'Permits & Approvals', AZ: 'İcazələr və Təsdiqlər', RU: 'Разрешения и лицензии', TR: 'İzinler ve Onaylar', AR: 'الترخيص والموافقات', ES: 'Permisos y Aprobaciones' },
+      { EN: 'Customs Clearance', AZ: 'Gömrük Rəsmiləşdirilməsi', RU: 'Таможенная очистка', TR: 'Gümrük İşlemleri', AR: 'إجراءات الجمارك', ES: 'Despacho Aduanero' },
     ],
     deliverables: [
       {
         EN: 'AQTA Phytosanitary, CT-1 / EUR.1 Origin & SGS Pre-Shipment Inspection',
         AZ: 'AQTA Fitosanitar, CT-1 / EUR.1 Mənşə və SGS Yükləməöncəsi İnspeksiya',
         RU: 'Фитосанитарный сертификат AQTA, сертификат происхождения и инспекция SGS',
+        TR: 'AQTA Bitki Sağlığı, CT-1 / EUR.1 Menşe ve SGS Yükleme Öncesi Muayene',
+        AR: 'شهادة الصحة النباتية AQTA، وشهادة المنشأ CT-1 / EUR.1، وفحص SGS قبل الشحن',
+        ES: 'Certificado Fitosanitario AQTA, Origen CT-1 / EUR.1 y Inspección Pre-Embarque SGS',
       },
       {
         EN: 'Electronic Customs Declaration (DGK Green Corridor Filing)',
         AZ: 'Elektron Gömrük Bəyannaməsi (DGK Yaşıl Dəhliz Rəsmiləşdirilməsi)',
         RU: 'Электронная таможенная декларация (Зеленый коридор ГТК)',
+        TR: 'Elektron Gümrük Beyannamesi (DGK Yeşil Koridor Beyanı)',
+        AR: 'إقرار جمركي إلكتروني (تقديم ممر أخضر)',
+        ES: 'Declaración Aduanera Electrónica (Presentación Corredor Verde)',
       },
     ],
     turnaround: '2–4 Business Days',
@@ -137,30 +178,42 @@ export const SERVICES_PILLARS: ServicePillar[] = [
       EN: 'Logistics',
       AZ: 'Beynəlxalq Logistika',
       RU: 'Международная логистика',
+      TR: 'Uluslararası Lojistik',
+      AR: 'اللوجستيات الدولية',
+      ES: 'Logística Internacional',
     },
     subtitle: {
-      EN: 'Multimodal freight across the Middle Corridor (TITR), Port of Baku at Alat, and BTK Railway.',
-      AZ: 'Orta Dəhliz (TİTR), Ələt Bakı Beynəlxalq Dəniz Ticarət Limanı və BTQ dəmir yolu ilə multimodal daşıma.',
-      RU: 'Мультимодальные перевозки по Среднему коридору (ТМТМ), через Порт Баку (Алят) и ж/д БТК.',
+      EN: 'Multimodal freight across the Middle Corridor (TITR), the Port of Baku at Alat, and the BTK Railway — road, sea, air and rail under one Incoterms-aligned service.',
+      AZ: 'Orta Dəhliz (TİTR), Ələt Bakı Beynəlxalq Dəniz Ticarət Limanı və BTQ dəmir yolu üzrə multimodal daşıma — avtomobil, dəniz, hava və dəmir yolu bir Incoterms uyumlu xidmət çərçivəsində.',
+      RU: 'Мультимодальные перевозки по Среднему коридору (ТМТМ), через Порт Баку (Алят) и ж/д БТК — авто, море, авиа и ж/д в единой Incoterms-условии.',
+      TR: 'Orta Koridor (TİTR), Alat\'daki Bakü Limanı ve BTK demiryolu üzerinden multimodal taşımacılık — karayolu, deniz, hava ve demiryolu tek Incoterms uyumlu hizmet içinde.',
+      AR: 'نقل متعدد الوسائط عبر الممر الأوسط (TITR)، وميناء باكو في العلات، وسكة حديد باكو-تبليسي-قارص — برًا وبحرًا وجوًا وسككًا ضمن خدمة Incoterms موحدة.',
+      ES: 'Flete multimodal a través del Corredor Central (TITR), el Puerto de Bakú en Alat y el ferrocarril BTK: carretera, mar, aire y tren bajo un servicio unificado conforme a Incoterms.',
     },
     items: [
-      { EN: 'Road Freight', AZ: 'Avtomobil Daşımaları (TIR)', RU: 'Автоперевозки (TIR / Реф)' },
-      { EN: 'Sea Freight', AZ: 'Dəniz Daşımaları (Xəzər / Qara dəniz)', RU: 'Морской фрахт (Каспий / Черное море)' },
-      { EN: 'Air Freight', AZ: 'Hava Karqo Daşımaları', RU: 'Авиакарго (Heydar Aliyev Int. Hub)' },
-      { EN: 'Rail Freight', AZ: 'Dəmir Yolu Daşımaları (BTQ)', RU: 'Ж/д перевозки (БТК / Север-Юг)' },
-      { EN: 'Warehousing', AZ: 'Anbar və Soyuducu Saxlama', RU: 'Складирование и бондовые терминалы' },
-      { EN: 'Insurance', AZ: 'Yük Sığortası (CMR / All-Risk)', RU: 'Страхование грузов (All-Risk)' },
+      { EN: 'Road Freight', AZ: 'Avtomobil Daşımaları (TIR)', RU: 'Автоперевозки (TIR / Реф)', TR: 'Kara Taşımacılığı (TIR)', AR: 'الشحن البري (TIR)', ES: 'Flete Terrestre (TIR)' },
+      { EN: 'Sea Freight', AZ: 'Dəniz Daşımaları (Xəzər / Qara dəniz)', RU: 'Морской фрахт (Каспий / Черное море)', TR: 'Deniz Taşımacılığı (Hazar / Karadeniz)', AR: 'الشحن البحري (البحر الكاسبي / البحر الأسود)', ES: 'Flete Marítimo (Caspio / Mar Negro)' },
+      { EN: 'Air Freight', AZ: 'Hava Karqo Daşımaları', RU: 'Авиакарго (Heydar Aliyev Int. Hub)', TR: 'Hava Kargo Taşımacılığı', AR: 'الشحن الجوي (Heydar Aliyev Int. Hub)', ES: 'Flete Aéreo' },
+      { EN: 'Rail Freight', AZ: 'Dəmir Yolu Daşımaları (BTQ)', RU: 'Ж/д перевозки (БТК / Север-Юг)', TR: 'Demiryolu Taşımacılığı (BTK)', AR: 'الشحن بالسكك الحديدية (BTK)', ES: 'Flete Ferroviario (BTK)' },
+      { EN: 'Warehousing', AZ: 'Anbar və Soyuducu Saxlama', RU: 'Складирование и бондовые терминалы', TR: 'Depolama ve Soğuk Zincir Saklama', AR: 'التخزين والسلاسل الباردة', ES: 'Almacenamiento y Cadenas de Frío' },
+      { EN: 'Insurance', AZ: 'Yük Sığortası (CMR / All-Risk)', RU: 'Страхование грузов (All-Risk)', TR: 'Yük Sigortası (CMR / All-Risk)', AR: 'تأمين الشحنات (CMR / All-Risk)', ES: 'Seguro de Carga (CMR / All-Risk)' },
     ],
     deliverables: [
       {
         EN: 'Incoterms 2020 Multimodal Routing & Container Slot Guarantee',
         AZ: 'Incoterms 2020 Multimodal Marşrut və Konteyner Yeri Zəmanəti',
         RU: 'Мультимодальная маршрутизация по Incoterms 2020 и бронь контейнеров',
+        TR: 'Incoterms 2020 Multimodal Rotalama ve Konteyner Yer Garantisi',
+        AR: 'توجيه متعدد الوسائط وفق Incoterms 2020 وضمان حجز الحاويات',
+        ES: 'Enrutamiento Multimodal según Incoterms 2020 y Garantía de Espacio en Contenedores',
       },
       {
         EN: 'Cold-Chain Telemetry & 110% CIF Marine Cargo Insurance Policy',
         AZ: 'Soyuq Zəncir Telemetriyası və 110% CIF Yük Sığortası Polisi',
         RU: 'Телеметрия холодовой цепи и страховой полис CIF 110%',
+        TR: 'Soğuk Zincir Telemetrisi ve 110% CIF Deniz Yük Sigortası Poliçesi',
+        AR: 'تقنيات تتبع سلسلة التبريد وبوليصة تأمين شحن بحري CIF 110%',
+        ES: 'Telemetría de la Cadena de Frío y Póliza de Seguro Marítimo CIF 110%',
       },
     ],
     turnaround: '24 Hours Freight Quote',
@@ -171,44 +224,19 @@ export const BUYER_STEPS: StepItem[] = [
   {
     number: 1,
     title: {
-      EN: 'Tell us what you need',
-      AZ: 'Tələblərinizi bildirin',
-      RU: 'Оставьте заявку (RFQ)',
-    },
-    detailTitle: {
-      EN: 'Step 1: Share Procurement Requirements',
-      AZ: 'Addım 1: Satınalma Tələblərinin Təqdim Edilməsi',
-      RU: 'Шаг 1: Передача спецификации закупки',
-    },
-    description: {
-      EN: 'Submit target HS code, volume, quality grade, packaging format, and preferred Incoterms 2020 delivery terms via the AZEXBUY RFQ Desk.',
-      AZ: 'Hədəf HS kodu, həcm, keyfiyyət dərəcəsi, qablaşdırma formatı və Incoterms 2020 şərtlərini AZEXBUY RFQ Masası vasitəsilə təqdim edin.',
-      RU: 'Укажите код ТН ВЭД, объем, калибр/качество, упаковку и базис поставки Incoterms 2020 через стол заявок AZEXBUY.',
-    },
-    deliverable: {
-      EN: 'Registered Sovereign RFQ Dossier Number',
-      AZ: 'Qeydiyyatdan Keçmiş Rəsmi RFQ Dosye Nömrəsi',
-      RU: 'Зарегистрированный номер досье заявки RFQ',
-    },
-    sla: 'Instant (< 15 mins)',
-    authority: 'AZEXBUY Procurement Facilitation Desk',
-  },
-  {
-    number: 2,
-    title: {
       EN: 'We find suppliers',
       AZ: 'Təchizatçıları tapırıq',
       RU: 'Подбор производителей',
     },
     detailTitle: {
-      EN: 'Step 2: National Cluster Supplier Sourcing',
-      AZ: 'Addım 2: Milli İstehsal Klasterlərindən Təchizatçı Seçimi',
-      RU: 'Шаг 2: Поиск по реестру производителей Азербайджана',
+      EN: 'Step 1: National Cluster Supplier Sourcing',
+      AZ: 'Addım 1: Milli İstehsal Klasterlərindən Təchizatçı Seçimi',
+      RU: 'Шаг 1: Поиск по реестру производителей Азербайджана',
     },
     description: {
-      EN: 'Our trade specialists match your requirement against 250+ vetted Azerbaijani manufacturers across all 14 economic regions.',
-      AZ: 'Ticarət mütəxəssislərimiz sorğunuzu 14 iqtisadi rayon üzrə 250+ yoxlanılmış Azərbaycan istehsalçısı ilə uyğunlaşdırır.',
-      RU: 'Наши эксперты сопоставляют ваш запрос с базой из 250+ проверенных фабрик и агрохолдингов в 14 экономических районах.',
+      EN: 'Our trade specialists match your target commodity against 250+ vetted Azerbaijani manufacturers across all 14 economic regions.',
+      AZ: 'Ticarət mütəxəssislərimiz hədəf əmtəənizi 14 iqtisadi rayon üzrə 250+ yoxlanılmış Azərbaycan istehsalçısı ilə uyğunlaşdırır.',
+      RU: 'Наши эксперты сопоставляют вашу целевую commodity с базой из 250+ проверенных фабрик и агрохолдингов в 14 экономических районах.',
     },
     deliverable: {
       EN: 'Matched Production Capacity Matrix',
@@ -219,16 +247,16 @@ export const BUYER_STEPS: StepItem[] = [
     authority: 'National Producer Registry Division',
   },
   {
-    number: 3,
+    number: 2,
     title: {
       EN: 'We verify suppliers',
       AZ: 'Təchizatçıları yoxlayırıq',
       RU: 'Верификация и аудит',
     },
     detailTitle: {
-      EN: 'Step 3: Compliance & Capacity Audit',
-      AZ: 'Addım 3: Uyğunluq və İstehsal Gücünün Auditi',
-      RU: 'Шаг 3: Проверка сертификатов и аудит мощностей',
+      EN: 'Step 2: Compliance & Capacity Audit',
+      AZ: 'Addım 2: Uyğunluq və İstehsal Gücünün Auditi',
+      RU: 'Шаг 2: Проверка сертификатов и аудит мощностей',
     },
     description: {
       EN: 'We audit current stock readiness, ISO/HACCP/GLOBALG.A.P. validity, VOEN tax standing, and past export performance.',
@@ -244,16 +272,16 @@ export const BUYER_STEPS: StepItem[] = [
     authority: 'AZEXBUY Quality & Compliance Directorate',
   },
   {
-    number: 4,
+    number: 3,
     title: {
       EN: 'You receive quotations',
       AZ: 'Qiymət təklifləri alırsınız',
       RU: 'Получение котировок',
     },
     detailTitle: {
-      EN: 'Step 4: Standardized Comparative Quotations',
-      AZ: 'Addım 4: Standartlaşdırılmış Müqayisəli Qiymət Təklifləri',
-      RU: 'Шаг 4: Сравнительная таблица коммерческих предложений',
+      EN: 'Step 3: Standardized Comparative Quotations',
+      AZ: 'Addım 3: Standartlaşdırılmış Müqayisəli Qiymət Təklifləri',
+      RU: 'Шаг 3: Сравнительная таблица коммерческих предложений',
     },
     description: {
       EN: 'Receive transparent, apples-to-apples proforma quotations broken down by ex-works price, export clearance, and freight to your port.',
@@ -261,24 +289,24 @@ export const BUYER_STEPS: StepItem[] = [
       RU: 'Вы получаете прозрачные сопоставимые котировки с разбивкой стоимости EXW, таможни и фрахта до порта назначения.',
     },
     deliverable: {
-      EN: 'Comparative RFQ Bid Sheet (FOB / CIF / DAP)',
-      AZ: 'Müqayisəli RFQ Qiymət Cədvəli (FOB / CIF / DAP)',
+      EN: 'Comparative Bid Sheet (FOB / CIF / DAP)',
+      AZ: 'Müqayisəli Qiymət Cədvəli (FOB / CIF / DAP)',
       RU: 'Сводная ведомость котировок (FOB / CIF / DAP)',
     },
     sla: 'Within 48 Hours',
     authority: 'AZEXBUY Commercial Desk',
   },
   {
-    number: 5,
+    number: 4,
     title: {
       EN: 'You select the best option',
       AZ: 'Ən uyğun variantı seçirsiniz',
       RU: 'Выбор лучшего партнера',
     },
     detailTitle: {
-      EN: 'Step 5: Partner Selection & Contract Structuring',
-      AZ: 'Addım 5: Tərəfdaş Seçimi və Müqavilənin Bağlanması',
-      RU: 'Шаг 5: Выбор поставщика и заключение контракта',
+      EN: 'Step 4: Partner Selection & Contract Structuring',
+      AZ: 'Addım 4: Tərəfdaş Seçimi və Müqavilənin Bağlanması',
+      RU: 'Шаг 4: Выбор поставщика и заключение контракта',
     },
     description: {
       EN: 'Inspect physical samples if required, finalize payment terms (L/C, Escrow, TT), and execute a bilingual international sales contract.',
@@ -294,16 +322,16 @@ export const BUYER_STEPS: StepItem[] = [
     authority: 'Legal & Trade Finance Desk',
   },
   {
-    number: 6,
+    number: 5,
     title: {
       EN: 'We coordinate the order',
       AZ: 'Sifarişi koordinasiya edirik',
       RU: 'Координация заказа',
     },
     detailTitle: {
-      EN: 'Step 6: Production Oversight & Pre-Shipment Inspection',
-      AZ: 'Addım 6: İstehsala Nəzarət və Yükləməöncəsi İnspeksiya',
-      RU: 'Шаг 6: Контроль производства и предотгрузочная инспекция',
+      EN: 'Step 5: Production Oversight & Pre-Shipment Inspection',
+      AZ: 'Addım 5: İstehsala Nəzarət və Yükləməöncəsi İnspeksiya',
+      RU: 'Шаг 5: Контроль производства и предотгрузочная инспекция',
     },
     description: {
       EN: 'Our field inspectors monitor grading, labeling, palletization, and container stuffing with photographic and weight bridge logs.',
@@ -319,16 +347,16 @@ export const BUYER_STEPS: StepItem[] = [
     authority: 'Field Inspection & AQTA Liaison Unit',
   },
   {
-    number: 7,
+    number: 6,
     title: {
       EN: 'We manage export & delivery',
       AZ: 'İxrac və çatdırılmanı idarə edirik',
       RU: 'Экспорт и доставка',
     },
     detailTitle: {
-      EN: 'Step 7: Customs Clearance & Multimodal Delivery',
-      AZ: 'Addım 7: Gömrük Rəsmiləşdirilməsi və Multimodal Çatdırılma',
-      RU: 'Шаг 7: Таможенное оформление и доставка до склада',
+      EN: 'Step 6: Customs Clearance & Multimodal Delivery',
+      AZ: 'Addım 6: Gömrük Rəsmiləşdirilməsi və Multimodal Çatdırılma',
+      RU: 'Шаг 6: Таможенное оформление и доставка до склада',
     },
     description: {
       EN: 'Complete export customs clearance, certificate issuance (CT-1 / EUR.1 / Phytosanitary), and tracked transit to your destination.',
@@ -343,33 +371,41 @@ export const BUYER_STEPS: StepItem[] = [
     sla: 'End-to-End Tracked',
     authority: 'Multimodal Logistics Operations Center',
   },
+  {
+    number: 7,
+    title: {
+      EN: 'Submit the official RFQ',
+      AZ: 'Rəsmi RFQ göndərin',
+      RU: 'Отправка официального RFQ',
+    },
+    detailTitle: {
+      EN: 'Step 7: Final RFQ & Official Dossier Registration',
+      AZ: 'Addım 7: Yekun RFQ və Rəsmi Dosye Qeydiyyatı',
+      RU: 'Шаг 7: Итоговая RFQ и регистрация официального досье',
+    },
+    description: {
+      EN: 'Once supplier selection and order logistics are confirmed, we formalize your request via the AZEXBUY RFQ Desk and register your Sovereign RFQ Dossier.',
+      AZ: 'Təchizatçı seçimi və sifariş logistikası təsdiqləndikdən sonra sorğunuzu AZEXBUY RFQ Masası vasitəsilə rəsmiləşdirib Rəsmi RFQ Dosyenizi qeydiyyatdan keçiririk.',
+      RU: 'После подтверждения выбора поставщика и логистики заказа мы оформляем ваш запрос через стол заявок AZEXBUY и регистрируем ваше официальное досье RFQ.',
+    },
+    deliverable: {
+      EN: 'Registered Sovereign RFQ Dossier Number',
+      AZ: 'Qeydiyyatdan Keçmiş Rəsmi RFQ Dosye Nömrəsi',
+      RU: 'Зарегистрированный номер досье заявки RFQ',
+    },
+    sla: 'Instant (< 15 mins)',
+    authority: 'AZEXBUY Procurement Facilitation Desk',
+  },
 ];
 
 export const PRODUCER_STEPS: StepItem[] = [
   {
     number: 1,
-    title: { EN: 'Submit your product', AZ: 'Məhsulu təqdim edin', RU: 'Подача продукта' },
-    detailTitle: {
-      EN: 'Phase 1: Product & Facility Registration',
-      AZ: 'Mərhələ 1: Məhsul və Müəssisə Qeydiyyatı',
-      RU: 'Этап 1: Регистрация предприятия и продукции',
-    },
-    description: {
-      EN: 'Register your manufacturing facility, VOEN tax ID, HS commodity codes, and seasonal/annual production capacity.',
-      AZ: 'İstehsal müəssisənizi, VÖEN nömrənizi, HS əmtəə kodlarını və mövsümi/illik istehsal gücünüzü qeydiyyatdan keçirin.',
-      RU: 'Зарегистрируйте производственную площадку, ИНН (VÖEN), коды ТН ВЭД и годовые объемы выпуска.',
-    },
-    deliverable: { EN: 'Producer Registry Profile', AZ: 'İstehsalçı Reyestr Profili', RU: 'Профиль в реестре экспортеров' },
-    sla: 'Day 1',
-    authority: 'AZEXBUY Producer Onboarding Desk',
-  },
-  {
-    number: 2,
     title: { EN: 'Export readiness', AZ: 'İxraca hazırlıq', RU: 'Оценка готовности' },
     detailTitle: {
-      EN: 'Phase 2: Export Readiness Diagnostic',
-      AZ: 'Mərhələ 2: İxraca Hazırlıq Diaqnostikası',
-      RU: 'Этап 2: Аудит экспортной готовности',
+      EN: 'Phase 1: Export Readiness Diagnostic',
+      AZ: 'Mərhələ 1: İxraca Hazırlıq Diaqnostikası',
+      RU: 'Этап 1: Аудит экспортной готовности',
     },
     description: {
       EN: 'Diagnostic review of packaging durability, shelf-life, multilingual labeling, and international food/industrial safety standards.',
@@ -377,16 +413,16 @@ export const PRODUCER_STEPS: StepItem[] = [
       RU: 'Диагностика упаковки, сроков хранения, маркировки и соответствия международным стандартам качества.',
     },
     deliverable: { EN: 'Export Readiness Scorecard', AZ: 'İxraca Hazırlıq Qiymətləndirməsi', RU: 'Карта экспортной готовности' },
-    sla: 'Days 2–3',
+    sla: 'Days 1–2',
     authority: 'Standards & Readiness Advisory',
   },
   {
-    number: 3,
+    number: 2,
     title: { EN: 'Market selection', AZ: 'Bazar seçimi', RU: 'Выбор рынков' },
     detailTitle: {
-      EN: 'Phase 3: Target Export Market Selection',
-      AZ: 'Mərhələ 3: Hədəf İxrac Bazarlarının Seçilməsi',
-      RU: 'Этап 3: Выбор приоритетных стран экспорта',
+      EN: 'Phase 2: Target Export Market Selection',
+      AZ: 'Mərhələ 2: Hədəf İxrac Bazarlarının Seçilməsi',
+      RU: 'Этап 2: Выбор приоритетных стран экспорта',
     },
     description: {
       EN: 'Identify highest-margin destination markets (EU, GCC, CIS, Asia) based on tariff preferences and seasonal price windows.',
@@ -394,16 +430,16 @@ export const PRODUCER_STEPS: StepItem[] = [
       RU: 'Определение наиболее маржинальных рынков сбыта (ЕС, Персидский залив, СНГ, Азия) с учетом таможенных преференций.',
     },
     deliverable: { EN: 'Target Market Route Map', AZ: 'Hədəf Bazar Yol Xəritəsi', RU: 'Дорожная карта целевых рынков' },
-    sla: 'Days 4–5',
+    sla: 'Days 3–4',
     authority: 'Trade Intelligence Unit',
   },
   {
-    number: 4,
+    number: 3,
     title: { EN: 'Buyer search', AZ: 'Alıcı axtarışı', RU: 'Поиск покупателей' },
     detailTitle: {
-      EN: 'Phase 4: International Buyer Outreach',
-      AZ: 'Mərhələ 4: Beynəlxalq Alıcıların Cəlb Edilməsi',
-      RU: 'Этап 4: Таргетированный поиск импортеров',
+      EN: 'Phase 3: International Buyer Outreach',
+      AZ: 'Mərhələ 3: Beynəlxalq Alıcıların Cəlb Edilməsi',
+      RU: 'Этап 3: Таргетированный поиск импортеров',
     },
     description: {
       EN: 'Active promotion of your commodity specifications to 1,000+ registered international procurement officers and retail chains.',
@@ -411,16 +447,16 @@ export const PRODUCER_STEPS: StepItem[] = [
       RU: 'Прямое продвижение вашей продукции среди 1000+ верифицированных зарубежных закупщиков и торговых сетей.',
     },
     deliverable: { EN: 'Qualified Buyer Inquiry List', AZ: 'Təsdiqlənmiş Alıcı Sorğuları', RU: 'Реестр целевых запросов импортеров' },
-    sla: 'Week 2',
+    sla: 'Week 1',
     authority: 'Global Sales & Matchmaking Desk',
   },
   {
-    number: 5,
+    number: 4,
     title: { EN: 'B2B negotiation', AZ: 'B2B danışıqlar', RU: 'B2B переговоры' },
     detailTitle: {
-      EN: 'Phase 5: B2B Negotiation & Contracting',
-      AZ: 'Mərhələ 5: B2B Danışıqlar və Müqavilə',
-      RU: 'Этап 5: B2B-переговоры и контрактация',
+      EN: 'Phase 4: B2B Negotiation & Contracting',
+      AZ: 'Mərhələ 4: B2B Danışıqlar və Müqavilə',
+      RU: 'Этап 4: B2B-переговоры и контрактация',
     },
     description: {
       EN: 'Our multilingual trade managers facilitate price negotiations, sample approval, and secure payment structuring.',
@@ -428,16 +464,16 @@ export const PRODUCER_STEPS: StepItem[] = [
       RU: 'Наши эксперты ведут переговоры на языке покупателя, согласуют образцы и защищенные условия расчетов.',
     },
     deliverable: { EN: 'Signed Export Supply Contract', AZ: 'İmzalanmış İxrac Müqaviləsi', RU: 'Подписанный экспортный контракт' },
-    sla: 'Weeks 2–3',
+    sla: 'Weeks 1–2',
     authority: 'Outsourced Export Department',
   },
   {
-    number: 6,
+    number: 5,
     title: { EN: 'Documentation', AZ: 'Sənədləşmə', RU: 'Документация' },
     detailTitle: {
-      EN: 'Phase 6: Export Documentation Dossier',
-      AZ: 'Mərhələ 6: İxrac Sənədləri Paketi',
-      RU: 'Этап 6: Подготовка пакета документов',
+      EN: 'Phase 5: Export Documentation Dossier',
+      AZ: 'Mərhələ 5: İxrac Sənədləri Paketi',
+      RU: 'Этап 5: Подготовка пакета документов',
     },
     description: {
       EN: 'Preparation of Commercial Invoice, Packing List, International Sales Contract registration, and banking export declarations.',
@@ -449,12 +485,12 @@ export const PRODUCER_STEPS: StepItem[] = [
     authority: 'Export Documentation Desk',
   },
   {
-    number: 7,
+    number: 6,
     title: { EN: 'Certification', AZ: 'Sertifikatlaşdırma', RU: 'Сертификация' },
     detailTitle: {
-      EN: 'Phase 7: Origin & Sanitary Certification',
-      AZ: 'Mərhələ 7: Mənşə və Fitosanitar Sertifikatlaşdırma',
-      RU: 'Этап 7: Оформление сертификатов',
+      EN: 'Phase 6: Origin & Sanitary Certification',
+      AZ: 'Mərhələ 6: Mənşə və Fitosanitar Sertifikatlaşdırma',
+      RU: 'Этап 6: Оформление сертификатов',
     },
     description: {
       EN: 'Obtaining Certificate of Origin (Form CT-1, EUR.1, General), AQTA Phytosanitary/Veterinary certificates, and lab reports.',
@@ -466,12 +502,12 @@ export const PRODUCER_STEPS: StepItem[] = [
     authority: 'AQTA / KOBİA / Chamber Liaison',
   },
   {
-    number: 8,
+    number: 7,
     title: { EN: 'Customs', AZ: 'Gömrük', RU: 'Таможня' },
     detailTitle: {
-      EN: 'Phase 8: Customs Clearance & Green Corridor',
-      AZ: 'Mərhələ 8: Gömrük Rəsmiləşdirilməsi və Yaşıl Dəhliz',
-      RU: 'Этап 8: Таможенное декларирование',
+      EN: 'Phase 7: Customs Clearance & Green Corridor',
+      AZ: 'Mərhələ 7: Gömrük Rəsmiləşdirilməsi və Yaşıl Dəhliz',
+      RU: 'Этап 7: Таможенное декларирование',
     },
     description: {
       EN: 'Electronic export declaration submission, HS tariff verification, customs seal application, and export incentive filing.',
@@ -483,12 +519,12 @@ export const PRODUCER_STEPS: StepItem[] = [
     authority: 'Licensed Customs Brokerage Unit',
   },
   {
-    number: 9,
+    number: 8,
     title: { EN: 'Logistics', AZ: 'Logistika', RU: 'Логистика' },
     detailTitle: {
-      EN: 'Phase 9: Multimodal Freight Dispatch',
-      AZ: 'Mərhələ 9: Multimodal Nəqliyyat Göndərişi',
-      RU: 'Этап 9: Отгрузка и мультимодальный транзит',
+      EN: 'Phase 8: Multimodal Freight Dispatch',
+      AZ: 'Mərhələ 8: Multimodal Nəqliyyat Göndərişi',
+      RU: 'Этап 8: Отгрузка и мультимодальный транзит',
     },
     description: {
       EN: 'Dispatch via refrigerated TIR, Baku-Tbilisi-Kars rail wagon, Caspian Ro-Ro/container vessel, or air cargo charter.',
@@ -500,21 +536,38 @@ export const PRODUCER_STEPS: StepItem[] = [
     authority: 'Middle Corridor Freight Desk',
   },
   {
-    number: 10,
+    number: 9,
     title: { EN: 'Delivery', AZ: 'Çatdırılma', RU: 'Доставка' },
     detailTitle: {
-      EN: 'Phase 10: Final Delivery & Settlement Release',
-      AZ: 'Mərhələ 10: Yekun Çatdırılma və Hesablaşma',
-      RU: 'Этап 10: Приемка груза и закрытие расчетов',
+      EN: 'Phase 9: Final Delivery & Settlement Release',
+      AZ: 'Mərhələ 9: Yekun Çatdırılma və Hesablaşma',
+      RU: 'Этап 9: Приемка груза и закрытие расчетов',
     },
     description: {
       EN: 'Confirmed handover at destination port or warehouse, proof of delivery (POD) verification, and final export proceeds settlement.',
       AZ: 'Təyinat limanında və ya anbarda təhvil-təslim, çatdırılma təsdiqi (POD) və yekun ixrac vəsaitinin hesablaşması.',
       RU: 'Передача груза покупателю в порту или на складе назначения, подписание POD и зачисление экспортной выручки.',
     },
-    deliverable: { EN: 'Signed POD & Settlement Advice', AZ: 'Təsdiqli Тəhvil Aktı və Ödəniş', RU: 'Акт приемки POD и валютный расчет' },
+    deliverable: { EN: 'Signed POD & Settlement Advice', AZ: 'Təsdiqlənmiş Təhvil Aktı və Ödəniş', RU: 'Акт приемки POD и валютный расчет' },
     sla: 'Contract Complete',
     authority: 'Settlement & Trade Finance Desk',
+  },
+  {
+    number: 10,
+    title: { EN: 'Submit the product RFQ', AZ: 'Məhsul RFQ göndərin', RU: 'Отправка RFQ продукта' },
+    detailTitle: {
+      EN: 'Phase 10: Final Product RFQ & Dossier Registration',
+      AZ: 'Mərhələ 10: Yekun Məhsul RFQ və Dosye Qeydiyyatı',
+      RU: 'Этап 10: Итоговая RFQ продукции и регистрация досье',
+    },
+    description: {
+      EN: 'Once export logistics and certification are confirmed, we formalize your product offer via the AZEXBUY RFQ Desk and register your official Producer RFQ Dossier.',
+      AZ: 'İxrac logistikası və sertifikatlaşdırma təsdiqləndikdən sonra məhsul təklifinizi AZEXBUY RFQ Masası vasitəsilə rəsmiləşdirib Rəsmi İstehsalçı RFQ Dosyenizi qeydiyyatdan keçiririk.',
+      RU: 'После подтверждения экспортной логистики и сертификации мы оформляем ваше предложение продукции через стол заявок AZEXBUY и регистрируем официальное досье RFQ производителя.',
+    },
+    deliverable: { EN: 'Registered Producer RFQ Dossier Number', AZ: 'Qeydiyyatdan Keçmiş İstehsalçı RFQ Dosye Nömrəsi', RU: 'Зарегистрированный номер досье RFQ производителя' },
+    sla: 'Instant (< 15 mins)',
+    authority: 'AZEXBUY Producer Onboarding Desk',
   },
 ];
 
@@ -594,6 +647,7 @@ export const UI_STRINGS: Record<
       quickLinks: string;
       complianceTitle: string;
       rights: string;
+      contactUs: string;
     };
   }
 > = {
@@ -723,6 +777,7 @@ export const UI_STRINGS: Record<
       quickLinks: 'Platform & Portals',
       complianceTitle: 'Trade Standards & Governance',
       rights: '© 2026 AZEXBUY Consortium — Azerbaijan Export & Sourcing Facilitation Platform. All rights reserved.',
+      contactUs: 'Contact Us',
     },
   },
   AZ: {
@@ -851,6 +906,7 @@ export const UI_STRINGS: Record<
       quickLinks: 'Platforma Bölmələri',
       complianceTitle: 'Ticarət Standartları',
       rights: '© 2026 AZEXBUY Konsorsiumu — Azərbaycan İxrac və Tədarük Platforması. Bütün hüquqlar qorunur.',
+      contactUs: 'Bizimlə Əlaqə',
     },
   },
   RU: {
@@ -979,6 +1035,7 @@ export const UI_STRINGS: Record<
       quickLinks: 'Разделы платформы',
       complianceTitle: 'Стандарты и комплаенс',
       rights: '© 2026 Консорциум AZEXBUY — Платформа экспорта и закупок Азербайджана. Все права защищены.',
+      contactUs: 'Свяжитесь с нами',
     },
   },
   TR: {
@@ -1107,6 +1164,7 @@ export const UI_STRINGS: Record<
       quickLinks: 'Hızlı Bağlantılar',
       complianceTitle: 'Uyumluluk ve Standartlar',
       rights: '© 2026 AZEXBUY Konsorsiyumu — Azerbaycan İhracat ve Tedarik Portalı. Tüm hakları saklıdır.',
+      contactUs: 'İletişim',
     },
   },
   AR: {
@@ -1235,6 +1293,7 @@ export const UI_STRINGS: Record<
       quickLinks: 'روابط المنصة',
       complianceTitle: 'الامتثال والمعايير الدولية',
       rights: '© 2026 تحالف AZEXBUY — منصة التصدير والتوريد الأذربيجانية. جميع الحقوق محفوظة.',
+      contactUs: 'اتصل بنا',
     },
   },
   ES: {
@@ -1363,6 +1422,7 @@ export const UI_STRINGS: Record<
       quickLinks: 'Enlaces Rápidos',
       complianceTitle: 'Cumplimiento y Normativa',
       rights: '© 2026 Consorcio AZEXBUY — Plataforma de Exportación y Suministro de Azerbaiyán. Todos los derechos reservados.',
+      contactUs: 'Contáctenos',
     },
   },
 };
@@ -2170,14 +2230,6 @@ export const ABOUT_PAGE_DEFAULT: AboutPageContent = {
       RU: 'Стратегия развития AZEXBUY опирается на расширение сервисов международной торговли и освоение новых транспортных коридоров.',
       AR: 'ترتكز استراتيجيتنا على فتح ممرات تجارية جديدة وتوظيف الحلول الرقمية الذكية.',
       ES: 'La estrategia se basa en ampliar los servicios comerciales internacionales y abrir nuevas rutas.',
-    },
-    disclaimer: {
-      AZ: 'Bunlar təsdiqlənmiş statistik nailiyyətlər deyil, AZEXBUY-un strateji inkişaf prioritetləridir.',
-      EN: 'These reflect forward-looking strategic roadmaps and service expansion priorities.',
-      TR: 'Bunlar onaylanmış başarılar değil, stratejik hedeflerdir.',
-      RU: 'Это перспективные стратегические направления, а не завершенные достижения.',
-      AR: 'هذه أهداف استراتيجية مستقبلية وأولويات تطوير.',
-      ES: 'Estos puntos representan prioridades y objetivos estratégicos de desarrollo.',
     },
     items: [
       {

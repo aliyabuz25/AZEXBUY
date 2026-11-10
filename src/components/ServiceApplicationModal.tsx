@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Locale, CmsService, ServiceApplication, getLocalizedText } from '../types';
+import { CountrySelect } from './CountrySelect';
 
 interface ServiceApplicationModalProps {
   locale: Locale;
@@ -156,7 +157,12 @@ export const ServiceApplicationModal: React.FC<ServiceApplicationModalProps> = (
                 </div>
                 <div>
                   <label className={labelCls}>{t('country', locale)} <span className="text-red-500">*</span></label>
-                  <input type="text" value={country} onChange={e => setCountry(e.target.value)} className={inputCls} required />
+                  <CountrySelect
+                    value={country}
+                    onChange={setCountry}
+                    required
+                    placeholder="Select Country..."
+                  />
                 </div>
                 <div>
                   <label className={labelCls}>{t('email', locale)} <span className="text-red-500">*</span></label>

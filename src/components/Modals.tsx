@@ -6,6 +6,7 @@ import {
   ProductItem,
   RFQLineItem,
   RFQSubmission,
+  ViewMode,
   getLocalizedText,
 } from '../types';
 import {
@@ -14,6 +15,7 @@ import {
   PRODUCTS_CATALOG,
 } from '../data/translations';
 import { useLocalization } from '../context/LocalizationContext';
+import { CountrySelect } from './CountrySelect';
 
 // ── Modal localization strings ─────────────────────────────────────────────
 const ML: Record<string, Record<string, string>> = {
@@ -22,12 +24,16 @@ const ML: Record<string, Record<string, string>> = {
   cancel:   { AZ: 'Ləğv et', RU: 'Отмена', TR: 'İptal', AR: 'إلغاء', ES: 'Cancelar', EN: 'Cancel' },
   submitRfq: { AZ: 'RFQ Göndər & Sənəd Yarat', RU: 'Отправить RFQ & Создать досье', TR: 'RFQ Gönder & Dosya Oluştur', AR: 'إرسال RFQ وإنشاء الملف', ES: 'Enviar RFQ y Generar Expediente', EN: 'Submit RFQ & Generate Official Dossier' },
   rfqErrRequired: { AZ: 'Zəhmət olmasa şirkətin adını, təyinat ölkəsini, əlaqə şəxsini və e-poçtu daxil edin.', RU: 'Пожалуйста, укажите название компании, страну назначения, контактное лицо и e-mail.', TR: 'Lütfen şirket adını, varış ülkesini, yetkili kişiyi ve e-postayı girin.', AR: 'يرجى إدخال اسم الشركة والبلد المقصد وجهة الاتصال والبريد الإلكتروني.', ES: 'Por favor ingrese el nombre de la empresa, país de destino, persona de contacto y correo electrónico.', EN: 'Please complete company name, destination country, contact person, and business email.' },
+  rfqErrCommodity: { AZ: 'Zəhmət olmasa bütün sətirlər üçün məhsulu, hədəf miqdarını və vahidi qeyd edin.', RU: 'Пожалуйста, укажите наименование товара, объем и единицу измерения для всех позиций.', TR: 'Lütfen tüm kalemler için ürün, hedef miktar ve birimi belirtin.', AR: 'يرجى تحديد السلعة والكمية والوحدة لجميع البنود.', ES: 'Por favor especifique el producto, volumen y unidad para todas las líneas.', EN: 'Please specify the commodity name, target volume, and unit for all line items.' },
   rfqErrEmail: { AZ: 'Zəhmət olmasa düzgün e-poçt ünvanı daxil edin.', RU: 'Пожалуйста, введите корректный адрес электронной почты.', TR: 'Lütfen geçerli bir e-posta adresi girin.', AR: 'يرجى إدخال عنوان بريد إلكتروني صحيح.', ES: 'Por favor ingrese un correo electrónico válido.', EN: 'Please enter a valid email address.' },
   fullNameTitle: { AZ: 'Ad, Soyad & Vəzifə', RU: 'ФИО и должность', TR: 'Ad Soyad & Unvan', AR: 'الاسم الكامل والمسمى الوظيفي', ES: 'Nombre completo y cargo', EN: 'Full Name & Title' },
   fullNamePlaceholder: { AZ: 'Ad Soyad & Vəzifə', RU: 'Имя Фамилия & Должность', TR: 'Ad Soyad & Unvan', AR: 'الاسم الكامل والمسمى الوظيفي', ES: 'Nombre Apellido & Cargo', EN: 'Full Name & Title' },
   notesPlaceholder: { AZ: 'Kalibr, özəl etiket qablaşdırması, çatdırılma cədvəli və ya akkreditiv şərtlərini bildirin...', RU: 'Укажите калибр, упаковку под частной маркой, график поставки или условия аккредитива...', TR: 'Kalibraj, özel etiket ambalaj, teslimat takvimi veya akreditif şartlarını belirtin...', AR: 'حدد المعيار والتغليف والجدول الزمني للتسليم أو شروط الاعتماد المستندي...', ES: 'Especifique calibre, embalaje de marca privada, calendario de entrega o términos de carta de crédito...', EN: 'Specify caliber, private label packaging, delivery schedule, or documentary letter of credit terms...' },
   addCertPlaceholder: { AZ: 'Sertifikat əlavə et (məs. BRC Qida Təhlükəsizliyi)...', RU: 'Добавить сертификат (напр. BRC Food Safety)...', TR: 'Sertifika ekle (ör. BRC Gıda Güvenliği)...', AR: 'إضافة شهادة (مثل BRC لسلامة الغذاء)...', ES: 'Agregar certificado (ej. BRC Seguridad Alimentaria)...', EN: 'Add custom certificate (e.g. BRC Food Safety)...' },
   removeItem: { AZ: 'Elementi sil', RU: 'Удалить элемент', TR: 'Öğeyi kaldır', AR: 'إزالة العنصر', ES: 'Eliminar elemento', EN: 'Remove item' },
+  transportModeTitle: { AZ: 'Daşıma Şəkli', RU: 'Способ доставки', TR: 'Taşıma Şekli', AR: 'طريقة النقل', ES: 'Modo de Transporte', EN: 'Transport Mode' },
+  transportMode: { AZ: 'Daşıma Şəkli / Logistika', RU: 'Способ перевозки / Логистика', TR: 'Taşıma Şekli / Lojistik', AR: 'طريقة النقل / اللوجستيات', ES: 'Modo de Transporte / Logística', EN: 'Transport Mode / Logistics' },
+  selectTransportMode: { AZ: 'Daşıma şəkli seçin...', RU: 'Выберите способ доставки...', TR: 'Taşıma şekli seçin...', AR: 'اختر طريقة النقل...', ES: 'Seleccionar modo...', EN: 'Select transport mode...' },
   // Producer Modal
   producerTitle: { AZ: 'İstehsalçı İxrac Qeydiyyatı & Alıcı Uyğunlaşdırması', RU: 'Регистрация производителя для экспорта', TR: 'Üretici İhracat Kaydı & Alıcı Eşleştirme', AR: 'تسجيل المصنّع للتصدير ومطابقة المشتري', ES: 'Registro de Productor para Exportación', EN: 'Producer Export Onboarding & Global Buyer Matchmaking' },
   submitProducer: { AZ: 'İstehsalçı Qeydiyyatı & Sənəd Yarat', RU: 'Зарегистрировать производителя & Создать досье', TR: 'Üreticiyi Kaydet & Dosya Oluştur', AR: 'تسجيل المنتج وإنشاء الملف', ES: 'Registrar Productor e Emitir Expediente', EN: 'Register Producer & Issue Dossier' },
@@ -50,6 +56,7 @@ interface RFQModalProps {
   locale: Locale;
   initialProduct?: ProductItem | null;
   shortlistedIds: string[];
+  sourceView?: ViewMode;
   onSubmitRFQ: (rfq: RFQSubmission) => void;
 }
 
@@ -59,10 +66,17 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
   locale,
   initialProduct,
   shortlistedIds,
+  sourceView,
   onSubmitRFQ,
 }) => {
   const { products: ctxProducts } = useLocalization();
   const allProducts: ProductItem[] = ctxProducts && ctxProducts.length > 0 ? (ctxProducts as ProductItem[]) : PRODUCTS_CATALOG;
+
+  // Determine if we are in product context:
+  // When entered from "/" (Home) or general view without an initial product:
+  // ONLY custom product should be used, with NO catalog option and NO toggle choice presented.
+  // When in products view or opened from a product: both options are available.
+  const isProductContext = Boolean(initialProduct || sourceView === 'products');
 
   const [buyerCompany, setBuyerCompany] = useState('');
   const [country, setCountry] = useState('');
@@ -71,34 +85,51 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
   const [phone, setPhone] = useState('');
   const [incoterm, setIncoterm] = useState<IncotermCode>('CIF');
   const [destinationPort, setDestinationPort] = useState('');
-  const [corridorRoute, setCorridorRoute] = useState(CORRIDOR_ROUTES[0].id);
-  const [requiredCerts, setRequiredCerts] = useState<string[]>([
-    'AQTA Phytosanitary Certificate',
-    'Certificate of Origin (CT-1 / EUR.1)',
-    'ISO 22000 / Quality Assay',
-  ]);
+  const [corridorRoute, setCorridorRoute] = useState('');
+  const [requiredCerts, setRequiredCerts] = useState<string[]>([]);
   const [items, setItems] = useState<RFQLineItem[]>([]);
   const [itemModes, setItemModes] = useState<('catalog' | 'custom')[]>([]);
   const [notes, setNotes] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [customCertInput, setCustomCertInput] = useState('');
 
-  useEffect(() => { if (!isOpen) { setBuyerCompany(''); setCountry(''); setContactName(''); setEmail(''); setPhone(''); setNotes(''); setItems([]); setItemModes([]); setErrorMsg(''); } }, [isOpen]);
+  useEffect(() => {
+    if (!isOpen) {
+      setBuyerCompany('');
+      setCountry('');
+      setContactName('');
+      setEmail('');
+      setPhone('');
+      setNotes('');
+      setItems([]);
+      setItemModes([]);
+      setErrorMsg('');
+      setDestinationPort('');
+      setCorridorRoute('');
+      setRequiredCerts([]);
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (!isOpen) return;
     setErrorMsg('');
+
+    // Rule: "hiç bir modalda bunlar açılışta otomatik seçilmesin"
+    // Product should not be pre-selected unless user explicitly clicked "Request RFQ" on that specific product card.
+    // Target Volume must NEVER be pre-filled with 20 (empty string).
+    // Unit must NEVER be pre-selected to MT (empty string).
     if (initialProduct) {
       setItems([
         {
           productId: initialProduct.id,
           productName: getLocalizedText(initialProduct.name, locale),
           hsCode: initialProduct.hsCode,
-          quantity: '20',
-          unit: initialProduct.categoryKey === 'construction' || initialProduct.id === 'carpet-5701' ? 'm²' : 'MT',
+          quantity: '',
+          unit: '' as any,
         },
       ]);
-    } else if (shortlistedIds.length > 0) {
+      setItemModes(['catalog']);
+    } else if (isProductContext && shortlistedIds.length > 0) {
       const prefilled: RFQLineItem[] = shortlistedIds
         .map((id) => allProducts.find((p) => p.id === id))
         .filter((p): p is ProductItem => Boolean(p))
@@ -106,23 +137,53 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
           productId: p.id,
           productName: getLocalizedText(p.name, locale),
           hsCode: p.hsCode,
-          quantity: '20',
-          unit: 'MT',
+          quantity: '',
+          unit: '' as any,
         }));
-      setItems(prefilled);
-    } else if (items.length === 0) {
-      const def = allProducts[0];
+      setItems(
+        prefilled.length > 0
+          ? prefilled
+          : [
+              {
+                productId: '',
+                productName: '',
+                hsCode: '',
+                quantity: '',
+                unit: '' as any,
+              },
+            ]
+      );
+      setItemModes(
+        prefilled.length > 0 ? prefilled.map(() => 'catalog') : ['catalog']
+      );
+    } else if (isProductContext) {
+      // In products page - both catalog and custom available, but no pre-selected product
       setItems([
         {
-          productId: def.id,
-          productName: getLocalizedText(def.name, locale),
-          hsCode: def.hsCode,
-          quantity: '20',
-          unit: 'MT',
+          productId: '',
+          productName: '',
+          hsCode: '',
+          quantity: '',
+          unit: '' as any,
         },
       ]);
+      setItemModes(['catalog']);
+    } else {
+      // Opened from "/" (Home) or general view:
+      // "Catalog olmasın sadece custom product olsun ve seçim sunulmasın"
+      // "hiç bir modalda bunlar açılışta otomatik seçilmesin"
+      setItems([
+        {
+          productId: '',
+          productName: '',
+          hsCode: '',
+          quantity: '',
+          unit: '' as any,
+        },
+      ]);
+      setItemModes(['custom']);
     }
-  }, [isOpen, initialProduct, locale]);
+  }, [isOpen, initialProduct, isProductContext, locale]);
 
   if (!isOpen) return null;
 
@@ -149,25 +210,47 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
   };
 
   const handleAddLineItem = () => {
-    const nextProd =
-      allProducts.find((p) => !items.some((i) => i.productId === p.id)) ||
-      allProducts[0];
-    setItems((prev) => [
-      ...prev,
-      {
-        productId: nextProd.id,
-        productName: getLocalizedText(nextProd.name, locale),
-        hsCode: nextProd.hsCode,
-        quantity: '20',
-        unit: 'MT',
-      },
-    ]);
-    setItemModes((prev) => [...prev, 'catalog']);
+    if (!isProductContext) {
+      // Opened from "/" - custom product only, no preselection
+      setItems((prev) => [
+        ...prev,
+        {
+          productId: '',
+          productName: '',
+          hsCode: '',
+          quantity: '',
+          unit: '' as any,
+        },
+      ]);
+      setItemModes((prev) => [...prev, 'custom']);
+    } else {
+      // In product context - both available, but unselected by default
+      setItems((prev) => [
+        ...prev,
+        {
+          productId: '',
+          productName: '',
+          hsCode: '',
+          quantity: '',
+          unit: '' as any,
+        },
+      ]);
+      setItemModes((prev) => [...prev, 'catalog']);
+    }
   };
 
   const handleProductChange = (idx: number, productId: string) => {
     const prod = allProducts.find((p) => p.id === productId);
-    if (!prod) return;
+    if (!prod) {
+      setItems((prev) =>
+        prev.map((item, i) =>
+          i === idx
+            ? { ...item, productId: '', productName: '', hsCode: '' }
+            : item
+        )
+      );
+      return;
+    }
     setItems((prev) =>
       prev.map((item, i) =>
         i === idx
@@ -185,6 +268,7 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
   const handleRemoveItem = (idx: number) => {
     if (items.length <= 1) return;
     setItems((prev) => prev.filter((_, i) => i !== idx));
+    setItemModes((prev) => prev.filter((_, i) => i !== idx));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -195,7 +279,32 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email.trim())) { setErrorMsg(ml('rfqErrEmail', locale)); return; }
-    const routeObj = CORRIDOR_ROUTES.find((r) => r.id === corridorRoute) || CORRIDOR_ROUTES[0];
+
+    // Validate commodities
+    const hasInvalidItem = items.some((it, idx) => {
+      const mode = itemModes[idx] || (isProductContext ? 'catalog' : 'custom');
+      if (mode === 'catalog' && !it.productId) return true;
+      if (mode === 'custom' && !it.productName.trim()) return true;
+      if (!it.quantity.trim() || !it.unit) return true;
+      return false;
+    });
+
+    if (hasInvalidItem) {
+      setErrorMsg(ml('rfqErrCommodity', locale));
+      return;
+    }
+
+    // Transport mode label mapping
+    const transportModes = [
+      { id: 'road', name: { TR: 'Karayolu', AZ: 'Quru yolu', EN: 'Road Freight', RU: 'Автомобильный транспорт', AR: 'النقل البري', ES: 'Transporte Terrestre' } },
+      { id: 'sea', name: { TR: 'Deniz Yolu', AZ: 'Dəniz yolu', EN: 'Sea / Ocean Freight', RU: 'Морской транспорт', AR: 'الشحن البحري', ES: 'Transporte Marítimo' } },
+      { id: 'air', name: { TR: 'Havayolu', AZ: 'Hava yolu', EN: 'Air Cargo', RU: 'Авиаперевозки', AR: 'الشحن الجوي', ES: 'Carga Aérea' } },
+      { id: 'rail', name: { TR: 'Demiryolu', AZ: 'Dəmir yolu', EN: 'Rail Freight', RU: 'Железнодорожный транспорт', AR: 'الشحن بالسكك الحديدية', ES: 'Transporte Ferroviario' } },
+      { id: 'multimodal', name: { TR: 'Multimodal (Kombine)', AZ: 'Multimodal (Kombinə)', EN: 'Multimodal Freight', RU: 'Мультимодальные перевозки', AR: 'نقل متعدد الوسائط', ES: 'Multimodal' } },
+    ];
+    const selectedMode = transportModes.find((m) => m.id === corridorRoute);
+    const transportModeLabel = selectedMode ? getLocalizedText(selectedMode.name, locale) : (corridorRoute || 'Road / Sea Freight');
+
     const newRFQ: RFQSubmission = {
       id: `AZX-RFQ-${Date.now()}-${Math.random().toString(36).slice(2,7).toUpperCase()}`,
       createdAt: new Date().toISOString(),
@@ -206,9 +315,18 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
       phone: phone.trim() || '+994 12 404 85 00',
       incoterm,
       destinationPort: destinationPort.trim() || `${country.trim()} Main Terminal`,
-      corridorRoute: routeObj.name.EN,
+      corridorRoute: transportModeLabel,
       requiredCertifications: requiredCerts,
-      items,
+      items: items.map((it, idx) => {
+        const mode = itemModes[idx] || (isProductContext ? 'catalog' : 'custom');
+        return {
+          productId: it.productId || `custom-${idx + 1}`,
+          productName: it.productName.trim(),
+          hsCode: it.hsCode || (mode === 'custom' ? 'Custom / To be classified' : ''),
+          quantity: it.quantity.trim(),
+          unit: it.unit,
+        };
+      }),
       notes: notes.trim(),
       status: 'Pending',
     };
@@ -261,36 +379,42 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
             </div>
             <div className="space-y-2.5">
               {items.map((item, idx) => {
-                const mode = itemModes[idx] || 'catalog';
+                const mode = itemModes[idx] || (isProductContext ? 'catalog' : 'custom');
                 return (
                 <div
                   key={idx}
                   className="bg-slate-50 p-3 rounded border border-slate-200 space-y-2"
                 >
-                  {/* Mode toggle */}
-                  <div className="flex items-center gap-2 mb-1">
-                    <button
-                      type="button"
-                      onClick={() => setItemModes(prev => { const n = [...prev]; n[idx] = 'catalog'; return n; })}
-                      className={`text-[10px] font-bold px-2.5 py-1 rounded cursor-pointer ${mode === 'catalog' ? 'bg-slate-800 text-white' : 'bg-white border border-slate-200 text-slate-600'}`}
-                    >Catalog</button>
-                    <button
-                      type="button"
-                      onClick={() => setItemModes(prev => { const n = [...prev]; n[idx] = 'custom'; return n; })}
-                      className={`text-[10px] font-bold px-2.5 py-1 rounded cursor-pointer ${mode === 'custom' ? 'bg-slate-800 text-white' : 'bg-white border border-slate-200 text-slate-600'}`}
-                    >Custom Product</button>
-                  </div>
+                  {/* Mode toggle: ONLY shown in product context ("fakat ürünlerde ikiside olsun", "/ dan girilince ... seçim sunulmasın") */}
+                  {isProductContext && (
+                    <div className="flex items-center gap-2 mb-1">
+                      <button
+                        type="button"
+                        onClick={() => setItemModes(prev => { const n = [...prev]; n[idx] = 'catalog'; return n; })}
+                        className={`text-[10px] font-bold px-2.5 py-1 rounded cursor-pointer transition-colors ${mode === 'catalog' ? 'bg-slate-800 text-white' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-100'}`}
+                      >Catalog</button>
+                      <button
+                        type="button"
+                        onClick={() => setItemModes(prev => { const n = [...prev]; n[idx] = 'custom'; return n; })}
+                        className={`text-[10px] font-bold px-2.5 py-1 rounded cursor-pointer transition-colors ${mode === 'custom' ? 'bg-slate-800 text-white' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-100'}`}
+                      >Custom Product</button>
+                    </div>
+                  )}
+
                   <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-end">
-                  <div className="sm:col-span-6">
+                  <div className={items.length > 1 ? "sm:col-span-5" : "sm:col-span-6"}>
                     <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
-                      {mode === 'catalog' ? 'Commodity / HS Code' : 'Product Name'}
+                      {mode === 'catalog' ? 'Commodity / HS Code *' : 'Product Name *'}
                     </label>
                     {mode === 'catalog' ? (
                     <select
-                      value={item.productId}
+                      value={item.productId || ''}
                       onChange={(e) => handleProductChange(idx, e.target.value)}
-                      className="w-full h-9 px-2.5 text-xs font-semibold bg-white border border-slate-300 rounded text-slate-900"
+                      className="w-full h-9 px-2.5 text-xs font-semibold bg-white border border-slate-300 rounded text-slate-900 focus:outline-none focus:border-slate-400"
                     >
+                      <option value="" disabled>
+                        Select Azerbaijani Commodity / HS Code...
+                      </option>
                       {allProducts.map((p) => (
                         <option key={p.id} value={p.id}>
                           {getLocalizedText(p.name, locale)} — HS: {p.hsCode} ({getLocalizedText(p.originRegion, locale)})
@@ -300,20 +424,20 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
                     ) : (
                     <input
                       type="text"
-                      value={item.productName}
+                      value={item.productName || ''}
                       onChange={(e) => setItems(prev => prev.map((it, i) => i === idx ? { ...it, productName: e.target.value } : it))}
                       placeholder="e.g. Organic Pomegranate Juice"
-                      className="w-full h-9 px-2.5 text-xs bg-white border border-slate-300 rounded text-slate-900"
+                      className="w-full h-9 px-2.5 text-xs bg-white border border-slate-300 rounded text-slate-900 focus:outline-none focus:border-slate-400"
                     />
                     )}
                   </div>
-                  <div className="sm:col-span-3">
+                  <div className={items.length > 1 ? "sm:col-span-3" : "sm:col-span-3"}>
                     <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
-                      Target Volume
+                      Target Volume *
                     </label>
                     <input
                       type="text"
-                      value={item.quantity}
+                      value={item.quantity || ''}
                       onChange={(e) =>
                         setItems((prev) =>
                           prev.map((it, i) =>
@@ -321,16 +445,16 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
                           )
                         )
                       }
-                      className="w-full h-9 px-2.5 text-xs font-semibold bg-white border border-slate-300 rounded text-slate-900 tabular-nums"
-                      placeholder="e.g. 40"
+                      className="w-full h-9 px-2.5 text-xs font-semibold bg-white border border-slate-300 rounded text-slate-900 tabular-nums focus:outline-none focus:border-slate-400"
+                      placeholder="e.g. 20"
                     />
                   </div>
-                  <div className="sm:col-span-2">
+                  <div className={items.length > 1 ? "sm:col-span-3" : "sm:col-span-3"}>
                     <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
-                      Unit
+                      Unit *
                     </label>
                     <select
-                      value={item.unit}
+                      value={item.unit || ''}
                       onChange={(e) =>
                         setItems((prev) =>
                           prev.map((it, i) =>
@@ -340,8 +464,9 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
                           )
                         )
                       }
-                      className="w-full h-9 px-2 text-xs font-semibold bg-white border border-slate-300 rounded text-slate-900"
+                      className="w-full h-9 px-3 text-xs font-semibold bg-white border border-slate-300 rounded text-slate-900 focus:outline-none focus:border-slate-400"
                     >
+                      <option value="" disabled>Select Unit...</option>
                       <option value="MT">MT (Metric Tons)</option>
                       <option value="20ft FCL">20ft FCL</option>
                       <option value="40ft FCL">40ft FCL</option>
@@ -349,21 +474,21 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
                       <option value="Units">Units / Lots</option>
                     </select>
                   </div>
-                  <div className="sm:col-span-1 flex justify-end pt-4">
-                    {items.length > 1 && (
+                  {items.length > 1 && (
+                    <div className="sm:col-span-1 flex justify-end pb-1">
                       <button
                         type="button"
                         onClick={() => handleRemoveItem(idx)}
-                        className="text-slate-400 hover:text-red-600 p-1 cursor-pointer"
+                        className="text-slate-400 hover:text-red-600 p-1.5 rounded hover:bg-red-50 cursor-pointer transition-colors"
                         title={ml('removeItem', locale)}
                       >
                         <i className="fa-solid fa-trash-can text-xs"></i>
                       </button>
-                    )}
-                  </div>
+                    </div>
+                  )}
                   </div>
                 </div>
-              )})}
+              );})}
             </div>
           </div>
 
@@ -399,18 +524,31 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">
-                Preferred Trade Corridor
+                {ml('transportModeTitle', locale)}
               </label>
               <select
                 value={corridorRoute}
                 onChange={(e) => setCorridorRoute(e.target.value)}
-                className="w-full h-10 px-3 text-xs font-semibold bg-white border border-slate-300 rounded text-slate-900"
+                className="w-full h-10 px-3 text-xs font-semibold bg-white border border-slate-300 rounded text-slate-900 focus:outline-none focus:border-slate-400"
               >
-                {CORRIDOR_ROUTES.map((r) => (
-                  <option key={r.id} value={r.id}>
-                    {getLocalizedText(r.name, locale)} ({r.transitDays})
-                  </option>
-                ))}
+                <option value="" disabled>
+                  {ml('selectTransportMode', locale)}
+                </option>
+                <option value="road">
+                  {locale === 'TR' ? 'Karayolu' : locale === 'AZ' ? 'Quru yolu' : locale === 'RU' ? 'Автомобильный транспорт' : locale === 'AR' ? 'النقل البري' : locale === 'ES' ? 'Transporte Terrestre' : 'Road Freight'}
+                </option>
+                <option value="sea">
+                  {locale === 'TR' ? 'Deniz Yolu' : locale === 'AZ' ? 'Dəniz yolu' : locale === 'RU' ? 'Морской транспорт' : locale === 'AR' ? 'الشحن البحري' : locale === 'ES' ? 'Transporte Marítimo' : 'Sea / Ocean Freight'}
+                </option>
+                <option value="air">
+                  {locale === 'TR' ? 'Havayolu' : locale === 'AZ' ? 'Hava yolu' : locale === 'RU' ? 'Авиаперевозки' : locale === 'AR' ? 'الشحن الجوي' : locale === 'ES' ? 'Carga Aérea' : 'Air Cargo'}
+                </option>
+                <option value="rail">
+                  {locale === 'TR' ? 'Demiryolu' : locale === 'AZ' ? 'Dəmir yolu' : locale === 'RU' ? 'Железнодорожный транспорт' : locale === 'AR' ? 'الشحن بالسكك الحديدية' : locale === 'ES' ? 'Transporte Ferroviario' : 'Rail Freight'}
+                </option>
+                <option value="multimodal">
+                  {locale === 'TR' ? 'Multimodal (Kombine)' : locale === 'AZ' ? 'Multimodal (Kombinə)' : locale === 'RU' ? 'Мультимодальные перевозки' : locale === 'AR' ? 'نقل متعدد الوسائط' : locale === 'ES' ? 'Multimodal' : 'Multimodal Freight'}
+                </option>
               </select>
             </div>
           </div>
@@ -495,17 +633,15 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
                   className="w-full h-10 px-3 text-xs bg-white border border-slate-300 rounded text-slate-900"
                 />
               </div>
-              <div>
+              <div className="relative z-30">
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
                   Destination Country *
                 </label>
-                <input
-                  type="text"
-                  required
+                <CountrySelect
                   value={country}
-                  onChange={(e) => setCountry(e.target.value)}
-                  placeholder="e.g. Germany, UAE, Turkey, Poland"
-                  className="w-full h-10 px-3 text-xs bg-white border border-slate-300 rounded text-slate-900"
+                  onChange={(val) => setCountry(val)}
+                  required
+                  placeholder="Select Destination Country..."
                 />
               </div>
               <div>
@@ -609,34 +745,39 @@ export const ProducerOnboardingModal: React.FC<ProducerModalProps> = ({
 }) => {
   const [companyName, setCompanyName] = useState('');
   const [voenTin, setVoenTin] = useState('');
-  const [economicRegion, setEconomicRegion] = useState('Absheron – Khizi');
+  const [economicRegion, setEconomicRegion] = useState('');
+  const [customRegion, setCustomRegion] = useState('');
   const [contactPerson, setContactPerson] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [productName, setProductName] = useState('');
-  const [hsCode, setHsCode] = useState('080222');
-  const [categoryKey, setCategoryKey] = useState('Agriculture & Food');
-  const [monthlyCapacity, setMonthlyCapacity] = useState('100 MT / Month');
-  const [certs, setCerts] = useState<string[]>(['AQTA Registration', 'CT-1 / EUR.1 Eligible']);
-  const [targetMarkets, setTargetMarkets] = useState<string[]>(['European Union', 'GCC / Middle East']);
-  const [outsourcedDesk, setOutsourcedDesk] = useState(true);
+  const [hsCode, setHsCode] = useState('');
+  const [categoryKey, setCategoryKey] = useState('');
+  const [monthlyCapacity, setMonthlyCapacity] = useState('');
+  const [certs, setCerts] = useState<string[]>([]);
+  const [targetMarkets, setTargetMarkets] = useState<string[]>([]);
+  const [customCert, setCustomCert] = useState('');
+  const [customMarket, setCustomMarket] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
   useEffect(() => {
     if (!isOpen) {
       setCompanyName('');
       setVoenTin('');
-      setEconomicRegion('Absheron – Khizi');
+      setEconomicRegion('');
+      setCustomRegion('');
       setContactPerson('');
       setEmail('');
       setPhone('');
       setProductName('');
-      setHsCode('080222');
-      setCategoryKey('Agriculture & Food');
-      setMonthlyCapacity('100 MT / Month');
-      setCerts(['AQTA Registration', 'CT-1 / EUR.1 Eligible']);
-      setTargetMarkets(['European Union', 'GCC / Middle East']);
-      setOutsourcedDesk(true);
+      setHsCode('');
+      setCategoryKey('');
+      setMonthlyCapacity('');
+      setCerts([]);
+      setTargetMarkets([]);
+      setTargetMarkets([]);
+      setCustomCert('');
+      setCustomMarket('');
       setErrorMsg('');
     }
   }, [isOpen]);
@@ -644,15 +785,65 @@ export const ProducerOnboardingModal: React.FC<ProducerModalProps> = ({
   if (!isOpen) return null;
 
   const regions = [
-    'Baku Economic Region',
-    'Absheron – Khizi (Sumgayit Industrial Park)',
-    'Sheki – Zaqatala',
-    'Central Aran (Goychay – Kurdamir)',
-    'Ganja – Dashkasan',
-    'Quba – Khachmaz',
-    'Lankaran – Astara',
-    'Karabakh & East Zangezur',
-    'Nakhchivan Economic Region',
+    // Bakı və Abşeron
+    'Bakı',
+    'Abşeron',
+    // Aran / Mərkəzi
+    'Ağdam',
+    'Ağsu',
+    'Astara',
+    'Bərdə',
+    'Beyləqan',
+    'Biləsuvar',
+    'Daşkəsən',
+    'Dəvəçi',
+    'Füzuli',
+    'Gədəbəy',
+    'Gəncə',
+    'Göyçay',
+    'Göygöl',
+    'Hacıqabul',
+    'Xaçmaz',
+    'İmişli',
+    'Kürdəmir',
+    'Kəlbəcər',
+    'Laçın',
+    'Lənkəran',
+    'Masallı',
+    'Mingəçevir',
+    'Naxçıvan',
+    'Ordubad',
+    'Oğuz',
+    'Qazax',
+    'Qəbələ',
+    'Quba',
+    'Qusar',
+    'Saatlı',
+    'Sabirabad',
+    'Salyan',
+    'Şabran',
+    'Şahbuz',
+    'Şəmkir',
+    'Şərur',
+    'Şamaxı',
+    'Şəki',
+    'Tərtər',
+    'Tovuz',
+    'Uğuz',
+    'Zaqatala',
+    'Zəngilan',
+    'Zərdəb',
+    'Zərdən',
+    'Cəlilabad',
+    'Cəbrayıl',
+    'Culfa',
+    'Lerik',
+    'Zəlzal',
+    'Cavanshir',
+    'Şirvan',
+    'Sumqayıt',
+    'Qobustan',
+    'Xırdalan',
   ];
 
   const certOptions = [
@@ -673,9 +864,22 @@ export const ProducerOnboardingModal: React.FC<ProducerModalProps> = ({
     'North America',
   ];
 
+  const addCustomCert = () => {
+    const v = customCert.trim();
+    if (!v) return;
+    if (!certs.includes(v)) setCerts((prev) => [...prev, v]);
+    setCustomCert('');
+  };
+  const addCustomMarket = () => {
+    const v = customMarket.trim();
+    if (!v) return;
+    if (!targetMarkets.includes(v)) setTargetMarkets((prev) => [...prev, v]);
+    setCustomMarket('');
+  };
+
   const readinessScore = Math.min(
     98,
-    55 + certs.length * 6 + (outsourcedDesk ? 10 : 0) + (voenTin.length >= 8 ? 5 : 0)
+    55 + certs.length * 6 + (voenTin.length >= 8 ? 5 : 0)
   );
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -689,17 +893,17 @@ export const ProducerOnboardingModal: React.FC<ProducerModalProps> = ({
       createdAt: new Date().toISOString(),
       companyName: companyName.trim(),
       voenTin: voenTin.trim(),
-      economicRegion,
+      economicRegion: economicRegion || 'Baku Economic Region',
       contactPerson: contactPerson.trim() || 'Export Director',
       email: email.trim(),
       phone: phone.trim() || '+994 50 200 00 00',
       productName: productName.trim(),
-      hsCode: hsCode.trim(),
-      categoryKey,
-      monthlyCapacity,
+      hsCode: hsCode.trim() || '080222',
+      categoryKey: categoryKey || 'Agriculture & Food',
+      monthlyCapacity: monthlyCapacity || '100 MT / Month',
       certifications: certs,
       targetMarkets,
-      outsourcedDeskRequested: outsourcedDesk,
+      outsourcedDeskRequested: false,
       readinessScore,
       status: 'Pending',
     };
@@ -774,6 +978,7 @@ export const ProducerOnboardingModal: React.FC<ProducerModalProps> = ({
                 onChange={(e) => setEconomicRegion(e.target.value)}
                 className="w-full h-10 px-3 text-xs font-semibold bg-white border border-slate-300 rounded text-slate-900"
               >
+                <option value="" disabled>Select Economic Region...</option>
                 {regions.map((r) => (
                   <option key={r} value={r}>
                     {r}
@@ -802,6 +1007,7 @@ export const ProducerOnboardingModal: React.FC<ProducerModalProps> = ({
                 <input
                   type="text"
                   value={hsCode}
+                  placeholder="e.g. 080222"
                   onChange={(e) => setHsCode(e.target.value)}
                   className="w-full h-10 px-3 text-xs bg-white border border-slate-300 rounded text-slate-900 tabular-nums"
                 />
@@ -813,6 +1019,7 @@ export const ProducerOnboardingModal: React.FC<ProducerModalProps> = ({
                 <input
                   type="text"
                   value={monthlyCapacity}
+                  placeholder="e.g. 100 MT / Month"
                   onChange={(e) => setMonthlyCapacity(e.target.value)}
                   className="w-full h-10 px-2.5 text-xs bg-white border border-slate-300 rounded text-slate-900"
                 />
@@ -853,6 +1060,50 @@ export const ProducerOnboardingModal: React.FC<ProducerModalProps> = ({
                     </button>
                   );
                 })}
+                {/* Manually-added certifications (not in the preset list) */}
+                {certs.filter((c) => !certOptions.includes(c)).map((c) => {
+                  const active = certs.includes(c);
+                  return (
+                    <button
+                      key={c}
+                      type="button"
+                      onClick={() =>
+                        setCerts((prev) =>
+                          prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]
+                        )
+                      }
+                      className={`p-2 rounded border text-left text-[11px] font-medium cursor-pointer flex items-center gap-1.5 ${
+                        active
+                          ? 'bg-emerald-50 border-brandGreen text-brandNavy font-semibold'
+                          : 'bg-white border-slate-200 text-slate-600'
+                      }`}
+                    >
+                      <i
+                        className={`fa-solid ${
+                          active ? 'fa-circle-check text-brandGreen' : 'fa-regular fa-circle text-slate-400'
+                        }`}
+                      ></i>
+                      <span className="truncate">{c}</span>
+                    </button>
+                  );
+                })}
+              </div>
+              <div className="flex items-center gap-1.5 mt-1.5">
+                <input
+                  type="text"
+                  value={customCert}
+                  onChange={(e) => setCustomCert(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addCustomCert(); } }}
+                  placeholder="Add a certification (e.g. HACCP)..."
+                  className="flex-1 h-8 px-2.5 text-xs bg-white border border-slate-300 rounded text-slate-900"
+                />
+                <button
+                  type="button"
+                  onClick={addCustomCert}
+                  className="px-2.5 h-8 text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 rounded cursor-pointer"
+                >
+                  + Add
+                </button>
               </div>
             </div>
 
@@ -887,31 +1138,52 @@ export const ProducerOnboardingModal: React.FC<ProducerModalProps> = ({
                     </button>
                   );
                 })}
+                {/* Manually-added destinations (not in the preset list) */}
+                {targetMarkets.filter((m) => !marketOptions.includes(m)).map((m) => {
+                  const active = targetMarkets.includes(m);
+                  return (
+                    <button
+                      key={m}
+                      type="button"
+                      onClick={() =>
+                        setTargetMarkets((prev) =>
+                          prev.includes(m) ? prev.filter((x) => x !== m) : [...prev, m]
+                        )
+                      }
+                      className={`p-2 rounded border text-left text-[11px] font-medium cursor-pointer flex items-center gap-1.5 ${
+                        active
+                          ? 'bg-blue-50 border-brandNavy text-brandNavy font-semibold'
+                          : 'bg-white border-slate-200 text-slate-600'
+                      }`}
+                    >
+                      <i
+                        className={`fa-solid ${
+                          active ? 'fa-circle-check text-brandNavy' : 'fa-regular fa-circle text-slate-400'
+                        }`}
+                      ></i>
+                      <span className="truncate">{m}</span>
+                    </button>
+                  );
+                })}
+              </div>
+              <div className="flex items-center gap-1.5 mt-1.5">
+                <input
+                  type="text"
+                  value={customMarket}
+                  onChange={(e) => setCustomMarket(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addCustomMarket(); } }}
+                  placeholder="Add a destination (e.g. Japan)..."
+                  className="flex-1 h-8 px-2.5 text-xs bg-white border border-slate-300 rounded text-slate-900"
+                />
+                <button
+                  type="button"
+                  onClick={addCustomMarket}
+                  className="px-2.5 h-8 text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 rounded cursor-pointer"
+                >
+                  + Add
+                </button>
               </div>
             </div>
-          </div>
-
-          {/* Outsourced Export Department Toggle */}
-          <div className="p-3.5 rounded-lg bg-emerald-50/70 border border-emerald-200 flex items-center justify-between gap-4">
-            <div>
-              <span className="text-xs font-semibold text-slate-700 block">
-                Appoint AZEXBUY as Your Outsourced Export Department
-              </span>
-              <span className="text-[11px] text-slate-600">
-                Includes turnkey multilingual B2B sales, contract preparation, AQTA/DGK clearance, and Middle Corridor freight.
-              </span>
-            </div>
-            <button
-              type="button"
-              onClick={() => setOutsourcedDesk(!outsourcedDesk)}
-              className={`px-3 py-1.5 rounded text-xs font-bold cursor-pointer shrink-0 ${
-                outsourcedDesk
-                  ? 'bg-brandGreen text-white'
-                  : 'bg-white border border-slate-300 text-slate-700'
-              }`}
-            >
-              {outsourcedDesk ? ml('mandateActive', locale) : ml('selectMandate', locale)}
-            </button>
           </div>
 
           {/* Contact row */}
@@ -958,12 +1230,6 @@ export const ProducerOnboardingModal: React.FC<ProducerModalProps> = ({
 </form>
         {/* Sticky footer */}
         <div className="shrink-0 px-4 sm:px-6 py-3 border-t border-slate-200 bg-white flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="hidden sm:flex items-center gap-2">
-            <span className="text-xs text-slate-600">{ml('exportReadiness', locale)}</span>
-            <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded tabular-nums">
-              {readinessScore} / 100
-            </span>
-          </div>
           <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
             <button
               type="button"
@@ -990,12 +1256,14 @@ export const ProducerOnboardingModal: React.FC<ProducerModalProps> = ({
 interface DossierPrintModalProps {
   rfq: RFQSubmission | null;
   producerApp: ProducerApplication | null;
+  locale?: string;
   onClose: () => void;
 }
 
 export const PrintableDossierModal: React.FC<DossierPrintModalProps> = ({
   rfq,
   producerApp,
+  locale = 'EN',
   onClose,
 }) => {
   if (!rfq && !producerApp) return null;
@@ -1151,7 +1419,7 @@ export const PrintableDossierModal: React.FC<DossierPrintModalProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                 <div className="p-3.5 border border-slate-200 rounded">
                   <span className="text-[10px] font-bold uppercase text-slate-400 block mb-1">
-                    Selected Logistics Route
+                    {ml('transportMode', locale)}
                   </span>
                   <span className="font-semibold text-slate-800">{rfq.corridorRoute}</span>
                 </div>

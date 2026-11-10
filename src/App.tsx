@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback, ReactNode } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo, ReactNode } from 'react';
 
 function PageTransition({ viewKey, children }: { viewKey: string; children: ReactNode }) {
   const [displayed, setDisplayed] = useState<ReactNode>(() => children);
@@ -335,6 +335,39 @@ export default function App() {
     'fa-solid fa-truck',
   ];
 
+  // ── Category tiles (home "Selected Products" section) ────────────────────
+  const CAT_ICONS: Record<string, string> = {
+    agro: 'fa-solid fa-leaf',
+    textile: 'fa-solid fa-scroll',
+    construction: 'fa-solid fa-gem',
+    metals: 'fa-solid fa-industry',
+    chemicals: 'fa-solid fa-flask',
+  };
+  const CAT_DEFAULT_LABELS: Record<string, Record<string, string>> = {
+    agro:         { AZ: 'Kənd Təsərrüfatı və Qida', EN: 'Agriculture & Food', TR: 'Tarım ve Gıda', RU: 'Агропром и продукты' },
+    textile:      { AZ: 'Tekstil və Xalça',          EN: 'Textile & Carpets',    TR: 'Tekstil ve Kilim',   RU: 'Текстиль и ковры' },
+    construction: { AZ: 'Tikinti Daşı və Mərmər',     EN: 'Construction & Stone', TR: 'İnşaat Taşı ve Mermer', RU: 'Мрамор и стройматериалы' },
+    metals:       { AZ: 'Metallurgiya və Sənaye',     EN: 'Metals & Steel',       TR: 'Metalürji ve Çelik',  RU: 'Металлургия и трубы' },
+    chemicals:    { AZ: 'Kimya və Polimerlər',        EN: 'Chemicals & Urea',     TR: 'Kimyasallar ve Üre',  RU: 'Химия и удобрения' },
+  };
+  const categoryTiles = useMemo(() => {
+    const counts: Record<string, number> = {};
+    const labels: Record<string, any> = {};
+    cmsProducts.forEach((p: any) => {
+      const key = p.categoryKey || 'agro';
+      counts[key] = (counts[key] || 0) + 1;
+      if (!labels[key]) labels[key] = p.categoryLabel;
+    });
+    return Object.keys(CAT_DEFAULT_LABELS)
+      .filter((key) => counts[key] > 0)
+      .map((key) => ({
+        key,
+        icon: CAT_ICONS[key] || 'fa-solid fa-cube',
+        label: labels[key] || CAT_DEFAULT_LABELS[key],
+        count: counts[key],
+      }));
+  }, [cmsProducts]);
+
   const azIcons = [
     'fa-solid fa-location-dot',
     'fa-solid fa-cubes-stacked',
@@ -615,6 +648,9 @@ export default function App() {
                         <h3 className="text-base font-bold text-gray-900 mb-3">
                           {getLocalizedText(srv.title, locale)}
                         </h3>
+                        <p className="text-xs text-gray-600 leading-relaxed mb-4">
+                          {getLocalizedText(srv.subtitle, locale)}
+                        </p>
                         <ul className="space-y-1.5 text-xs text-gray-600 mb-6 font-medium">
                           {srv.items.map((it, idx) => (
                             <li key={idx} className="flex items-center gap-2">
@@ -748,8 +784,13 @@ export default function App() {
                       </div>
                     </div>
 
-                    {/* Interactive Step Drawer when user clicks any step circle */}
-                    {selectedStepInfo && (
+                    {/* Interactive Step Drawer when user clicks any step circle — CTA only on the last step */}
+                    {selectedStepInfo && (() => {
+                      const isBuyerLast = selectedStepInfo.track === 'buyer'
+                        && selectedStepInfo.step.number === Math.max(...cmsBuyerSteps.map(s => s.number));
+                      const isProducerLast = selectedStepInfo.track === 'producer'
+                        && selectedStepInfo.step.number === Math.max(...cmsProducerSteps.map(s => s.number));
+                      return (
                       <div className="bg-white border border-slate-200 rounded-lg p-4 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                         <div>
                           <div className="flex items-center gap-2 text-[11px] font-bold uppercase text-brandNavy mb-0.5">
@@ -767,19 +808,24 @@ export default function App() {
                           </p>
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
-                          <button
-                            type="button"
-                            onClick={() =>
-                              selectedStepInfo.track === 'buyer'
-                                ? handleOpenGeneralRFQ()
-                                : setProducerModalOpen(true)
-                            }
-                            className="bg-brandNavy text-white text-xs font-bold px-3.5 py-2 rounded cursor-pointer"
-                          >
-                            {selectedStepInfo.track === 'buyer'
-                              ? 'Start Buyer RFQ'
-                              : 'Register Producer'}
-                          </button>
+                          {isBuyerLast && (
+                            <button
+                              type="button"
+                              onClick={() => handleOpenGeneralRFQ()}
+                              className="bg-brandNavy text-white text-xs font-bold px-3.5 py-2 rounded cursor-pointer"
+                            >
+                              Start Buyer RFQ
+                            </button>
+                          )}
+                          {isProducerLast && (
+                            <button
+                              type="button"
+                              onClick={() => setProducerModalOpen(true)}
+                              className="bg-brandNavy text-white text-xs font-bold px-3.5 py-2 rounded cursor-pointer"
+                            >
+                              Register Producer
+                            </button>
+                          )}
                           <button
                             type="button"
                             onClick={() => setSelectedStepInfo(null)}
@@ -789,7 +835,8 @@ export default function App() {
                           </button>
                         </div>
                       </div>
-                    )}
+                      );
+                    })()}
                   </div>
                 </div>
               </div>
@@ -818,46 +865,34 @@ export default function App() {
                   </button>
                 </div>
 
-                {/* 6 Product Cards in One Row */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-                  {featuredProducts.map((product) => (
-                    <div
-                      key={product.id}
-                      className="border border-gray-200 rounded-lg p-2.5 flex flex-col justify-between hover:shadow-md transition-shadow"
-                    >
-                      <div
-                        onClick={() => setInspectedProduct(product)}
-                        className="cursor-pointer group"
-                      >
-                        <div className="h-28 rounded overflow-hidden bg-gray-100 mb-2.5">
-                          <img
-                            alt={getLocalizedText(product.name, locale)}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            referrerPolicy="no-referrer"
-                            src={product.image}
-                          />
-                        </div>
-                        <h3 className="text-xs font-bold text-gray-900 leading-tight group-hover:text-brandNavy">
-                          {getLocalizedText(product.name, locale)}
-                        </h3>
-                        <span className="block text-[10px] text-gray-500">
-                          {getLocalizedText(product.categoryLabel, locale)}
-                        </span>
-                        <span className="block text-[10px] text-gray-400 mb-2 tabular-nums">
-                          {t.featuredProducts.hsCodeLabel} {product.hsCode}
-                        </span>
-                      </div>
+                {/* Category tiles — one per category, with item count */}
+                {categoryTiles.length > 0 ? (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+                    {categoryTiles.map((cat) => (
                       <button
-                        onClick={() => handleOpenProductRFQ(product)}
-                        className="w-full bg-brandGreen hover:bg-brandGreenDark text-white text-[10px] font-bold py-1.5 px-2 rounded transition-colors flex items-center justify-center gap-1 cursor-pointer"
+                        key={cat.key}
                         type="button"
+                        onClick={() => setActiveView('products')}
+                        className="border border-gray-200 rounded-lg p-4 flex flex-col items-center justify-between h-32 text-left hover:shadow-md hover:border-brandGreen/40 transition-all cursor-pointer group"
                       >
-                        <span>{t.featuredProducts.requestProduct}</span>
-                        <i className="fa-solid fa-arrow-right text-[8px]"></i>
+                        <div className="w-11 h-11 rounded-full bg-brandGreen/10 text-brandGreen flex items-center justify-center text-lg group-hover:scale-105 transition-transform">
+                          <i className={cat.icon}></i>
+                        </div>
+                        <div className="mt-2 text-center">
+                          <span className="block text-xs font-bold text-gray-900 leading-tight">{getLocalizedText(cat.label, locale)}</span>
+                          <span className="mt-1 inline-block text-[10px] font-semibold text-brandNavy bg-brandNavy/5 border border-brandNavy/10 px-2 py-0.5 rounded-full tabular-nums">
+                            {cat.count} {cat.count === 1 ? (locale === 'AZ' ? 'məhsul' : locale === 'TR' ? 'ürün' : locale === 'RU' ? 'товар' : 'item') : (locale === 'AZ' ? 'məhsul' : locale === 'TR' ? 'ürün' : locale === 'RU' ? 'товара' : 'items')}
+                          </span>
+                        </div>
                       </button>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="border border-gray-200 rounded-lg p-6 flex items-center justify-center gap-3 text-sm text-gray-500">
+                    <i className="fa-solid fa-box-open text-2xl text-gray-300"></i>
+                    <span>{locale === 'AZ' ? 'Kateqoriya üzrə məhsullar hazır deyil' : locale === 'TR' ? 'Kategoriye ürünü hazır değil' : locale === 'RU' ? 'Нет товаров по категориям' : 'No products by category yet'}</span>
+                  </div>
+                )}
               </div>
             </section>
             {/* END: FeaturedProducts */}
@@ -1013,7 +1048,7 @@ export default function App() {
       {/* Institutional Footer */}
       <footer className="bg-[#061526] text-slate-300 border-t border-slate-800 py-10 no-print">
         <div className="custom-container">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pb-8 border-b border-slate-800/80 text-xs">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-8 border-b border-slate-800/80 text-xs">
             {/* Brand & Mandate */}
             <div className="space-y-3">
               <div className="flex items-center gap-2.5">
@@ -1100,20 +1135,6 @@ export default function App() {
               </ul>
             </div>
 
-            {/* Trade Compliance & Standards */}
-            <div>
-              <h4 className="text-white font-bold uppercase tracking-wider text-[11px] mb-3">
-                {t.footer.complianceTitle}
-              </h4>
-              <ul className="space-y-2 text-slate-400">
-                <li>Incoterms® 2020 ICC Standard Rules</li>
-                <li>AQTA Phytosanitary & Food Safety Traceability</li>
-                <li>Certificate of Origin (Form CT-1 / EUR.1 / GSP+)</li>
-                <li>Port of Baku (Alat) & Middle Corridor (TITR)</li>
-                <li>Baku International Arbitration & Escrow Protocol</li>
-              </ul>
-            </div>
-
             {/* Headquarters */}
             <div>
               <h4 className="text-white font-bold uppercase tracking-wider text-[11px] mb-3">
@@ -1143,7 +1164,7 @@ export default function App() {
                 onClick={() => setActiveView('contact')}
                 className="hover:text-slate-300 cursor-pointer"
               >
-                Export Arbitration & Legal Notice
+                {t.footer.contactUs}
               </button>
             </div>
           </div>
@@ -1157,6 +1178,7 @@ export default function App() {
         locale={locale}
         initialProduct={rfqInitialProduct}
         shortlistedIds={shortlistedIds}
+        sourceView={activeView}
         onSubmitRFQ={handleSubmitRFQ}
       />
 
@@ -1185,6 +1207,7 @@ export default function App() {
       <PrintableDossierModal
         rfq={activePrintRFQ}
         producerApp={activePrintProducer}
+        locale={locale}
         onClose={() => {
           setActivePrintRFQ(null);
           setActivePrintProducer(null);
