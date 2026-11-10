@@ -12,6 +12,11 @@ interface SmtpForm {
   user: string; password: string;
   from_name: string; from_email: string;
   notify_email: string; enabled: boolean;
+  rfq_email: string; producer_email: string; contact_email: string;
+  info_email: string; akbar_email: string; sales_email: string;
+  export_email: string; sourcing_email: string; logistics_email: string;
+  procurement_email: string; partnerships_email: string; support_email: string;
+  finance_email: string; ahmed_email: string;
 }
 
 const EMPTY: SmtpForm = {
@@ -19,6 +24,20 @@ const EMPTY: SmtpForm = {
   user: '', password: '',
   from_name: 'AZEXBUY', from_email: '',
   notify_email: '', enabled: false,
+  rfq_email: 'procurement@azexbuy.com',
+  producer_email: 'export@azexbuy.com',
+  contact_email: 'info@azexbuy.com',
+  info_email: 'info@azexbuy.com',
+  akbar_email: 'akbar@azexbuy.com',
+  sales_email: 'sales@azexbuy.com',
+  export_email: 'export@azexbuy.com',
+  sourcing_email: 'sourcing@azexbuy.com',
+  logistics_email: 'logistics@azexbuy.com',
+  procurement_email: 'procurement@azexbuy.com',
+  partnerships_email: 'partnerships@azexbuy.com',
+  support_email: 'support@azexbuy.com',
+  finance_email: 'finance@azexbuy.com',
+  ahmed_email: 'ahmed@azexbuy.com',
 };
 
 const PRESETS = [
@@ -54,6 +73,20 @@ export const SmtpSettingsView: React.FC<SmtpSettingsViewProps> = () => {
           user: d.user || '', password: d.password || '',
           from_name: d.from_name || 'AZEXBUY', from_email: d.from_email || '',
           notify_email: d.notify_email || '', enabled: Boolean(d.enabled),
+          rfq_email: d.rfq_email || 'procurement@azexbuy.com',
+          producer_email: d.producer_email || 'export@azexbuy.com',
+          contact_email: d.contact_email || 'info@azexbuy.com',
+          info_email: d.info_email || 'info@azexbuy.com',
+          akbar_email: d.akbar_email || 'akbar@azexbuy.com',
+          sales_email: d.sales_email || 'sales@azexbuy.com',
+          export_email: d.export_email || 'export@azexbuy.com',
+          sourcing_email: d.sourcing_email || 'sourcing@azexbuy.com',
+          logistics_email: d.logistics_email || 'logistics@azexbuy.com',
+          procurement_email: d.procurement_email || 'procurement@azexbuy.com',
+          partnerships_email: d.partnerships_email || 'partnerships@azexbuy.com',
+          support_email: d.support_email || 'support@azexbuy.com',
+          finance_email: d.finance_email || 'finance@azexbuy.com',
+          ahmed_email: d.ahmed_email || 'ahmed@azexbuy.com',
         });
       })
       .finally(() => setLoading(false));
@@ -210,6 +243,29 @@ export const SmtpSettingsView: React.FC<SmtpSettingsViewProps> = () => {
               </div>
               <p className="text-[9px] text-slate-400 mt-1">Gmail üçün: Google Hesabı → Təhlükəsizlik → App Passwords</p>
             </div>
+          </div>
+        </div>
+
+        {/* Department Routing Emails */}
+        <div className="bg-white border border-slate-200 rounded p-4 space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">
+              Şöbələr & Daxili E-poçt Yönləndirmələri (Routing)
+            </div>
+            <span className="text-[10px] text-slate-400">Gələn sorğular və bildirişlər müvafiq şöbələrə paylanır</span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <F label="info@azexbuy.com (Ümumi müraciətlər)" name="info_email" placeholder="info@azexbuy.com" />
+            <F label="akbar@azexbuy.com (Şəxsi iş e-poçtu)" name="akbar_email" placeholder="akbar@azexbuy.com" />
+            <F label="ahmed@azexbuy.com (İkinci əməkdaş)" name="ahmed_email" placeholder="ahmed@azexbuy.com" />
+            <F label="sales@azexbuy.com (Satış & Yeni müştərilər)" name="sales_email" placeholder="sales@azexbuy.com" />
+            <F label="export@azexbuy.com (İxrac & İstehsalçılar)" name="export_email" placeholder="export@azexbuy.com" />
+            <F label="sourcing@azexbuy.com (Məhsul & Təchizatçı)" name="sourcing_email" placeholder="sourcing@azexbuy.com" />
+            <F label="logistics@azexbuy.com (Daşınma & Logistika)" name="logistics_email" placeholder="logistics@azexbuy.com" />
+            <F label="procurement@azexbuy.com (Alıcı sorğuları / RFQ)" name="procurement_email" placeholder="procurement@azexbuy.com" />
+            <F label="partnerships@azexbuy.com (Beynəlxalq tərəfdaşlıq)" name="partnerships_email" placeholder="partnerships@azexbuy.com" />
+            <F label="support@azexbuy.com (Müştəri dəstəyi)" name="support_email" placeholder="support@azexbuy.com" />
+            <F label="finance@azexbuy.com (Maliyyə & Ödənişlər)" name="finance_email" placeholder="finance@azexbuy.com" />
           </div>
         </div>
 

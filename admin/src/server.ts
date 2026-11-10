@@ -2000,6 +2000,22 @@ app.post('/api/azexbuy/contacts', async (req: Request, res: Response) => {
     VALUES (?, ?, ?, ?, ?, ?, ?, 'New')
   `).run(id, new Date().toISOString(), fullName.trim(), organization.trim(), email.trim().toLowerCase(), inquiryType || 'Buyer Sourcing Inquiry', message.trim());
   res.json({ success: true, id });
+  // Determine recipient based on inquiry type and SMTP routing settings
+  const smtp = getSmtpSettings();
+  let targetRecipient = smtp?.contact_email || smtp?.info_email || 'info@azexbuy.com';
+  const inqLower = (inquiryType || '').toLowerCase();
+  if (inqLower.includes('buyer') || inqLower.includes('sourc') || inqLower.includes('procure')) {
+    targetRecipient = smtp?.sourcing_email || smtp?.procurement_email || targetRecipient;
+  } else if (inqLower.includes('logistics') || inqLower.includes('freight') || inqLower.includes('corridor')) {
+    targetRecipient = smtp?.logistics_email || targetRecipient;
+  } else if (inqLower.includes('producer') || inqLower.includes('export')) {
+    targetRecipient = smtp?.export_email || smtp?.producer_email || targetRecipient;
+  } else if (inqLower.includes('partner')) {
+    targetRecipient = smtp?.partnerships_email || targetRecipient;
+  } else if (inqLower.includes('support')) {
+    targetRecipient = smtp?.support_email || targetRecipient;
+  }
+
   // Send email notification (non-blocking)
   sendNotificationEmail(
     `[AZEXBUY] Yeni Əlaqə Sorğusu: ${fullName} — ${organization}`,
@@ -2010,11 +2026,12 @@ app.post('/api/azexbuy/contacts', async (req: Request, res: Response) => {
        <tr><td style="padding:4px 12px;color:#666">Təşkilat</td><td>${organization}</td></tr>
        <tr><td style="padding:4px 12px;color:#666">E-poçt</td><td>${email}</td></tr>
        <tr><td style="padding:4px 12px;color:#666">Sorğu Növü</td><td>${inquiryType || '—'}</td></tr>
+       <tr><td style="padding:4px 12px;color:#666">Yönləndirildi</td><td>${targetRecipient}</td></tr>
      </table>
      <h3 style="margin-top:16px">Mesaj</h3>
      <p style="font-family:sans-serif;font-size:14px">${message}</p>
      <p style="color:#888;font-size:12px;margin-top:24px">AZEXBUY Admin: <a href="http://localhost:${PORT}/octo-admin">Panelə keç</a></p>`,
-    getSmtpSettings()?.contact_email || undefined
+    targetRecipient
   );
 });
 
@@ -2270,6 +2287,25 @@ app.post('/api/azexbuy/service-applications', async (req: Request, res: Response
     d.status || 'Pending'
   );
   res.json({ success: true, id: d.id });
+  // Send email notification (non-blocking)
+  const srvList = Array.isArray(d.selectedServices) ? d.selectedServices.join(', ') : '';
+  const smtpCfg = getSmtpSettings();
+  sendNotificationEmail(
+    `[AZEXBUY] Yeni Xidmət Müraciəti: ${d.fullName} (${d.company || 'Fərdi'})`,
+    `<h2>Yeni İxrac Xidməti Müraciəti</h2>
+     <table style="border-collapse:collapse;font-family:sans-serif;font-size:14px">
+       <tr><td style="padding:4px 12px;color:#666">ID</td><td><b>${d.id}</b></td></tr>
+       <tr><td style="padding:4px 12px;color:#666">Ad</td><td>${d.fullName}</td></tr>
+       <tr><td style="padding:4px 12px;color:#666">Şirkət</td><td>${d.company || '—'}</td></tr>
+       <tr><td style="padding:4px 12px;color:#666">Ölkə</td><td>${d.country || '—'}</td></tr>
+       <tr><td style="padding:4px 12px;color:#666">E-poçt</td><td>${d.email}</td></tr>
+       <tr><td style="padding:4px 12px;color:#666">Telefon</td><td>${d.phone || '—'}</td></tr>
+       <tr><td style="padding:4px 12px;color:#666">Xidmətlər</td><td>${srvList || '—'}</td></tr>
+     </table>
+     ${d.details ? `<h3 style="margin-top:16px">Təfərrüatlar</h3><p style="font-family:sans-serif;font-size:14px">${d.details}</p>` : ''}
+     <p style="color:#888;font-size:12px;margin-top:24px">AZEXBUY Admin: <a href="http://localhost:${PORT}/octo-admin">Panelə keç</a></p>`,
+    smtpCfg?.export_email || smtpCfg?.producer_email || undefined
+  );
 });
 
 app.patch('/api/azexbuy/service-applications/:id', requireAuth, async (req: Request, res: Response) => {
@@ -2482,6 +2518,18 @@ mainDb.exec(`
     rfq_email TEXT DEFAULT 'procurement@azexbuy.com',
     producer_email TEXT DEFAULT 'export@azexbuy.com',
     contact_email TEXT DEFAULT 'info@azexbuy.com',
+    info_email TEXT DEFAULT 'info@azexbuy.com',
+    akbar_email TEXT DEFAULT 'akbar@azexbuy.com',
+    sales_email TEXT DEFAULT 'sales@azexbuy.com',
+    export_email TEXT DEFAULT 'export@azexbuy.com',
+    sourcing_email TEXT DEFAULT 'sourcing@azexbuy.com',
+    logistics_email TEXT DEFAULT 'logistics@azexbuy.com',
+    procurement_email TEXT DEFAULT 'procurement@azexbuy.com',
+    partnerships_email TEXT DEFAULT 'partnerships@azexbuy.com',
+    support_email TEXT DEFAULT 'support@azexbuy.com',
+    finance_email TEXT DEFAULT 'finance@azexbuy.com',
+    ahmed_email TEXT DEFAULT 'ahmed@azexbuy.com',
+    email_routes TEXT DEFAULT '',
     enabled INTEGER DEFAULT 0,
     updated_at TEXT
   );
@@ -2494,6 +2542,18 @@ try {
   if (!smtpCols.includes('rfq_email')) mainDb.exec("ALTER TABLE smtp_settings ADD COLUMN rfq_email TEXT DEFAULT 'procurement@azexbuy.com'");
   if (!smtpCols.includes('producer_email')) mainDb.exec("ALTER TABLE smtp_settings ADD COLUMN producer_email TEXT DEFAULT 'export@azexbuy.com'");
   if (!smtpCols.includes('contact_email')) mainDb.exec("ALTER TABLE smtp_settings ADD COLUMN contact_email TEXT DEFAULT 'info@azexbuy.com'");
+  if (!smtpCols.includes('info_email')) mainDb.exec("ALTER TABLE smtp_settings ADD COLUMN info_email TEXT DEFAULT 'info@azexbuy.com'");
+  if (!smtpCols.includes('akbar_email')) mainDb.exec("ALTER TABLE smtp_settings ADD COLUMN akbar_email TEXT DEFAULT 'akbar@azexbuy.com'");
+  if (!smtpCols.includes('sales_email')) mainDb.exec("ALTER TABLE smtp_settings ADD COLUMN sales_email TEXT DEFAULT 'sales@azexbuy.com'");
+  if (!smtpCols.includes('export_email')) mainDb.exec("ALTER TABLE smtp_settings ADD COLUMN export_email TEXT DEFAULT 'export@azexbuy.com'");
+  if (!smtpCols.includes('sourcing_email')) mainDb.exec("ALTER TABLE smtp_settings ADD COLUMN sourcing_email TEXT DEFAULT 'sourcing@azexbuy.com'");
+  if (!smtpCols.includes('logistics_email')) mainDb.exec("ALTER TABLE smtp_settings ADD COLUMN logistics_email TEXT DEFAULT 'logistics@azexbuy.com'");
+  if (!smtpCols.includes('procurement_email')) mainDb.exec("ALTER TABLE smtp_settings ADD COLUMN procurement_email TEXT DEFAULT 'procurement@azexbuy.com'");
+  if (!smtpCols.includes('partnerships_email')) mainDb.exec("ALTER TABLE smtp_settings ADD COLUMN partnerships_email TEXT DEFAULT 'partnerships@azexbuy.com'");
+  if (!smtpCols.includes('support_email')) mainDb.exec("ALTER TABLE smtp_settings ADD COLUMN support_email TEXT DEFAULT 'support@azexbuy.com'");
+  if (!smtpCols.includes('finance_email')) mainDb.exec("ALTER TABLE smtp_settings ADD COLUMN finance_email TEXT DEFAULT 'finance@azexbuy.com'");
+  if (!smtpCols.includes('ahmed_email')) mainDb.exec("ALTER TABLE smtp_settings ADD COLUMN ahmed_email TEXT DEFAULT 'ahmed@azexbuy.com'");
+  if (!smtpCols.includes('email_routes')) mainDb.exec("ALTER TABLE smtp_settings ADD COLUMN email_routes TEXT DEFAULT ''");
 } catch (err) { console.warn('[DB] SMTP migration warning:', err); }
 
 function getSmtpSettings() {
@@ -2597,19 +2657,47 @@ app.get('/api/smtp-settings', requireAuth, (_req: Request, res: Response) => {
 
 // SAVE SMTP settings
 app.post('/api/smtp-settings', requireAuth, (req: Request, res: Response) => {
-  const { host, port, secure, user, password, from_name, from_email, notify_email, rfq_email, producer_email, contact_email, enabled } = req.body;
+  const {
+    host, port, secure, user, password, from_name, from_email, notify_email,
+    rfq_email, producer_email, contact_email,
+    info_email, akbar_email, sales_email, export_email, sourcing_email,
+    logistics_email, procurement_email, partnerships_email, support_email,
+    finance_email, ahmed_email, email_routes,
+    enabled,
+  } = req.body;
   const current = getSmtpSettings();
   const newPass = password && password !== '••••••••' ? password : (current?.password || '');
   mainDb.prepare(`
     UPDATE smtp_settings SET
       host = ?, port = ?, secure = ?, user = ?,
       password = ?, from_name = ?, from_email = ?,
-      notify_email = ?, rfq_email = ?, producer_email = ?, contact_email = ?, enabled = ?, updated_at = ?
+      notify_email = ?, rfq_email = ?, producer_email = ?, contact_email = ?,
+      info_email = ?, akbar_email = ?, sales_email = ?, export_email = ?, sourcing_email = ?,
+      logistics_email = ?, procurement_email = ?, partnerships_email = ?, support_email = ?,
+      finance_email = ?, ahmed_email = ?, email_routes = ?,
+      enabled = ?, updated_at = ?
     WHERE id = 1
   `).run(
     host || '', parseInt(port) || 587, secure ? 1 : 0, user || '',
     newPass, from_name || 'AZEXBUY', from_email || '',
-    notify_email || '', rfq_email || 'procurement@azexbuy.com', producer_email || 'export@azexbuy.com', contact_email || 'info@azexbuy.com', enabled ? 1 : 0, new Date().toISOString()
+    notify_email || '',
+    rfq_email || 'procurement@azexbuy.com',
+    producer_email || 'export@azexbuy.com',
+    contact_email || 'info@azexbuy.com',
+    info_email || 'info@azexbuy.com',
+    akbar_email || 'akbar@azexbuy.com',
+    sales_email || 'sales@azexbuy.com',
+    export_email || 'export@azexbuy.com',
+    sourcing_email || 'sourcing@azexbuy.com',
+    logistics_email || 'logistics@azexbuy.com',
+    procurement_email || 'procurement@azexbuy.com',
+    partnerships_email || 'partnerships@azexbuy.com',
+    support_email || 'support@azexbuy.com',
+    finance_email || 'finance@azexbuy.com',
+    ahmed_email || 'ahmed@azexbuy.com',
+    email_routes ? (typeof email_routes === 'string' ? email_routes : JSON.stringify(email_routes)) : '',
+    enabled ? 1 : 0,
+    new Date().toISOString()
   );
   res.json({ success: true });
 });

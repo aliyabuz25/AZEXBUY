@@ -486,9 +486,9 @@ export const InsightsView: React.FC<InsightsViewProps> = ({ locale, onNavigateHo
   });
 
   const showFeaturedHero = activeFilter === 'All' && !searchQuery && !!featured;
-  // Right: up to 3 side articles (excluding featured)
+  // Right: 4 stacked side articles (excluding featured)
   const sideArticles = showFeaturedHero
-    ? filtered.filter(a => a.id !== featured!.id).slice(0, 3)
+    ? filtered.filter(a => a.id !== featured!.id).slice(0, 4)
     : [];
   // Grid: remaining after featured + side
   const usedIds = new Set([...(showFeaturedHero ? [featured!.id] : []), ...sideArticles.map(a => a.id)]);
