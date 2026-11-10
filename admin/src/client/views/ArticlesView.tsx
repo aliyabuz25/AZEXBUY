@@ -162,10 +162,10 @@ export const ArticlesView: React.FC<ArticlesViewProps> = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-base font-bold text-slate-800 flex items-center gap-2">
-            <BookOpen className="w-4 h-4 text-[#0f3156]" /> Makaleler — Insights
+            <BookOpen className="w-4 h-4 text-[#0f3156]" /> Bloq & Məqalə İdarəetməsi (Blogger Studio)
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            {articles.length} məqalə · {publishedCount} yayımlandı · {draftCount} qaralama
+            BBCode redaktoru, Multer sürətli şəkil yükləməsi və SEO optimizasiyalı məqalələr · {articles.length} yazı · {publishedCount} yayımlandı · {draftCount} qaralama
           </p>
         </div>
         <button onClick={load} className="p-2 hover:bg-slate-100 rounded text-slate-400">

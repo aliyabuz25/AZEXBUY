@@ -192,11 +192,6 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
                     {/* Clean B2B Metadata */}
                     <div className="flex items-center gap-2 text-[11px] text-slate-500 mb-1">
                       <span className="font-semibold text-slate-600">HS {product.hsCode}</span>
-                      <span>·</span>
-                      <span className="text-emerald-700 font-medium inline-flex items-center gap-1">
-                        <i className="fa-solid fa-circle-check text-[10px] text-emerald-600"></i>
-                        <span className="tabular-nums">{product.verifiedSuppliersCount}</span> {locale === 'AZ' ? 'Təsdiqlənmiş İstehsalçı' : locale === 'TR' ? 'Onaylı Üretici' : locale === 'RU' ? 'Поставщиков' : 'Verified Producers'}
-                      </span>
                     </div>
 
                     <h3
@@ -209,23 +204,6 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
                     <p className="text-xs text-slate-600 leading-relaxed mb-3">
                       {getLocalizedText(product.shortDesc, locale)}
                     </p>
-
-                    <div className="border-t border-slate-100 pt-2.5 mb-3 space-y-1 text-[11px] text-slate-600">
-                      <div className="flex justify-between">
-                        <span className="text-slate-400">Origin Cluster:</span>
-                        <span className="font-semibold text-slate-800">{getLocalizedText(product.originRegion, locale)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-slate-400">Min. Export Order:</span>
-                        <span className="font-semibold text-slate-800 tabular-nums">{product.minOrderQty}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-slate-400">Incoterms® 2020:</span>
-                        <span className="font-semibold text-slate-800">
-                          {Array.isArray(product.incoterms) ? product.incoterms.join(' / ') : 'FCA / FOB / CIF / DAP'}
-                        </span>
-                      </div>
-                    </div>
                   </div>
 
                   <div className="flex items-center gap-2 pt-2 border-t border-slate-100">
@@ -306,12 +284,18 @@ export const ProductSpecModal: React.FC<ProductSpecModalProps> = ({
         <div className="p-4 sm:p-6 space-y-4 text-xs max-h-[60vh] overflow-y-auto">
           <p className="text-sm text-slate-700 leading-relaxed">{getLocalizedText(product.shortDesc, locale)}</p>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-slate-50 p-3.5 rounded border border-slate-200">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 p-3.5 rounded border border-slate-200">
             <div>
               <span className="text-[10px] font-bold uppercase text-slate-400 block">
                 Origin Cluster
               </span>
               <span className="font-bold text-slate-900">{getLocalizedText(product.originRegion, locale)}</span>
+            </div>
+            <div>
+              <span className="text-[10px] font-bold uppercase text-slate-400 block">
+                Min. Export Order
+              </span>
+              <span className="font-bold text-slate-900 tabular-nums">{product.minOrderQty || '—'}</span>
             </div>
             <div>
               <span className="text-[10px] font-bold uppercase text-slate-400 block">

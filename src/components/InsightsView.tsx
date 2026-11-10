@@ -673,9 +673,9 @@ export const InsightsView: React.FC<InsightsViewProps> = ({ locale, onNavigateHo
                   <div className="w-full lg:w-[52%] lg:flex-shrink-0">
                     <FeaturedCard article={featured!} onRead={handleRead} onShare={setShareTarget} />
                   </div>
-                  {/* RIGHT — side cards */}
+                  {/* RIGHT — 4 stacked side cards (smooth vertical flow) */}
                   {sideArticles.length > 0 && (
-                    <div className="flex flex-col justify-between flex-1 min-w-0">
+                    <div className="flex flex-col flex-1 min-w-0" style={{ gap: '2px' }}>
                       {sideArticles.map((a, i) => (
                         <SideCard
                           key={a.id}
@@ -721,34 +721,6 @@ export const InsightsView: React.FC<InsightsViewProps> = ({ locale, onNavigateHo
                 </div>
               )}
             </>
-          )}
-
-          {/* Resources block */}
-          {!loading && !error && (
-            <div className="rounded-2xl" style={{ backgroundColor: '#00382D', padding: 'clamp(20px,4vw,32px) clamp(16px,4vw,36px)', marginTop: '36px' }}>
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between" style={{ gap: '20px' }}>
-                <div>
-                  <h3 className="font-serif text-white" style={{ fontSize: '18px', letterSpacing: '-0.01em', marginBottom: '4px' }}>Useful Trade Resources</h3>
-                  <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.45)' }}>Official international trade reference links</p>
-                </div>
-                <div className="flex flex-wrap" style={{ gap: '10px' }}>
-                  {[
-                    { label: 'Incoterms® 2020', href: 'https://iccwbo.org/resources-for-business/incoterms-rules/incoterms-2020/' },
-                    { label: 'HS Code Search', href: 'https://www.wcoomd.org/en/topics/nomenclature/instrument-and-tools/hs-nomenclature-2022-edition.aspx' },
-                    { label: 'AQTA Azerbaijan', href: 'https://aqta.gov.az' },
-                  ].map(item => (
-                    <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 rounded-full cursor-pointer transition-colors"
-                      style={{ border: '1px solid rgba(255,255,255,0.18)', color: 'rgba(255,255,255,0.7)', fontSize: '11px', fontWeight: 700, padding: '7px 16px', backgroundColor: 'rgba(255,255,255,0.07)' }}
-                      onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = '#B8F46A'; el.style.color = '#B8F46A'; }}
-                      onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'rgba(255,255,255,0.18)'; el.style.color = 'rgba(255,255,255,0.7)'; }}>
-                      {item.label}
-                      <i className="fa-solid fa-arrow-up-right-from-square" style={{ fontSize: '8px', opacity: 0.6 }}></i>
-                    </a>
-                  ))}
-                </div>
-              </div>
-            </div>
           )}
 
         </div>

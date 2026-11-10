@@ -87,7 +87,8 @@ const BUTTONS: Btn[] = [
   { label: 'Alıntı',      tag: 'quote', icon: '❝' },
   { label: 'Kod',         tag: 'code',  icon: '</>' },
   { label: 'URL', tag: 'url', icon: '🔗', hasPrompt: true, promptMsg: 'URL girin:', promptDefault: 'https://' },
-  { label: 'Resim',       tag: 'img',   icon: '🖼' },
+  { label: 'Şəkil Yüklə (Multer)', tag: 'img_upload', icon: '📷 Şəkil Yüklə' },
+  { label: 'Şəkil URL',   tag: 'img',   icon: '🖼' },
   { label: 'Tablo Əlavə Et', tag: 'table', icon: '⊞ Tablo' },
   { label: 'İnfoqrafik',  tag: 'infographic', icon: '📊 İnfoqrafik' },
   { label: 'H1',          tag: 'h1',    icon: 'H1' },
@@ -105,14 +106,17 @@ interface BBCodeEditorProps {
   onChange: (v: string) => void;
   placeholder?: string;
   minHeight?: number;
+  onUploadImage?: (file: File) => Promise<string | null>;
 }
 
 export const BBCodeEditor: React.FC<BBCodeEditorProps> = ({
-  value, onChange, placeholder = 'BBCode ile içerik yazın...', minHeight = 300,
+  value, onChange, placeholder = 'BBCode ile içerik yazın...', minHeight = 300, onUploadImage,
 }) => {
   const [preview, setPreview] = useState(false);
   const [showColor, setShowColor] = useState(false);
   const [showSize, setShowSize] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const ref = useRef<HTMLTextAreaElement>(null);
 
   const insert = useCallback((open: string, close: string) => {
@@ -128,6 +132,41 @@ export const BBCodeEditor: React.FC<BBCodeEditorProps> = ({
     }, 0);
   }, [value, onChange]);
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      let url: string | null = null;
+      if (onUploadImage) {
+        url = await onUploadImage(file);
+      } else {
+        const fd = new FormData();
+        fd.append('image', file);
+        const token = localStorage.getItem('octotech_admin_jwt') || '';
+        const res = await fetch('/api/azexbuy/upload-image', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+          body: fd,
+        });
+        if (res.ok) {
+          const d = await res.json();
+          url = d.url;
+        }
+      }
+      if (url) {
+        insert(`\n[center][img]${url}[/img][/center]\n`, '');
+      } else {
+        alert('Şəkil yüklənərkən xəta baş verdi.');
+      }
+    } catch {
+      alert('Şəkil yüklənərkən xəta baş verdi.');
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
   const handleBtn = useCallback((btn: Btn) => {
     if (btn.tag === 'hr') { insert('[hr]', ''); return; }
     if (btn.tag === 'table') {
@@ -138,6 +177,10 @@ export const BBCodeEditor: React.FC<BBCodeEditorProps> = ({
       const val = prompt('İnfoqrafika / Şəkil URL-i daxil edin:', 'https://');
       if (!val) return;
       insert(`\n[center][img]${val}[/img]\n[size=12][color=#64748b]İnfoqrafika: İxrac Göstəriciləri[/color][/size][/center]\n`, '');
+      return;
+    }
+    if (btn.tag === 'img_upload') {
+      fileInputRef.current?.click();
       return;
     }
     if (btn.tag === 'list') { insert('[list]\n[*]', '\n[/list]'); return; }
@@ -223,6 +266,21 @@ export const BBCodeEditor: React.FC<BBCodeEditorProps> = ({
           {preview ? '✏️ Düzenle' : '👁 Önizle'}
         </button>
       </div>
+
+      {/* Hidden file input for direct Multer upload */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleFileUpload}
+        style={{ display: 'none' }}
+      />
+
+      {uploading && (
+        <div style={{ padding: '6px 12px', background: '#0f3156', color: '#93c5fd', fontSize: 11, display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span>⏳ Şəkil serverə yüklənir və BBCode-a əlavə edilir...</span>
+        </div>
+      )}
 
       {/* Editor / Preview */}
       {preview ? (

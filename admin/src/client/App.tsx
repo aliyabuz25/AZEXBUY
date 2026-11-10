@@ -124,7 +124,7 @@ export const App: React.FC = () => {
     { id: 'dashboard',        title: 'Canlı İcmal',            icon: 'dashboard',        closable: false },
     { id: 'azexbuy',          title: 'AZEXBUY',                icon: 'azexbuy',          closable: true },
     { id: 'azexbuy-cms',      title: 'AZEXBUY CMS',            icon: 'azexbuy-cms',      closable: true },
-    { id: 'articles',         title: 'Makaleler',              icon: 'articles',         closable: true },
+    { id: 'articles',         title: 'Bloq & Məqalələr',       icon: 'articles',         closable: true },
     { id: 'product-catalog',  title: 'Məhsul Kataloqu',        icon: 'product-catalog',  closable: true },
     { id: 'inbox',            title: 'Gelen Qutusu',           icon: 'inbox',            closable: true },
     { id: 'user-management',  title: 'İstifadəçi İdarəetməsi', icon: 'users',            closable: true },

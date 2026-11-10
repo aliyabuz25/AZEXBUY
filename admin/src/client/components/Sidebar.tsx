@@ -41,7 +41,7 @@ const NAV_SECTIONS = [
       { id: 'azexbuy',         label: 'İcmal & Sorğular', icon: Boxes },
       { id: 'azexbuy-cms',     label: 'CMS — Məzmun',     icon: PenLine },
       { id: 'product-catalog', label: 'Məhsul Kataloqu',  icon: Package },
-      { id: 'articles',        label: 'Məqalələr',        icon: BookOpen },
+      { id: 'articles',        label: 'Bloq & Məqalələr', icon: BookOpen },
       { id: 'services',        label: 'Xidmətlər',        icon: Briefcase },
       { id: 'inbox',           label: 'Gələn Qutusu',     icon: Inbox },
     ],
