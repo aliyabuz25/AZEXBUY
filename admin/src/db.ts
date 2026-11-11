@@ -35,6 +35,8 @@ export interface TranslationItem {
   tr: string;
   ru: string;
   en: string;
+  ar?: string;
+  es?: string;
 }
 
 export interface ContentRecord {
@@ -201,7 +203,9 @@ export class Database {
         az: values.az || '',
         tr: values.tr || '',
         ru: values.ru || '',
-        en: values.en || ''
+        en: values.en || '',
+        ar: values.ar || '',
+        es: values.es || ''
       };
       data.translations.unshift(newItem);
       this.writeData(data);

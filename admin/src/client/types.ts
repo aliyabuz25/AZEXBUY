@@ -36,6 +36,8 @@ export interface TranslationItem {
   tr: string;
   ru: string;
   en: string;
+  ar?: string;
+  es?: string;
 }
 
 export interface RecordItem {

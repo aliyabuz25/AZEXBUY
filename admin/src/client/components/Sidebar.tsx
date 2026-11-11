@@ -15,6 +15,7 @@ import {
   BookOpen,
   Briefcase,
   Cpu,
+  Globe,
   X,
 } from 'lucide-react';
 import { UiLanguage } from '../types';
@@ -50,6 +51,7 @@ const NAV_SECTIONS = [
   {
     title: 'Sistem',
     items: [
+      { id: 'localization',    label: 'Lokalizasiya & Dillər', icon: Globe },
       { id: 'logs',            label: 'Sistem Logları',         icon: Activity },
       { id: 'user-management', label: 'İstifadəçilər',          icon: Users },
       { id: 'ai-settings',     label: 'OpenRouter AI',         icon: Cpu },

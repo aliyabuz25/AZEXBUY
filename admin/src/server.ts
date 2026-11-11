@@ -443,18 +443,44 @@ app.post('/api/seo', requireAuth, (req: Request, res: Response) => {
   });
 });
 
-// 3. 4-Language Localization Endpoints
+// 3. 6-Language Localization Endpoints (AZ, TR, RU, EN, AR, ES)
 app.get('/api/translations', (_req: Request, res: Response) => {
   const translations = Database.getTranslations();
   res.json({ success: true, data: translations });
 });
 
 app.post('/api/translations', requireAuth, (req: Request, res: Response) => {
-  const { key, az, tr, ru, en, module, type } = req.body;
+  const { key, az, tr, ru, en, ar, es, module, type } = req.body;
   if (!key) {
     return res.status(400).json({ success: false, error: 'Translation key is required' });
   }
-  const updated = Database.updateTranslation(key, { az, tr, ru, en, module, type });
+  const updated = Database.updateTranslation(key, { az, tr, ru, en, ar, es, module, type });
+
+  // Sync to azexbuy_kv localization overrides automatically so frontend gets updated immediately
+  try {
+    const locMap: Record<string, string> = {
+      AZ: az !== undefined ? az : '',
+      TR: tr !== undefined ? tr : '',
+      RU: ru !== undefined ? ru : '',
+      EN: en !== undefined ? en : '',
+      AR: ar !== undefined ? ar : '',
+      ES: es !== undefined ? es : '',
+    };
+    const row = azexbuyDb.prepare("SELECT value FROM azexbuy_kv WHERE key = 'localization'").get() as any;
+    const existing = row ? JSON.parse(row.value) : {};
+    for (const [lang, val] of Object.entries(locMap)) {
+      if (val !== undefined && val !== '') {
+        if (!existing[lang]) existing[lang] = {};
+        existing[lang][key] = val;
+      }
+    }
+    azexbuyDb.prepare("INSERT OR REPLACE INTO azexbuy_kv (key, value, updated_at) VALUES ('localization', ?, ?)")
+      .run(JSON.stringify(existing), new Date().toISOString());
+    azDel('azexbuy:localization');
+  } catch (syncErr) {
+    console.warn('[SyncTranslation] Warning syncing to azexbuy_kv:', syncErr);
+  }
+
   res.json({ success: true, data: updated });
 });
 
@@ -462,6 +488,29 @@ app.delete('/api/translations/:key', requireAuth, (req: Request, res: Response) 
   const key = decodeURIComponent(req.params.key);
   const deleted = Database.deleteTranslation(key);
   if (!deleted) return res.status(404).json({ success: false, error: 'Translation key not found' });
+
+  // Remove from azexbuy_kv localization overrides if present
+  try {
+    const row = azexbuyDb.prepare("SELECT value FROM azexbuy_kv WHERE key = 'localization'").get() as any;
+    if (row) {
+      const existing = JSON.parse(row.value);
+      let changed = false;
+      for (const lang of Object.keys(existing)) {
+        if (existing[lang] && existing[lang][key] !== undefined) {
+          delete existing[lang][key];
+          changed = true;
+        }
+      }
+      if (changed) {
+        azexbuyDb.prepare("INSERT OR REPLACE INTO azexbuy_kv (key, value, updated_at) VALUES ('localization', ?, ?)")
+          .run(JSON.stringify(existing), new Date().toISOString());
+        azDel('azexbuy:localization');
+      }
+    }
+  } catch (syncErr) {
+    console.warn('[SyncTranslationDelete] Warning syncing deletion to azexbuy_kv:', syncErr);
+  }
+
   res.json({ success: true });
 });
 

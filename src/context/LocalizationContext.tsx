@@ -38,7 +38,7 @@ function applyFlatOverrides(base: any, flat: Record<string, string>): any {
   if (!flat || Object.keys(flat).length === 0) return base;
   const result = JSON.parse(JSON.stringify(base));
   for (const [path, value] of Object.entries(flat)) {
-    const parts = path.replace(/\[(\d+)\]/g, '.$1').split('.');
+    const parts = path.replace(/\[(\d+)\]/g, '.$1').split('.').filter(Boolean);
     let cur = result;
     let valid = true;
     for (let i = 0; i < parts.length - 1; i++) {
