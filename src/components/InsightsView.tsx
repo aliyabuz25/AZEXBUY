@@ -318,7 +318,7 @@ const SideCard: React.FC<{
     <div>
       <article
         onClick={() => onRead(article)}
-        className="flex gap-3 cursor-pointer group"
+        className="flex gap-3 cursor-pointer group transition-colors duration-300"
         style={{ padding: '14px 0', alignItems: 'flex-start' }}
       >
         {/* Thumbnail — 120×90px */}
