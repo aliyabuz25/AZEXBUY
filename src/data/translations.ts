@@ -34,402 +34,715 @@ export const HOW_IT_WORKS_HERO_IMAGE =
 
 export const PRODUCTS_CATALOG: ProductItem[] = [
   {
-    id: 'hazelnut-080222',
-    featured: true,
-    hsCode: '080222',
-    categoryKey: 'agro',
-    name: {
-      EN: 'Hazelnut',
-      AZ: 'Fındıq Ləpəsi',
-      RU: 'Фундук очищенный',
+    "id": "prod-hazelnut-atababa",
+    "featured": true,
+    "hsCode": "080222",
+    "categoryKey": "agro",
+    "name": {
+      "AZ": "Ata-Baba Fındıq Ləpəsi (Ekstra Növ)",
+      "EN": "Ata-Baba Shelled Hazelnuts (Extra Grade)",
+      "TR": "Ata-Baba Fındık İçi (Ekstra Kalite)",
+      "RU": "Очищенный фундук Ата-Баба (Экстра сорт)",
+      "AR": "بندق أتا-بابا مقشر فاخر (درجة ممتازة)",
+      "ES": "Avellanas Peladas Ata-Baba (Grado Extra)"
     },
-    categoryLabel: {
-      EN: 'Agriculture & Food',
-      AZ: 'Kənd Təsərrüfatı və Qida',
-      RU: 'Сельское хозяйство и продукты',
+    "categoryLabel": {
+      "EN": "Agriculture & Produce",
+      "AZ": "Kənd Təsərrüfatı və Məhsul",
+      "RU": "Сельское хозяйство",
+      "TR": "Tarım ve Taze Ürünler",
+      "AR": "الزراعة والمنتجات",
+      "ES": "Agricultura"
     },
-    shortDesc: {
-      EN: 'Extra-grade shelled natural & roasted Ata-Baba hazelnuts from Zaqatala-Sheki orchards.',
-      AZ: 'Zaqatala-Şəki bağlarından ekstra növlü təbii və qovrulmuş Ata-Baba fındıq ləpəsi.',
-      RU: 'Очищенный натуральный и обжаренный фундук сорта Ата-Баба высшего качества из Загаталы и Шеки.',
+    "shortDesc": {
+      "AZ": "Zaqatala-Şəki bağlarından ekstra növlü təbii və qovrulmuş Ata-Baba fındıq ləpəsi.",
+      "EN": "Extra-grade shelled natural & roasted Ata-Baba hazelnuts from Zaqatala-Sheki certified orchards.",
+      "TR": "Zakatala-Şeki bahçelerinden ekstra kalite doğal ve kavrulmuş Ata-Baba fındık içi.",
+      "RU": "Очищенный натуральный и обжаренный фундук сорта Ата-Баба высшего качества из Загаталы и Шеки.",
+      "AR": "بندق طبيعي ومحمص من الدرجة الأولى من بساتين زاقاتالا وشكي الأذربيجانية.",
+      "ES": "Avellanas naturales y tostadas de calidad extra de huertos certificados de Zaqatala-Sheki."
     },
-    originRegion: {
-      EN: 'Zaqatala – Sheki Economic Region',
-      AZ: 'Zaqatala – Şəki İqtisadi Rayonu',
-      RU: 'Загатало-Шекинский экономический район',
+    "originRegion": {
+      "AZ": "Zaqatala – Şəki İqtisadi Rayonu",
+      "EN": "Zaqatala – Sheki Economic Region",
+      "TR": "Zakatala – Şeki Ekonomik Bölgesi",
+      "RU": "Загатало-Шекинский экономический район",
+      "AR": "منطقة زاقاتالا - شكي الاقتصادية",
+      "ES": "Región Económica de Zaqatala – Sheki"
     },
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuD6iP6ACTY6rFPAXNJlK_W-AfkWR_1OBE8I3wLkCwVMAlQIyNvxAXxK1kYe6-itoVecrpqtsSok0_wQ1QnYyWcn40Hikz269v2ag3TbKrY9lfqw3mEVtR-I0GvclcQXFDi0q_xVPYMdzpIFMaXwgeJEs4gwsCpcf-Dn7Df8QGIeKoSael0DxSBY2ZpmoWYe8Ynhio_Q0dONzHarqS9Kp31IStn01T44xVmJ90B5TY2WFQr7mOmo4Ucq',
-    minOrderQty: '20 MT (1x 20ft FCL)',
-    annualCapacity: '24,000 MT',
-    verifiedSuppliersCount: 38,
-    incoterms: ['FCA', 'FOB', 'CIF', 'DAP'],
-    certifications: ['ISO 22000', 'FSSC 22000', 'AQTA Phytosanitary', 'EUR.1 / CT-1', 'Halal'],
-    leadTimeDays: '7–12 Days',
-    packaging: {
-      EN: '25kg / 50kg vacuum foil bags in corrugated cartons or 800kg big-bags',
-      AZ: '25kq / 50kq vakuum folqa kisələr və ya 800kq biq-bəqlər',
-      RU: 'Вакуумные пакеты по 25/50 кг в картонных коробах или биг-бэги по 800 кг',
+    "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuD6iP6ACTY6rFPAXNJlK_W-AfkWR_1OBE8I3wLkCwVMAlQIyNvxAXxK1kYe6-itoVecrpqtsSok0_wQ1QnYyWcn40Hikz269v2ag3TbKrY9lfqw3mEVtR-I0GvclcQXFDi0q_xVPYMdzpIFMaXwgeJEs4gwsCpcf-Dn7Df8QGIeKoSael0DxSBY2ZpmoWYe8Ynhio_Q0dONzHarqS9Kp31IStn01T44xVmJ90B5TY2WFQr7mOmo4Ucq",
+    "minOrderQty": "20 Metric Tons (1x 20ft FCL)",
+    "annualCapacity": "15,000 MT",
+    "verifiedSuppliersCount": 42,
+    "incoterms": [
+      "FCA",
+      "FOB",
+      "CIF",
+      "DAP"
+    ],
+    "certifications": [
+      "ISO 22000:2018",
+      "FSSC 22000",
+      "AQTA Phytosanitary",
+      "EUR.1 / CT-1",
+      "Halal Food Compliance"
+    ],
+    "leadTimeDays": "7–14 Days",
+    "packaging": {
+      "AZ": "25kq çoxqatlı vakuum folqa kisələr və ya 800kq biq-bəqlər.",
+      "EN": "25kg multi-layer vacuum foil bags in corrugated export cartons, or 800kg jumbo big-bags on Euro-pallets.",
+      "TR": "25kg çok katmanlı vakumlu folyo torbalarda veya 800kg big-bag çuvallarda.",
+      "RU": "Многослойные вакуумные фольгированные мешки по 25 кг или биг-бэги по 800 кг.",
+      "AR": "أكياس رقائق مفرغة من الهواء متعددة الطبقات سعة 25 كجم أو أكياس كبيرة سعة 800 كجم.",
+      "ES": "Bolsas de lámina de vacío multicapa de 25 kg en cajas de cartón, o big-bags de 800 kg."
     },
-    gradeSpecs: {
-      EN: 'Caliber 11–13mm, 13–15mm | Moisture < 5.5% | Aflatoxin B1 < 2ppb (EU Standard)',
-      AZ: 'Kalibr 11–13mm, 13–15mm | Nəmlik < 5.5% | Aflatoksin B1 < 2ppb (Aİ Standartı)',
-      RU: 'Калибр 11–13мм, 13–15мм | Влажность < 5.5% | Афлатоксин B1 < 2ppb (Стандарт ЕС)',
-    },
+    "gradeSpecs": {
+      "EN": "Variety: Ata-Baba (Local Endemic) | Caliber (Sizes): 11–13mm, 13–15mm, 15+mm | Moisture Content: < 5.0% (EU Export Standard) | Fat / Oil Content: 64% – 68% high oleic | Aflatoxin B1: < 2 ppb (Strict EU compliant) | Purity: 99.9% Sortex optical sorted",
+      "AZ": "Variety: Ata-Baba (Local Endemic) | Caliber (Sizes): 11–13mm, 13–15mm, 15+mm | Moisture Content: < 5.0% (EU Export Standard) | Fat / Oil Content: 64% – 68% high oleic | Aflatoxin B1: < 2 ppb (Strict EU compliant) | Purity: 99.9% Sortex optical sorted",
+      "RU": "Variety: Ata-Baba (Local Endemic) | Caliber (Sizes): 11–13mm, 13–15mm, 15+mm | Moisture Content: < 5.0% (EU Export Standard) | Fat / Oil Content: 64% – 68% high oleic | Aflatoxin B1: < 2 ppb (Strict EU compliant) | Purity: 99.9% Sortex optical sorted",
+      "TR": "Variety: Ata-Baba (Local Endemic) | Caliber (Sizes): 11–13mm, 13–15mm, 15+mm | Moisture Content: < 5.0% (EU Export Standard) | Fat / Oil Content: 64% – 68% high oleic | Aflatoxin B1: < 2 ppb (Strict EU compliant) | Purity: 99.9% Sortex optical sorted",
+      "AR": "Variety: Ata-Baba (Local Endemic) | Caliber (Sizes): 11–13mm, 13–15mm, 15+mm | Moisture Content: < 5.0% (EU Export Standard) | Fat / Oil Content: 64% – 68% high oleic | Aflatoxin B1: < 2 ppb (Strict EU compliant) | Purity: 99.9% Sortex optical sorted",
+      "ES": "Variety: Ata-Baba (Local Endemic) | Caliber (Sizes): 11–13mm, 13–15mm, 15+mm | Moisture Content: < 5.0% (EU Export Standard) | Fat / Oil Content: 64% – 68% high oleic | Aflatoxin B1: < 2 ppb (Strict EU compliant) | Purity: 99.9% Sortex optical sorted"
+    }
   },
   {
-    id: 'pomegranate-081090',
-    featured: true,
-    hsCode: '081090',
-    categoryKey: 'agro',
-    name: {
-      EN: 'Pomegranate',
-      AZ: 'Göyçay Narı',
-      RU: 'Гранат свежий и сок прямого отжима',
+    "id": "prod-pomegranate-goychay",
+    "featured": true,
+    "hsCode": "081090",
+    "categoryKey": "agro",
+    "name": {
+      "AZ": "Göyçay Narı və 100% Təbii Nar Şirəsi (NFC)",
+      "EN": "Goychay Fresh Pomegranates & 100% NFC Juice",
+      "TR": "Göyçay Taze Narı ve %100 Doğal Nar Suyu (NFC)",
+      "RU": "Свежие гранаты Гёйчай и 100% сок прямого отжима (NFC)",
+      "AR": "رمان غويتشاي الطازج وعصير نقي طبيعي 100%",
+      "ES": "Granadas Frescas de Goychay y Zumo 100% NFC"
     },
-    categoryLabel: {
-      EN: 'Agriculture & Food',
-      AZ: 'Kənd Təsərrüfatı və Qida',
-      RU: 'Сельское хозяйство и продукты',
+    "categoryLabel": {
+      "EN": "Agriculture & Produce",
+      "AZ": "Kənd Təsərrüfatı və Məhsul",
+      "RU": "Сельское хозяйство",
+      "TR": "Tarım ve Taze Ürünler",
+      "AR": "الزراعة والمنتجات",
+      "ES": "Agricultura"
     },
-    shortDesc: {
-      EN: 'Goychay Guloysha & Bala Mursal fresh export pomegranates and NFC cold-pressed concentrate.',
-      AZ: 'Göyçay Gülöyşə və Bala Mürsəl təzə ixrac narı və soyuq sıxım NFC şirə konsentratı.',
-      RU: 'Свежие гранаты сортов Гюлейша и Бала Мюрсаль из Гёйчая и концентрат холодного отжима.',
+    "shortDesc": {
+      "AZ": "Coğrafi Göstəricili (PGI) Göyçay yaqut narı (Gülöyşə) və soyuq sıxım 100% təbii NFC şirəsi.",
+      "EN": "Protected Geographical Indication (PGI) Goychay ruby pomegranates (Guleysha) and cold-pressed NFC pure juice.",
+      "TR": "Coğrafi İşaretli (PGI) Göyçay nar taneleri ve soğuk sıkım %100 doğal NFC nar suyu.",
+      "RU": "Гёйчайский гранат сортов Гюлейша с защищенным географическим указанием и сок прямого отжима.",
+      "AR": "رمان غويتشاي الياقوتي المحمي جغرافياً وعصير طبيعي معصور على البارد.",
+      "ES": "Granadas de Goychay con Indicación Geográfica Protegida y zumo puro prensado en frío."
     },
-    originRegion: {
-      EN: 'Central Aran (Goychay – Kurdamir)',
-      AZ: 'Mərkəzi Aran (Göyçay – Kürdəmir)',
-      RU: 'Центральный Аран (Гёйчай – Кюрдамир)',
+    "originRegion": {
+      "AZ": "Mərkəzi Aran (Göyçay) İqtisadi Rayonu",
+      "EN": "Central Aran (Goychay) Economic Region",
+      "TR": "Merkezi Aran (Göyçay) Ekonomik Bölgesi",
+      "RU": "Центрально-Аранский (Гёйчайский) экономический район",
+      "AR": "منطقة أران الوسطى (غويتشاي) الاقتصادية",
+      "ES": "Región Económica de Aran Central (Goychay)"
     },
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuDHo5g8iKevybJcG4jlFPGTNzuPMU2721wxSfNRS3s0FmbZeA3YW4AxkdXtyhH_55x-4s5Uh_5-S2-S3LVPexC1O1ahPg_Hgeeion6snYi_eyi7MNDXh5coR3k9acztB4DSA_PV9JjS_JAitpfDEAmO4UUbAUjAs0VuwpjvFbKeEaRXeqGiJ2JKU_vHqlhTa6Meil6iamn-3I_33E-Y7Tii2hclP8mfc_jBNp_gJSQpmbKniKtPJu5s',
-    minOrderQty: '18 MT (Reefer 40ft)',
-    annualCapacity: '45,000 MT',
-    verifiedSuppliersCount: 42,
-    incoterms: ['FCA', 'FOB', 'CIF', 'DAP'],
-    certifications: ['GLOBALG.A.P.', 'ISO 22000', 'USDA Organic', 'EU Organic', 'AQTA'],
-    leadTimeDays: '5–9 Days',
-    packaging: {
-      EN: '4.5kg / 5kg open-top euro trays with modified atmosphere liner (Reefer +5°C)',
-      AZ: '4.5kq / 5kq modifikasiya olunmuş atmosfer örtüklü avro-lotoklar (+5°C)',
-      RU: 'Евролотки по 4.5 / 5 кг с вкладышем модифицированной атмосферы (Реф +5°C)',
+    "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuDHo5g8iKevybJcG4jlFPGTNzuPMU2721wxSfNRS3s0FmbZeA3YW4AxkdXtyhH_55x-4s5Uh_5-S2-S3LVPexC1O1ahPg_Hgeeion6snYi_eyi7MNDXh5coR3k9acztB4DSA_PV9JjS_JAitpfDEAmO4UUbAUjAs0VuwpjvFbKeEaRXeqGiJ2JKU_vHqlhTa6Meil6iamn-3I_33E-Y7Tii2hclP8mfc_jBNp_gJSQpmbKniKtPJu5s",
+    "minOrderQty": "18 Metric Tons (Reefer 40ft container)",
+    "annualCapacity": "15,000 MT",
+    "verifiedSuppliersCount": 42,
+    "incoterms": [
+      "FCA",
+      "FOB",
+      "CIF",
+      "DAP"
+    ],
+    "certifications": [
+      "GlobalG.A.P.",
+      "ISO 22000",
+      "AQTA Phytosanitary",
+      "EUR.1 / CT-1",
+      "Kosher / Halal"
+    ],
+    "leadTimeDays": "7–14 Days",
+    "packaging": {
+      "AZ": "Təzə: 4.5kq xüsusi gözlü ixrac qutuları. Şirə: 200L aseptik çəlləklər.",
+      "EN": "Fresh: 4.5kg open-top telescopic display cartons with cell dividers. Juice: 200L aseptic drums.",
+      "TR": "Taze: 4.5kg özel yuvalı teleskopik ihraç kolileri. Meyve suyu: 200L aseptik variller.",
+      "RU": "Свежие: телескопические короба по 4.5 кг с ячейками. Сок: асептические бочки по 200 л.",
+      "AR": "طازج: كراتين مفتوحة سعة 4.5 كجم مع فواصل. عصير: براميل معقمة سعة 200 لتر.",
+      "ES": "Fresco: cajas de 4.5 kg con separadores. Zumo: bidones asépticos de 200 L."
     },
-    gradeSpecs: {
-      EN: 'Fruit weight 350g–650g | Brix > 16.5° | Zero cold-chain break certification',
-      AZ: 'Meyvə çəkisi 350q–650q | Brix > 16.5° | Fasiləsiz soyuq zəncir zəmanəti',
-      RU: 'Вес плода 350–650 г | Brix > 16.5° | Сертификация непрерывной холодовой цепи',
-    },
+    "gradeSpecs": {
+      "EN": "Cultivar: Guleysha Red & Pink (PGI Goychay) | Caliber (Fresh): 300g – 550g per fruit | Brix Level: 16.5° – 18.0° natural sweetness | Acidity: 1.2% – 1.6% citric equivalent | Processing (Juice): Aseptic cold press, zero added sugar/water | Shelf Life: Fresh: 90 days at 5°C / Juice: 18 months aseptic",
+      "AZ": "Cultivar: Guleysha Red & Pink (PGI Goychay) | Caliber (Fresh): 300g – 550g per fruit | Brix Level: 16.5° – 18.0° natural sweetness | Acidity: 1.2% – 1.6% citric equivalent | Processing (Juice): Aseptic cold press, zero added sugar/water | Shelf Life: Fresh: 90 days at 5°C / Juice: 18 months aseptic",
+      "RU": "Cultivar: Guleysha Red & Pink (PGI Goychay) | Caliber (Fresh): 300g – 550g per fruit | Brix Level: 16.5° – 18.0° natural sweetness | Acidity: 1.2% – 1.6% citric equivalent | Processing (Juice): Aseptic cold press, zero added sugar/water | Shelf Life: Fresh: 90 days at 5°C / Juice: 18 months aseptic",
+      "TR": "Cultivar: Guleysha Red & Pink (PGI Goychay) | Caliber (Fresh): 300g – 550g per fruit | Brix Level: 16.5° – 18.0° natural sweetness | Acidity: 1.2% – 1.6% citric equivalent | Processing (Juice): Aseptic cold press, zero added sugar/water | Shelf Life: Fresh: 90 days at 5°C / Juice: 18 months aseptic",
+      "AR": "Cultivar: Guleysha Red & Pink (PGI Goychay) | Caliber (Fresh): 300g – 550g per fruit | Brix Level: 16.5° – 18.0° natural sweetness | Acidity: 1.2% – 1.6% citric equivalent | Processing (Juice): Aseptic cold press, zero added sugar/water | Shelf Life: Fresh: 90 days at 5°C / Juice: 18 months aseptic",
+      "ES": "Cultivar: Guleysha Red & Pink (PGI Goychay) | Caliber (Fresh): 300g – 550g per fruit | Brix Level: 16.5° – 18.0° natural sweetness | Acidity: 1.2% – 1.6% citric equivalent | Processing (Juice): Aseptic cold press, zero added sugar/water | Shelf Life: Fresh: 90 days at 5°C / Juice: 18 months aseptic"
+    }
   },
   {
-    id: 'carpet-5701',
-    featured: true,
-    hsCode: '5701',
-    categoryKey: 'textile',
-    name: {
-      EN: 'Carpet',
-      AZ: 'Azərbaycan Xalçası',
-      RU: 'Азербайджанские ковры',
+    "id": "prod-saffron-absheron",
+    "featured": true,
+    "hsCode": "091020",
+    "categoryKey": "food",
+    "name": {
+      "AZ": "Abşeron Şah Zəfəranı (Kateqoriya I ISO 3632)",
+      "EN": "Absheron Royal Saffron Threads (Category I ISO 3632)",
+      "TR": "Abşeron Şah Safranı (Kategori I ISO 3632)",
+      "RU": "Абшеронский королевский шафран (Категория I ISO 3632)",
+      "AR": "زعفران أبشيرون الملكي النقي (الفئة الأولى ISO 3632)",
+      "ES": "Azafrán Real de Absheron en Hebras (Categoría I ISO 3632)"
     },
-    categoryLabel: {
-      EN: 'Textile & Apparel',
-      AZ: 'Tekstil və Xalçaçılıq',
-      RU: 'Текстиль и ковры',
+    "categoryLabel": {
+      "EN": "Food & Gourmet",
+      "AZ": "Qida və Qurman",
+      "RU": "Продукты питания",
+      "TR": "Gıda ve Gurme",
+      "AR": "الأغذية والذواقة",
+      "ES": "Alimentos y Gourmet"
     },
-    shortDesc: {
-      EN: 'Hand-knotted wool and silk Azerbaijani carpets alongside high-density commercial woven looms.',
-      AZ: 'Əl ilə toxunmuş yun və ipək Azərbaycan xalçaları və yüksək sıxlıqlı sənaye xalça məmulatları.',
-      RU: 'Шерстяные и шелковые азербайджанские ковры ручной работы и коммерческий ковровый текстиль.',
+    "shortDesc": {
+      "AZ": "Sertifikatlaşdırılmış ISO 3632 Kateqoriya I saf qırmızı Sərqol zəfəranı, Abşeron yarımadasında əl ilə yığılmış.",
+      "EN": "Certified ISO 3632 Category I pure all-red Sargol saffron hand-harvested in the semi-arid soils of Absheron.",
+      "TR": "Sertifikalı ISO 3632 Kategori I saf kırmızı Sargol safranı, Abşeron yarımadasında elle hasat edilmiş.",
+      "RU": "Сертифицированный шафран высшей категории I ISO 3632 ручного сбора с Апшеронского полуострова.",
+      "AR": "زعفران سرجول أحمر نقي معتمد وفق الفئة الأولى ISO 3632 مقطوف يدوياً في أبشيرون.",
+      "ES": "Azafrán puro Sargol certificado Categoría I ISO 3632 cosechado a mano en Absheron."
     },
-    originRegion: {
-      EN: 'Quba, Karabakh, Shirvan & Baku',
-      AZ: 'Quba, Qarabağ, Şirvan və Bakı',
-      RU: 'Губа, Карабах, Ширван и Баку',
+    "originRegion": {
+      "AZ": "Abşeron – Xızı (Bilgəh) İqtisadi Rayonu",
+      "EN": "Absheron – Khizi (Bilgah) Economic Region",
+      "TR": "Abşeron – Hızı (Bilgeh) Ekonomik Bölgesi",
+      "RU": "Апшерон-Хызинский (Бильгя) экономический район",
+      "AR": "منطقة أبشيرون - خيزي (بيلغاه) الاقتصادية",
+      "ES": "Región Económica de Absheron – Khizi (Bilgah)"
     },
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuDtNJYRxE2w63MPzGdjf8CPD9AEFm8HRgiA_8S4bLzI4JlWkzMSr7mOrBFN0clACdJ8Z4fdPmTxcUeQZoVHwM8X0BSrp3Ge5V1rjnXGei5GwaARNkgff5T_0xspZitbC-LuPEjlYnoFGRTUx9-xnXkSS6296Qbk6OBMxFoPcu45Ph_IWPgxe8ghwkwSRb4DFc747hiqPs4hl6mD0u0fkbzXC86IW3Go3l5Gt49vsGvyFE6w27cyqJpi',
-    minOrderQty: '50 m² / Custom Lot',
-    annualCapacity: '180,000 m²',
-    verifiedSuppliersCount: 19,
-    incoterms: ['EXW', 'FCA', 'CIF', 'DAP', 'DDP'],
-    certifications: ['UNESCO Heritage Passport', 'OEKO-TEX Standard 100', 'Certificate of Origin'],
-    leadTimeDays: '10–21 Days',
-    packaging: {
-      EN: 'Moisture-proof breathable tyvek roll sleeve with reinforced export crating',
-      AZ: 'Nəmə davamlı qoruyucu örtük və gücləndirilmiş ixrac qablaşdırması',
-      RU: 'Влагозащитный дышащий чехол Tyvek с усиленной экспортной обрешеткой',
+    "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuDtNJYRxE2w63MPzGdjf8CPD9AEFm8HRgiA_8S4bLzI4JlWkzMSr7mOrBFN0clACdJ8Z4fdPmTxcUeQZoVHwM8X0BSrp3Ge5V1rjnXGei5GwaARNkgff5T_0xspZitbC-LuPEjlYnoFGRTUx9-xnXkSS6296Qbk6OBMxFoPcu45Ph_IWPgxe8ghwkwSRb4DFc747hiqPs4hl6mD0u0fkbzXC86IW3Go3l5Gt49vsGvyFE6w27cyqJpi",
+    "minOrderQty": "5 Kilograms (Air Cargo with secure courier dispatch)",
+    "annualCapacity": "15,000 MT",
+    "verifiedSuppliersCount": 42,
+    "incoterms": [
+      "FCA",
+      "FOB",
+      "CIF",
+      "DAP"
+    ],
+    "certifications": [
+      "ISO 3632-1:2011 Grade I",
+      "AQTA Export Certificate",
+      "EUR.1",
+      "CoA Spectrophotometry"
+    ],
+    "leadTimeDays": "7–14 Days",
+    "packaging": {
+      "AZ": "100q, 250q və 500q azotla kipləşdirilmiş metal bankalar və taxta sandıqlar.",
+      "EN": "100g, 250g, and 500g nitrogen-flushed sealed tin caddies and glass jars in wooden master chests.",
+      "TR": "100g, 250g ve 500g azotla mühürlenmiş teneke kutular ve ahşap sandıklar.",
+      "RU": "Герметичные металлические банки по 100/250/500 г с азотной средой в деревянных ларцах.",
+      "AR": "علب معدنية مغلقة بالنيتروجين سعة 100 و250 و500 جم داخل صناديق خشبية فاخرة.",
+      "ES": "Latas selladas con nitrógeno de 100g, 250g y 500g en cofres de madera."
     },
-    gradeSpecs: {
-      EN: '100% highland virgin wool / Sheki mulberry silk | 160,000–350,000 knots/m² | Natural vegetal dyes',
-      AZ: '100% təbii dağ yunu / Şəki ipəyi | 160,000–350,000 ilmə/m² | Təbii boyalar',
-      RU: '100% горная шерсть / шекинский шелк | 160 000–350 000 узлов/м² | Натуральные красители',
-    },
+    "gradeSpecs": {
+      "EN": "Grade: Category I (Super Negin / Pure Sargol) | Crocin (Coloring Strength): > 240 units (ISO 3632) | Safranal (Aroma): 35 – 45 units | Picrocrocin (Flavor): > 85 units | Moisture Content: < 7.5% | Foreign Matter: < 0.1% zero artificial coloring",
+      "AZ": "Grade: Category I (Super Negin / Pure Sargol) | Crocin (Coloring Strength): > 240 units (ISO 3632) | Safranal (Aroma): 35 – 45 units | Picrocrocin (Flavor): > 85 units | Moisture Content: < 7.5% | Foreign Matter: < 0.1% zero artificial coloring",
+      "RU": "Grade: Category I (Super Negin / Pure Sargol) | Crocin (Coloring Strength): > 240 units (ISO 3632) | Safranal (Aroma): 35 – 45 units | Picrocrocin (Flavor): > 85 units | Moisture Content: < 7.5% | Foreign Matter: < 0.1% zero artificial coloring",
+      "TR": "Grade: Category I (Super Negin / Pure Sargol) | Crocin (Coloring Strength): > 240 units (ISO 3632) | Safranal (Aroma): 35 – 45 units | Picrocrocin (Flavor): > 85 units | Moisture Content: < 7.5% | Foreign Matter: < 0.1% zero artificial coloring",
+      "AR": "Grade: Category I (Super Negin / Pure Sargol) | Crocin (Coloring Strength): > 240 units (ISO 3632) | Safranal (Aroma): 35 – 45 units | Picrocrocin (Flavor): > 85 units | Moisture Content: < 7.5% | Foreign Matter: < 0.1% zero artificial coloring",
+      "ES": "Grade: Category I (Super Negin / Pure Sargol) | Crocin (Coloring Strength): > 240 units (ISO 3632) | Safranal (Aroma): 35 – 45 units | Picrocrocin (Flavor): > 85 units | Moisture Content: < 7.5% | Foreign Matter: < 0.1% zero artificial coloring"
+    }
   },
   {
-    id: 'marble-2515',
-    featured: true,
-    hsCode: '2515',
-    categoryKey: 'construction',
-    name: {
-      EN: 'Marble',
-      AZ: 'Mərmər və Travertin',
-      RU: 'Мрамор и строительный камень',
+    "id": "prod-sheki-silk-yarn",
+    "featured": true,
+    "hsCode": "500200",
+    "categoryKey": "industrial",
+    "name": {
+      "AZ": "Şəki 100% Təbii İpək İpliyi və Kələğayı Parçası",
+      "EN": "Sheki 100% Mulberry Raw Silk Yarn & Woven Fabric",
+      "TR": "Şeki %100 Doğal İpek İpliği ve Dokuma Kumaş",
+      "RU": "Шекинский 100% натуральный шелк-сырец и ткани",
+      "AR": "خيوط وأقمشة الحرير الطبيعي الخام من شكي 100%",
+      "ES": "Hilos y Tejidos de Seda Cruda 100% de Morera de Sheki"
     },
-    categoryLabel: {
-      EN: 'Construction Materials',
-      AZ: 'Tikinti Materialları',
-      RU: 'Строительные материалы',
+    "categoryLabel": {
+      "EN": "Industrial & Textiles",
+      "AZ": "Sənaye və Tekstil",
+      "RU": "Промышленность и текстиль",
+      "TR": "Endüstri ve Tekstil",
+      "AR": "الصناعة والمنسوجات",
+      "ES": "Industrial y Textiles"
     },
-    shortDesc: {
-      EN: 'Dashkasan crystalline marble, Nakhchivan travertine slabs, and architectural Aglay limestone.',
-      AZ: 'Daşkəsən kristal mərməri, Naxçıvan travertin plitələri və memarlıq Ağlay daşı.',
-      RU: 'Дашкесанский кристаллический мрамор, нахчыванский травертин и архитектурный камень Аглай.',
+    "shortDesc": {
+      "AZ": "Qədim Şəki İpək fabrikindən 20/22D tut baramasından xam ipək ipliyi və zərif təbii ipək parçalar.",
+      "EN": "Heritage 20/22D mulberry raw silk yarn and natural degummed habotai fabric from Sheki Silk processing plant.",
+      "TR": "Tarihi Şeki İpek fabrikasından 20/22D dut ipeği ham iplik ve doğal ipek kumaşlar.",
+      "RU": "Шелковая нить 20/22D и ткани из натурального шелка тутового шелкопряда с Шекинского комбината.",
+      "AR": "خيوط حرير التوت الخام 20/22D وأقمشة حريرية طبيعية فاخرة من مصنع شكي التاريخي.",
+      "ES": "Hilo de seda cruda de morera 20/22D y telas naturales de la histórica fábrica de Sheki."
     },
-    originRegion: {
-      EN: 'Dashkasan, Nakhchivan & Qaradagh',
-      AZ: 'Daşkəsən, Naxçıvan və Qaradağ',
-      RU: 'Дашкесан, Нахчыван и Гарадаг',
+    "originRegion": {
+      "AZ": "Şəki – Zaqatala İqtisadi Rayonu",
+      "EN": "Sheki – Zaqatala Economic Region",
+      "TR": "Şeki – Zakatala Ekonomik Bölgesi",
+      "RU": "Шеки-Загатальский экономический район",
+      "AR": "منطقة شكي - زاقاتالا الاقتصادية",
+      "ES": "Región Económica de Sheki – Zaqatala"
     },
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuD03XXHtlryKOF4P13Jsyapcx1cJC4md04R7W4OmhEOlilzH3GXC84pohKdFeZC2E26PSlasR8hsE1ZhUMI_m0G3EvLUmCLYXAFuMf-8fVmPxAaSz6rXZE5DhZfy_GWTdrnj6b_8WD4Q3Rrvlu3AYTUq_hrwc41KTaORWxIqz41fZ3sVhVp_icHS5yhXQKuIuOFb0jjF16nF7IcXL9rWJ5SplYRdK1DWGo-wlLK2UlgnkEWl6JIaR20',
-    minOrderQty: '250 m² (1x 20ft Heavy FCL)',
-    annualCapacity: '650,000 m²',
-    verifiedSuppliersCount: 24,
-    incoterms: ['EXW', 'FCA', 'FOB', 'CIF', 'DAP'],
-    certifications: ['CE EN 1469', 'ISO 9001:2015', 'Radiation Safety Class I', 'ASTM C503'],
-    leadTimeDays: '12–18 Days',
-    packaging: {
-      EN: 'ISPM-15 heat-treated fumigated wooden A-frames and reinforced slab bundles',
-      AZ: 'ISPM-15 standartlı fumiqasiya olunmuş taxta A-karkaslar və plitə bağlamaları',
-      RU: 'Термообработанные деревянные А-стойки стандарта ISPM-15 и усиленные пачки слэбов',
+    "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuD03XXHtlryKOF4P13Jsyapcx1cJC4md04R7W4OmhEOlilzH3GXC84pohKdFeZC2E26PSlasR8hsE1ZhUMI_m0G3EvLUmCLYXAFuMf-8fVmPxAaSz6rXZE5DhZfy_GWTdrnj6b_8WD4Q3Rrvlu3AYTUq_hrwc41KTaORWxIqz41fZ3sVhVp_icHS5yhXQKuIuOFb0jjF16nF7IcXL9rWJ5SplYRdK1DWGo-wlLK2UlgnkEWl6JIaR20",
+    "minOrderQty": "500 Kilograms (1 Pallet)",
+    "annualCapacity": "15,000 MT",
+    "verifiedSuppliersCount": 42,
+    "incoterms": [
+      "FCA",
+      "FOB",
+      "CIF",
+      "DAP"
+    ],
+    "certifications": [
+      "OEKO-TEX Standard 100 Class I",
+      "Certificate of Origin Form EUR.1",
+      "ISO 9001:2015"
+    ],
+    "leadTimeDays": "7–14 Days",
+    "packaging": {
+      "AZ": "50kq ixrac taxta yeşikləri və ya polietilenlə qorunan qalın karton qutular.",
+      "EN": "Silk hanks wrapped in protective polythene and packed in 50kg export wooden cases or heavy cartons.",
+      "TR": "50kg ahşap sandıklarda veya polietilen korumalı mukavva kolilerde.",
+      "RU": "Мотки в защитном полиэтилене в экспортных деревянных ящиках по 50 кг.",
+      "AR": "لفائف حريرية مغلفة بالبولي إيثيلين في صناديق خشبية سعة 50 كجم.",
+      "ES": "Madejas de seda envueltas en polietileno en cajas de madera de 50 kg."
     },
-    gradeSpecs: {
-      EN: '20mm / 30mm calibrated slabs & cut-to-size tiles | Mirror-polished, honed, or brushed finish',
-      AZ: '20mm / 30mm kalibrlənmiş plitələr | Cilalanmış, mat və ya teksturalı səth',
-      RU: 'Калиброванные слэбы 20 / 30 мм и плитка в размер | Полированная, лощеная или брашированная',
-    },
+    "gradeSpecs": {
+      "EN": "Composition: 100% Bombyx Mori Mulberry Raw Silk | Denier Yarn Count: 20/22D, 28/32D and 40/44D | Grade Standard: 4A / 5A international raw silk grade | Evenness Deviation: < 85% | Elongation at Break: 18% – 22% | Moisture Regain: 11.0% commercial allowance",
+      "AZ": "Composition: 100% Bombyx Mori Mulberry Raw Silk | Denier Yarn Count: 20/22D, 28/32D and 40/44D | Grade Standard: 4A / 5A international raw silk grade | Evenness Deviation: < 85% | Elongation at Break: 18% – 22% | Moisture Regain: 11.0% commercial allowance",
+      "RU": "Composition: 100% Bombyx Mori Mulberry Raw Silk | Denier Yarn Count: 20/22D, 28/32D and 40/44D | Grade Standard: 4A / 5A international raw silk grade | Evenness Deviation: < 85% | Elongation at Break: 18% – 22% | Moisture Regain: 11.0% commercial allowance",
+      "TR": "Composition: 100% Bombyx Mori Mulberry Raw Silk | Denier Yarn Count: 20/22D, 28/32D and 40/44D | Grade Standard: 4A / 5A international raw silk grade | Evenness Deviation: < 85% | Elongation at Break: 18% – 22% | Moisture Regain: 11.0% commercial allowance",
+      "AR": "Composition: 100% Bombyx Mori Mulberry Raw Silk | Denier Yarn Count: 20/22D, 28/32D and 40/44D | Grade Standard: 4A / 5A international raw silk grade | Evenness Deviation: < 85% | Elongation at Break: 18% – 22% | Moisture Regain: 11.0% commercial allowance",
+      "ES": "Composition: 100% Bombyx Mori Mulberry Raw Silk | Denier Yarn Count: 20/22D, 28/32D and 40/44D | Grade Standard: 4A / 5A international raw silk grade | Evenness Deviation: < 85% | Elongation at Break: 18% – 22% | Moisture Regain: 11.0% commercial allowance"
+    }
   },
   {
-    id: 'sunflower-oil-151219',
-    featured: true,
-    hsCode: '151219',
-    categoryKey: 'agro',
-    name: {
-      EN: 'Sunflower Oil',
-      AZ: 'Günəbaxan Yağı',
-      RU: 'Подсолнечное масло рафинированное',
+    "id": "prod-cotton-lint-yarn",
+    "featured": false,
+    "hsCode": "520512",
+    "categoryKey": "industrial",
+    "name": {
+      "AZ": "Muğan Darama Pambıq İpliyi (Ne 20/1 – 40/1)",
+      "EN": "Mughan Combed Ring-Spun Cotton Yarn (Ne 20/1 – 40/1)",
+      "TR": "Muğan Penye Pamuk İpliği (Ne 20/1 – 40/1)",
+      "RU": "Муганская гребенная хлопчатобумажная пряжа (Ne 20/1 – 40/1)",
+      "AR": "خيوط قطن مغان الممشط عالي الجودة (Ne 20/1 – 40/1)",
+      "ES": "Hilados de Algodón Peinado de Mughan (Ne 20/1 – 40/1)"
     },
-    categoryLabel: {
-      EN: 'Agriculture & Food',
-      AZ: 'Kənd Təsərrüfatı və Qida',
-      RU: 'Сельское хозяйство и продукты',
+    "categoryLabel": {
+      "EN": "Industrial & Textiles",
+      "AZ": "Sənaye və Tekstil",
+      "RU": "Промышленность и текстиль",
+      "TR": "Endüstri ve Tekstil",
+      "AR": "الصناعة والمنسوجات",
+      "ES": "Industrial y Textiles"
     },
-    shortDesc: {
-      EN: 'Refined winterized deodorized (RBDW) sunflower and corn edible oils in PET and flexitanks.',
-      AZ: 'PET qablaşdırma və fleksitanklarda rafinə edilmiş dezodorasiya olunmuş (RBDW) günəbaxan yağı.',
-      RU: 'Рафинированное дезодорированное вымороженное подсолнечное масло в ПЭТ-бутылках и флекситанках.',
+    "shortDesc": {
+      "AZ": "Muğan düzənliyinin əl ilə yığılmış birinci növ pambığından Ne 20/1 - 40/1 toxuculuq və trikotaj iplikləri.",
+      "EN": "100% natural virgin cotton lint and ring-spun carded/combed knitting and weaving yarns from the Mughan valley.",
+      "TR": "Muğan vadisinin elle toplanmış saf pamuğundan Ne 20/1 - 40/1 dokuma ve örme iplikleri.",
+      "RU": "Пряжа кольцевого прядения (гребенная и кардная) из 100% натурального муганского хлопка.",
+      "AR": "خيوط قطنية طبيعية 100% للحياكة والنسيج من قطن وادي مغان الفاخر.",
+      "ES": "Hilados de algodón 100% natural peinado y cardado para tejeduría y punto del valle de Mughan."
     },
-    originRegion: {
-      EN: 'Baku & Sumgayit Food Processing Cluster',
-      AZ: 'Bakı və Sumqayıt Qida Sənaye Klasteri',
-      RU: 'Пищевой промышленный кластер Баку и Сумгайыта',
+    "originRegion": {
+      "AZ": "Şirvan – Salyan (Muğan) İqtisadi Rayonu",
+      "EN": "Shirvan – Salyan (Mughan) Economic Region",
+      "TR": "Şirvan – Salyan (Muğan) Ekonomik Bölgesi",
+      "RU": "Ширван-Сальянский (Муганский) экономический район",
+      "AR": "منطقة شيرفان - ساليان (مغان) الاقتصادية",
+      "ES": "Región Económica de Shirvan – Salyan (Mughan)"
     },
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuC5UBl6ky2E1o6RbrVtIlz6xdPHcSBD7sd8H309gALUQoxK5e7r7Jx8q159V1clhGMbdLSh4P9jCngmrLKo1SRNMt8pOyjcZAA6ESFVNV4ezFkDuGcGpnQTuFuS1mN_y1GCw0fUeMaghixWmXvDOKyonKRvDbft5TQiqBmLD-rRRmW-WA8ynGJG10G8Glm_TPlhHHVb7hRwLDWJ8xhd-hOjeMKGIxnS1XfZVRCXaB1IDAY3cUYFZPhn',
-    minOrderQty: '22 MT (1x Flexitank / FCL)',
-    annualCapacity: '110,000 MT',
-    verifiedSuppliersCount: 14,
-    incoterms: ['FCA', 'FOB', 'CIF', 'DAP'],
-    certifications: ['IFS Food', 'BRCGS', 'ISO 22000', 'Halal', 'Kosher'],
-    leadTimeDays: '7–14 Days',
-    packaging: {
-      EN: '1L, 2L, 5L retail PET bottles (private label supported) or 24,000L bulk flexitanks',
-      AZ: '1L, 2L, 5L PET şüşələr (Private Label dəstəyi) və ya 24,000L fleksitanklar',
-      RU: 'ПЭТ-бутылки 1л, 2л, 5л (поддержка СТМ / Private Label) или наливные флекситанки 24 000 л',
+    "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuC5UBl6ky2E1o6RbrVtIlz6xdPHcSBD7sd8H309gALUQoxK5e7r7Jx8q159V1clhGMbdLSh4P9jCngmrLKo1SRNMt8pOyjcZAA6ESFVNV4ezFkDuGcGpnQTuFuS1mN_y1GCw0fUeMaghixWmXvDOKyonKRvDbft5TQiqBmLD-rRRmW-WA8ynGJG10G8Glm_TPlhHHVb7hRwLDWJ8xhd-hOjeMKGIxnS1XfZVRCXaB1IDAY3cUYFZPhn",
+    "minOrderQty": "20 Metric Tons (1x 40ft HQ FCL)",
+    "annualCapacity": "15,000 MT",
+    "verifiedSuppliersCount": 26,
+    "incoterms": [
+      "FCA",
+      "FOB",
+      "CIF",
+      "DAP"
+    ],
+    "certifications": [
+      "BCI (Better Cotton Initiative)",
+      "OEKO-TEX Standard 100",
+      "ISO 9001",
+      "EUR.1 / CT-1"
+    ],
+    "leadTimeDays": "7–14 Days",
+    "packaging": {
+      "AZ": "1.89kq konuslar, hər qutuda 24 ədəd ISPM-15 paletlərində.",
+      "EN": "1.89kg paper cones wrapped in shrink film, 24 cones per export carton box on heat-treated ISPM-15 pallets.",
+      "TR": "1.89kg koniler, ISPM-15 standartlı paletlerde 24 konilik ihracat kolileri.",
+      "RU": "Бумажные конусы по 1.89 кг в термоусадочной пленке, по 24 штуки на европаллетах ISPM-15.",
+      "AR": "مخاريط ورقية سعة 1.89 كجم، 24 مخروطاً في كل كرتونة تصدير على منصات خشبية معالجة.",
+      "ES": "Conos de papel de 1.89 kg, 24 conos por caja de cartón en palets tratados ISPM-15."
     },
-    gradeSpecs: {
-      EN: 'Free Fatty Acid (FFA) < 0.1% | Peroxide Value < 1.0 meq/kg | Moisture < 0.05%',
-      AZ: 'Sərbəst Yağ Turşusu (FFA) < 0.1% | Peroksid ədədi < 1.0 meq/kq | Nəmlik < 0.05%',
-      RU: 'Свободные жирные кислоты < 0.1% | Перекисное число < 1.0 мэкв/кг | Влажность < 0.05%',
-    },
+    "gradeSpecs": {
+      "EN": "Yarn Counts: Ne 20/1, Ne 30/1, Ne 40/1 (Carded & Combed) | Staple Length: 28.5mm – 29.5mm | Tenacity: 17.5 – 19.5 cN/tex | Twist Factor: 3.8 – 4.2 alfa (TM) | Uster IPI (Imperfections): Top 10% – 15% worldwide Uster benchmark",
+      "AZ": "Yarn Counts: Ne 20/1, Ne 30/1, Ne 40/1 (Carded & Combed) | Staple Length: 28.5mm – 29.5mm | Tenacity: 17.5 – 19.5 cN/tex | Twist Factor: 3.8 – 4.2 alfa (TM) | Uster IPI (Imperfections): Top 10% – 15% worldwide Uster benchmark",
+      "RU": "Yarn Counts: Ne 20/1, Ne 30/1, Ne 40/1 (Carded & Combed) | Staple Length: 28.5mm – 29.5mm | Tenacity: 17.5 – 19.5 cN/tex | Twist Factor: 3.8 – 4.2 alfa (TM) | Uster IPI (Imperfections): Top 10% – 15% worldwide Uster benchmark",
+      "TR": "Yarn Counts: Ne 20/1, Ne 30/1, Ne 40/1 (Carded & Combed) | Staple Length: 28.5mm – 29.5mm | Tenacity: 17.5 – 19.5 cN/tex | Twist Factor: 3.8 – 4.2 alfa (TM) | Uster IPI (Imperfections): Top 10% – 15% worldwide Uster benchmark",
+      "AR": "Yarn Counts: Ne 20/1, Ne 30/1, Ne 40/1 (Carded & Combed) | Staple Length: 28.5mm – 29.5mm | Tenacity: 17.5 – 19.5 cN/tex | Twist Factor: 3.8 – 4.2 alfa (TM) | Uster IPI (Imperfections): Top 10% – 15% worldwide Uster benchmark",
+      "ES": "Yarn Counts: Ne 20/1, Ne 30/1, Ne 40/1 (Carded & Combed) | Staple Length: 28.5mm – 29.5mm | Tenacity: 17.5 – 19.5 cN/tex | Twist Factor: 3.8 – 4.2 alfa (TM) | Uster IPI (Imperfections): Top 10% – 15% worldwide Uster benchmark"
+    }
   },
   {
-    id: 'metal-products-7306',
-    featured: true,
-    hsCode: '7306',
-    categoryKey: 'metals',
-    name: {
-      EN: 'Metal Products',
-      AZ: 'Metal və Polad Məmulatları',
-      RU: 'Металлопродукция и стальные трубы',
+    "id": "prod-licorice-root-extract",
+    "featured": false,
+    "hsCode": "121190",
+    "categoryKey": "chemicals",
+    "name": {
+      "AZ": "Kür-Araz Təbii Biyan Kökü və Ekstraktı Pudrası",
+      "EN": "Wild Azerbaijani Licorice Root & Spray-Dried Extract Powder",
+      "TR": "Kür-Araz Doğal Meyan Kökü ve Ekstraktı Tozu",
+      "RU": "Дикорастущий солодковый корень и сухой экстракт солодки",
+      "AR": "جذور عرقسوس كورا-أراز البرية ومسحوق المستخلص المركز",
+      "ES": "Raíz de Regaliz Silvestre de Azerbaiyán y Extracto en Polvo"
     },
-    categoryLabel: {
-      EN: 'Metals & Industrial',
-      AZ: 'Metallurgiya və Sənaye',
-      RU: 'Металлургия и промышленность',
+    "categoryLabel": {
+      "EN": "Chemicals & Extracts",
+      "AZ": "Kimyəvi Maddələr və Ekstraktlar",
+      "RU": "Химикаты и экстракты",
+      "TR": "Kimyasal ve Özütler",
+      "AR": "المواد الكيميائية",
+      "ES": "Químicos y Extractos"
     },
-    shortDesc: {
-      EN: 'Seamless & ERW structural steel pipes, reinforcement rebar, and Sumgayit primary aluminum.',
-      AZ: 'Tikişsiz və qaynaqlı polad borular, inşaat armaturu və Sumqayıt ilkin alüminium profilləri.',
-      RU: 'Бесшовные и электросварные стальные трубы, арматурный прокат и алюминиевые профили.',
+    "shortDesc": {
+      "AZ": "Kür və Araz çayları vadisindən yüksək qlisirrizinli Glycyrrhiza glabra biyan kökü və sprey-qurudulmuş ekstrakt.",
+      "EN": "High-glycyrrhizin wild Glycyrrhiza glabra licorice root baled and spray-dried extract powder for pharma and food.",
+      "TR": "Kür ve Aras nehirleri havzasından yüksek glisirizin içeren meyan kökü balyaları ve sprey kurutulmuş ekstrakt.",
+      "RU": "Дикорастущий корень солодки с высоким содержанием глицирризина (18-26%) в кипах и сухой экстракт.",
+      "AR": "جذور عرقسوس طبيعية برية غنية بحمض الجلايسيريزيك ومسحوق مستخلص لصناعات الدواء والغذاء.",
+      "ES": "Raíz de regaliz silvestre con alto contenido en glicirricina y extracto en polvo para industria farmacéutica y alimentos."
     },
-    originRegion: {
-      EN: 'Sumgayit & Ganja Industrial Parks',
-      AZ: 'Sumqayıt və Gəncə Sənaye Parkları',
-      RU: 'Промышленные парки Сумгайыта и Гянджи',
+    "originRegion": {
+      "AZ": "Mərkəzi Aran (Ucar – Kürdəmir) İqtisadi Rayonu",
+      "EN": "Central Aran (Ucar – Kurdamir) Economic Region",
+      "TR": "Merkezi Aran (Ucar – Kürdemir) Ekonomik Bölgesi",
+      "RU": "Центрально-Аранский (Уджар-Кюрдамирский) экономический район",
+      "AR": "منطقة أران الوسطى (أوجار - كردمير) الاقتصادية",
+      "ES": "Región Económica de Aran Central (Ucar – Kurdamir)"
     },
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuDGgRuRr9uJiYiCy0AeiN7FvX1CWCTQLdRAG2TJXnfii1yXyI2WeKI6wMo6E8nydnbcUg27wH11AYMDuRy4WLTd0MRbPlzPT3f1Wzw2BN132jDlE2pKhDZ_BpSyUWXlgaEpX1_ukFt7IpSBL9Cnc3ILMPL8scPCgkSNob0PCSAa30dUKuSc0TBkoYnhfmiO58w10Zuz4eKBXbVNTk92SLbvxAconUj8wUxkDU7y1H7Ks3do6--khlfP',
-    minOrderQty: '25 MT (Rail Wagon / FCL)',
-    annualCapacity: '420,000 MT',
-    verifiedSuppliersCount: 21,
-    incoterms: ['EXW', 'FCA', 'FOB', 'CIF', 'DAP'],
-    certifications: ['API Spec 5L / 5CT', 'EN 10219', 'DIN 10080', 'ISO 9001', 'Mill Test 3.1'],
-    leadTimeDays: '10–20 Days',
-    packaging: {
-      EN: 'Hexagonal steel-strapped bundles with beveled plastic end caps and anti-corrosion coating',
-      AZ: 'Polad lentlə bərkidilmiş altıbucaqlı bağlamalar, qoruyucu qapaqlar və antikorroziv örtük',
-      RU: 'Шестигранные пачки со стальной обвязкой, торцевыми заглушками и антикоррозийным покрытием',
+    "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuDGgRuRr9uJiYiCy0AeiN7FvX1CWCTQLdRAG2TJXnfii1yXyI2WeKI6wMo6E8nydnbcUg27wH11AYMDuRy4WLTd0MRbPlzPT3f1Wzw2BN132jDlE2KhDZ_BpSyUWXlgaEpX1_ukFt7IpSBL9Cnc3ILMPL8scPCgkSNob0PCSAa30dUKuSc0TBkoYnhfmiO58w10Zuz4eKBXbVNTk92SLbvxAconUj8wUxkDU7y1H7Ks3do6--khlfP",
+    "minOrderQty": "10 Metric Tons (Baled Root) / 2 Metric Tons (Extract)",
+    "annualCapacity": "15,000 MT",
+    "verifiedSuppliersCount": 26,
+    "incoterms": [
+      "FCA",
+      "FOB",
+      "CIF",
+      "DAP"
+    ],
+    "certifications": [
+      "Ph. Eur. Compliance",
+      "GMP Pharma Facility",
+      "AQTA Phytosanitary",
+      "EUR.1 / CT-1",
+      "Halal / Kosher"
+    ],
+    "leadTimeDays": "7–14 Days",
+    "packaging": {
+      "AZ": "Kök: 100kq preslənmiş taylar. Ekstrakt: 25kq daxili polietilenli kraft torbalar.",
+      "EN": "Root: 100kg hydraulic pressed bales bound with galvanized steel wire. Extract: 25kg multi-wall paper bags with PE liner.",
+      "TR": "Kök: 100kg hidrolik presli balyalar. Ekstrakt: 25kg PE astarlı kraft torbalar.",
+      "RU": "Корень: прессованные кипы по 100 кг со стальной обвязкой. Экстракт: крафт-мешки по 25 кг с ПЭ-вкладышем.",
+      "AR": "الجذور: بالات مضغوطة هيدروليكياً سعة 100 كجم. المستخلص: أكياس ورقية سعة 25 كجم.",
+      "ES": "Raíz: fardos prensados de 100 kg. Extracto: sacos de papel multicapa de 25 kg con revestimiento de PE."
     },
-    gradeSpecs: {
-      EN: 'S235JR / S355J2H structural steel | B500B / B500C rebar | 6060 / 6063-T6 aluminum alloys',
-      AZ: 'S235JR / S355J2H konstruksiya poladı | B500B / B500C armatur | 6060 / 6063-T6 alüminium',
-      RU: 'Конструкционная сталь S235JR / S355J2H | Арматура B500B | Алюминиевый сплав 6063-T6',
-    },
-  },
-  // Additional Catalog Commodities for Full Catalog View
-  {
-    id: 'persimmon-081070',
-    featured: false,
-    hsCode: '081070',
-    categoryKey: 'agro',
-    name: {
-      EN: 'Persimmons & Dried Fruit',
-      AZ: 'Xurma və Quru Meyvələr',
-      RU: 'Хурма свежая и сухофрукты',
-    },
-    categoryLabel: {
-      EN: 'Agriculture & Food',
-      AZ: 'Kənd Təsərrüfatı və Qida',
-      RU: 'Сельское хозяйство и продукты',
-    },
-    shortDesc: {
-      EN: 'Fresh Hachiya & Fuyu persimmons and solar-dehydrated gourmet persimmon slices from Goychay-Agdash.',
-      AZ: 'Göyçay-Ağdaş bölgəsindən təzə Hachiya və Fuyu xurması və qurudulmuş xurma dilimləri.',
-      RU: 'Свежая хурма сортов Хачия и Фую и вяленые дольки хурмы из региона Гёйчай-Агдаш.',
-    },
-    originRegion: {
-      EN: 'Goychay – Agdash – Balakan',
-      AZ: 'Göyçay – Ağdaş – Balakən',
-      RU: 'Гёйчай – Агдаш – Балакен',
-    },
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuDHo5g8iKevybJcG4jlFPGTNzuPMU2721wxSfNRS3s0FmbZeA3YW4AxkdXtyhH_55x-4s5Uh_5-S2-S3LVPexC1O1ahPg_Hgeeion6snYi_eyi7MNDXh5coR3k9acztB4DSA_PV9JjS_JAitpfDEAmO4UUbAUjAs0VuwpjvFbKeEaRXeqGiJ2JKU_vHqlhTa6Meil6iamn-3I_33E-Y7Tii2hclP8mfc_jBNp_gJSQpmbKniKtPJu5s',
-    minOrderQty: '19 MT (Reefer FCL)',
-    annualCapacity: '130,000 MT',
-    verifiedSuppliersCount: 47,
-    incoterms: ['FCA', 'CIF', 'DAP'],
-    certifications: ['GLOBALG.A.P.', 'AQTA Phytosanitary', 'ISO 22000'],
-    leadTimeDays: '5–8 Days',
-    packaging: {
-      EN: 'Single-layeralveolar plastic crates (3.5kg–7kg) and 500g retail dried fruit pouches',
-      AZ: 'Təkqat alveol plastik yeşiklər (3.5kq–7kq) və 500q pərakəndə quru meyvə paketləri',
-      RU: 'Однорядные пластиковые ящики с ячейками (3.5–7 кг) и крафт-пакеты по 500 г',
-    },
-    gradeSpecs: {
-      EN: 'Caliber 65mm+ | Firmness > 5.5 kg/cm² | Zero astringency post-treatment',
-      AZ: 'Kalibr 65mm+ | Bərklik > 5.5 kq/sm² | Ağızbüzücülüksüz şirin sort',
-      RU: 'Калибр 65мм+ | Плотность > 5.5 кг/см² | Полное удаление терпкости',
-    },
+    "gradeSpecs": {
+      "EN": "Active Substance: Glycyrrhizic Acid (Glycyrrhizin) 18% – 26% (HPLC) | Moisture Content: < 6.0% | Total Ash: < 8.0% | Water Solubility: > 98.5% instant dissolve | Pesticide Residues: Compliant with European Pharmacopoeia (EP 10.0)",
+      "AZ": "Active Substance: Glycyrrhizic Acid (Glycyrrhizin) 18% – 26% (HPLC) | Moisture Content: < 6.0% | Total Ash: < 8.0% | Water Solubility: > 98.5% instant dissolve | Pesticide Residues: Compliant with European Pharmacopoeia (EP 10.0)",
+      "RU": "Active Substance: Glycyrrhizic Acid (Glycyrrhizin) 18% – 26% (HPLC) | Moisture Content: < 6.0% | Total Ash: < 8.0% | Water Solubility: > 98.5% instant dissolve | Pesticide Residues: Compliant with European Pharmacopoeia (EP 10.0)",
+      "TR": "Active Substance: Glycyrrhizic Acid (Glycyrrhizin) 18% – 26% (HPLC) | Moisture Content: < 6.0% | Total Ash: < 8.0% | Water Solubility: > 98.5% instant dissolve | Pesticide Residues: Compliant with European Pharmacopoeia (EP 10.0)",
+      "AR": "Active Substance: Glycyrrhizic Acid (Glycyrrhizin) 18% – 26% (HPLC) | Moisture Content: < 6.0% | Total Ash: < 8.0% | Water Solubility: > 98.5% instant dissolve | Pesticide Residues: Compliant with European Pharmacopoeia (EP 10.0)",
+      "ES": "Active Substance: Glycyrrhizic Acid (Glycyrrhizin) 18% – 26% (HPLC) | Moisture Content: < 6.0% | Total Ash: < 8.0% | Water Solubility: > 98.5% instant dissolve | Pesticide Residues: Compliant with European Pharmacopoeia (EP 10.0)"
+    }
   },
   {
-    id: 'cotton-yarn-5205',
-    featured: false,
-    hsCode: '5205',
-    categoryKey: 'textile',
-    name: {
-      EN: 'Combed Cotton Yarn',
-      AZ: 'Darama Pambıq İplik',
-      RU: 'Гребенная хлопчатобумажная пряжа',
+    "id": "prod-absheron-olive-oil",
+    "featured": true,
+    "hsCode": "150920",
+    "categoryKey": "food",
+    "name": {
+      "AZ": "Abşeron Soyuq Sıxım Sızma Zeytun Yağı (EVOO)",
+      "EN": "Absheron Cold-Pressed Extra Virgin Olive Oil (EVOO)",
+      "TR": "Abşeron Soğuk Sıkım Natürel Sızma Zeytinyağı (EVOO)",
+      "RU": "Абшеронское оливковое масло холодного отжима Extra Virgin (EVOO)",
+      "AR": "زيت زيتون أبشيرون البكر الممتاز المعصور على البارد (EVOO)",
+      "ES": "Aceite de Oliva Virgen Extra de Absheron Prensado en Frío (AOVE)"
     },
-    categoryLabel: {
-      EN: 'Textile & Apparel',
-      AZ: 'Tekstil və Xalçaçılıq',
-      RU: 'Текстиль и ковры',
+    "categoryLabel": {
+      "EN": "Food & Gourmet",
+      "AZ": "Qida və Qurman",
+      "RU": "Продукты питания",
+      "TR": "Gıda ve Gurme",
+      "AR": "الأغذية والذواقة",
+      "ES": "Alimentos y Gourmet"
     },
-    shortDesc: {
-      EN: 'Ring-spun and open-end 100% long-staple Azerbaijani cotton yarn from Mingachevir & Sumgayit mills.',
-      AZ: 'Mingəçevir və Sumqayıt tekstil parklarından 100% uzunlifli Azərbaycan pambıq ipliyi.',
-      RU: 'Кольцевая и пневмомеханическая 100% хлопковая пряжа из Мингячевира и Сумгайыта.',
+    "shortDesc": {
+      "AZ": "Zirə və Qala bağlarından turşuluğu 0.3%-dən aşağı olan tək plantasiyalı təbii sızma zeytun yağı.",
+      "EN": "Ultra-low acidity (<0.3%) single-estate Extra Virgin Olive Oil cold-extracted within 4 hours of tree harvest.",
+      "TR": "Zire ve Gala bahçelerinden asitliği %0.3'ün altında olan tek bahçe natürel sızma zeytinyağı.",
+      "RU": "Оливковое масло высшего качества Extra Virgin с кислотностью менее 0.3% из оливок Абшерона.",
+      "AR": "زيت زيتون بكر ممتاز فائق الجودة بحموضة منخفضة جداً (<0.3%) معصور خلال 4 ساعات من القطف.",
+      "ES": "Aceite de oliva virgen extra de finca única con acidez inferior al 0.3% prensado en frío."
     },
-    originRegion: {
-      EN: 'Mingachevir Industrial Park & Barda',
-      AZ: 'Mingəçevir Sənaye Parkı və Bərdə',
-      RU: 'Мингячевирский промышленный парк и Барда',
+    "originRegion": {
+      "AZ": "Abşeron – Xızı (Zirə) İqtisadi Rayonu",
+      "EN": "Absheron – Khizi (Zira) Economic Region",
+      "TR": "Abşeron – Hızı (Zire) Ekonomik Bölgesi",
+      "RU": "Апшерон-Хызинский (Зиря) экономический район",
+      "AR": "منطقة أبشيرون - خيزي (زيرة) الاقتصادية",
+      "ES": "Región Económica de Absheron – Khizi (Zira)"
     },
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuDtNJYRxE2w63MPzGdjf8CPD9AEFm8HRgiA_8S4bLzI4JlWkzMSr7mOrBFN0clACdJ8Z4fdPmTxcUeQZoVHwM8X0BSrp3Ge5V1rjnXGei5GwaARNkgff5T_0xspZitbC-LuPEjlYnoFGRTUx9-xnXkSS6296Qbk6OBMxFoPcu45Ph_IWPgxe8ghwkwSRb4DFc747hiqPs4hl6mD0u0fkbzXC86IW3Go3l5Gt49vsGvyFE6w27cyqJpi',
-    minOrderQty: '20 MT (1x 40ft HC)',
-    annualCapacity: '35,000 MT',
-    verifiedSuppliersCount: 16,
-    incoterms: ['FCA', 'FOB', 'CIF', 'DAP'],
-    certifications: ['OEKO-TEX Standard 100', 'BCI Cotton', 'ISO 9001', 'EUR.1'],
-    leadTimeDays: '8–14 Days',
-    packaging: {
-      EN: 'Waxed paper cones (1.89kg each) packed in palletized export cartons or PP bags',
-      AZ: 'Mumlanmış kağız konuslar (1.89kq) paletlənmiş ixrac qutularında',
-      RU: 'Вощеные конусы по 1.89 кг на европаллетах в экспортном гофрокартоне',
+    "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuDHo5g8iKevybJcG4jlFPGTNzuPMU2721wxSfNRS3s0FmbZeA3YW4AxkdXtyhH_55x-4s5Uh_5-S2-S3LVPexC1O1ahPg_Hgeeion6snYi_eyi7MNDXh5coR3k9acztB4DSA_PV9JjS_JAitpfDEAmO4UUbAUjAs0VuwpjvFbKeEaRXeqGiJ2JKU_vHqlhTa6Meil6iamn-3I_33E-Y7Tii2hclP8mfc_jBNp_gJSQpmbKniKtPJu5s",
+    "minOrderQty": "5,000 Liters (Flexitank or bottled private label)",
+    "annualCapacity": "15,000 MT",
+    "verifiedSuppliersCount": 42,
+    "incoterms": [
+      "FCA",
+      "FOB",
+      "CIF",
+      "DAP"
+    ],
+    "certifications": [
+      "IOC (International Olive Council) Standards",
+      "ISO 22000",
+      "AQTA Health Certificate",
+      "EUR.1 / CT-1"
+    ],
+    "leadTimeDays": "7–14 Days",
+    "packaging": {
+      "AZ": "Pərakəndə: 500ml və 750ml tünd şüşə butulkalar / 5L tənəkələr. Topdan: 1,000L IBC və ya 24,000L fleksitank.",
+      "EN": "Retail: 500ml & 750ml dark marasca glass bottles / 5L tins. Bulk: 1,000L IBC totes or 24,000L food flexitanks.",
+      "TR": "Perakende: 500ml ve 750ml koyu cam şişeler / 5L tenekeler. Dökme: 1.000L IBC veya 24.000L fleksitank.",
+      "RU": "Розница: темные бутылки 500/750 мл, жестяные банки 5 л. Опт: еврокубы IBC 1000 л или флекситанки 24 000 л.",
+      "AR": "تجزئة: زجاجات داكنة سعة 500 و750 مل / صفائح 5 لتر. جملة: خزانات IBC سعة 1,000 لتر أو فليكسي تانك.",
+      "ES": "Venta minorista: botellas de vidrio oscuro de 500 ml y 750 ml / latas de 5 L. Granel: IBC de 1.000 L o flexitanques."
     },
-    gradeSpecs: {
-      EN: 'Ne 20/1, Ne 24/1, Ne 30/1, Ne 40/1 Combed & Carded | Uster 5%–25% quality class',
-      AZ: 'Ne 20/1, Ne 24/1, Ne 30/1, Ne 40/1 Karde və Kome | Uster 5%–25% keyfiyyət sinfi',
-      RU: 'Номера Ne 20/1, 24/1, 30/1, 40/1 кардная и гребенная | Стандарт Uster 5–25%',
-    },
+    "gradeSpecs": {
+      "EN": "Free Fatty Acidity: < 0.30% (IOC Extra Virgin Standard) | Peroxide Value: < 6.5 meq O2/kg | Total Polyphenols: > 380 mg/kg (High Antioxidant) | Extraction Temperature: < 24°C Cold Pressed | Flavor Profile: Fresh green grass, green almond, tomato leaf, balanced peppery finish",
+      "AZ": "Free Fatty Acidity: < 0.30% (IOC Extra Virgin Standard) | Peroxide Value: < 6.5 meq O2/kg | Total Polyphenols: > 380 mg/kg (High Antioxidant) | Extraction Temperature: < 24°C Cold Pressed | Flavor Profile: Fresh green grass, green almond, tomato leaf, balanced peppery finish",
+      "RU": "Free Fatty Acidity: < 0.30% (IOC Extra Virgin Standard) | Peroxide Value: < 6.5 meq O2/kg | Total Polyphenols: > 380 mg/kg (High Antioxidant) | Extraction Temperature: < 24°C Cold Pressed | Flavor Profile: Fresh green grass, green almond, tomato leaf, balanced peppery finish",
+      "TR": "Free Fatty Acidity: < 0.30% (IOC Extra Virgin Standard) | Peroxide Value: < 6.5 meq O2/kg | Total Polyphenols: > 380 mg/kg (High Antioxidant) | Extraction Temperature: < 24°C Cold Pressed | Flavor Profile: Fresh green grass, green almond, tomato leaf, balanced peppery finish",
+      "AR": "Free Fatty Acidity: < 0.30% (IOC Extra Virgin Standard) | Peroxide Value: < 6.5 meq O2/kg | Total Polyphenols: > 380 mg/kg (High Antioxidant) | Extraction Temperature: < 24°C Cold Pressed | Flavor Profile: Fresh green grass, green almond, tomato leaf, balanced peppery finish",
+      "ES": "Free Fatty Acidity: < 0.30% (IOC Extra Virgin Standard) | Peroxide Value: < 6.5 meq O2/kg | Total Polyphenols: > 380 mg/kg (High Antioxidant) | Extraction Temperature: < 24°C Cold Pressed | Flavor Profile: Fresh green grass, green almond, tomato leaf, balanced peppery finish"
+    }
   },
   {
-    id: 'urea-polymer-310210',
-    featured: false,
-    hsCode: '310210',
-    categoryKey: 'chemicals',
-    name: {
-      EN: 'Prilled & Granular Urea + Polymers',
-      AZ: 'Karbamid və Polipropilen Qranulları',
-      RU: 'Карбамид гранулированный и полимеры',
+    "id": "prod-goygol-alpine-honey",
+    "featured": false,
+    "hsCode": "040900",
+    "categoryKey": "food",
+    "name": {
+      "AZ": "Göygöl Dağ Çiçək Balı (Qafqaz Təmiz Təbii Balı)",
+      "EN": "Lesser Caucasus Mountain Floral Honey (Göygöl Alpine)",
+      "TR": "Göygöl Alpin Dağ Çiçek Balı (Kafkas Doğal Ham Bal)",
+      "RU": "Горный цветочный мед Малого Кавказа (Гёйгёль Альпийский)",
+      "AR": "عسل زهور جبال القوقاز الصغرى الطبيعي الخام (ألباين غويغول)",
+      "ES": "Miel Floral de Montaña del Cáucaso Menor (Göygöl Alpino)"
     },
-    categoryLabel: {
-      EN: 'Metals & Industrial',
-      AZ: 'Kimya və Sənaye',
-      RU: 'Химия и промышленность',
+    "categoryLabel": {
+      "EN": "Food & Gourmet",
+      "AZ": "Qida və Qurman",
+      "RU": "Продукты питания",
+      "TR": "Gıda ve Gurme",
+      "AR": "الأغذية والذواقة",
+      "ES": "Alimentos y Gourmet"
     },
-    shortDesc: {
-      EN: '46.2% Nitrogen granular agricultural urea and high-density polyethylene/polypropylene resins from Sumgayit Chemical Park.',
-      AZ: 'Sumqayıt Kimya Sənaye Parkından 46.2% azotlu dənəvər karbamid və polietilen/polipropilen qranulları.',
-      RU: 'Гранулированный карбамид (азот 46.2%) и первичный полипропилен/полиэтилен из Сумгайыта.',
+    "shortDesc": {
+      "AZ": "Göygöl Milli Parkının 1,600m - 2,200m hündürlükdəki subalp çəmənlərindən 100% çiy, pasterizə olunmamış dağ balı.",
+      "EN": "100% raw unpasteurized multi-floral mountain honey gathered at 1,600m – 2,200m altitude in Göygöl National Park.",
+      "TR": "Göygöl Milli Parkı'nın 1.600m - 2.200m rakımlı yaylalarından %100 saf, pastörize edilmemiş dağ balı.",
+      "RU": "100% натуральный сырой полифлорный мед, собранный на высоте 1600–2200 м в Гёйгёльском национальном парке.",
+      "AR": "عسل جبلي طبيعي خام غير مبستر 100% مجموع من مروج حديقة غويغول الوطنية على ارتفاع 1600-2200 متر.",
+      "ES": "Miel de montaña multifloral 100% cruda recolectada a 1.600 m – 2.200 m en el Parque Nacional de Göygöl."
     },
-    originRegion: {
-      EN: 'Sumgayit Chemical Industrial Park',
-      AZ: 'Sumqayıt Kimya Sənaye Parkı',
-      RU: 'Сумгайытский химический промышленный парк',
+    "originRegion": {
+      "AZ": "Gəncə – Daşkəsən (Göygöl) İqtisadi Rayonu",
+      "EN": "Ganja – Dashkasan (Goygol) Economic Region",
+      "TR": "Gence – Daşkesen (Göygöl) Ekonomik Bölgesi",
+      "RU": "Гянджа-Дашкесанский (Гёйгёльский) экономический район",
+      "AR": "منطقة كنجة - داشكاسان (غويغول) الاقتصادية",
+      "ES": "Región Económica de Ganja – Dashkasan (Goygol)"
     },
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuDGgRuRr9uJiYiCy0AeiN7FvX1CWCTQLdRAG2TJXnfii1yXyI2WeKI6wMo6E8nydnbcUg27wH11AYMDuRy4WLTd0MRbPlzPT3f1Wzw2BN132jDlE2pKhDZ_BpSyUWXlgaEpX1_ukFt7IpSBL9Cnc3ILMPL8scPCgkSNob0PCSAa30dUKuSc0TBkoYnhfmiO58w10Zuz4eKBXbVNTk92SLbvxAconUj8wUxkDU7y1H7Ks3do6--khlfP',
-    minOrderQty: '100 MT (Rail / Bulk Vessel)',
-    annualCapacity: '650,000 MT',
-    verifiedSuppliersCount: 11,
-    incoterms: ['FCA', 'FOB', 'CIF', 'DAP'],
-    certifications: ['REACH Registered', 'ISO 9001', 'ISO 14001', 'SGS Inspection Certificate'],
-    leadTimeDays: '10–16 Days',
-    packaging: {
-      EN: '50kg woven PP bags with PE inner liner or 1,000kg UV-stabilized bulk FIBC bags',
-      AZ: '50kq polipropilen kisələr və ya 1,000kq UB-davamlı biq-bəqlər',
-      RU: 'Полипропиленовые мешки по 50 кг с ПЭ-вкладышем или МКР биг-бэги по 1000 кг',
+    "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuD6iP6ACTY6rFPAXNJlK_W-AfkWR_1OBE8I3wLkCwVMAlQIyNvxAXxK1kYe6-itoVecrpqtsSok0_wQ1QnYyWcn40Hikz269v2ag3TbKrY9lfqw3mEVtR-I0GvclcQXFDi0q_xVPYMdzpIFMaXwgeJEs4gwsCpcf-Dn7Df8QGIeKoSael0DxSBY2ZpmoWYe8Ynhio_Q0dONzHarqS9Kp31IStn01T44xVmJ90B5TY2WFQr7mOmo4Ucq",
+    "minOrderQty": "3 Metric Tons (B2B bulk drums or retail glass)",
+    "annualCapacity": "15,000 MT",
+    "verifiedSuppliersCount": 26,
+    "incoterms": [
+      "FCA",
+      "FOB",
+      "CIF",
+      "DAP"
+    ],
+    "certifications": [
+      "AQTA Veterinary Export Approval",
+      "ISO 22000",
+      "Intertek / QSI Bremen Lab Analysis",
+      "EUR.1 / CT-1"
+    ],
+    "leadTimeDays": "7–14 Days",
+    "packaging": {
+      "AZ": "Topdan: 290kq qida sertifikatlı polad çəlləklər. Pərakəndə: 400q və 900q altıbucaqlı şüşə bankalar.",
+      "EN": "Bulk: 290kg food-grade lacquered steel drums. Retail: 400g and 900g hexagonal glass jars in 12-pack cartons.",
+      "TR": "Dökme: 290kg gıdaya uygun laklı çelik variller. Perakende: 400g ve 900g altıgen cam kavanozlar.",
+      "RU": "Опт: бочки из пищевой стали по 290 кг. Розница: шестигранные банки по 400 г и 900 г в коробках по 12 шт.",
+      "AR": "جملة: براميل صلبة مبطنة غذائياً سعة 290 كجم. تجزئة: برطمانات زجاجية سداسية سعة 400 و900 جم.",
+      "ES": "Granel: bidones de acero lacado de 290 kg. Minorista: tarros de cristal hexagonales de 400 g y 900 g."
     },
-    gradeSpecs: {
-      EN: 'Total Nitrogen ≥ 46.2% | Biuret ≤ 0.8% | Granule size 2–4mm ≥ 95%',
-      AZ: 'Ümumi Azot ≥ 46.2% | Biuret ≤ 0.8% | Qranul ölçüsü 2–4mm ≥ 95%',
-      RU: 'Массовая доля азота ≥ 46.2% | Биурет ≤ 0.8% | Гранулометрический состав 2–4 мм ≥ 95%',
-    },
+    "gradeSpecs": {
+      "EN": "Diastase Activity: > 22 Schade units (High enzymatic vitality) | HMF (Hydroxymethylfurfural): < 8 mg/kg (Freshness marker) | Moisture Content: 16.2% – 17.5% | Reducing Sugars (Fructose+Glucose): > 72% | Pollen Spectrum: Wild thyme, origanum, melilotus, trifolium",
+      "AZ": "Diastase Activity: > 22 Schade units (High enzymatic vitality) | HMF (Hydroxymethylfurfural): < 8 mg/kg (Freshness marker) | Moisture Content: 16.2% – 17.5% | Reducing Sugars (Fructose+Glucose): > 72% | Pollen Spectrum: Wild thyme, origanum, melilotus, trifolium",
+      "RU": "Diastase Activity: > 22 Schade units (High enzymatic vitality) | HMF (Hydroxymethylfurfural): < 8 mg/kg (Freshness marker) | Moisture Content: 16.2% – 17.5% | Reducing Sugars (Fructose+Glucose): > 72% | Pollen Spectrum: Wild thyme, origanum, melilotus, trifolium",
+      "TR": "Diastase Activity: > 22 Schade units (High enzymatic vitality) | HMF (Hydroxymethylfurfural): < 8 mg/kg (Freshness marker) | Moisture Content: 16.2% – 17.5% | Reducing Sugars (Fructose+Glucose): > 72% | Pollen Spectrum: Wild thyme, origanum, melilotus, trifolium",
+      "AR": "Diastase Activity: > 22 Schade units (High enzymatic vitality) | HMF (Hydroxymethylfurfural): < 8 mg/kg (Freshness marker) | Moisture Content: 16.2% – 17.5% | Reducing Sugars (Fructose+Glucose): > 72% | Pollen Spectrum: Wild thyme, origanum, melilotus, trifolium",
+      "ES": "Diastase Activity: > 22 Schade units (High enzymatic vitality) | HMF (Hydroxymethylfurfural): < 8 mg/kg (Freshness marker) | Moisture Content: 16.2% – 17.5% | Reducing Sugars (Fructose+Glucose): > 72% | Pollen Spectrum: Wild thyme, origanum, melilotus, trifolium"
+    }
   },
+  {
+    "id": "prod-bentonite-clay-agstafa",
+    "featured": false,
+    "hsCode": "250810",
+    "categoryKey": "industrial",
+    "name": {
+      "AZ": "Ağstafa Aktivləşdirilmiş Bentonit Gili (API Spec 13A)",
+      "EN": "Agstafa Sodium-Activated Bentonite Clay (API Spec 13A)",
+      "TR": "Ağstafa Sodyum Aktif Bentonit Kili (API Spec 13A)",
+      "RU": "Агстафинская натриевая бентонитовая глина (API Spec 13A)",
+      "AR": "طين البنتونيت المنشط بالصوديوم من أغستافا (API Spec 13A)",
+      "ES": "Arcilla Bentonita Activada con Sodio de Agstafa (API Spec 13A)"
+    },
+    "categoryLabel": {
+      "EN": "Industrial & Textiles",
+      "AZ": "Sənaye və Tekstil",
+      "RU": "Промышленность и текстиль",
+      "TR": "Endüstri ve Tekstil",
+      "AR": "الصناعة والمنسوجات",
+      "ES": "Industrial y Textiles"
+    },
+    "shortDesc": {
+      "AZ": "Neft-qaz qazma məhlulları, tökmə sənayesi və inşaat mühəndisliyi üçün yüksək montmorillonitli bentonit gili.",
+      "EN": "Premium montmorillonite swelling bentonite clay for oil/gas drilling fluids, foundry casting, and civil engineering.",
+      "TR": "Petrol-gaz sondaj sıvıları, döküm sanayisi ve inşaat mühendisliği için yüksek montmorillonitli bentonit kili.",
+      "RU": "Бентонит с содержанием монтмориллонита >82% для буровых растворов нефтегазовой отрасли и литейного производства.",
+      "AR": "طين بنتونيت فائق الجودة يتمدد بنسبة عالية لسوائل حفر آبار النفط والغاز والصناعات المدنية.",
+      "ES": "Bentonita de alto contenido en montmorillonita para lodos de perforación de petróleo/gas y fundición."
+    },
+    "originRegion": {
+      "AZ": "Qazax – Tovuz (Ağstafa) İqtisadi Rayonu",
+      "EN": "Gazakh – Tovuz (Agstafa) Economic Region",
+      "TR": "Kazak – Tovuz (Ağstafa) Ekonomik Bölgesi",
+      "RU": "Газах-Товузский (Агстафинский) экономический район",
+      "AR": "منطقة قازاخ - توفوز (أغستافا) الاقتصادية",
+      "ES": "Región Económica de Gazakh – Tovuz (Agstafa)"
+    },
+    "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuDtNJYRxE2w63MPzGdjf8CPD9AEFm8HRgiA_8S4bLzI4JlWkzMSr7mOrBFN0clACdJ8Z4fdPmTxcUeQZoVHwM8X0BSrp3Ge5V1rjnXGei5GwaARNkgff5T_0xspZitbC-LuPEjlYnoFGRTUx9-xnXkSS6296Qbk6OBMxFoPcu45Ph_IWPgxe8ghwkwSRb4DFc747hiqPs4hl6mD0u0fkbzXC86IW3Go3l5Gt49vsGvyFE6w27cyqJpi",
+    "minOrderQty": "44 Metric Tons (2x 20ft Containers or bulk rail wagons)",
+    "annualCapacity": "15,000 MT",
+    "verifiedSuppliersCount": 26,
+    "incoterms": [
+      "FCA",
+      "FOB",
+      "CIF",
+      "DAP"
+    ],
+    "certifications": [
+      "API Spec 13A Certified",
+      "ISO 9001:2015",
+      "Certificate of Origin Form CT-1 / EUR.1"
+    ],
+    "leadTimeDays": "7–14 Days",
+    "packaging": {
+      "AZ": "1,000kq nəmə davamlı boşaltma boğazlı biq-bəqlər və ya 25kq klapanlı kağız kisələr.",
+      "EN": "1,000kg weather-resistant polypropylene big-bags with discharge spouts, or 25kg multi-ply paper valve bags.",
+      "TR": "1.000kg boşaltma bacalı neme dayanıklı big-bag çuvallar veya 25kg ventilli kraft torbalar.",
+      "RU": "Биг-бэги по 1000 кг с разгрузочным клапаном или многослойные клапанные бумажные мешки по 25 кг.",
+      "AR": "أكياس كبيرة سعة 1,000 كجم مقاومة للعوامل الجوية أو أكياس ورقية صمامية سعة 25 كجم.",
+      "ES": "Big-bags de 1.000 kg resistentes a la intemperie con boquilla de descarga, o sacos de papel de 25 kg."
+    },
+    "gradeSpecs": {
+      "EN": "Montmorillonite Content: > 82% (XRD analysis) | Viscometer 600 RPM: > 30 (API Spec 13A) | Yield Point / Plastic Viscosity Ratio: < 3.0 | Filtrate Volume (Fluid Loss): < 15.0 cm³ | Swell Volume: > 28 ml / 2g",
+      "AZ": "Montmorillonite Content: > 82% (XRD analysis) | Viscometer 600 RPM: > 30 (API Spec 13A) | Yield Point / Plastic Viscosity Ratio: < 3.0 | Filtrate Volume (Fluid Loss): < 15.0 cm³ | Swell Volume: > 28 ml / 2g",
+      "RU": "Montmorillonite Content: > 82% (XRD analysis) | Viscometer 600 RPM: > 30 (API Spec 13A) | Yield Point / Plastic Viscosity Ratio: < 3.0 | Filtrate Volume (Fluid Loss): < 15.0 cm³ | Swell Volume: > 28 ml / 2g",
+      "TR": "Montmorillonite Content: > 82% (XRD analysis) | Viscometer 600 RPM: > 30 (API Spec 13A) | Yield Point / Plastic Viscosity Ratio: < 3.0 | Filtrate Volume (Fluid Loss): < 15.0 cm³ | Swell Volume: > 28 ml / 2g",
+      "AR": "Montmorillonite Content: > 82% (XRD analysis) | Viscometer 600 RPM: > 30 (API Spec 13A) | Yield Point / Plastic Viscosity Ratio: < 3.0 | Filtrate Volume (Fluid Loss): < 15.0 cm³ | Swell Volume: > 28 ml / 2g",
+      "ES": "Montmorillonite Content: > 82% (XRD analysis) | Viscometer 600 RPM: > 30 (API Spec 13A) | Yield Point / Plastic Viscosity Ratio: < 3.0 | Filtrate Volume (Fluid Loss): < 15.0 cm³ | Swell Volume: > 28 ml / 2g"
+    }
+  },
+  {
+    "id": "prod-polypropylene-big-bags",
+    "featured": false,
+    "hsCode": "630532",
+    "categoryKey": "packaging",
+    "name": {
+      "AZ": "Sənaye Tipi FIBC Biq-Bəqlər və Toxunma Polipropilen Kisələr",
+      "EN": "Heavy-Duty FIBC Big Bags & Polypropylene Woven Sacks",
+      "TR": "Ağır Hizmet Tipi FIBC Big-Bag Çuvallar ve Polipropilen Torbalar",
+      "RU": "Промышленные биг-бэги FIBC и полипропиленовые плетеные мешки",
+      "AR": "أكياس الحاويات المرنة الكبيرة (FIBC) وأكياس البولي بروبيلين المنسوجة",
+      "ES": "Sacos Grandes Industriales FIBC y Sacos Tejidos de Polipropileno"
+    },
+    "categoryLabel": {
+      "EN": "Packaging & Bulk Bags",
+      "AZ": "Qablaşdırma və Kisələr",
+      "RU": "Упаковка и биг-бэги",
+      "TR": "Ambalaj ve Çuvallar",
+      "AR": "التعبئة والتغليف",
+      "ES": "Embalaje y Sacos"
+    },
+    "shortDesc": {
+      "AZ": "Sumqayıt kimya parkından 500kq-dan 2,000kq-a qədər yükgötürmə qabiliyyətli UB-qorumalı 4 qulplu FIBC biq-bəqlər.",
+      "EN": "Industrial UV-stabilized 4-loop flexible bulk containers (FIBC) and laminated woven PP bags from Sumgayit chemical park.",
+      "TR": "Sumgayıt kimya parkından 500kg - 2.000kg taşıma kapasiteli UV korumalı 4 kulplu FIBC çuvallar ve lamine torbalar.",
+      "RU": "УФ-стабилизированные 4-стропные мягкие контейнеры (МКР) грузоподъемностью 500-2000 кг с коэффициентом 5:1/6:1.",
+      "AR": "أكياس حاويات مرنة صناعية معالجة ضد الأشعة فوق البنفسجية بحمولة أمان من 500 إلى 2000 كجم.",
+      "ES": "Contenedores flexibles para granel (FIBC) de 4 asas estabilizados contra rayos UV y sacos de PP laminados."
+    },
+    "originRegion": {
+      "AZ": "Abşeron – Xızı (Sumqayıt) İqtisadi Rayonu",
+      "EN": "Absheron – Khizi (Sumgayit) Economic Region",
+      "TR": "Abşeron – Hızı (Sumgayıt) Ekonomik Bölgesi",
+      "RU": "Апшерон-Хызинский (Сумгайытский) экономический район",
+      "AR": "منطقة أبشيرون - خيزي (سومغايت) الاقتصادية",
+      "ES": "Región Económica de Absheron – Khizi (Sumgayit)"
+    },
+    "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuC5UBl6ky2E1o6RbrVtIlz6xdPHcSBD7sd8H309gALUQoxK5e7r7Jx8q159V1clhGMbdLSh4P9jCngmrLKo1SRNMt8pOyjcZAA6ESFVNV4ezFkDuGcGpnQTuFuS1mN_y1GCw0fUeMaghixWmXvDOKyonKRvDbft5TQiqBmLD-rRRmW-WA8ynGJG10G8Glm_TPlhHHVb7hRwLDWJ8xhd-hOjeMKGIxnS1XfZVRCXaB1IDAY3cUYFZPhn",
+    "minOrderQty": "5,000 Units (LCL or FCL container loads)",
+    "annualCapacity": "15,000 MT",
+    "verifiedSuppliersCount": 26,
+    "incoterms": [
+      "FCA",
+      "FOB",
+      "CIF",
+      "DAP"
+    ],
+    "certifications": [
+      "ISO 9001:2015",
+      "Labordata Testing Compliance",
+      "UN Certified Packaging for Dangerous Goods"
+    ],
+    "leadTimeDays": "7–14 Days",
+    "packaging": {
+      "AZ": "Taxta paletlərdə sıxılmış 50 və ya 100 ədədlik bağlamalar.",
+      "EN": "Baled in bundles of 50 or 100 units strapped with heavy polyester cords on wooden pallets.",
+      "TR": "Ahşap paletler üzerinde ağır polyester şeritlerle bağlanmış 50 veya 100 adetlik balyalar.",
+      "RU": "Прессованные пачки по 50 или 100 штук, стянутые полиэстеровой лентой на европаллетах.",
+      "AR": "مربوطة في حزم من 50 أو 100 وحدة ومشدودة بأشرطة بوليستر قوية على منصات خشبية.",
+      "ES": "En fardos de 50 o 100 unidades flejados con cordones de poliéster pesados sobre palets de madera."
+    },
+    "gradeSpecs": {
+      "EN": "Fabric Weight: 140 g/m² – 220 g/m² UV Stabilized | Safe Working Load (SWL): 1,000 kg – 2,000 kg | Safety Factor (SF): 5:1 (Single trip) / 6:1 (Multi-trip UN Certified) | Construction Types: Circular / U-panel / 4-panel with PE liner | Printing: Up to 4 colors flexographic branding",
+      "AZ": "Fabric Weight: 140 g/m² – 220 g/m² UV Stabilized | Safe Working Load (SWL): 1,000 kg – 2,000 kg | Safety Factor (SF): 5:1 (Single trip) / 6:1 (Multi-trip UN Certified) | Construction Types: Circular / U-panel / 4-panel with PE liner | Printing: Up to 4 colors flexographic branding",
+      "RU": "Fabric Weight: 140 g/m² – 220 g/m² UV Stabilized | Safe Working Load (SWL): 1,000 kg – 2,000 kg | Safety Factor (SF): 5:1 (Single trip) / 6:1 (Multi-trip UN Certified) | Construction Types: Circular / U-panel / 4-panel with PE liner | Printing: Up to 4 colors flexographic branding",
+      "TR": "Fabric Weight: 140 g/m² – 220 g/m² UV Stabilized | Safe Working Load (SWL): 1,000 kg – 2,000 kg | Safety Factor (SF): 5:1 (Single trip) / 6:1 (Multi-trip UN Certified) | Construction Types: Circular / U-panel / 4-panel with PE liner | Printing: Up to 4 colors flexographic branding",
+      "AR": "Fabric Weight: 140 g/m² – 220 g/m² UV Stabilized | Safe Working Load (SWL): 1,000 kg – 2,000 kg | Safety Factor (SF): 5:1 (Single trip) / 6:1 (Multi-trip UN Certified) | Construction Types: Circular / U-panel / 4-panel with PE liner | Printing: Up to 4 colors flexographic branding",
+      "ES": "Fabric Weight: 140 g/m² – 220 g/m² UV Stabilized | Safe Working Load (SWL): 1,000 kg – 2,000 kg | Safety Factor (SF): 5:1 (Single trip) / 6:1 (Multi-trip UN Certified) | Construction Types: Circular / U-panel / 4-panel with PE liner | Printing: Up to 4 colors flexographic branding"
+    }
+  }
 ];
 
 export const SERVICES_PILLARS: ServicePillar[] = [

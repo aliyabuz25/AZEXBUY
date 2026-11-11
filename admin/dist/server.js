@@ -1440,13 +1440,27 @@ var SEED_CATEGORIES = [
 ];
 var SEED_PRODUCTS = [
   {
-    id: "prod-hazelnut-atababa",
-    categoryId: "cat-agri",
-    name: "Ata-Baba Shelled Hazelnuts (Extra Grade)",
-    slug: "ata-baba-shelled-hazelnuts",
-    shortDescription: "Extra-grade shelled natural & roasted Ata-Baba hazelnuts from Zaqatala-Sheki certified orchards.",
-    description: "Azerbaijan ranks among the top global producers of hazelnuts. Our Ata-Baba variety is cultivated in the mineral-rich soils of the Greater Caucasus foothills (Zaqatala-Sheki region). Renowned for high oleic oil content (over 65%), delicate aroma, and crunchy bite. Available natural, blanched, roasted, and diced.",
-    technicalSpecs: {
+    "id": "prod-hazelnut-atababa",
+    "categoryId": "cat-agri",
+    "name": {
+      "AZ": "Ata-Baba F\u0131nd\u0131q L\u0259p\u0259si (Ekstra N\xF6v)",
+      "EN": "Ata-Baba Shelled Hazelnuts (Extra Grade)",
+      "TR": "Ata-Baba F\u0131nd\u0131k \u0130\xE7i (Ekstra Kalite)",
+      "RU": "\u041E\u0447\u0438\u0449\u0435\u043D\u043D\u044B\u0439 \u0444\u0443\u043D\u0434\u0443\u043A \u0410\u0442\u0430-\u0411\u0430\u0431\u0430 (\u042D\u043A\u0441\u0442\u0440\u0430 \u0441\u043E\u0440\u0442)",
+      "AR": "\u0628\u0646\u062F\u0642 \u0623\u062A\u0627-\u0628\u0627\u0628\u0627 \u0645\u0642\u0634\u0631 \u0641\u0627\u062E\u0631 (\u062F\u0631\u062C\u0629 \u0645\u0645\u062A\u0627\u0632\u0629)",
+      "ES": "Avellanas Peladas Ata-Baba (Grado Extra)"
+    },
+    "slug": "ata-baba-shelled-hazelnuts",
+    "shortDescription": {
+      "AZ": "Zaqatala-\u015E\u0259ki ba\u011Flar\u0131ndan ekstra n\xF6vl\xFC t\u0259bii v\u0259 qovrulmu\u015F Ata-Baba f\u0131nd\u0131q l\u0259p\u0259si.",
+      "EN": "Extra-grade shelled natural & roasted Ata-Baba hazelnuts from Zaqatala-Sheki certified orchards.",
+      "TR": "Zakatala-\u015Eeki bah\xE7elerinden ekstra kalite do\u011Fal ve kavrulmu\u015F Ata-Baba f\u0131nd\u0131k i\xE7i.",
+      "RU": "\u041E\u0447\u0438\u0449\u0435\u043D\u043D\u044B\u0439 \u043D\u0430\u0442\u0443\u0440\u0430\u043B\u044C\u043D\u044B\u0439 \u0438 \u043E\u0431\u0436\u0430\u0440\u0435\u043D\u043D\u044B\u0439 \u0444\u0443\u043D\u0434\u0443\u043A \u0441\u043E\u0440\u0442\u0430 \u0410\u0442\u0430-\u0411\u0430\u0431\u0430 \u0432\u044B\u0441\u0448\u0435\u0433\u043E \u043A\u0430\u0447\u0435\u0441\u0442\u0432\u0430 \u0438\u0437 \u0417\u0430\u0433\u0430\u0442\u0430\u043B\u044B \u0438 \u0428\u0435\u043A\u0438.",
+      "AR": "\u0628\u0646\u062F\u0642 \u0637\u0628\u064A\u0639\u064A \u0648\u0645\u062D\u0645\u0635 \u0645\u0646 \u0627\u0644\u062F\u0631\u062C\u0629 \u0627\u0644\u0623\u0648\u0644\u0649 \u0645\u0646 \u0628\u0633\u0627\u062A\u064A\u0646 \u0632\u0627\u0642\u0627\u062A\u0627\u0644\u0627 \u0648\u0634\u0643\u064A \u0627\u0644\u0623\u0630\u0631\u0628\u064A\u062C\u0627\u0646\u064A\u0629.",
+      "ES": "Avellanas naturales y tostadas de calidad extra de huertos certificados de Zaqatala-Sheki."
+    },
+    "description": "Azerbaijan ranks among the top global producers of hazelnuts. Our Ata-Baba variety is cultivated in the mineral-rich soils of the Greater Caucasus foothills (Zaqatala-Sheki region). Renowned for high oleic oil content (over 65%), delicate aroma, and crunchy bite. Available natural, blanched, roasted, and diced.",
+    "technicalSpecs": {
       "Variety": "Ata-Baba (Local Endemic)",
       "Caliber (Sizes)": "11\u201313mm, 13\u201315mm, 15+mm",
       "Moisture Content": "< 5.0% (EU Export Standard)",
@@ -1454,26 +1468,60 @@ var SEED_PRODUCTS = [
       "Aflatoxin B1": "< 2 ppb (Strict EU compliant)",
       "Purity": "99.9% Sortex optical sorted"
     },
-    images: [
+    "images": [
       "https://lh3.googleusercontent.com/aida-public/AB6AXuD6iP6ACTY6rFPAXNJlK_W-AfkWR_1OBE8I3wLkCwVMAlQIyNvxAXxK1kYe6-itoVecrpqtsSok0_wQ1QnYyWcn40Hikz269v2ag3TbKrY9lfqw3mEVtR-I0GvclcQXFDi0q_xVPYMdzpIFMaXwgeJEs4gwsCpcf-Dn7Df8QGIeKoSael0DxSBY2ZpmoWYe8Ynhio_Q0dONzHarqS9Kp31IStn01T44xVmJ90B5TY2WFQr7mOmo4Ucq"
     ],
-    moq: "20 Metric Tons (1x 20ft FCL)",
-    certificates: ["ISO 22000:2018", "FSSC 22000", "AQTA Phytosanitary", "EUR.1 / CT-1", "Halal Food Compliance"],
-    packagingInfo: "25kg multi-layer vacuum foil bags in corrugated export cartons, or 800kg jumbo big-bags on Euro-pallets.",
-    hsCode: "080222",
-    originRegion: "Zaqatala \u2013 \u015E\u0259ki \u0130qtisadi Rayonu",
-    isFeatured: 1,
-    seoTitle: "Azerbaijani Ata-Baba Shelled Hazelnuts \u2014 Bulk Wholesale Export",
-    seoDescription: "Direct supplier of premium grade Ata-Baba shelled hazelnuts from Zaqatala-Sheki, Azerbaijan. EU-compliant low aflatoxin, 20 MT MOQ."
+    "moq": "20 Metric Tons (1x 20ft FCL)",
+    "certificates": [
+      "ISO 22000:2018",
+      "FSSC 22000",
+      "AQTA Phytosanitary",
+      "EUR.1 / CT-1",
+      "Halal Food Compliance"
+    ],
+    "packagingInfo": {
+      "AZ": "25kq \xE7oxqatl\u0131 vakuum folqa kis\u0259l\u0259r v\u0259 ya 800kq biq-b\u0259ql\u0259r.",
+      "EN": "25kg multi-layer vacuum foil bags in corrugated export cartons, or 800kg jumbo big-bags on Euro-pallets.",
+      "TR": "25kg \xE7ok katmanl\u0131 vakumlu folyo torbalarda veya 800kg big-bag \xE7uvallarda.",
+      "RU": "\u041C\u043D\u043E\u0433\u043E\u0441\u043B\u043E\u0439\u043D\u044B\u0435 \u0432\u0430\u043A\u0443\u0443\u043C\u043D\u044B\u0435 \u0444\u043E\u043B\u044C\u0433\u0438\u0440\u043E\u0432\u0430\u043D\u043D\u044B\u0435 \u043C\u0435\u0448\u043A\u0438 \u043F\u043E 25 \u043A\u0433 \u0438\u043B\u0438 \u0431\u0438\u0433-\u0431\u044D\u0433\u0438 \u043F\u043E 800 \u043A\u0433.",
+      "AR": "\u0623\u0643\u064A\u0627\u0633 \u0631\u0642\u0627\u0626\u0642 \u0645\u0641\u0631\u063A\u0629 \u0645\u0646 \u0627\u0644\u0647\u0648\u0627\u0621 \u0645\u062A\u0639\u062F\u062F\u0629 \u0627\u0644\u0637\u0628\u0642\u0627\u062A \u0633\u0639\u0629 25 \u0643\u062C\u0645 \u0623\u0648 \u0623\u0643\u064A\u0627\u0633 \u0643\u0628\u064A\u0631\u0629 \u0633\u0639\u0629 800 \u0643\u062C\u0645.",
+      "ES": "Bolsas de l\xE1mina de vac\xEDo multicapa de 25 kg en cajas de cart\xF3n, o big-bags de 800 kg."
+    },
+    "hsCode": "080222",
+    "originRegion": {
+      "AZ": "Zaqatala \u2013 \u015E\u0259ki \u0130qtisadi Rayonu",
+      "EN": "Zaqatala \u2013 Sheki Economic Region",
+      "TR": "Zakatala \u2013 \u015Eeki Ekonomik B\xF6lgesi",
+      "RU": "\u0417\u0430\u0433\u0430\u0442\u0430\u043B\u043E-\u0428\u0435\u043A\u0438\u043D\u0441\u043A\u0438\u0439 \u044D\u043A\u043E\u043D\u043E\u043C\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0440\u0430\u0439\u043E\u043D",
+      "AR": "\u0645\u0646\u0637\u0642\u0629 \u0632\u0627\u0642\u0627\u062A\u0627\u0644\u0627 - \u0634\u0643\u064A \u0627\u0644\u0627\u0642\u062A\u0635\u0627\u062F\u064A\u0629",
+      "ES": "Regi\xF3n Econ\xF3mica de Zaqatala \u2013 Sheki"
+    },
+    "isFeatured": 1,
+    "seoTitle": "Azerbaijani Ata-Baba Shelled Hazelnuts \u2014 Bulk Wholesale Export",
+    "seoDescription": "Direct supplier of premium grade Ata-Baba shelled hazelnuts from Zaqatala-Sheki, Azerbaijan. EU-compliant low aflatoxin, 20 MT MOQ."
   },
   {
-    id: "prod-pomegranate-goychay",
-    categoryId: "cat-agri",
-    name: "Goychay Fresh Pomegranates & 100% NFC Juice",
-    slug: "goychay-fresh-pomegranates-nfc-juice",
-    shortDescription: "Protected Geographical Indication (PGI) Goychay ruby pomegranates (Guleysha) and cold-pressed NFC pure juice.",
-    description: "Goychay pomegranate is celebrated globally for its balanced Brix (sugar content), deep crimson arils, and exceptional antioxidant polyphenols. Sourced directly from modern certified orchards in Central Aran. Available as fresh fruit in protective cell-trays and as 100% Not-From-Concentrate (NFC) cold-pressed aseptic bulk juice.",
-    technicalSpecs: {
+    "id": "prod-pomegranate-goychay",
+    "categoryId": "cat-agri",
+    "name": {
+      "AZ": "G\xF6y\xE7ay Nar\u0131 v\u0259 100% T\u0259bii Nar \u015Eir\u0259si (NFC)",
+      "EN": "Goychay Fresh Pomegranates & 100% NFC Juice",
+      "TR": "G\xF6y\xE7ay Taze Nar\u0131 ve %100 Do\u011Fal Nar Suyu (NFC)",
+      "RU": "\u0421\u0432\u0435\u0436\u0438\u0435 \u0433\u0440\u0430\u043D\u0430\u0442\u044B \u0413\u0451\u0439\u0447\u0430\u0439 \u0438 100% \u0441\u043E\u043A \u043F\u0440\u044F\u043C\u043E\u0433\u043E \u043E\u0442\u0436\u0438\u043C\u0430 (NFC)",
+      "AR": "\u0631\u0645\u0627\u0646 \u063A\u0648\u064A\u062A\u0634\u0627\u064A \u0627\u0644\u0637\u0627\u0632\u062C \u0648\u0639\u0635\u064A\u0631 \u0646\u0642\u064A \u0637\u0628\u064A\u0639\u064A 100%",
+      "ES": "Granadas Frescas de Goychay y Zumo 100% NFC"
+    },
+    "slug": "goychay-fresh-pomegranates-nfc-juice",
+    "shortDescription": {
+      "AZ": "Co\u011Frafi G\xF6st\u0259ricili (PGI) G\xF6y\xE7ay yaqut nar\u0131 (G\xFCl\xF6y\u015F\u0259) v\u0259 soyuq s\u0131x\u0131m 100% t\u0259bii NFC \u015Fir\u0259si.",
+      "EN": "Protected Geographical Indication (PGI) Goychay ruby pomegranates (Guleysha) and cold-pressed NFC pure juice.",
+      "TR": "Co\u011Frafi \u0130\u015Faretli (PGI) G\xF6y\xE7ay nar taneleri ve so\u011Fuk s\u0131k\u0131m %100 do\u011Fal NFC nar suyu.",
+      "RU": "\u0413\u0451\u0439\u0447\u0430\u0439\u0441\u043A\u0438\u0439 \u0433\u0440\u0430\u043D\u0430\u0442 \u0441\u043E\u0440\u0442\u043E\u0432 \u0413\u044E\u043B\u0435\u0439\u0448\u0430 \u0441 \u0437\u0430\u0449\u0438\u0449\u0435\u043D\u043D\u044B\u043C \u0433\u0435\u043E\u0433\u0440\u0430\u0444\u0438\u0447\u0435\u0441\u043A\u0438\u043C \u0443\u043A\u0430\u0437\u0430\u043D\u0438\u0435\u043C \u0438 \u0441\u043E\u043A \u043F\u0440\u044F\u043C\u043E\u0433\u043E \u043E\u0442\u0436\u0438\u043C\u0430.",
+      "AR": "\u0631\u0645\u0627\u0646 \u063A\u0648\u064A\u062A\u0634\u0627\u064A \u0627\u0644\u064A\u0627\u0642\u0648\u062A\u064A \u0627\u0644\u0645\u062D\u0645\u064A \u062C\u063A\u0631\u0627\u0641\u064A\u0627\u064B \u0648\u0639\u0635\u064A\u0631 \u0637\u0628\u064A\u0639\u064A \u0645\u0639\u0635\u0648\u0631 \u0639\u0644\u0649 \u0627\u0644\u0628\u0627\u0631\u062F.",
+      "ES": "Granadas de Goychay con Indicaci\xF3n Geogr\xE1fica Protegida y zumo puro prensado en fr\xEDo."
+    },
+    "description": "Goychay pomegranate is celebrated globally for its balanced Brix (sugar content), deep crimson arils, and exceptional antioxidant polyphenols. Sourced directly from modern certified orchards in Central Aran. Available as fresh fruit in protective cell-trays and as 100% Not-From-Concentrate (NFC) cold-pressed aseptic bulk juice.",
+    "technicalSpecs": {
       "Cultivar": "Guleysha Red & Pink (PGI Goychay)",
       "Caliber (Fresh)": "300g \u2013 550g per fruit",
       "Brix Level": "16.5\xB0 \u2013 18.0\xB0 natural sweetness",
@@ -1481,26 +1529,60 @@ var SEED_PRODUCTS = [
       "Processing (Juice)": "Aseptic cold press, zero added sugar/water",
       "Shelf Life": "Fresh: 90 days at 5\xB0C / Juice: 18 months aseptic"
     },
-    images: [
+    "images": [
       "https://lh3.googleusercontent.com/aida-public/AB6AXuDHo5g8iKevybJcG4jlFPGTNzuPMU2721wxSfNRS3s0FmbZeA3YW4AxkdXtyhH_55x-4s5Uh_5-S2-S3LVPexC1O1ahPg_Hgeeion6snYi_eyi7MNDXh5coR3k9acztB4DSA_PV9JjS_JAitpfDEAmO4UUbAUjAs0VuwpjvFbKeEaRXeqGiJ2JKU_vHqlhTa6Meil6iamn-3I_33E-Y7Tii2hclP8mfc_jBNp_gJSQpmbKniKtPJu5s"
     ],
-    moq: "18 Metric Tons (Reefer 40ft container)",
-    certificates: ["GlobalG.A.P.", "ISO 22000", "AQTA Phytosanitary", "EUR.1 / CT-1", "Kosher / Halal"],
-    packagingInfo: "Fresh: 4.5kg open-top telescopic display cartons with food-grade plastic cell dividers. Juice: 200L aseptic drums.",
-    hsCode: "081090",
-    originRegion: "M\u0259rk\u0259zi Aran (G\xF6y\xE7ay) \u0130qtisadi Rayonu",
-    isFeatured: 1,
-    seoTitle: "Goychay Pomegranates & Pure NFC Juice Bulk Export Azerbaijan",
-    seoDescription: "B2B export of certified Goychay pomegranates and 100% cold-pressed NFC juice. Controlled atmosphere reefer shipping."
+    "moq": "18 Metric Tons (Reefer 40ft container)",
+    "certificates": [
+      "GlobalG.A.P.",
+      "ISO 22000",
+      "AQTA Phytosanitary",
+      "EUR.1 / CT-1",
+      "Kosher / Halal"
+    ],
+    "packagingInfo": {
+      "AZ": "T\u0259z\u0259: 4.5kq x\xFCsusi g\xF6zl\xFC ixrac qutular\u0131. \u015Eir\u0259: 200L aseptik \xE7\u0259ll\u0259kl\u0259r.",
+      "EN": "Fresh: 4.5kg open-top telescopic display cartons with cell dividers. Juice: 200L aseptic drums.",
+      "TR": "Taze: 4.5kg \xF6zel yuval\u0131 teleskopik ihra\xE7 kolileri. Meyve suyu: 200L aseptik variller.",
+      "RU": "\u0421\u0432\u0435\u0436\u0438\u0435: \u0442\u0435\u043B\u0435\u0441\u043A\u043E\u043F\u0438\u0447\u0435\u0441\u043A\u0438\u0435 \u043A\u043E\u0440\u043E\u0431\u0430 \u043F\u043E 4.5 \u043A\u0433 \u0441 \u044F\u0447\u0435\u0439\u043A\u0430\u043C\u0438. \u0421\u043E\u043A: \u0430\u0441\u0435\u043F\u0442\u0438\u0447\u0435\u0441\u043A\u0438\u0435 \u0431\u043E\u0447\u043A\u0438 \u043F\u043E 200 \u043B.",
+      "AR": "\u0637\u0627\u0632\u062C: \u0643\u0631\u0627\u062A\u064A\u0646 \u0645\u0641\u062A\u0648\u062D\u0629 \u0633\u0639\u0629 4.5 \u0643\u062C\u0645 \u0645\u0639 \u0641\u0648\u0627\u0635\u0644. \u0639\u0635\u064A\u0631: \u0628\u0631\u0627\u0645\u064A\u0644 \u0645\u0639\u0642\u0645\u0629 \u0633\u0639\u0629 200 \u0644\u062A\u0631.",
+      "ES": "Fresco: cajas de 4.5 kg con separadores. Zumo: bidones as\xE9pticos de 200 L."
+    },
+    "hsCode": "081090",
+    "originRegion": {
+      "AZ": "M\u0259rk\u0259zi Aran (G\xF6y\xE7ay) \u0130qtisadi Rayonu",
+      "EN": "Central Aran (Goychay) Economic Region",
+      "TR": "Merkezi Aran (G\xF6y\xE7ay) Ekonomik B\xF6lgesi",
+      "RU": "\u0426\u0435\u043D\u0442\u0440\u0430\u043B\u044C\u043D\u043E-\u0410\u0440\u0430\u043D\u0441\u043A\u0438\u0439 (\u0413\u0451\u0439\u0447\u0430\u0439\u0441\u043A\u0438\u0439) \u044D\u043A\u043E\u043D\u043E\u043C\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0440\u0430\u0439\u043E\u043D",
+      "AR": "\u0645\u0646\u0637\u0642\u0629 \u0623\u0631\u0627\u0646 \u0627\u0644\u0648\u0633\u0637\u0649 (\u063A\u0648\u064A\u062A\u0634\u0627\u064A) \u0627\u0644\u0627\u0642\u062A\u0635\u0627\u062F\u064A\u0629",
+      "ES": "Regi\xF3n Econ\xF3mica de Aran Central (Goychay)"
+    },
+    "isFeatured": 1,
+    "seoTitle": "Goychay Pomegranates & Pure NFC Juice Bulk Export Azerbaijan",
+    "seoDescription": "B2B export of certified Goychay pomegranates and 100% cold-pressed NFC juice. Controlled atmosphere reefer shipping."
   },
   {
-    id: "prod-saffron-absheron",
-    categoryId: "cat-food",
-    name: "Absheron Royal Saffron Threads (Category I ISO 3632)",
-    slug: "absheron-royal-saffron-threads",
-    shortDescription: "Certified ISO 3632 Category I pure all-red Sargol saffron hand-harvested in the semi-arid soils of Absheron.",
-    description: "Absheron saffron is historical heritage dating back over eight centuries. Grown in the unique microclimate of the Absheron peninsula near Bilgah. Featuring deep carmine-red stigmas with safranal concentration delivering potent aroma and rich natural crocin coloring strength (>240).",
-    technicalSpecs: {
+    "id": "prod-saffron-absheron",
+    "categoryId": "cat-food",
+    "name": {
+      "AZ": "Ab\u015Feron \u015Eah Z\u0259f\u0259ran\u0131 (Kateqoriya I ISO 3632)",
+      "EN": "Absheron Royal Saffron Threads (Category I ISO 3632)",
+      "TR": "Ab\u015Feron \u015Eah Safran\u0131 (Kategori I ISO 3632)",
+      "RU": "\u0410\u0431\u0448\u0435\u0440\u043E\u043D\u0441\u043A\u0438\u0439 \u043A\u043E\u0440\u043E\u043B\u0435\u0432\u0441\u043A\u0438\u0439 \u0448\u0430\u0444\u0440\u0430\u043D (\u041A\u0430\u0442\u0435\u0433\u043E\u0440\u0438\u044F I ISO 3632)",
+      "AR": "\u0632\u0639\u0641\u0631\u0627\u0646 \u0623\u0628\u0634\u064A\u0631\u0648\u0646 \u0627\u0644\u0645\u0644\u0643\u064A \u0627\u0644\u0646\u0642\u064A (\u0627\u0644\u0641\u0626\u0629 \u0627\u0644\u0623\u0648\u0644\u0649 ISO 3632)",
+      "ES": "Azafr\xE1n Real de Absheron en Hebras (Categor\xEDa I ISO 3632)"
+    },
+    "slug": "absheron-royal-saffron-threads",
+    "shortDescription": {
+      "AZ": "Sertifikatla\u015Fd\u0131r\u0131lm\u0131\u015F ISO 3632 Kateqoriya I saf q\u0131rm\u0131z\u0131 S\u0259rqol z\u0259f\u0259ran\u0131, Ab\u015Feron yar\u0131madas\u0131nda \u0259l il\u0259 y\u0131\u011F\u0131lm\u0131\u015F.",
+      "EN": "Certified ISO 3632 Category I pure all-red Sargol saffron hand-harvested in the semi-arid soils of Absheron.",
+      "TR": "Sertifikal\u0131 ISO 3632 Kategori I saf k\u0131rm\u0131z\u0131 Sargol safran\u0131, Ab\u015Feron yar\u0131madas\u0131nda elle hasat edilmi\u015F.",
+      "RU": "\u0421\u0435\u0440\u0442\u0438\u0444\u0438\u0446\u0438\u0440\u043E\u0432\u0430\u043D\u043D\u044B\u0439 \u0448\u0430\u0444\u0440\u0430\u043D \u0432\u044B\u0441\u0448\u0435\u0439 \u043A\u0430\u0442\u0435\u0433\u043E\u0440\u0438\u0438 I ISO 3632 \u0440\u0443\u0447\u043D\u043E\u0433\u043E \u0441\u0431\u043E\u0440\u0430 \u0441 \u0410\u043F\u0448\u0435\u0440\u043E\u043D\u0441\u043A\u043E\u0433\u043E \u043F\u043E\u043B\u0443\u043E\u0441\u0442\u0440\u043E\u0432\u0430.",
+      "AR": "\u0632\u0639\u0641\u0631\u0627\u0646 \u0633\u0631\u062C\u0648\u0644 \u0623\u062D\u0645\u0631 \u0646\u0642\u064A \u0645\u0639\u062A\u0645\u062F \u0648\u0641\u0642 \u0627\u0644\u0641\u0626\u0629 \u0627\u0644\u0623\u0648\u0644\u0649 ISO 3632 \u0645\u0642\u0637\u0648\u0641 \u064A\u062F\u0648\u064A\u0627\u064B \u0641\u064A \u0623\u0628\u0634\u064A\u0631\u0648\u0646.",
+      "ES": "Azafr\xE1n puro Sargol certificado Categor\xEDa I ISO 3632 cosechado a mano en Absheron."
+    },
+    "description": "Absheron saffron is historical heritage dating back over eight centuries. Grown in the unique microclimate of the Absheron peninsula near Bilgah. Featuring deep carmine-red stigmas with safranal concentration delivering potent aroma and rich natural crocin coloring strength (>240).",
+    "technicalSpecs": {
       "Grade": "Category I (Super Negin / Pure Sargol)",
       "Crocin (Coloring Strength)": "> 240 units (ISO 3632)",
       "Safranal (Aroma)": "35 \u2013 45 units",
@@ -1508,26 +1590,59 @@ var SEED_PRODUCTS = [
       "Moisture Content": "< 7.5%",
       "Foreign Matter": "< 0.1% zero artificial coloring"
     },
-    images: [
+    "images": [
       "https://lh3.googleusercontent.com/aida-public/AB6AXuDtNJYRxE2w63MPzGdjf8CPD9AEFm8HRgiA_8S4bLzI4JlWkzMSr7mOrBFN0clACdJ8Z4fdPmTxcUeQZoVHwM8X0BSrp3Ge5V1rjnXGei5GwaARNkgff5T_0xspZitbC-LuPEjlYnoFGRTUx9-xnXkSS6296Qbk6OBMxFoPcu45Ph_IWPgxe8ghwkwSRb4DFc747hiqPs4hl6mD0u0fkbzXC86IW3Go3l5Gt49vsGvyFE6w27cyqJpi"
     ],
-    moq: "5 Kilograms (Air Cargo with secure courier dispatch)",
-    certificates: ["ISO 3632-1:2011 Grade I", "AQTA Export Certificate", "EUR.1", "CoA Spectrophotometry"],
-    packagingInfo: "100g, 250g, and 500g nitrogen-flushed sealed tin caddies and food-grade glass jars in tamper-evident wooden master chests.",
-    hsCode: "091020",
-    originRegion: "Ab\u015Feron \u2013 X\u0131z\u0131 \u0130qtisadi Rayonu",
-    isFeatured: 1,
-    seoTitle: "Pure Absheron Saffron Threads ISO 3632 Grade I Wholesale",
-    seoDescription: "Direct producer export of genuine Absheron saffron. ISO 3632 Category 1, high crocin coloring strength."
+    "moq": "5 Kilograms (Air Cargo with secure courier dispatch)",
+    "certificates": [
+      "ISO 3632-1:2011 Grade I",
+      "AQTA Export Certificate",
+      "EUR.1",
+      "CoA Spectrophotometry"
+    ],
+    "packagingInfo": {
+      "AZ": "100q, 250q v\u0259 500q azotla kipl\u0259\u015Fdirilmi\u015F metal bankalar v\u0259 taxta sand\u0131qlar.",
+      "EN": "100g, 250g, and 500g nitrogen-flushed sealed tin caddies and glass jars in wooden master chests.",
+      "TR": "100g, 250g ve 500g azotla m\xFCh\xFCrlenmi\u015F teneke kutular ve ah\u015Fap sand\u0131klar.",
+      "RU": "\u0413\u0435\u0440\u043C\u0435\u0442\u0438\u0447\u043D\u044B\u0435 \u043C\u0435\u0442\u0430\u043B\u043B\u0438\u0447\u0435\u0441\u043A\u0438\u0435 \u0431\u0430\u043D\u043A\u0438 \u043F\u043E 100/250/500 \u0433 \u0441 \u0430\u0437\u043E\u0442\u043D\u043E\u0439 \u0441\u0440\u0435\u0434\u043E\u0439 \u0432 \u0434\u0435\u0440\u0435\u0432\u044F\u043D\u043D\u044B\u0445 \u043B\u0430\u0440\u0446\u0430\u0445.",
+      "AR": "\u0639\u0644\u0628 \u0645\u0639\u062F\u0646\u064A\u0629 \u0645\u063A\u0644\u0642\u0629 \u0628\u0627\u0644\u0646\u064A\u062A\u0631\u0648\u062C\u064A\u0646 \u0633\u0639\u0629 100 \u0648250 \u0648500 \u062C\u0645 \u062F\u0627\u062E\u0644 \u0635\u0646\u0627\u062F\u064A\u0642 \u062E\u0634\u0628\u064A\u0629 \u0641\u0627\u062E\u0631\u0629.",
+      "ES": "Latas selladas con nitr\xF3geno de 100g, 250g y 500g en cofres de madera."
+    },
+    "hsCode": "091020",
+    "originRegion": {
+      "AZ": "Ab\u015Feron \u2013 X\u0131z\u0131 (Bilg\u0259h) \u0130qtisadi Rayonu",
+      "EN": "Absheron \u2013 Khizi (Bilgah) Economic Region",
+      "TR": "Ab\u015Feron \u2013 H\u0131z\u0131 (Bilgeh) Ekonomik B\xF6lgesi",
+      "RU": "\u0410\u043F\u0448\u0435\u0440\u043E\u043D-\u0425\u044B\u0437\u0438\u043D\u0441\u043A\u0438\u0439 (\u0411\u0438\u043B\u044C\u0433\u044F) \u044D\u043A\u043E\u043D\u043E\u043C\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0440\u0430\u0439\u043E\u043D",
+      "AR": "\u0645\u0646\u0637\u0642\u0629 \u0623\u0628\u0634\u064A\u0631\u0648\u0646 - \u062E\u064A\u0632\u064A (\u0628\u064A\u0644\u063A\u0627\u0647) \u0627\u0644\u0627\u0642\u062A\u0635\u0627\u062F\u064A\u0629",
+      "ES": "Regi\xF3n Econ\xF3mica de Absheron \u2013 Khizi (Bilgah)"
+    },
+    "isFeatured": 1,
+    "seoTitle": "Pure Absheron Saffron Threads ISO 3632 Grade I Wholesale",
+    "seoDescription": "Direct producer export of genuine Absheron saffron. ISO 3632 Category 1, high crocin coloring strength."
   },
   {
-    id: "prod-sheki-silk-yarn",
-    categoryId: "cat-industrial",
-    name: "Sheki 100% Mulberry Raw Silk Yarn & Woven Fabric",
-    slug: "sheki-mulberry-raw-silk-yarn",
-    shortDescription: "Heritage 20/22D mulberry raw silk yarn and natural degummed habotai fabric from Sheki Silk processing plant.",
-    description: "Sheki has been the silk capital of the Caucasus on the Great Silk Road since the 14th century. Produced from Bombyx mori silkworms fed on local white mulberry leaves. Highly sought after by luxury textile mills in Italy, Turkey, and Japan for high tensile strength, exceptional dye affinity, and natural luster.",
-    technicalSpecs: {
+    "id": "prod-sheki-silk-yarn",
+    "categoryId": "cat-industrial",
+    "name": {
+      "AZ": "\u015E\u0259ki 100% T\u0259bii \u0130p\u0259k \u0130pliyi v\u0259 K\u0259l\u0259\u011Fay\u0131 Par\xE7as\u0131",
+      "EN": "Sheki 100% Mulberry Raw Silk Yarn & Woven Fabric",
+      "TR": "\u015Eeki %100 Do\u011Fal \u0130pek \u0130pli\u011Fi ve Dokuma Kuma\u015F",
+      "RU": "\u0428\u0435\u043A\u0438\u043D\u0441\u043A\u0438\u0439 100% \u043D\u0430\u0442\u0443\u0440\u0430\u043B\u044C\u043D\u044B\u0439 \u0448\u0435\u043B\u043A-\u0441\u044B\u0440\u0435\u0446 \u0438 \u0442\u043A\u0430\u043D\u0438",
+      "AR": "\u062E\u064A\u0648\u0637 \u0648\u0623\u0642\u0645\u0634\u0629 \u0627\u0644\u062D\u0631\u064A\u0631 \u0627\u0644\u0637\u0628\u064A\u0639\u064A \u0627\u0644\u062E\u0627\u0645 \u0645\u0646 \u0634\u0643\u064A 100%",
+      "ES": "Hilos y Tejidos de Seda Cruda 100% de Morera de Sheki"
+    },
+    "slug": "sheki-mulberry-raw-silk-yarn",
+    "shortDescription": {
+      "AZ": "Q\u0259dim \u015E\u0259ki \u0130p\u0259k fabrikind\u0259n 20/22D tut baramas\u0131ndan xam ip\u0259k ipliyi v\u0259 z\u0259rif t\u0259bii ip\u0259k par\xE7alar.",
+      "EN": "Heritage 20/22D mulberry raw silk yarn and natural degummed habotai fabric from Sheki Silk processing plant.",
+      "TR": "Tarihi \u015Eeki \u0130pek fabrikas\u0131ndan 20/22D dut ipe\u011Fi ham iplik ve do\u011Fal ipek kuma\u015Flar.",
+      "RU": "\u0428\u0435\u043B\u043A\u043E\u0432\u0430\u044F \u043D\u0438\u0442\u044C 20/22D \u0438 \u0442\u043A\u0430\u043D\u0438 \u0438\u0437 \u043D\u0430\u0442\u0443\u0440\u0430\u043B\u044C\u043D\u043E\u0433\u043E \u0448\u0435\u043B\u043A\u0430 \u0442\u0443\u0442\u043E\u0432\u043E\u0433\u043E \u0448\u0435\u043B\u043A\u043E\u043F\u0440\u044F\u0434\u0430 \u0441 \u0428\u0435\u043A\u0438\u043D\u0441\u043A\u043E\u0433\u043E \u043A\u043E\u043C\u0431\u0438\u043D\u0430\u0442\u0430.",
+      "AR": "\u062E\u064A\u0648\u0637 \u062D\u0631\u064A\u0631 \u0627\u0644\u062A\u0648\u062A \u0627\u0644\u062E\u0627\u0645 20/22D \u0648\u0623\u0642\u0645\u0634\u0629 \u062D\u0631\u064A\u0631\u064A\u0629 \u0637\u0628\u064A\u0639\u064A\u0629 \u0641\u0627\u062E\u0631\u0629 \u0645\u0646 \u0645\u0635\u0646\u0639 \u0634\u0643\u064A \u0627\u0644\u062A\u0627\u0631\u064A\u062E\u064A.",
+      "ES": "Hilo de seda cruda de morera 20/22D y telas naturales de la hist\xF3rica f\xE1brica de Sheki."
+    },
+    "description": "Sheki has been the silk capital of the Caucasus on the Great Silk Road since the 14th century. Produced from Bombyx mori silkworms fed on local white mulberry leaves. Highly sought after by luxury textile mills in Italy, Turkey, and Japan for high tensile strength, exceptional dye affinity, and natural luster.",
+    "technicalSpecs": {
       "Composition": "100% Bombyx Mori Mulberry Raw Silk",
       "Denier Yarn Count": "20/22D, 28/32D and 40/44D",
       "Grade Standard": "4A / 5A international raw silk grade",
@@ -1535,173 +1650,388 @@ var SEED_PRODUCTS = [
       "Elongation at Break": "18% \u2013 22%",
       "Moisture Regain": "11.0% commercial allowance"
     },
-    images: [
+    "images": [
       "https://lh3.googleusercontent.com/aida-public/AB6AXuD03XXHtlryKOF4P13Jsyapcx1cJC4md04R7W4OmhEOlilzH3GXC84pohKdFeZC2E26PSlasR8hsE1ZhUMI_m0G3EvLUmCLYXAFuMf-8fVmPxAaSz6rXZE5DhZfy_GWTdrnj6b_8WD4Q3Rrvlu3AYTUq_hrwc41KTaORWxIqz41fZ3sVhVp_icHS5yhXQKuIuOFb0jjF16nF7IcXL9rWJ5SplYRdK1DWGo-wlLK2UlgnkEWl6JIaR20"
     ],
-    moq: "500 Kilograms (1 Pallet)",
-    certificates: ["OEKO-TEX Standard 100 Class I", "Certificate of Origin Form EUR.1", "ISO 9001:2015"],
-    packagingInfo: "Silk hanks wrapped in protective polythene and packed in 50kg export wooden cases or heavy corrugated cartons.",
-    hsCode: "500200",
-    originRegion: "\u015E\u0259ki \u2013 Zaqatala \u0130qtisadi Rayonu",
-    isFeatured: 1,
-    seoTitle: "Sheki Raw Mulberry Silk Yarn 20/22D Bulk B2B Export",
-    seoDescription: "Premium grade 4A/5A Azerbaijani mulberry raw silk from the historic Sheki mill. Certified export documentation."
+    "moq": "500 Kilograms (1 Pallet)",
+    "certificates": [
+      "OEKO-TEX Standard 100 Class I",
+      "Certificate of Origin Form EUR.1",
+      "ISO 9001:2015"
+    ],
+    "packagingInfo": {
+      "AZ": "50kq ixrac taxta ye\u015Fikl\u0259ri v\u0259 ya polietilenl\u0259 qorunan qal\u0131n karton qutular.",
+      "EN": "Silk hanks wrapped in protective polythene and packed in 50kg export wooden cases or heavy cartons.",
+      "TR": "50kg ah\u015Fap sand\u0131klarda veya polietilen korumal\u0131 mukavva kolilerde.",
+      "RU": "\u041C\u043E\u0442\u043A\u0438 \u0432 \u0437\u0430\u0449\u0438\u0442\u043D\u043E\u043C \u043F\u043E\u043B\u0438\u044D\u0442\u0438\u043B\u0435\u043D\u0435 \u0432 \u044D\u043A\u0441\u043F\u043E\u0440\u0442\u043D\u044B\u0445 \u0434\u0435\u0440\u0435\u0432\u044F\u043D\u043D\u044B\u0445 \u044F\u0449\u0438\u043A\u0430\u0445 \u043F\u043E 50 \u043A\u0433.",
+      "AR": "\u0644\u0641\u0627\u0626\u0641 \u062D\u0631\u064A\u0631\u064A\u0629 \u0645\u063A\u0644\u0641\u0629 \u0628\u0627\u0644\u0628\u0648\u0644\u064A \u0625\u064A\u062B\u064A\u0644\u064A\u0646 \u0641\u064A \u0635\u0646\u0627\u062F\u064A\u0642 \u062E\u0634\u0628\u064A\u0629 \u0633\u0639\u0629 50 \u0643\u062C\u0645.",
+      "ES": "Madejas de seda envueltas en polietileno en cajas de madera de 50 kg."
+    },
+    "hsCode": "500200",
+    "originRegion": {
+      "AZ": "\u015E\u0259ki \u2013 Zaqatala \u0130qtisadi Rayonu",
+      "EN": "Sheki \u2013 Zaqatala Economic Region",
+      "TR": "\u015Eeki \u2013 Zakatala Ekonomik B\xF6lgesi",
+      "RU": "\u0428\u0435\u043A\u0438-\u0417\u0430\u0433\u0430\u0442\u0430\u043B\u044C\u0441\u043A\u0438\u0439 \u044D\u043A\u043E\u043D\u043E\u043C\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0440\u0430\u0439\u043E\u043D",
+      "AR": "\u0645\u0646\u0637\u0642\u0629 \u0634\u0643\u064A - \u0632\u0627\u0642\u0627\u062A\u0627\u0644\u0627 \u0627\u0644\u0627\u0642\u062A\u0635\u0627\u062F\u064A\u0629",
+      "ES": "Regi\xF3n Econ\xF3mica de Sheki \u2013 Zaqatala"
+    },
+    "isFeatured": 1,
+    "seoTitle": "Sheki Raw Mulberry Silk Yarn 20/22D Bulk B2B Export",
+    "seoDescription": "Premium grade 4A/5A Azerbaijani mulberry raw silk from the historic Sheki mill. Certified export documentation."
   },
   {
-    id: "prod-cotton-lint-yarn",
-    categoryId: "cat-industrial",
-    name: "Mughan Combed Ring-Spun Cotton Yarn (Ne 20/1 \u2013 40/1)",
-    slug: "mughan-combed-cotton-yarn",
-    shortDescription: "100% natural virgin cotton lint and ring-spun carded/combed knitting and weaving yarns from the Mughan valley.",
-    description: "Manufactured in state-of-the-art spinning mills in Shirvan and Sabirabad using hand-picked medium-staple upland cotton. Low hairiness, high breaking tenacity, and strict Uster statistics compliance for high-speed circular knitting machines.",
-    technicalSpecs: {
+    "id": "prod-cotton-lint-yarn",
+    "categoryId": "cat-industrial",
+    "name": {
+      "AZ": "Mu\u011Fan Darama Pamb\u0131q \u0130pliyi (Ne 20/1 \u2013 40/1)",
+      "EN": "Mughan Combed Ring-Spun Cotton Yarn (Ne 20/1 \u2013 40/1)",
+      "TR": "Mu\u011Fan Penye Pamuk \u0130pli\u011Fi (Ne 20/1 \u2013 40/1)",
+      "RU": "\u041C\u0443\u0433\u0430\u043D\u0441\u043A\u0430\u044F \u0433\u0440\u0435\u0431\u0435\u043D\u043D\u0430\u044F \u0445\u043B\u043E\u043F\u0447\u0430\u0442\u043E\u0431\u0443\u043C\u0430\u0436\u043D\u0430\u044F \u043F\u0440\u044F\u0436\u0430 (Ne 20/1 \u2013 40/1)",
+      "AR": "\u062E\u064A\u0648\u0637 \u0642\u0637\u0646 \u0645\u063A\u0627\u0646 \u0627\u0644\u0645\u0645\u0634\u0637 \u0639\u0627\u0644\u064A \u0627\u0644\u062C\u0648\u062F\u0629 (Ne 20/1 \u2013 40/1)",
+      "ES": "Hilados de Algod\xF3n Peinado de Mughan (Ne 20/1 \u2013 40/1)"
+    },
+    "slug": "mughan-combed-cotton-yarn",
+    "shortDescription": {
+      "AZ": "Mu\u011Fan d\xFCz\u0259nliyinin \u0259l il\u0259 y\u0131\u011F\u0131lm\u0131\u015F birinci n\xF6v pamb\u0131\u011F\u0131ndan Ne 20/1 - 40/1 toxuculuq v\u0259 trikotaj iplikl\u0259ri.",
+      "EN": "100% natural virgin cotton lint and ring-spun carded/combed knitting and weaving yarns from the Mughan valley.",
+      "TR": "Mu\u011Fan vadisinin elle toplanm\u0131\u015F saf pamu\u011Fundan Ne 20/1 - 40/1 dokuma ve \xF6rme iplikleri.",
+      "RU": "\u041F\u0440\u044F\u0436\u0430 \u043A\u043E\u043B\u044C\u0446\u0435\u0432\u043E\u0433\u043E \u043F\u0440\u044F\u0434\u0435\u043D\u0438\u044F (\u0433\u0440\u0435\u0431\u0435\u043D\u043D\u0430\u044F \u0438 \u043A\u0430\u0440\u0434\u043D\u0430\u044F) \u0438\u0437 100% \u043D\u0430\u0442\u0443\u0440\u0430\u043B\u044C\u043D\u043E\u0433\u043E \u043C\u0443\u0433\u0430\u043D\u0441\u043A\u043E\u0433\u043E \u0445\u043B\u043E\u043F\u043A\u0430.",
+      "AR": "\u062E\u064A\u0648\u0637 \u0642\u0637\u0646\u064A\u0629 \u0637\u0628\u064A\u0639\u064A\u0629 100% \u0644\u0644\u062D\u064A\u0627\u0643\u0629 \u0648\u0627\u0644\u0646\u0633\u064A\u062C \u0645\u0646 \u0642\u0637\u0646 \u0648\u0627\u062F\u064A \u0645\u063A\u0627\u0646 \u0627\u0644\u0641\u0627\u062E\u0631.",
+      "ES": "Hilados de algod\xF3n 100% natural peinado y cardado para tejedur\xEDa y punto del valle de Mughan."
+    },
+    "description": "Manufactured in state-of-the-art spinning mills in Shirvan and Sabirabad using hand-picked medium-staple upland cotton. Low hairiness, high breaking tenacity, and strict Uster statistics compliance for high-speed circular knitting machines.",
+    "technicalSpecs": {
       "Yarn Counts": "Ne 20/1, Ne 30/1, Ne 40/1 (Carded & Combed)",
       "Staple Length": "28.5mm \u2013 29.5mm",
       "Tenacity": "17.5 \u2013 19.5 cN/tex",
       "Twist Factor": "3.8 \u2013 4.2 alfa (TM)",
       "Uster IPI (Imperfections)": "Top 10% \u2013 15% worldwide Uster benchmark"
     },
-    images: [
+    "images": [
       "https://lh3.googleusercontent.com/aida-public/AB6AXuC5UBl6ky2E1o6RbrVtIlz6xdPHcSBD7sd8H309gALUQoxK5e7r7Jx8q159V1clhGMbdLSh4P9jCngmrLKo1SRNMt8pOyjcZAA6ESFVNV4ezFkDuGcGpnQTuFuS1mN_y1GCw0fUeMaghixWmXvDOKyonKRvDbft5TQiqBmLD-rRRmW-WA8ynGJG10G8Glm_TPlhHHVb7hRwLDWJ8xhd-hOjeMKGIxnS1XfZVRCXaB1IDAY3cUYFZPhn"
     ],
-    moq: "20 Metric Tons (1x 40ft HQ FCL)",
-    certificates: ["BCI (Better Cotton Initiative)", "OEKO-TEX Standard 100", "ISO 9001", "EUR.1 / CT-1"],
-    packagingInfo: "1.89kg paper cones wrapped in shrink film, 24 cones per export carton box on heat-treated ISPM-15 pallets.",
-    hsCode: "520512",
-    originRegion: "\u015Eirvan \u2013 Salyan \u0130qtisadi Rayonu",
-    isFeatured: 0,
-    seoTitle: "Azerbaijani 100% Combed Cotton Yarn Wholesale Supply",
-    seoDescription: "Manufacturer direct supply of Ne 20\u201340 ring-spun cotton yarn from Azerbaijan Mughan region. BCI certified."
+    "moq": "20 Metric Tons (1x 40ft HQ FCL)",
+    "certificates": [
+      "BCI (Better Cotton Initiative)",
+      "OEKO-TEX Standard 100",
+      "ISO 9001",
+      "EUR.1 / CT-1"
+    ],
+    "packagingInfo": {
+      "AZ": "1.89kq konuslar, h\u0259r qutuda 24 \u0259d\u0259d ISPM-15 paletl\u0259rind\u0259.",
+      "EN": "1.89kg paper cones wrapped in shrink film, 24 cones per export carton box on heat-treated ISPM-15 pallets.",
+      "TR": "1.89kg koniler, ISPM-15 standartl\u0131 paletlerde 24 konilik ihracat kolileri.",
+      "RU": "\u0411\u0443\u043C\u0430\u0436\u043D\u044B\u0435 \u043A\u043E\u043D\u0443\u0441\u044B \u043F\u043E 1.89 \u043A\u0433 \u0432 \u0442\u0435\u0440\u043C\u043E\u0443\u0441\u0430\u0434\u043E\u0447\u043D\u043E\u0439 \u043F\u043B\u0435\u043D\u043A\u0435, \u043F\u043E 24 \u0448\u0442\u0443\u043A\u0438 \u043D\u0430 \u0435\u0432\u0440\u043E\u043F\u0430\u043B\u043B\u0435\u0442\u0430\u0445 ISPM-15.",
+      "AR": "\u0645\u062E\u0627\u0631\u064A\u0637 \u0648\u0631\u0642\u064A\u0629 \u0633\u0639\u0629 1.89 \u0643\u062C\u0645\u060C 24 \u0645\u062E\u0631\u0648\u0637\u0627\u064B \u0641\u064A \u0643\u0644 \u0643\u0631\u062A\u0648\u0646\u0629 \u062A\u0635\u062F\u064A\u0631 \u0639\u0644\u0649 \u0645\u0646\u0635\u0627\u062A \u062E\u0634\u0628\u064A\u0629 \u0645\u0639\u0627\u0644\u062C\u0629.",
+      "ES": "Conos de papel de 1.89 kg, 24 conos por caja de cart\xF3n en palets tratados ISPM-15."
+    },
+    "hsCode": "520512",
+    "originRegion": {
+      "AZ": "\u015Eirvan \u2013 Salyan (Mu\u011Fan) \u0130qtisadi Rayonu",
+      "EN": "Shirvan \u2013 Salyan (Mughan) Economic Region",
+      "TR": "\u015Eirvan \u2013 Salyan (Mu\u011Fan) Ekonomik B\xF6lgesi",
+      "RU": "\u0428\u0438\u0440\u0432\u0430\u043D-\u0421\u0430\u043B\u044C\u044F\u043D\u0441\u043A\u0438\u0439 (\u041C\u0443\u0433\u0430\u043D\u0441\u043A\u0438\u0439) \u044D\u043A\u043E\u043D\u043E\u043C\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0440\u0430\u0439\u043E\u043D",
+      "AR": "\u0645\u0646\u0637\u0642\u0629 \u0634\u064A\u0631\u0641\u0627\u0646 - \u0633\u0627\u0644\u064A\u0627\u0646 (\u0645\u063A\u0627\u0646) \u0627\u0644\u0627\u0642\u062A\u0635\u0627\u062F\u064A\u0629",
+      "ES": "Regi\xF3n Econ\xF3mica de Shirvan \u2013 Salyan (Mughan)"
+    },
+    "isFeatured": 0,
+    "seoTitle": "Azerbaijani 100% Combed Cotton Yarn Wholesale Supply",
+    "seoDescription": "Manufacturer direct supply of Ne 20\u201340 ring-spun cotton yarn from Azerbaijan Mughan region. BCI certified."
   },
   {
-    id: "prod-licorice-root-extract",
-    categoryId: "cat-chemicals",
-    name: "Wild Azerbaijani Licorice Root & Spray-Dried Extract Powder",
-    slug: "wild-azerbaijani-licorice-root-extract",
-    shortDescription: "High-glycyrrhizin wild Glycyrrhiza glabra licorice root baled and spray-dried extract powder for pharma and food.",
-    description: "The floodplains of the Kura and Aras rivers provide ideal wild growth conditions for Glycyrrhiza glabra. Hand-harvested, sun-cured, and processed into de-dusted pressed bales and spray-dried water-soluble powder containing 18% to 26% glycyrrhizic acid.",
-    technicalSpecs: {
+    "id": "prod-licorice-root-extract",
+    "categoryId": "cat-chemicals",
+    "name": {
+      "AZ": "K\xFCr-Araz T\u0259bii Biyan K\xF6k\xFC v\u0259 Ekstrakt\u0131 Pudras\u0131",
+      "EN": "Wild Azerbaijani Licorice Root & Spray-Dried Extract Powder",
+      "TR": "K\xFCr-Araz Do\u011Fal Meyan K\xF6k\xFC ve Ekstrakt\u0131 Tozu",
+      "RU": "\u0414\u0438\u043A\u043E\u0440\u0430\u0441\u0442\u0443\u0449\u0438\u0439 \u0441\u043E\u043B\u043E\u0434\u043A\u043E\u0432\u044B\u0439 \u043A\u043E\u0440\u0435\u043D\u044C \u0438 \u0441\u0443\u0445\u043E\u0439 \u044D\u043A\u0441\u0442\u0440\u0430\u043A\u0442 \u0441\u043E\u043B\u043E\u0434\u043A\u0438",
+      "AR": "\u062C\u0630\u0648\u0631 \u0639\u0631\u0642\u0633\u0648\u0633 \u0643\u0648\u0631\u0627-\u0623\u0631\u0627\u0632 \u0627\u0644\u0628\u0631\u064A\u0629 \u0648\u0645\u0633\u062D\u0648\u0642 \u0627\u0644\u0645\u0633\u062A\u062E\u0644\u0635 \u0627\u0644\u0645\u0631\u0643\u0632",
+      "ES": "Ra\xEDz de Regaliz Silvestre de Azerbaiy\xE1n y Extracto en Polvo"
+    },
+    "slug": "wild-azerbaijani-licorice-root-extract",
+    "shortDescription": {
+      "AZ": "K\xFCr v\u0259 Araz \xE7aylar\u0131 vadisind\u0259n y\xFCks\u0259k qlisirrizinli Glycyrrhiza glabra biyan k\xF6k\xFC v\u0259 sprey-qurudulmu\u015F ekstrakt.",
+      "EN": "High-glycyrrhizin wild Glycyrrhiza glabra licorice root baled and spray-dried extract powder for pharma and food.",
+      "TR": "K\xFCr ve Aras nehirleri havzas\u0131ndan y\xFCksek glisirizin i\xE7eren meyan k\xF6k\xFC balyalar\u0131 ve sprey kurutulmu\u015F ekstrakt.",
+      "RU": "\u0414\u0438\u043A\u043E\u0440\u0430\u0441\u0442\u0443\u0449\u0438\u0439 \u043A\u043E\u0440\u0435\u043D\u044C \u0441\u043E\u043B\u043E\u0434\u043A\u0438 \u0441 \u0432\u044B\u0441\u043E\u043A\u0438\u043C \u0441\u043E\u0434\u0435\u0440\u0436\u0430\u043D\u0438\u0435\u043C \u0433\u043B\u0438\u0446\u0438\u0440\u0440\u0438\u0437\u0438\u043D\u0430 (18-26%) \u0432 \u043A\u0438\u043F\u0430\u0445 \u0438 \u0441\u0443\u0445\u043E\u0439 \u044D\u043A\u0441\u0442\u0440\u0430\u043A\u0442.",
+      "AR": "\u062C\u0630\u0648\u0631 \u0639\u0631\u0642\u0633\u0648\u0633 \u0637\u0628\u064A\u0639\u064A\u0629 \u0628\u0631\u064A\u0629 \u063A\u0646\u064A\u0629 \u0628\u062D\u0645\u0636 \u0627\u0644\u062C\u0644\u0627\u064A\u0633\u064A\u0631\u064A\u0632\u064A\u0643 \u0648\u0645\u0633\u062D\u0648\u0642 \u0645\u0633\u062A\u062E\u0644\u0635 \u0644\u0635\u0646\u0627\u0639\u0627\u062A \u0627\u0644\u062F\u0648\u0627\u0621 \u0648\u0627\u0644\u063A\u0630\u0627\u0621.",
+      "ES": "Ra\xEDz de regaliz silvestre con alto contenido en glicirricina y extracto en polvo para industria farmac\xE9utica y alimentos."
+    },
+    "description": "The floodplains of the Kura and Aras rivers provide ideal wild growth conditions for Glycyrrhiza glabra. Hand-harvested, sun-cured, and processed into de-dusted pressed bales and spray-dried water-soluble powder containing 18% to 26% glycyrrhizic acid.",
+    "technicalSpecs": {
       "Active Substance": "Glycyrrhizic Acid (Glycyrrhizin) 18% \u2013 26% (HPLC)",
       "Moisture Content": "< 6.0%",
       "Total Ash": "< 8.0%",
       "Water Solubility": "> 98.5% instant dissolve",
       "Pesticide Residues": "Compliant with European Pharmacopoeia (EP 10.0)"
     },
-    images: [
+    "images": [
       "https://lh3.googleusercontent.com/aida-public/AB6AXuDGgRuRr9uJiYiCy0AeiN7FvX1CWCTQLdRAG2TJXnfii1yXyI2WeKI6wMo6E8nydnbcUg27wH11AYMDuRy4WLTd0MRbPlzPT3f1Wzw2BN132jDlE2KhDZ_BpSyUWXlgaEpX1_ukFt7IpSBL9Cnc3ILMPL8scPCgkSNob0PCSAa30dUKuSc0TBkoYnhfmiO58w10Zuz4eKBXbVNTk92SLbvxAconUj8wUxkDU7y1H7Ks3do6--khlfP"
     ],
-    moq: "10 Metric Tons (Baled Root) / 2 Metric Tons (Extract)",
-    certificates: ["Ph. Eur. Compliance", "GMP Pharma Facility", "AQTA Phytosanitary", "EUR.1 / CT-1", "Halal / Kosher"],
-    packagingInfo: "Root: 100kg hydraulic pressed bales bound with galvanized steel wire. Extract: 25kg multi-wall paper bags with PE inner liner.",
-    hsCode: "121190",
-    originRegion: "M\u0259rk\u0259zi Aran (Ucar \u2013 K\xFCrd\u0259mir) \u0130qtisadi Rayonu",
-    isFeatured: 0,
-    seoTitle: "Wild Licorice Root & Glycyrrhizin Extract Powder Azerbaijan",
-    seoDescription: "B2B export of pharmaceutical grade Glycyrrhiza glabra licorice root and spray-dried extract from Azerbaijan."
+    "moq": "10 Metric Tons (Baled Root) / 2 Metric Tons (Extract)",
+    "certificates": [
+      "Ph. Eur. Compliance",
+      "GMP Pharma Facility",
+      "AQTA Phytosanitary",
+      "EUR.1 / CT-1",
+      "Halal / Kosher"
+    ],
+    "packagingInfo": {
+      "AZ": "K\xF6k: 100kq presl\u0259nmi\u015F taylar. Ekstrakt: 25kq daxili polietilenli kraft torbalar.",
+      "EN": "Root: 100kg hydraulic pressed bales bound with galvanized steel wire. Extract: 25kg multi-wall paper bags with PE liner.",
+      "TR": "K\xF6k: 100kg hidrolik presli balyalar. Ekstrakt: 25kg PE astarl\u0131 kraft torbalar.",
+      "RU": "\u041A\u043E\u0440\u0435\u043D\u044C: \u043F\u0440\u0435\u0441\u0441\u043E\u0432\u0430\u043D\u043D\u044B\u0435 \u043A\u0438\u043F\u044B \u043F\u043E 100 \u043A\u0433 \u0441\u043E \u0441\u0442\u0430\u043B\u044C\u043D\u043E\u0439 \u043E\u0431\u0432\u044F\u0437\u043A\u043E\u0439. \u042D\u043A\u0441\u0442\u0440\u0430\u043A\u0442: \u043A\u0440\u0430\u0444\u0442-\u043C\u0435\u0448\u043A\u0438 \u043F\u043E 25 \u043A\u0433 \u0441 \u041F\u042D-\u0432\u043A\u043B\u0430\u0434\u044B\u0448\u0435\u043C.",
+      "AR": "\u0627\u0644\u062C\u0630\u0648\u0631: \u0628\u0627\u0644\u0627\u062A \u0645\u0636\u063A\u0648\u0637\u0629 \u0647\u064A\u062F\u0631\u0648\u0644\u064A\u0643\u064A\u0627\u064B \u0633\u0639\u0629 100 \u0643\u062C\u0645. \u0627\u0644\u0645\u0633\u062A\u062E\u0644\u0635: \u0623\u0643\u064A\u0627\u0633 \u0648\u0631\u0642\u064A\u0629 \u0633\u0639\u0629 25 \u0643\u062C\u0645.",
+      "ES": "Ra\xEDz: fardos prensados de 100 kg. Extracto: sacos de papel multicapa de 25 kg con revestimiento de PE."
+    },
+    "hsCode": "121190",
+    "originRegion": {
+      "AZ": "M\u0259rk\u0259zi Aran (Ucar \u2013 K\xFCrd\u0259mir) \u0130qtisadi Rayonu",
+      "EN": "Central Aran (Ucar \u2013 Kurdamir) Economic Region",
+      "TR": "Merkezi Aran (Ucar \u2013 K\xFCrdemir) Ekonomik B\xF6lgesi",
+      "RU": "\u0426\u0435\u043D\u0442\u0440\u0430\u043B\u044C\u043D\u043E-\u0410\u0440\u0430\u043D\u0441\u043A\u0438\u0439 (\u0423\u0434\u0436\u0430\u0440-\u041A\u044E\u0440\u0434\u0430\u043C\u0438\u0440\u0441\u043A\u0438\u0439) \u044D\u043A\u043E\u043D\u043E\u043C\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0440\u0430\u0439\u043E\u043D",
+      "AR": "\u0645\u0646\u0637\u0642\u0629 \u0623\u0631\u0627\u0646 \u0627\u0644\u0648\u0633\u0637\u0649 (\u0623\u0648\u062C\u0627\u0631 - \u0643\u0631\u062F\u0645\u064A\u0631) \u0627\u0644\u0627\u0642\u062A\u0635\u0627\u062F\u064A\u0629",
+      "ES": "Regi\xF3n Econ\xF3mica de Aran Central (Ucar \u2013 Kurdamir)"
+    },
+    "isFeatured": 0,
+    "seoTitle": "Wild Licorice Root & Glycyrrhizin Extract Powder Azerbaijan",
+    "seoDescription": "B2B export of pharmaceutical grade Glycyrrhiza glabra licorice root and spray-dried extract from Azerbaijan."
   },
   {
-    id: "prod-absheron-olive-oil",
-    categoryId: "cat-food",
-    name: "Absheron Cold-Pressed Extra Virgin Olive Oil (EVOO)",
-    slug: "absheron-extra-virgin-olive-oil",
-    shortDescription: "Ultra-low acidity (<0.3%) single-estate Extra Virgin Olive Oil cold-extracted within 4 hours of tree harvest.",
-    description: "Cultivated in the sun-drenched, maritime-breeze groves of Zira and Gala on the Absheron peninsula. Cultivars include Azerbaijani endemic Bak\u0131 Zeytunu, Arbequina, and Arbosana. Cold-extracted below 24\xB0C in state-of-the-art inert nitrogen centrifugation systems.",
-    technicalSpecs: {
+    "id": "prod-absheron-olive-oil",
+    "categoryId": "cat-food",
+    "name": {
+      "AZ": "Ab\u015Feron Soyuq S\u0131x\u0131m S\u0131zma Zeytun Ya\u011F\u0131 (EVOO)",
+      "EN": "Absheron Cold-Pressed Extra Virgin Olive Oil (EVOO)",
+      "TR": "Ab\u015Feron So\u011Fuk S\u0131k\u0131m Nat\xFCrel S\u0131zma Zeytinya\u011F\u0131 (EVOO)",
+      "RU": "\u0410\u0431\u0448\u0435\u0440\u043E\u043D\u0441\u043A\u043E\u0435 \u043E\u043B\u0438\u0432\u043A\u043E\u0432\u043E\u0435 \u043C\u0430\u0441\u043B\u043E \u0445\u043E\u043B\u043E\u0434\u043D\u043E\u0433\u043E \u043E\u0442\u0436\u0438\u043C\u0430 Extra Virgin (EVOO)",
+      "AR": "\u0632\u064A\u062A \u0632\u064A\u062A\u0648\u0646 \u0623\u0628\u0634\u064A\u0631\u0648\u0646 \u0627\u0644\u0628\u0643\u0631 \u0627\u0644\u0645\u0645\u062A\u0627\u0632 \u0627\u0644\u0645\u0639\u0635\u0648\u0631 \u0639\u0644\u0649 \u0627\u0644\u0628\u0627\u0631\u062F (EVOO)",
+      "ES": "Aceite de Oliva Virgen Extra de Absheron Prensado en Fr\xEDo (AOVE)"
+    },
+    "slug": "absheron-extra-virgin-olive-oil",
+    "shortDescription": {
+      "AZ": "Zir\u0259 v\u0259 Qala ba\u011Flar\u0131ndan tur\u015Fulu\u011Fu 0.3%-d\u0259n a\u015Fa\u011F\u0131 olan t\u0259k plantasiyal\u0131 t\u0259bii s\u0131zma zeytun ya\u011F\u0131.",
+      "EN": "Ultra-low acidity (<0.3%) single-estate Extra Virgin Olive Oil cold-extracted within 4 hours of tree harvest.",
+      "TR": "Zire ve Gala bah\xE7elerinden asitli\u011Fi %0.3'\xFCn alt\u0131nda olan tek bah\xE7e nat\xFCrel s\u0131zma zeytinya\u011F\u0131.",
+      "RU": "\u041E\u043B\u0438\u0432\u043A\u043E\u0432\u043E\u0435 \u043C\u0430\u0441\u043B\u043E \u0432\u044B\u0441\u0448\u0435\u0433\u043E \u043A\u0430\u0447\u0435\u0441\u0442\u0432\u0430 Extra Virgin \u0441 \u043A\u0438\u0441\u043B\u043E\u0442\u043D\u043E\u0441\u0442\u044C\u044E \u043C\u0435\u043D\u0435\u0435 0.3% \u0438\u0437 \u043E\u043B\u0438\u0432\u043E\u043A \u0410\u0431\u0448\u0435\u0440\u043E\u043D\u0430.",
+      "AR": "\u0632\u064A\u062A \u0632\u064A\u062A\u0648\u0646 \u0628\u0643\u0631 \u0645\u0645\u062A\u0627\u0632 \u0641\u0627\u0626\u0642 \u0627\u0644\u062C\u0648\u062F\u0629 \u0628\u062D\u0645\u0648\u0636\u0629 \u0645\u0646\u062E\u0641\u0636\u0629 \u062C\u062F\u0627\u064B (<0.3%) \u0645\u0639\u0635\u0648\u0631 \u062E\u0644\u0627\u0644 4 \u0633\u0627\u0639\u0627\u062A \u0645\u0646 \u0627\u0644\u0642\u0637\u0641.",
+      "ES": "Aceite de oliva virgen extra de finca \xFAnica con acidez inferior al 0.3% prensado en fr\xEDo."
+    },
+    "description": "Cultivated in the sun-drenched, maritime-breeze groves of Zira and Gala on the Absheron peninsula. Cultivars include Azerbaijani endemic Bak\u0131 Zeytunu, Arbequina, and Arbosana. Cold-extracted below 24\xB0C in state-of-the-art inert nitrogen centrifugation systems.",
+    "technicalSpecs": {
       "Free Fatty Acidity": "< 0.30% (IOC Extra Virgin Standard)",
       "Peroxide Value": "< 6.5 meq O2/kg",
       "Total Polyphenols": "> 380 mg/kg (High Antioxidant)",
       "Extraction Temperature": "< 24\xB0C Cold Pressed",
       "Flavor Profile": "Fresh green grass, green almond, tomato leaf, balanced peppery finish"
     },
-    images: [
+    "images": [
       "https://lh3.googleusercontent.com/aida-public/AB6AXuDHo5g8iKevybJcG4jlFPGTNzuPMU2721wxSfNRS3s0FmbZeA3YW4AxkdXtyhH_55x-4s5Uh_5-S2-S3LVPexC1O1ahPg_Hgeeion6snYi_eyi7MNDXh5coR3k9acztB4DSA_PV9JjS_JAitpfDEAmO4UUbAUjAs0VuwpjvFbKeEaRXeqGiJ2JKU_vHqlhTa6Meil6iamn-3I_33E-Y7Tii2hclP8mfc_jBNp_gJSQpmbKniKtPJu5s"
     ],
-    moq: "5,000 Liters (Flexitank or bottled private label)",
-    certificates: ["IOC (International Olive Council) Standards", "ISO 22000", "AQTA Health Certificate", "EUR.1 / CT-1"],
-    packagingInfo: "Retail: 500ml and 750ml dark marasca glass bottles / 5L metal tins. Bulk: 1,000L IBC totes or 24,000L food-grade flexitanks.",
-    hsCode: "150920",
-    originRegion: "Ab\u015Feron \u2013 X\u0131z\u0131 (Zir\u0259) \u0130qtisadi Rayonu",
-    isFeatured: 1,
-    seoTitle: "Absheron Extra Virgin Olive Oil Bulk Export Azerbaijan",
-    seoDescription: "Single-estate premium extra virgin olive oil with acidity <0.3%. Bulk IBC totes and private label bottled supply."
+    "moq": "5,000 Liters (Flexitank or bottled private label)",
+    "certificates": [
+      "IOC (International Olive Council) Standards",
+      "ISO 22000",
+      "AQTA Health Certificate",
+      "EUR.1 / CT-1"
+    ],
+    "packagingInfo": {
+      "AZ": "P\u0259rak\u0259nd\u0259: 500ml v\u0259 750ml t\xFCnd \u015F\xFC\u015F\u0259 butulkalar / 5L t\u0259n\u0259k\u0259l\u0259r. Topdan: 1,000L IBC v\u0259 ya 24,000L fleksitank.",
+      "EN": "Retail: 500ml & 750ml dark marasca glass bottles / 5L tins. Bulk: 1,000L IBC totes or 24,000L food flexitanks.",
+      "TR": "Perakende: 500ml ve 750ml koyu cam \u015Fi\u015Feler / 5L tenekeler. D\xF6kme: 1.000L IBC veya 24.000L fleksitank.",
+      "RU": "\u0420\u043E\u0437\u043D\u0438\u0446\u0430: \u0442\u0435\u043C\u043D\u044B\u0435 \u0431\u0443\u0442\u044B\u043B\u043A\u0438 500/750 \u043C\u043B, \u0436\u0435\u0441\u0442\u044F\u043D\u044B\u0435 \u0431\u0430\u043D\u043A\u0438 5 \u043B. \u041E\u043F\u0442: \u0435\u0432\u0440\u043E\u043A\u0443\u0431\u044B IBC 1000 \u043B \u0438\u043B\u0438 \u0444\u043B\u0435\u043A\u0441\u0438\u0442\u0430\u043D\u043A\u0438 24 000 \u043B.",
+      "AR": "\u062A\u062C\u0632\u0626\u0629: \u0632\u062C\u0627\u062C\u0627\u062A \u062F\u0627\u0643\u0646\u0629 \u0633\u0639\u0629 500 \u0648750 \u0645\u0644 / \u0635\u0641\u0627\u0626\u062D 5 \u0644\u062A\u0631. \u062C\u0645\u0644\u0629: \u062E\u0632\u0627\u0646\u0627\u062A IBC \u0633\u0639\u0629 1,000 \u0644\u062A\u0631 \u0623\u0648 \u0641\u0644\u064A\u0643\u0633\u064A \u062A\u0627\u0646\u0643.",
+      "ES": "Venta minorista: botellas de vidrio oscuro de 500 ml y 750 ml / latas de 5 L. Granel: IBC de 1.000 L o flexitanques."
+    },
+    "hsCode": "150920",
+    "originRegion": {
+      "AZ": "Ab\u015Feron \u2013 X\u0131z\u0131 (Zir\u0259) \u0130qtisadi Rayonu",
+      "EN": "Absheron \u2013 Khizi (Zira) Economic Region",
+      "TR": "Ab\u015Feron \u2013 H\u0131z\u0131 (Zire) Ekonomik B\xF6lgesi",
+      "RU": "\u0410\u043F\u0448\u0435\u0440\u043E\u043D-\u0425\u044B\u0437\u0438\u043D\u0441\u043A\u0438\u0439 (\u0417\u0438\u0440\u044F) \u044D\u043A\u043E\u043D\u043E\u043C\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0440\u0430\u0439\u043E\u043D",
+      "AR": "\u0645\u0646\u0637\u0642\u0629 \u0623\u0628\u0634\u064A\u0631\u0648\u0646 - \u062E\u064A\u0632\u064A (\u0632\u064A\u0631\u0629) \u0627\u0644\u0627\u0642\u062A\u0635\u0627\u062F\u064A\u0629",
+      "ES": "Regi\xF3n Econ\xF3mica de Absheron \u2013 Khizi (Zira)"
+    },
+    "isFeatured": 1,
+    "seoTitle": "Absheron Extra Virgin Olive Oil Bulk Export Azerbaijan",
+    "seoDescription": "Single-estate premium extra virgin olive oil with acidity <0.3%. Bulk IBC totes and private label bottled supply."
   },
   {
-    id: "prod-goygol-alpine-honey",
-    categoryId: "cat-food",
-    name: "Lesser Caucasus Mountain Floral Honey (G\xF6yg\xF6l Alpine)",
-    slug: "goygol-alpine-mountain-honey",
-    shortDescription: "100% raw unpasteurized multi-floral mountain honey gathered at 1,600m \u2013 2,200m altitude in G\xF6yg\xF6l National Park.",
-    description: "Produced by native Caucasian grey mountain bees (Apis mellifera caucasica) feeding on wild sub-alpine wildflowers, wild thyme, and linden. Free from synthetic pesticides, antibiotics, and commercial syrup adulteration.",
-    technicalSpecs: {
+    "id": "prod-goygol-alpine-honey",
+    "categoryId": "cat-food",
+    "name": {
+      "AZ": "G\xF6yg\xF6l Da\u011F \xC7i\xE7\u0259k Bal\u0131 (Qafqaz T\u0259miz T\u0259bii Bal\u0131)",
+      "EN": "Lesser Caucasus Mountain Floral Honey (G\xF6yg\xF6l Alpine)",
+      "TR": "G\xF6yg\xF6l Alpin Da\u011F \xC7i\xE7ek Bal\u0131 (Kafkas Do\u011Fal Ham Bal)",
+      "RU": "\u0413\u043E\u0440\u043D\u044B\u0439 \u0446\u0432\u0435\u0442\u043E\u0447\u043D\u044B\u0439 \u043C\u0435\u0434 \u041C\u0430\u043B\u043E\u0433\u043E \u041A\u0430\u0432\u043A\u0430\u0437\u0430 (\u0413\u0451\u0439\u0433\u0451\u043B\u044C \u0410\u043B\u044C\u043F\u0438\u0439\u0441\u043A\u0438\u0439)",
+      "AR": "\u0639\u0633\u0644 \u0632\u0647\u0648\u0631 \u062C\u0628\u0627\u0644 \u0627\u0644\u0642\u0648\u0642\u0627\u0632 \u0627\u0644\u0635\u063A\u0631\u0649 \u0627\u0644\u0637\u0628\u064A\u0639\u064A \u0627\u0644\u062E\u0627\u0645 (\u0623\u0644\u0628\u0627\u064A\u0646 \u063A\u0648\u064A\u063A\u0648\u0644)",
+      "ES": "Miel Floral de Monta\xF1a del C\xE1ucaso Menor (G\xF6yg\xF6l Alpino)"
+    },
+    "slug": "goygol-alpine-mountain-honey",
+    "shortDescription": {
+      "AZ": "G\xF6yg\xF6l Milli Park\u0131n\u0131n 1,600m - 2,200m h\xFCnd\xFCrl\xFCkd\u0259ki subalp \xE7\u0259m\u0259nl\u0259rind\u0259n 100% \xE7iy, pasteriz\u0259 olunmam\u0131\u015F da\u011F bal\u0131.",
+      "EN": "100% raw unpasteurized multi-floral mountain honey gathered at 1,600m \u2013 2,200m altitude in G\xF6yg\xF6l National Park.",
+      "TR": "G\xF6yg\xF6l Milli Park\u0131'n\u0131n 1.600m - 2.200m rak\u0131ml\u0131 yaylalar\u0131ndan %100 saf, past\xF6rize edilmemi\u015F da\u011F bal\u0131.",
+      "RU": "100% \u043D\u0430\u0442\u0443\u0440\u0430\u043B\u044C\u043D\u044B\u0439 \u0441\u044B\u0440\u043E\u0439 \u043F\u043E\u043B\u0438\u0444\u043B\u043E\u0440\u043D\u044B\u0439 \u043C\u0435\u0434, \u0441\u043E\u0431\u0440\u0430\u043D\u043D\u044B\u0439 \u043D\u0430 \u0432\u044B\u0441\u043E\u0442\u0435 1600\u20132200 \u043C \u0432 \u0413\u0451\u0439\u0433\u0451\u043B\u044C\u0441\u043A\u043E\u043C \u043D\u0430\u0446\u0438\u043E\u043D\u0430\u043B\u044C\u043D\u043E\u043C \u043F\u0430\u0440\u043A\u0435.",
+      "AR": "\u0639\u0633\u0644 \u062C\u0628\u0644\u064A \u0637\u0628\u064A\u0639\u064A \u062E\u0627\u0645 \u063A\u064A\u0631 \u0645\u0628\u0633\u062A\u0631 100% \u0645\u062C\u0645\u0648\u0639 \u0645\u0646 \u0645\u0631\u0648\u062C \u062D\u062F\u064A\u0642\u0629 \u063A\u0648\u064A\u063A\u0648\u0644 \u0627\u0644\u0648\u0637\u0646\u064A\u0629 \u0639\u0644\u0649 \u0627\u0631\u062A\u0641\u0627\u0639 1600-2200 \u0645\u062A\u0631.",
+      "ES": "Miel de monta\xF1a multifloral 100% cruda recolectada a 1.600 m \u2013 2.200 m en el Parque Nacional de G\xF6yg\xF6l."
+    },
+    "description": "Produced by native Caucasian grey mountain bees (Apis mellifera caucasica) feeding on wild sub-alpine wildflowers, wild thyme, and linden. Free from synthetic pesticides, antibiotics, and commercial syrup adulteration.",
+    "technicalSpecs": {
       "Diastase Activity": "> 22 Schade units (High enzymatic vitality)",
       "HMF (Hydroxymethylfurfural)": "< 8 mg/kg (Freshness marker)",
       "Moisture Content": "16.2% \u2013 17.5%",
       "Reducing Sugars (Fructose+Glucose)": "> 72%",
       "Pollen Spectrum": "Wild thyme, origanum, melilotus, trifolium"
     },
-    images: [
+    "images": [
       "https://lh3.googleusercontent.com/aida-public/AB6AXuD6iP6ACTY6rFPAXNJlK_W-AfkWR_1OBE8I3wLkCwVMAlQIyNvxAXxK1kYe6-itoVecrpqtsSok0_wQ1QnYyWcn40Hikz269v2ag3TbKrY9lfqw3mEVtR-I0GvclcQXFDi0q_xVPYMdzpIFMaXwgeJEs4gwsCpcf-Dn7Df8QGIeKoSael0DxSBY2ZpmoWYe8Ynhio_Q0dONzHarqS9Kp31IStn01T44xVmJ90B5TY2WFQr7mOmo4Ucq"
     ],
-    moq: "3 Metric Tons (B2B bulk drums or retail glass)",
-    certificates: ["AQTA Veterinary Export Approval", "ISO 22000", "Intertek / QSI Bremen Lab Analysis", "EUR.1 / CT-1"],
-    packagingInfo: "Bulk: 290kg food-grade lacquered steel drums. Retail: 400g and 900g hexagonal glass jars in 12-pack cartons.",
-    hsCode: "040900",
-    originRegion: "G\u0259nc\u0259 \u2013 Da\u015Fk\u0259s\u0259n (G\xF6yg\xF6l) \u0130qtisadi Rayonu",
-    isFeatured: 0,
-    seoTitle: "Raw Caucasian Mountain Honey Bulk B2B Export Azerbaijan",
-    seoDescription: "Direct export of raw unpasteurized multi-floral alpine honey from G\xF6yg\xF6l, Azerbaijan. Lab tested EU compliant."
+    "moq": "3 Metric Tons (B2B bulk drums or retail glass)",
+    "certificates": [
+      "AQTA Veterinary Export Approval",
+      "ISO 22000",
+      "Intertek / QSI Bremen Lab Analysis",
+      "EUR.1 / CT-1"
+    ],
+    "packagingInfo": {
+      "AZ": "Topdan: 290kq qida sertifikatl\u0131 polad \xE7\u0259ll\u0259kl\u0259r. P\u0259rak\u0259nd\u0259: 400q v\u0259 900q alt\u0131bucaql\u0131 \u015F\xFC\u015F\u0259 bankalar.",
+      "EN": "Bulk: 290kg food-grade lacquered steel drums. Retail: 400g and 900g hexagonal glass jars in 12-pack cartons.",
+      "TR": "D\xF6kme: 290kg g\u0131daya uygun lakl\u0131 \xE7elik variller. Perakende: 400g ve 900g alt\u0131gen cam kavanozlar.",
+      "RU": "\u041E\u043F\u0442: \u0431\u043E\u0447\u043A\u0438 \u0438\u0437 \u043F\u0438\u0449\u0435\u0432\u043E\u0439 \u0441\u0442\u0430\u043B\u0438 \u043F\u043E 290 \u043A\u0433. \u0420\u043E\u0437\u043D\u0438\u0446\u0430: \u0448\u0435\u0441\u0442\u0438\u0433\u0440\u0430\u043D\u043D\u044B\u0435 \u0431\u0430\u043D\u043A\u0438 \u043F\u043E 400 \u0433 \u0438 900 \u0433 \u0432 \u043A\u043E\u0440\u043E\u0431\u043A\u0430\u0445 \u043F\u043E 12 \u0448\u0442.",
+      "AR": "\u062C\u0645\u0644\u0629: \u0628\u0631\u0627\u0645\u064A\u0644 \u0635\u0644\u0628\u0629 \u0645\u0628\u0637\u0646\u0629 \u063A\u0630\u0627\u0626\u064A\u0627\u064B \u0633\u0639\u0629 290 \u0643\u062C\u0645. \u062A\u062C\u0632\u0626\u0629: \u0628\u0631\u0637\u0645\u0627\u0646\u0627\u062A \u0632\u062C\u0627\u062C\u064A\u0629 \u0633\u062F\u0627\u0633\u064A\u0629 \u0633\u0639\u0629 400 \u0648900 \u062C\u0645.",
+      "ES": "Granel: bidones de acero lacado de 290 kg. Minorista: tarros de cristal hexagonales de 400 g y 900 g."
+    },
+    "hsCode": "040900",
+    "originRegion": {
+      "AZ": "G\u0259nc\u0259 \u2013 Da\u015Fk\u0259s\u0259n (G\xF6yg\xF6l) \u0130qtisadi Rayonu",
+      "EN": "Ganja \u2013 Dashkasan (Goygol) Economic Region",
+      "TR": "Gence \u2013 Da\u015Fkesen (G\xF6yg\xF6l) Ekonomik B\xF6lgesi",
+      "RU": "\u0413\u044F\u043D\u0434\u0436\u0430-\u0414\u0430\u0448\u043A\u0435\u0441\u0430\u043D\u0441\u043A\u0438\u0439 (\u0413\u0451\u0439\u0433\u0451\u043B\u044C\u0441\u043A\u0438\u0439) \u044D\u043A\u043E\u043D\u043E\u043C\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0440\u0430\u0439\u043E\u043D",
+      "AR": "\u0645\u0646\u0637\u0642\u0629 \u0643\u0646\u062C\u0629 - \u062F\u0627\u0634\u0643\u0627\u0633\u0627\u0646 (\u063A\u0648\u064A\u063A\u0648\u0644) \u0627\u0644\u0627\u0642\u062A\u0635\u0627\u062F\u064A\u0629",
+      "ES": "Regi\xF3n Econ\xF3mica de Ganja \u2013 Dashkasan (Goygol)"
+    },
+    "isFeatured": 0,
+    "seoTitle": "Raw Caucasian Mountain Honey Bulk B2B Export Azerbaijan",
+    "seoDescription": "Direct export of raw unpasteurized multi-floral alpine honey from G\xF6yg\xF6l, Azerbaijan. Lab tested EU compliant."
   },
   {
-    id: "prod-bentonite-clay-agstafa",
-    categoryId: "cat-industrial",
-    name: "Agstafa Sodium-Activated Bentonite Clay (API Spec 13A)",
-    slug: "agstafa-bentonite-clay-api-grade",
-    shortDescription: "Premium montmorillonite swelling bentonite clay for oil/gas drilling fluids, foundry casting, and civil engineering.",
-    description: "Mined from the renowned deposits in Agstafa district. Naturally high in montmorillonite content (>80%) with exceptional thixotropic gel strength, high swelling index, and low water loss under pressure. Meets API 13A and OCMA standards.",
-    technicalSpecs: {
+    "id": "prod-bentonite-clay-agstafa",
+    "categoryId": "cat-industrial",
+    "name": {
+      "AZ": "A\u011Fstafa Aktivl\u0259\u015Fdirilmi\u015F Bentonit Gili (API Spec 13A)",
+      "EN": "Agstafa Sodium-Activated Bentonite Clay (API Spec 13A)",
+      "TR": "A\u011Fstafa Sodyum Aktif Bentonit Kili (API Spec 13A)",
+      "RU": "\u0410\u0433\u0441\u0442\u0430\u0444\u0438\u043D\u0441\u043A\u0430\u044F \u043D\u0430\u0442\u0440\u0438\u0435\u0432\u0430\u044F \u0431\u0435\u043D\u0442\u043E\u043D\u0438\u0442\u043E\u0432\u0430\u044F \u0433\u043B\u0438\u043D\u0430 (API Spec 13A)",
+      "AR": "\u0637\u064A\u0646 \u0627\u0644\u0628\u0646\u062A\u0648\u0646\u064A\u062A \u0627\u0644\u0645\u0646\u0634\u0637 \u0628\u0627\u0644\u0635\u0648\u062F\u064A\u0648\u0645 \u0645\u0646 \u0623\u063A\u0633\u062A\u0627\u0641\u0627 (API Spec 13A)",
+      "ES": "Arcilla Bentonita Activada con Sodio de Agstafa (API Spec 13A)"
+    },
+    "slug": "agstafa-bentonite-clay-api-grade",
+    "shortDescription": {
+      "AZ": "Neft-qaz qazma m\u0259hlullar\u0131, t\xF6km\u0259 s\u0259nayesi v\u0259 in\u015Faat m\xFCh\u0259ndisliyi \xFC\xE7\xFCn y\xFCks\u0259k montmorillonitli bentonit gili.",
+      "EN": "Premium montmorillonite swelling bentonite clay for oil/gas drilling fluids, foundry casting, and civil engineering.",
+      "TR": "Petrol-gaz sondaj s\u0131v\u0131lar\u0131, d\xF6k\xFCm sanayisi ve in\u015Faat m\xFChendisli\u011Fi i\xE7in y\xFCksek montmorillonitli bentonit kili.",
+      "RU": "\u0411\u0435\u043D\u0442\u043E\u043D\u0438\u0442 \u0441 \u0441\u043E\u0434\u0435\u0440\u0436\u0430\u043D\u0438\u0435\u043C \u043C\u043E\u043D\u0442\u043C\u043E\u0440\u0438\u043B\u043B\u043E\u043D\u0438\u0442\u0430 >82% \u0434\u043B\u044F \u0431\u0443\u0440\u043E\u0432\u044B\u0445 \u0440\u0430\u0441\u0442\u0432\u043E\u0440\u043E\u0432 \u043D\u0435\u0444\u0442\u0435\u0433\u0430\u0437\u043E\u0432\u043E\u0439 \u043E\u0442\u0440\u0430\u0441\u043B\u0438 \u0438 \u043B\u0438\u0442\u0435\u0439\u043D\u043E\u0433\u043E \u043F\u0440\u043E\u0438\u0437\u0432\u043E\u0434\u0441\u0442\u0432\u0430.",
+      "AR": "\u0637\u064A\u0646 \u0628\u0646\u062A\u0648\u0646\u064A\u062A \u0641\u0627\u0626\u0642 \u0627\u0644\u062C\u0648\u062F\u0629 \u064A\u062A\u0645\u062F\u062F \u0628\u0646\u0633\u0628\u0629 \u0639\u0627\u0644\u064A\u0629 \u0644\u0633\u0648\u0627\u0626\u0644 \u062D\u0641\u0631 \u0622\u0628\u0627\u0631 \u0627\u0644\u0646\u0641\u0637 \u0648\u0627\u0644\u063A\u0627\u0632 \u0648\u0627\u0644\u0635\u0646\u0627\u0639\u0627\u062A \u0627\u0644\u0645\u062F\u0646\u064A\u0629.",
+      "ES": "Bentonita de alto contenido en montmorillonita para lodos de perforaci\xF3n de petr\xF3leo/gas y fundici\xF3n."
+    },
+    "description": "Mined from the renowned deposits in Agstafa district. Naturally high in montmorillonite content (>80%) with exceptional thixotropic gel strength, high swelling index, and low water loss under pressure. Meets API 13A and OCMA standards.",
+    "technicalSpecs": {
       "Montmorillonite Content": "> 82% (XRD analysis)",
       "Viscometer 600 RPM": "> 30 (API Spec 13A)",
       "Yield Point / Plastic Viscosity Ratio": "< 3.0",
       "Filtrate Volume (Fluid Loss)": "< 15.0 cm\xB3",
       "Swell Volume": "> 28 ml / 2g"
     },
-    images: [
+    "images": [
       "https://lh3.googleusercontent.com/aida-public/AB6AXuDtNJYRxE2w63MPzGdjf8CPD9AEFm8HRgiA_8S4bLzI4JlWkzMSr7mOrBFN0clACdJ8Z4fdPmTxcUeQZoVHwM8X0BSrp3Ge5V1rjnXGei5GwaARNkgff5T_0xspZitbC-LuPEjlYnoFGRTUx9-xnXkSS6296Qbk6OBMxFoPcu45Ph_IWPgxe8ghwkwSRb4DFc747hiqPs4hl6mD0u0fkbzXC86IW3Go3l5Gt49vsGvyFE6w27cyqJpi"
     ],
-    moq: "44 Metric Tons (2x 20ft Containers or bulk rail wagons)",
-    certificates: ["API Spec 13A Certified", "ISO 9001:2015", "Certificate of Origin Form CT-1 / EUR.1"],
-    packagingInfo: "1,000kg weather-resistant polypropylene big-bags with discharge spouts, or 25kg multi-ply paper valve bags.",
-    hsCode: "250810",
-    originRegion: "Qazax \u2013 Tovuz (A\u011Fstafa) \u0130qtisadi Rayonu",
-    isFeatured: 0,
-    seoTitle: "Azerbaijan Bentonite Clay API Spec 13A Drilling Grade Export",
-    seoDescription: "High montmorillonite sodium-activated bentonite clay for drilling mud and civil engineering. B2B bulk supply."
+    "moq": "44 Metric Tons (2x 20ft Containers or bulk rail wagons)",
+    "certificates": [
+      "API Spec 13A Certified",
+      "ISO 9001:2015",
+      "Certificate of Origin Form CT-1 / EUR.1"
+    ],
+    "packagingInfo": {
+      "AZ": "1,000kq n\u0259m\u0259 davaml\u0131 bo\u015Faltma bo\u011Fazl\u0131 biq-b\u0259ql\u0259r v\u0259 ya 25kq klapanl\u0131 ka\u011F\u0131z kis\u0259l\u0259r.",
+      "EN": "1,000kg weather-resistant polypropylene big-bags with discharge spouts, or 25kg multi-ply paper valve bags.",
+      "TR": "1.000kg bo\u015Faltma bacal\u0131 neme dayan\u0131kl\u0131 big-bag \xE7uvallar veya 25kg ventilli kraft torbalar.",
+      "RU": "\u0411\u0438\u0433-\u0431\u044D\u0433\u0438 \u043F\u043E 1000 \u043A\u0433 \u0441 \u0440\u0430\u0437\u0433\u0440\u0443\u0437\u043E\u0447\u043D\u044B\u043C \u043A\u043B\u0430\u043F\u0430\u043D\u043E\u043C \u0438\u043B\u0438 \u043C\u043D\u043E\u0433\u043E\u0441\u043B\u043E\u0439\u043D\u044B\u0435 \u043A\u043B\u0430\u043F\u0430\u043D\u043D\u044B\u0435 \u0431\u0443\u043C\u0430\u0436\u043D\u044B\u0435 \u043C\u0435\u0448\u043A\u0438 \u043F\u043E 25 \u043A\u0433.",
+      "AR": "\u0623\u0643\u064A\u0627\u0633 \u0643\u0628\u064A\u0631\u0629 \u0633\u0639\u0629 1,000 \u0643\u062C\u0645 \u0645\u0642\u0627\u0648\u0645\u0629 \u0644\u0644\u0639\u0648\u0627\u0645\u0644 \u0627\u0644\u062C\u0648\u064A\u0629 \u0623\u0648 \u0623\u0643\u064A\u0627\u0633 \u0648\u0631\u0642\u064A\u0629 \u0635\u0645\u0627\u0645\u064A\u0629 \u0633\u0639\u0629 25 \u0643\u062C\u0645.",
+      "ES": "Big-bags de 1.000 kg resistentes a la intemperie con boquilla de descarga, o sacos de papel de 25 kg."
+    },
+    "hsCode": "250810",
+    "originRegion": {
+      "AZ": "Qazax \u2013 Tovuz (A\u011Fstafa) \u0130qtisadi Rayonu",
+      "EN": "Gazakh \u2013 Tovuz (Agstafa) Economic Region",
+      "TR": "Kazak \u2013 Tovuz (A\u011Fstafa) Ekonomik B\xF6lgesi",
+      "RU": "\u0413\u0430\u0437\u0430\u0445-\u0422\u043E\u0432\u0443\u0437\u0441\u043A\u0438\u0439 (\u0410\u0433\u0441\u0442\u0430\u0444\u0438\u043D\u0441\u043A\u0438\u0439) \u044D\u043A\u043E\u043D\u043E\u043C\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0440\u0430\u0439\u043E\u043D",
+      "AR": "\u0645\u0646\u0637\u0642\u0629 \u0642\u0627\u0632\u0627\u062E - \u062A\u0648\u0641\u0648\u0632 (\u0623\u063A\u0633\u062A\u0627\u0641\u0627) \u0627\u0644\u0627\u0642\u062A\u0635\u0627\u062F\u064A\u0629",
+      "ES": "Regi\xF3n Econ\xF3mica de Gazakh \u2013 Tovuz (Agstafa)"
+    },
+    "isFeatured": 0,
+    "seoTitle": "Azerbaijan Bentonite Clay API Spec 13A Drilling Grade Export",
+    "seoDescription": "High montmorillonite sodium-activated bentonite clay for drilling mud and civil engineering. B2B bulk supply."
   },
   {
-    id: "prod-polypropylene-big-bags",
-    categoryId: "cat-packaging",
-    name: "Heavy-Duty FIBC Big Bags & Polypropylene Woven Sacks",
-    slug: "fibc-big-bags-polypropylene-sacks",
-    shortDescription: "Industrial UV-stabilized 4-loop flexible bulk containers (FIBC) and laminated woven PP bags from Sumgayit chemical park.",
-    description: "Manufactured utilizing virgin polymer pellets from SOCAR Polymer petrochemical complex. Engineered for safe working loads (SWL) from 500kg up to 2,000kg with 5:1 and 6:1 safety factors for international multi-modal hazardous and non-hazardous bulk shipping.",
-    technicalSpecs: {
+    "id": "prod-polypropylene-big-bags",
+    "categoryId": "cat-packaging",
+    "name": {
+      "AZ": "S\u0259naye Tipi FIBC Biq-B\u0259ql\u0259r v\u0259 Toxunma Polipropilen Kis\u0259l\u0259r",
+      "EN": "Heavy-Duty FIBC Big Bags & Polypropylene Woven Sacks",
+      "TR": "A\u011F\u0131r Hizmet Tipi FIBC Big-Bag \xC7uvallar ve Polipropilen Torbalar",
+      "RU": "\u041F\u0440\u043E\u043C\u044B\u0448\u043B\u0435\u043D\u043D\u044B\u0435 \u0431\u0438\u0433-\u0431\u044D\u0433\u0438 FIBC \u0438 \u043F\u043E\u043B\u0438\u043F\u0440\u043E\u043F\u0438\u043B\u0435\u043D\u043E\u0432\u044B\u0435 \u043F\u043B\u0435\u0442\u0435\u043D\u044B\u0435 \u043C\u0435\u0448\u043A\u0438",
+      "AR": "\u0623\u0643\u064A\u0627\u0633 \u0627\u0644\u062D\u0627\u0648\u064A\u0627\u062A \u0627\u0644\u0645\u0631\u0646\u0629 \u0627\u0644\u0643\u0628\u064A\u0631\u0629 (FIBC) \u0648\u0623\u0643\u064A\u0627\u0633 \u0627\u0644\u0628\u0648\u0644\u064A \u0628\u0631\u0648\u0628\u064A\u0644\u064A\u0646 \u0627\u0644\u0645\u0646\u0633\u0648\u062C\u0629",
+      "ES": "Sacos Grandes Industriales FIBC y Sacos Tejidos de Polipropileno"
+    },
+    "slug": "fibc-big-bags-polypropylene-sacks",
+    "shortDescription": {
+      "AZ": "Sumqay\u0131t kimya park\u0131ndan 500kq-dan 2,000kq-a q\u0259d\u0259r y\xFCkg\xF6t\xFCrm\u0259 qabiliyy\u0259tli UB-qorumal\u0131 4 qulplu FIBC biq-b\u0259ql\u0259r.",
+      "EN": "Industrial UV-stabilized 4-loop flexible bulk containers (FIBC) and laminated woven PP bags from Sumgayit chemical park.",
+      "TR": "Sumgay\u0131t kimya park\u0131ndan 500kg - 2.000kg ta\u015F\u0131ma kapasiteli UV korumal\u0131 4 kulplu FIBC \xE7uvallar ve lamine torbalar.",
+      "RU": "\u0423\u0424-\u0441\u0442\u0430\u0431\u0438\u043B\u0438\u0437\u0438\u0440\u043E\u0432\u0430\u043D\u043D\u044B\u0435 4-\u0441\u0442\u0440\u043E\u043F\u043D\u044B\u0435 \u043C\u044F\u0433\u043A\u0438\u0435 \u043A\u043E\u043D\u0442\u0435\u0439\u043D\u0435\u0440\u044B (\u041C\u041A\u0420) \u0433\u0440\u0443\u0437\u043E\u043F\u043E\u0434\u044A\u0435\u043C\u043D\u043E\u0441\u0442\u044C\u044E 500-2000 \u043A\u0433 \u0441 \u043A\u043E\u044D\u0444\u0444\u0438\u0446\u0438\u0435\u043D\u0442\u043E\u043C 5:1/6:1.",
+      "AR": "\u0623\u0643\u064A\u0627\u0633 \u062D\u0627\u0648\u064A\u0627\u062A \u0645\u0631\u0646\u0629 \u0635\u0646\u0627\u0639\u064A\u0629 \u0645\u0639\u0627\u0644\u062C\u0629 \u0636\u062F \u0627\u0644\u0623\u0634\u0639\u0629 \u0641\u0648\u0642 \u0627\u0644\u0628\u0646\u0641\u0633\u062C\u064A\u0629 \u0628\u062D\u0645\u0648\u0644\u0629 \u0623\u0645\u0627\u0646 \u0645\u0646 500 \u0625\u0644\u0649 2000 \u0643\u062C\u0645.",
+      "ES": "Contenedores flexibles para granel (FIBC) de 4 asas estabilizados contra rayos UV y sacos de PP laminados."
+    },
+    "description": "Manufactured utilizing virgin polymer pellets from SOCAR Polymer petrochemical complex. Engineered for safe working loads (SWL) from 500kg up to 2,000kg with 5:1 and 6:1 safety factors for international multi-modal hazardous and non-hazardous bulk shipping.",
+    "technicalSpecs": {
       "Fabric Weight": "140 g/m\xB2 \u2013 220 g/m\xB2 UV Stabilized",
       "Safe Working Load (SWL)": "1,000 kg \u2013 2,000 kg",
       "Safety Factor (SF)": "5:1 (Single trip) / 6:1 (Multi-trip UN Certified)",
       "Construction Types": "Circular / U-panel / 4-panel with PE liner",
       "Printing": "Up to 4 colors flexographic branding"
     },
-    images: [
+    "images": [
       "https://lh3.googleusercontent.com/aida-public/AB6AXuC5UBl6ky2E1o6RbrVtIlz6xdPHcSBD7sd8H309gALUQoxK5e7r7Jx8q159V1clhGMbdLSh4P9jCngmrLKo1SRNMt8pOyjcZAA6ESFVNV4ezFkDuGcGpnQTuFuS1mN_y1GCw0fUeMaghixWmXvDOKyonKRvDbft5TQiqBmLD-rRRmW-WA8ynGJG10G8Glm_TPlhHHVb7hRwLDWJ8xhd-hOjeMKGIxnS1XfZVRCXaB1IDAY3cUYFZPhn"
     ],
-    moq: "5,000 Units (LCL or FCL container loads)",
-    certificates: ["ISO 9001:2015", "Labordata Testing Compliance", "UN Certified Packaging for Dangerous Goods"],
-    packagingInfo: "Baled in bundles of 50 or 100 units strapped with heavy polyester cords on wooden pallets.",
-    hsCode: "630532",
-    originRegion: "Ab\u015Feron \u2013 X\u0131z\u0131 (Sumqay\u0131t) \u0130qtisadi Rayonu",
-    isFeatured: 0,
-    seoTitle: "FIBC Big Bags & Woven PP Sacks Manufacturer Azerbaijan",
-    seoDescription: "Direct manufacturer export of industrial FIBC big bags and woven polypropylene sacks from Sumgayit, Azerbaijan."
+    "moq": "5,000 Units (LCL or FCL container loads)",
+    "certificates": [
+      "ISO 9001:2015",
+      "Labordata Testing Compliance",
+      "UN Certified Packaging for Dangerous Goods"
+    ],
+    "packagingInfo": {
+      "AZ": "Taxta paletl\u0259rd\u0259 s\u0131x\u0131lm\u0131\u015F 50 v\u0259 ya 100 \u0259d\u0259dlik ba\u011Flamalar.",
+      "EN": "Baled in bundles of 50 or 100 units strapped with heavy polyester cords on wooden pallets.",
+      "TR": "Ah\u015Fap paletler \xFCzerinde a\u011F\u0131r polyester \u015Feritlerle ba\u011Flanm\u0131\u015F 50 veya 100 adetlik balyalar.",
+      "RU": "\u041F\u0440\u0435\u0441\u0441\u043E\u0432\u0430\u043D\u043D\u044B\u0435 \u043F\u0430\u0447\u043A\u0438 \u043F\u043E 50 \u0438\u043B\u0438 100 \u0448\u0442\u0443\u043A, \u0441\u0442\u044F\u043D\u0443\u0442\u044B\u0435 \u043F\u043E\u043B\u0438\u044D\u0441\u0442\u0435\u0440\u043E\u0432\u043E\u0439 \u043B\u0435\u043D\u0442\u043E\u0439 \u043D\u0430 \u0435\u0432\u0440\u043E\u043F\u0430\u043B\u043B\u0435\u0442\u0430\u0445.",
+      "AR": "\u0645\u0631\u0628\u0648\u0637\u0629 \u0641\u064A \u062D\u0632\u0645 \u0645\u0646 50 \u0623\u0648 100 \u0648\u062D\u062F\u0629 \u0648\u0645\u0634\u062F\u0648\u062F\u0629 \u0628\u0623\u0634\u0631\u0637\u0629 \u0628\u0648\u0644\u064A\u0633\u062A\u0631 \u0642\u0648\u064A\u0629 \u0639\u0644\u0649 \u0645\u0646\u0635\u0627\u062A \u062E\u0634\u0628\u064A\u0629.",
+      "ES": "En fardos de 50 o 100 unidades flejados con cordones de poli\xE9ster pesados sobre palets de madera."
+    },
+    "hsCode": "630532",
+    "originRegion": {
+      "AZ": "Ab\u015Feron \u2013 X\u0131z\u0131 (Sumqay\u0131t) \u0130qtisadi Rayonu",
+      "EN": "Absheron \u2013 Khizi (Sumgayit) Economic Region",
+      "TR": "Ab\u015Feron \u2013 H\u0131z\u0131 (Sumgay\u0131t) Ekonomik B\xF6lgesi",
+      "RU": "\u0410\u043F\u0448\u0435\u0440\u043E\u043D-\u0425\u044B\u0437\u0438\u043D\u0441\u043A\u0438\u0439 (\u0421\u0443\u043C\u0433\u0430\u0439\u044B\u0442\u0441\u043A\u0438\u0439) \u044D\u043A\u043E\u043D\u043E\u043C\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0440\u0430\u0439\u043E\u043D",
+      "AR": "\u0645\u0646\u0637\u0642\u0629 \u0623\u0628\u0634\u064A\u0631\u0648\u0646 - \u062E\u064A\u0632\u064A (\u0633\u0648\u0645\u063A\u0627\u064A\u062A) \u0627\u0644\u0627\u0642\u062A\u0635\u0627\u062F\u064A\u0629",
+      "ES": "Regi\xF3n Econ\xF3mica de Absheron \u2013 Khizi (Sumgayit)"
+    },
+    "isFeatured": 0,
+    "seoTitle": "FIBC Big Bags & Woven PP Sacks Manufacturer Azerbaijan",
+    "seoDescription": "Direct manufacturer export of industrial FIBC big bags and woven polypropylene sacks from Sumgayit, Azerbaijan."
   }
 ];
 var SEED_SERVICES = [
@@ -2506,17 +2836,17 @@ function seedAzexbuyData(db) {
       now,
       now,
       p.categoryId,
-      p.name,
+      typeof p.name === "object" ? JSON.stringify(p.name) : p.name,
       p.slug,
-      p.shortDescription,
+      typeof p.shortDescription === "object" ? JSON.stringify(p.shortDescription) : p.shortDescription,
       p.description,
       JSON.stringify(p.technicalSpecs),
       JSON.stringify(p.images),
       p.moq,
       JSON.stringify(p.certificates),
-      p.packagingInfo,
+      typeof p.packagingInfo === "object" ? JSON.stringify(p.packagingInfo) : p.packagingInfo,
       p.hsCode,
-      p.originRegion,
+      typeof p.originRegion === "object" ? JSON.stringify(p.originRegion) : p.originRegion,
       p.isFeatured,
       p.seoTitle,
       p.seoDescription
