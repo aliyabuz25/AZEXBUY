@@ -1002,14 +1002,20 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
             <div className="custom-container py-10">
               <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-3 leading-tight max-w-2xl">{heroTitle}</h1>
               <p className="text-base sm:text-lg text-slate-100/90 leading-relaxed mb-7 max-w-xl">{heroDesc}</p>
-              <div className="flex flex-wrap gap-3.5">
-                <button type="button" onClick={onOpenRFQ} className="bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold px-6 py-3 rounded-lg shadow-lg shadow-emerald-900/30 transition-all cursor-pointer flex items-center gap-2">
-                  <span>{ctaRFQ}</span>
-                  <i className="fa-solid fa-arrow-right text-xs"></i>
+              <div className="flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={onOpenRFQ}
+                  className="bg-brandNavy hover:bg-brandNavyDark text-white text-xs font-semibold px-5 py-2.5 rounded transition-colors cursor-pointer"
+                >
+                  {ctaRFQ}
                 </button>
-                <button type="button" onClick={() => onNavigate('products')} className="bg-white/10 hover:bg-white/20 text-white border border-white/25 text-sm font-bold px-6 py-3 rounded-lg backdrop-blur-sm transition-all cursor-pointer flex items-center gap-2">
-                  <i className="fa-solid fa-boxes-stacked text-xs text-slate-200"></i>
-                  <span>{ctaCatalog}</span>
+                <button
+                  type="button"
+                  onClick={() => onNavigate('products')}
+                  className="bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs font-semibold px-5 py-2.5 rounded transition-colors cursor-pointer"
+                >
+                  {ctaCatalog}
                 </button>
               </div>
             </div>
@@ -1153,9 +1159,21 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
               <p className="text-base font-semibold text-[#171717]">{locale === 'AZ' ? 'Azərbaycandan məhsul almaq istəyirsiniz?' : locale === 'TR' ? "Azerbaycan'dan ürün almak mı istiyorsunuz?" : 'Ready to source from Azerbaijan?'}</p>
               <p className="text-sm text-slate-500 mt-0.5">{locale === 'AZ' ? 'Sorğunuzu bizə göndərin, uyğun tədarükçüləri axtaraq.' : locale === 'TR' ? 'Sorgunuzu bize gönderin, uygun tedarikçileri arayalım.' : 'Send us your inquiry and we will find suitable suppliers.'}</p>
             </div>
-            <div className="flex gap-3 shrink-0">
-              <button type="button" onClick={onOpenRFQ} className="bg-slate-800 hover:bg-slate-900 text-white text-sm font-semibold px-6 py-2.5 rounded-lg transition-colors cursor-pointer">{ctaRFQ}</button>
-              <button type="button" onClick={() => onNavigate('products')} className="border border-slate-300 hover:border-slate-400 text-slate-700 text-sm font-medium px-5 py-2.5 rounded-lg transition-colors cursor-pointer">{ctaCatalog}</button>
+            <div className="flex gap-2.5 shrink-0">
+              <button
+                type="button"
+                onClick={onOpenRFQ}
+                className="bg-brandNavy hover:bg-brandNavyDark text-white text-xs font-semibold px-4 py-2 rounded transition-colors cursor-pointer"
+              >
+                {ctaRFQ}
+              </button>
+              <button
+                type="button"
+                onClick={() => onNavigate('products')}
+                className="border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-medium px-4 py-2 rounded transition-colors cursor-pointer"
+              >
+                {ctaCatalog}
+              </button>
             </div>
           </div>
         </div>
@@ -1418,14 +1436,20 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
             <div className="custom-container py-10">
               <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-3 leading-tight max-w-2xl">{heroTitle}</h1>
               <p className="text-base sm:text-lg text-slate-100/90 leading-relaxed mb-7 max-w-xl">{heroDesc}</p>
-              <div className="flex flex-wrap gap-3.5">
-                <button type="button" onClick={onOpenProducer} className="bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold px-6 py-3 rounded-lg shadow-lg shadow-emerald-900/30 transition-all cursor-pointer flex items-center gap-2">
-                  <span>{ctaRegister}</span>
-                  <i className="fa-solid fa-arrow-right text-xs"></i>
+              <div className="flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={onOpenProducer}
+                  className="bg-brandNavy hover:bg-brandNavyDark text-white text-xs font-semibold px-5 py-2.5 rounded transition-colors cursor-pointer"
+                >
+                  {ctaRegister}
                 </button>
-                <button type="button" onClick={() => onNavigate('services')} className="bg-white/10 hover:bg-white/20 text-white border border-white/25 text-sm font-bold px-6 py-3 rounded-lg backdrop-blur-sm transition-all cursor-pointer flex items-center gap-2">
-                  <i className="fa-solid fa-handshake-angle text-xs text-slate-200"></i>
-                  <span>{ctaServices}</span>
+                <button
+                  type="button"
+                  onClick={() => onNavigate('services')}
+                  className="bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs font-semibold px-5 py-2.5 rounded transition-colors cursor-pointer"
+                >
+                  {ctaServices}
                 </button>
               </div>
             </div>
@@ -1509,9 +1533,21 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
               <p className="text-base font-semibold text-[#171717]">{locale === 'AZ' ? 'Məhsullarınızı ixrac etmək istəyirsiniz?' : locale === 'TR' ? 'Ürünlerinizi ihraç etmek mi istiyorsunuz?' : 'Want to export your products?'}</p>
               <p className="text-sm text-slate-500 mt-0.5">{locale === 'AZ' ? 'Şirkətiniz və məhsullarınız haqqında məlumat verin, ixrac imkânlarını birlikdə araşdıraq.' : locale === 'TR' ? 'Şirketiniz ve ürünleriniz hakkında bilgi verin, ihracat imkânlarını birlikte araştıralım.' : 'Share info about your company and products, and we will explore export opportunities together.'}</p>
             </div>
-            <div className="flex gap-3 shrink-0">
-              <button type="button" onClick={onOpenProducer} className="bg-slate-800 hover:bg-slate-900 text-white text-sm font-semibold px-6 py-2.5 rounded-lg transition-colors cursor-pointer">{ctaRegister}</button>
-              <button type="button" onClick={() => onNavigate('services')} className="border border-slate-300 hover:border-slate-400 text-slate-700 text-sm font-medium px-5 py-2.5 rounded-lg transition-colors cursor-pointer">{ctaServices}</button>
+            <div className="flex gap-2.5 shrink-0">
+              <button
+                type="button"
+                onClick={onOpenProducer}
+                className="bg-brandNavy hover:bg-brandNavyDark text-white text-xs font-semibold px-4 py-2 rounded transition-colors cursor-pointer"
+              >
+                {ctaRegister}
+              </button>
+              <button
+                type="button"
+                onClick={() => onNavigate('services')}
+                className="border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-medium px-4 py-2 rounded transition-colors cursor-pointer"
+              >
+                {ctaServices}
+              </button>
             </div>
           </div>
         </div>
