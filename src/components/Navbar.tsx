@@ -246,25 +246,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             <i className="fa-solid fa-magnifying-glass text-sm"></i>
           </button>
 
-          {/* Dossiers */}
-          <button
-            type="button"
-            onClick={() => handleNavClick('dossiers')}
-            className={`relative p-2 rounded transition-colors cursor-pointer flex items-center gap-1 text-xs font-bold ${
-              activeView === 'dossiers'
-                ? 'bg-blue-50 text-brandNavy border border-blue-200'
-                : 'text-gray-600 hover:text-brandNavy hover:bg-slate-100'
-            }`}
-            title={t.dossiers}
-          >
-            <i className="fa-regular fa-folder-open text-sm"></i>
-            {(dossiersCount > 0 || shortlistCount > 0) && (
-              <span className="bg-brandGreen text-white text-[9px] font-extrabold px-1 py-0.5 rounded tabular-nums">
-                {dossiersCount + shortlistCount}
-              </span>
-            )}
-          </button>
-
           {/* Request Quote — hidden on mobile, shown sm+ */}
           <button
             type="button"
@@ -351,23 +332,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                 {activeView === item.id && <i className="fa-solid fa-chevron-right text-[10px] opacity-70"></i>}
               </button>
             ))}
-
-            <button
-              type="button"
-              onClick={() => handleNavClick('dossiers')}
-              className={`w-full text-left px-4 py-3 rounded-xl text-sm font-semibold transition-colors cursor-pointer flex items-center justify-between ${
-                activeView === 'dossiers'
-                  ? 'bg-brandNavy text-white'
-                  : 'text-slate-700 hover:bg-slate-50'
-              }`}
-            >
-              <span>{t.dossiers}</span>
-              {(dossiersCount + shortlistCount) > 0 && (
-                <span className="text-[10px] bg-brandGreen text-white px-1.5 py-0.5 rounded-full tabular-nums">
-                  {dossiersCount + shortlistCount}
-                </span>
-              )}
-            </button>
 
             {/* Divider */}
             <div className="border-t border-slate-100 my-2" />

@@ -124,7 +124,7 @@ export default function App() {
     return saved && valid.includes(saved) ? saved : 'AZ';
   });
 
-  const VALID_VIEWS: ViewMode[] = ['home','buyers','producers','services','products','how-it-works','about','insights','contact','dossiers','ai-desk','articles'];
+  const VALID_VIEWS: ViewMode[] = ['home','buyers','producers','services','products','how-it-works','about','insights','contact','ai-desk','articles'];
 
   const getViewFromHash = (): ViewMode => {
     const hash = window.location.hash.replace('#/', '').replace('#', '') as ViewMode;
@@ -405,15 +405,6 @@ export default function App() {
               </button>
               <span>/</span>
               <span className="font-semibold text-slate-800 capitalize">{activeView}</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <button
-                type="button"
-                onClick={() => setActiveView('dossiers')}
-                className="text-brandNavy hover:text-brandGreen font-bold cursor-pointer"
-              >
-                Saved Dossiers ({rfqSubmissions.length + producerApps.length})
-              </button>
             </div>
           </div>
         </div>
@@ -1121,15 +1112,6 @@ export default function App() {
                     className="hover:text-white cursor-pointer"
                   >
                     Articles — Trade Intelligence & Reports
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => setActiveView('dossiers')}
-                    className="hover:text-white cursor-pointer"
-                  >
-                    Saved Printable RFQ Dossiers ({rfqSubmissions.length + producerApps.length})
                   </button>
                 </li>
               </ul>
