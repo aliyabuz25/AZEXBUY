@@ -177,14 +177,6 @@ const ShareModal: React.FC<ShareModalProps> = ({ article, onClose }) => {
     </div>,
     document.body
   );
-          >
-            <i className={`fa-solid ${copied ? 'fa-check' : 'fa-copy'} text-xs`}></i>
-            <span>{copied ? 'Copied!' : 'Copy'}</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  );
 };
 
 // ─── Article Detail ─────────────────────────────────────────────────────────────

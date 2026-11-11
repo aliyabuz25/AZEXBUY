@@ -68,7 +68,7 @@ export interface ProductItem {
   id: string;
   featured: boolean;
   hsCode: string;
-  categoryKey: 'agro' | 'textile' | 'construction' | 'metals' | 'chemicals';
+  categoryKey: 'agro' | 'textile' | 'construction' | 'metals' | 'chemicals' | 'food' | 'industrial' | 'packaging' | string;
   name: LocalizedText;
   categoryLabel: LocalizedText;
   shortDesc: LocalizedText;

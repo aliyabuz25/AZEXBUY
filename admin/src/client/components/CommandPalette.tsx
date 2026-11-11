@@ -11,7 +11,17 @@ import {
   Moon,
   Sun,
   GitBranch,
-  Compass
+  Compass,
+  Boxes,
+  PenLine,
+  Package,
+  BookOpen,
+  Briefcase,
+  Inbox,
+  Users,
+  Mail,
+  Cpu,
+  Activity
 } from 'lucide-react';
 import { UiLanguage } from '../types';
 import { DICTIONARIES } from '../i18n';
@@ -49,13 +59,19 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   }
 
   const navItems: PaletteItem[] = [
-    { type: 'nav', id: 'dashboard', title: t['nav.dashboard'] || 'Canlı İcmal', icon: LayoutGrid, subtitle: 'Əsas analitika' },
-    { type: 'nav', id: 'seo-manager', title: t['nav.seoManager'] || 'Axtarış & SEO', icon: Search, subtitle: 'Meta & sitemap' },
-    { type: 'nav', id: 'data-grid', title: t['nav.records'] || 'Məlumat Bazası', icon: Database, subtitle: 'Sətir qeydləri' },
-    { type: 'nav', id: 'media', title: t['nav.media'] || 'Media Mərkəzi', icon: ImageIcon, subtitle: 'Fayl və şəkillər' },
-    { type: 'nav', id: 'localization', title: t['nav.localization'] || 'Lokalizasiya & Dillər', icon: Globe, subtitle: 'Tərcümələr' },
-    { type: 'nav', id: 'settings', title: t['nav.settings'] || 'Sistem Parametrləri', icon: Settings, subtitle: 'Backup və konfiqurasiya' },
-    { type: 'nav', id: 'settings', title: 'Sistem Versiya Yeniləməsi', icon: GitBranch, subtitle: 'v2.4 yoxla və qorunan yeniləmə et' },
+    { type: 'nav', id: 'azexbuy', title: 'AZEXBUY: İcmal & Sorğular', icon: Boxes, subtitle: 'RFQ, İstehsalçı qeydiyyatları və əlaqə sorğuları' },
+    { type: 'nav', id: 'inbox', title: 'Gələn Qutusu (Inbox)', icon: Inbox, subtitle: 'Gələn müraciətlər və bildirişlər' },
+    { type: 'nav', id: 'product-catalog', title: 'Məhsul Kataloqu', icon: Package, subtitle: 'İxrac məhsulları, HS kodlar, sertifikatlar' },
+    { type: 'nav', id: 'services', title: 'Xidmətlər İdarəetməsi', icon: Briefcase, subtitle: 'İxrac xidmətləri, kateqoriyalar, ikonlar' },
+    { type: 'nav', id: 'articles', title: 'Bloq & Analitika Məqalələri', icon: BookOpen, subtitle: 'Bloq yazıları, xəbərlər və analitikalar' },
+    { type: 'nav', id: 'azexbuy-cms', title: 'AZEXBUY CMS — Məzmun', icon: PenLine, subtitle: 'Bütün səhifələr, xidmət modalları, mətn və şəkillər' },
+    { type: 'nav', id: 'localization', title: t['nav.localization'] || 'Lokalizasiya & Dillər', icon: Globe, subtitle: '6 dildə sistem tərcümələri' },
+    { type: 'nav', id: 'user-management', title: 'İstifadəçilər & Girişlər', icon: Users, subtitle: 'Admin istifadəçiləri və səlahiyyətlər' },
+    { type: 'nav', id: 'smtp-settings', title: 'SMTP E-poçt Konfiqurasiyası', icon: Mail, subtitle: 'E-poçt göndərmə və bildiriş serveri' },
+    { type: 'nav', id: 'ai-settings', title: 'OpenRouter AI Parametrləri', icon: Cpu, subtitle: 'Süni intellekt və model konfiqurasiyası' },
+    { type: 'nav', id: 'logs', title: 'Sistem Logları', icon: Activity, subtitle: 'Sistem audit və əməliyyat logları' },
+    { type: 'nav', id: 'settings', title: t['nav.settings'] || 'Sistem Parametrləri', icon: Settings, subtitle: 'Ümumi konfiqurasiya və sazlamalar' },
+    { type: 'nav', id: 'dashboard', title: t['nav.dashboard'] || 'Köhnə Analitika İcmalı', icon: LayoutGrid, subtitle: 'Köhnə analitika paneli' },
   ];
 
   const themeItems: PaletteItem[] = COLOR_THEMES.map(theme => ({

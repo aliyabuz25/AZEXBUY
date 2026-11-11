@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { UiLanguage, toText } from '../types';
 import { SEED_SERVICES } from '../../seed';
+import { IconPickerDropdown } from './AzexbuyCMSView';
 
 interface ServicesViewProps { uiLang: UiLanguage; }
 
@@ -436,11 +437,13 @@ export const ServicesView: React.FC<ServicesViewProps> = () => {
                 </div>
                 {/* Meta */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <Field label="İkon">
-                    <select value={newSrv.iconClass} onChange={e => setNewSrv((p: any) => ({ ...p, iconClass: e.target.value }))} className={inputCls}>
-                      {ICON_OPTIONS.map(ic => <option key={ic} value={ic}>{ic}</option>)}
-                    </select>
-                  </Field>
+                  <div className="space-y-1">
+                    <IconPickerDropdown
+                      label="İkon (Seçim və Önizləmə)"
+                      value={newSrv.iconClass || 'fa-solid fa-briefcase'}
+                      onChange={ic => setNewSrv((p: any) => ({ ...p, iconClass: ic }))}
+                    />
+                  </div>
                   <Field label="Rəng">
                     <select value={newSrv.colorClass} onChange={e => setNewSrv((p: any) => ({ ...p, colorClass: e.target.value }))} className={inputCls}>
                       {COLOR_OPTIONS.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
@@ -614,11 +617,13 @@ export const ServicesView: React.FC<ServicesViewProps> = () => {
                                 </div>
                               </div>
                               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <Field label="İkon">
-                                  <select value={editData.iconClass || ''} onChange={e => setEditData((p: any) => ({ ...p, iconClass: e.target.value }))} className={inputCls}>
-                                    {ICON_OPTIONS.map(ic => <option key={ic} value={ic}>{ic}</option>)}
-                                  </select>
-                                </Field>
+                                <div className="space-y-1">
+                                  <IconPickerDropdown
+                                    label="İkon (Seçim və Önizləmə)"
+                                    value={editData.iconClass || 'fa-solid fa-briefcase'}
+                                    onChange={ic => setEditData((p: any) => ({ ...p, iconClass: ic }))}
+                                  />
+                                </div>
                                 <Field label="Rəng">
                                   <select value={editData.colorClass || ''} onChange={e => setEditData((p: any) => ({ ...p, colorClass: e.target.value }))} className={inputCls}>
                                     {COLOR_OPTIONS.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}

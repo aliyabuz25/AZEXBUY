@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
   Settings,
   ChevronLeft,
@@ -17,6 +17,11 @@ import {
   Cpu,
   Globe,
   X,
+  Search,
+  ExternalLink,
+  ChevronDown,
+  ChevronRight,
+  Sparkles,
 } from 'lucide-react';
 import { UiLanguage } from '../types';
 import { DICTIONARIES } from '../i18n';
@@ -36,27 +41,90 @@ interface SidebarProps {
   onCloseMobile?: () => void;
 }
 
-const NAV_SECTIONS = [
+interface NavSubItem {
+  id: string;
+  label: string;
+  badge?: number;
+  cmsPageKey?: string;
+}
+
+interface NavItem {
+  id: string;
+  label: string;
+  icon: any;
+  subItems?: NavSubItem[];
+}
+
+interface NavSection {
+  title: string;
+  items: NavItem[];
+}
+
+const NAV_SECTIONS: NavSection[] = [
   {
-    title: 'AZEXBUY',
+    title: 'Əsas İdarəetmə',
     items: [
-      { id: 'azexbuy',         label: 'İcmal & Sorğular', icon: Boxes },
-      { id: 'azexbuy-cms',     label: 'CMS — Məzmun',     icon: PenLine },
-      { id: 'product-catalog', label: 'Məhsul Kataloqu',  icon: Package },
-      { id: 'articles',        label: 'Bloq & Məqalələr', icon: BookOpen },
-      { id: 'services',        label: 'Xidmətlər',        icon: Briefcase },
-      { id: 'inbox',           label: 'Gələn Qutusu',     icon: Inbox },
+      {
+        id: 'azexbuy',
+        label: 'İcmal & Sorğular',
+        icon: Boxes,
+        subItems: [
+          { id: 'azexbuy', label: 'Dashboard & Statistika' },
+          { id: 'azexbuy', label: 'RFQ Sorğuları' },
+          { id: 'azexbuy', label: 'İstehsalçı Qeydiyyatları' },
+        ],
+      },
+      {
+        id: 'inbox',
+        label: 'Gələn Qutusu',
+        icon: Inbox,
+      },
+      {
+        id: 'product-catalog',
+        label: 'Məhsul Kataloqu',
+        icon: Package,
+      },
+      {
+        id: 'services',
+        label: 'Xidmətlər',
+        icon: Briefcase,
+      },
+      {
+        id: 'articles',
+        label: 'Bloq & Məqalələr',
+        icon: BookOpen,
+      },
     ],
   },
   {
-    title: 'Sistem',
+    title: 'Məzmun & CMS',
     items: [
-      { id: 'localization',    label: 'Lokalizasiya & Dillər', icon: Globe },
-      { id: 'logs',            label: 'Sistem Logları',         icon: Activity },
-      { id: 'user-management', label: 'İstifadəçilər',          icon: Users },
-      { id: 'ai-settings',     label: 'OpenRouter AI',         icon: Cpu },
-      { id: 'smtp-settings',   label: 'SMTP E-poçt',           icon: Mail },
-      { id: 'settings',        label: 'Parametrlər',            icon: Settings },
+      {
+        id: 'azexbuy-cms',
+        label: 'CMS — Məzmun',
+        icon: PenLine,
+        subItems: [
+          { id: 'azexbuy-cms', label: 'Əsas Səhifə (Hero, Bloklar)', cmsPageKey: 'hero' },
+          { id: 'azexbuy-cms', label: 'Xidmət Müraciəti Modal (+/-)', cmsPageKey: 'service_modal' },
+          { id: 'azexbuy-cms', label: 'Haqqımızda & Komanda', cmsPageKey: 'about' },
+          { id: 'azexbuy-cms', label: 'Bütün Görsəllər & Media', cmsPageKey: 'images' },
+        ],
+      },
+      {
+        id: 'localization',
+        label: 'Lokalizasiya & Dillər',
+        icon: Globe,
+      },
+    ],
+  },
+  {
+    title: 'Sistem & Tənzimləmələr',
+    items: [
+      { id: 'user-management', label: 'İstifadəçilər',  icon: Users },
+      { id: 'smtp-settings',   label: 'SMTP E-poçt',    icon: Mail },
+      { id: 'ai-settings',     label: 'OpenRouter AI',  icon: Cpu },
+      { id: 'logs',            label: 'Sistem Logları', icon: Activity },
+      { id: 'settings',        label: 'Parametrlər',    icon: Settings },
     ],
   },
 ];
@@ -149,17 +217,46 @@ export const Sidebar: React.FC<SidebarProps> = ({
     return 0;
   };
 
-  const handleTabClick = (item: { id: string; label: string; icon: any }) => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
+    'azexbuy': true,
+    'azexbuy-cms': false,
+  });
+
+  const toggleSubmenu = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setExpandedSections(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const filteredSections = useMemo(() => {
+    if (!searchQuery.trim()) return NAV_SECTIONS;
+    const q = searchQuery.toLowerCase();
+    return NAV_SECTIONS.map(sec => {
+      const matchingItems = sec.items.filter(item => {
+        const matchesMain = item.label.toLowerCase().includes(q);
+        const matchesSub = item.subItems?.some(s => s.label.toLowerCase().includes(q));
+        return matchesMain || matchesSub;
+      });
+      return { ...sec, items: matchingItems };
+    }).filter(sec => sec.items.length > 0);
+  }, [searchQuery]);
+
+  const handleTabClick = (item: { id: string; label: string; icon: any }, extraParam?: string) => {
+    if (extraParam) {
+      localStorage.setItem('azexbuy_cms_initial_page', extraParam);
+    }
     onSelectTab(item.id, item.label, item.id);
     if (isMobileDrawer) {
       onCloseMobile?.();
     }
   };
 
-  const renderNavButton = (item: { id: string; label: string; icon: any }) => {
+  const renderNavButton = (item: NavItem) => {
     const Icon = item.icon;
     const isActive = activeTabId === item.id;
     const badge = getBadge(item.id);
+    const hasSubItems = item.subItems && item.subItems.length > 0;
+    const isExpanded = expandedSections[item.id];
 
     if (collapsed && !isMobileDrawer) {
       return (
@@ -179,32 +276,71 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </span>
             )}
           </button>
-          {/* Tooltip */}
+          {/* Tooltip with subitems if any */}
           <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 px-2.5 py-1.5 bg-slate-900 text-white text-[11px] font-medium rounded-lg whitespace-nowrap shadow-lg pointer-events-none opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
-            {item.label}{badge > 0 ? ` (${badge})` : ''}
+            <div>{item.label}{badge > 0 ? ` (${badge})` : ''}</div>
+            {hasSubItems && (
+              <div className="mt-1 pt-1 border-t border-slate-700/60 text-[10px] text-slate-300 space-y-0.5">
+                {item.subItems!.map((sub, i) => (
+                  <div key={i} className="flex items-center gap-1">
+                    <span className="text-slate-500">•</span> {sub.label}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       );
     }
 
     return (
-      <button
-        key={item.id}
-        onClick={() => handleTabClick(item)}
-        className={`group w-full flex items-center gap-2.5 py-2 px-3 rounded-md text-[13px] font-medium transition-all duration-150 text-left cursor-pointer ${
-          isActive
-            ? 'bg-[#0f3156] text-white shadow-xs'
-            : 'text-slate-600 hover:bg-slate-100/70 hover:text-slate-900'
-        }`}
-      >
-        <Icon className={`shrink-0 transition-colors ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-slate-600'}`} style={{ width: '16px', height: '16px' }} />
-        <span className="truncate flex-1 tracking-tight">{item.label}</span>
-        {badge > 0 && (
-          <span className={`min-w-[18px] h-4 px-1 text-[9px] font-bold rounded-full flex items-center justify-center leading-none shrink-0 ${isActive ? 'bg-white/20 text-white' : 'bg-red-500 text-white'}`}>
-            {badge > 99 ? '99+' : badge}
-          </span>
+      <div key={item.id} className="space-y-0.5">
+        <div
+          onClick={() => handleTabClick(item)}
+          className={`group w-full flex items-center gap-2.5 py-2 px-2.5 rounded-lg text-[13px] font-medium transition-all duration-150 cursor-pointer ${
+            isActive
+              ? 'bg-[#0f3156] text-white shadow-xs'
+              : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900'
+          }`}
+        >
+          <Icon className={`shrink-0 transition-colors ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-[#0f3156]'}`} style={{ width: '16px', height: '16px' }} />
+          <span className="truncate flex-1 tracking-tight">{item.label}</span>
+          
+          {badge > 0 && (
+            <span className={`min-w-[18px] h-4 px-1 text-[9px] font-bold rounded-full flex items-center justify-center leading-none shrink-0 ${isActive ? 'bg-white/20 text-white' : 'bg-red-500 text-white'}`}>
+              {badge > 99 ? '99+' : badge}
+            </span>
+          )}
+
+          {hasSubItems && (
+            <button
+              type="button"
+              onClick={(e) => toggleSubmenu(item.id, e)}
+              className={`p-1 rounded hover:bg-black/10 transition-colors ${isActive ? 'text-white/80' : 'text-slate-400'}`}
+              title={isExpanded ? 'Bölmələri bağla' : 'Bölmələri göstər'}
+            >
+              {isExpanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
+            </button>
+          )}
+        </div>
+
+        {/* Accordion Sub-links for faster navigation */}
+        {hasSubItems && isExpanded && (
+          <div className="ml-5 pl-2.5 border-l border-slate-200/80 space-y-0.5 py-1">
+            {item.subItems!.map((sub, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => handleTabClick({ id: sub.id, label: sub.label, icon: item.icon }, sub.cmsPageKey)}
+                className="w-full text-left py-1 px-2 rounded-md text-[11px] font-medium text-slate-500 hover:text-[#0f3156] hover:bg-slate-100/60 transition-colors flex items-center justify-between group cursor-pointer"
+              >
+                <span className="truncate">{sub.label}</span>
+                <span className="opacity-0 group-hover:opacity-100 text-[10px] text-slate-400">→</span>
+              </button>
+            ))}
+          </div>
         )}
-      </button>
+      </div>
     );
   };
 
@@ -267,32 +403,82 @@ export const Sidebar: React.FC<SidebarProps> = ({
         )}
       </div>
 
-      {/* Nav */}
-      <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-4">
-        {!collapsed || isMobileDrawer ? (
-          NAV_SECTIONS.map((section, idx) => (
-            <div key={idx}>
-              <div className="px-3 mb-1.5 text-[9px] font-bold text-slate-400 uppercase tracking-wider">
-                {section.title}
-              </div>
-              <div className="space-y-0.5">
-                {section.items.map(item => renderNavButton(item))}
-              </div>
+      {/* Nav with Live Search & Quick Filter */}
+      <div className="flex-1 flex flex-col min-h-0">
+        {(!collapsed || isMobileDrawer) && (
+          <div className="px-3 pt-2.5 pb-1">
+            <div className="relative">
+              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                placeholder="Menyuda axtar..."
+                className="w-full pl-8 pr-6 py-1.5 text-xs bg-slate-50 border border-slate-200/90 rounded-lg text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-[#0f3156] focus:border-[#0f3156] transition-all"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              )}
             </div>
-          ))
-        ) : (
-          <div className="space-y-1">
-            {NAV_SECTIONS.map((section, idx) => (
-              <div key={idx}>
-                {section.items.map(item => renderNavButton(item))}
-                {idx < NAV_SECTIONS.length - 1 && (
-                  <div className="border-t border-slate-100 my-2 mx-1" />
-                )}
-              </div>
-            ))}
           </div>
         )}
-      </nav>
+
+        <nav className="flex-1 overflow-y-auto py-2.5 px-2 space-y-4">
+          {!collapsed || isMobileDrawer ? (
+            filteredSections.length === 0 ? (
+              <div className="px-3 py-6 text-center text-xs text-slate-400">
+                Uyğun bölmə tapılmadı
+              </div>
+            ) : (
+              filteredSections.map((section, idx) => (
+                <div key={idx}>
+                  <div className="px-3 mb-1.5 text-[9px] font-bold text-slate-400 uppercase tracking-wider">
+                    {section.title}
+                  </div>
+                  <div className="space-y-0.5">
+                    {section.items.map(item => renderNavButton(item))}
+                  </div>
+                </div>
+              ))
+            )
+          ) : (
+            <div className="space-y-1">
+              {NAV_SECTIONS.map((section, idx) => (
+                <div key={idx}>
+                  {section.items.map(item => renderNavButton(item))}
+                  {idx < NAV_SECTIONS.length - 1 && (
+                    <div className="border-t border-slate-100 my-2 mx-1" />
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </nav>
+      </div>
+
+      {/* Quick Website View Action */}
+      {(!collapsed || isMobileDrawer) && (
+        <div className="px-3 py-2 border-t border-slate-100 bg-slate-50/50">
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs font-semibold text-[#0f3156] bg-white border border-slate-200 shadow-2xs hover:bg-[#0f3156] hover:text-white transition-all group"
+          >
+            <span className="flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-amber-500 group-hover:text-amber-300" />
+              Sayta Keçid Et
+            </span>
+            <ExternalLink className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
+          </a>
+        </div>
+      )}
 
       {/* Bottom Profile & Session */}
       {!collapsed || isMobileDrawer ? (

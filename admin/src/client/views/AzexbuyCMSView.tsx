@@ -5,11 +5,12 @@ import {
   Star, Footprints, Layers, LayoutTemplate, Menu as MenuIcon,
   Anchor, HelpCircle, Info, Map, Users, FileText, Pencil, Mail, ExternalLink, UserPlus,
   Search, Phone, Copy, RotateCcw, BarChart3, Target, Workflow, ShieldCheck, Globe2, TrendingUp, Building2, ArrowRight,
-  MapPin, Share2,
+  MapPin, Share2, Briefcase,
 } from 'lucide-react';
 import { UiLanguage } from '../types';
 import { flattenStrings } from '../utils/flattenStrings';
 import { UI_STRINGS, ABOUT_PAGE_DEFAULT, SERVICES_PILLARS } from '../../../../src/data/translations';
+import { SEED_SERVICES } from '../../seed';
 
 interface AzexbuyCMSViewProps { uiLang: UiLanguage; }
 
@@ -85,6 +86,7 @@ const CMS_PAGES = [
   { key: 'audience',          label: 'Alıcı və İstehsalçı Masası', icon: Users,          group: 'Əsas Səhifə' },
   { key: 'why_azexbuy',       label: 'Niyə AZEXBUY',               icon: Star,           group: 'Əsas Səhifə' },
   { key: 'services',          label: 'İxrac Xidmətləri',           icon: Anchor,         group: 'Əsas Səhifə' },
+  { key: 'service_modal',     label: 'Xidmət Müraciəti Modal',     icon: Briefcase,      group: 'Əsas Səhifə' },
   { key: 'how_it_works',      label: 'Necə İşləyir (7 & 10)',      icon: HelpCircle,     group: 'Əsas Səhifə' },
   { key: 'featured_products', label: 'Önə Çıxan Məhsullar',        icon: FileText,       group: 'Əsas Səhifə' },
   { key: 'why_azerbaijan',    label: 'Niyə Azərbaycan',            icon: Map,            group: 'Əsas Səhifə' },
@@ -581,6 +583,326 @@ const ServicePillarEditor = React.memo(({ content, onChange, onSaveContent, savi
   );
 });
 
+// ── Service Modal & Options Editor Component (+/- and Icon Picker) ───────────
+interface ServiceModalEditorProps {
+  content: any;
+  onChange: (updater: (prev: any) => any) => void;
+  onSaveContent: (data: any) => Promise<void>;
+  saving: boolean;
+  saved: boolean;
+}
+
+const ServiceModalEditor = React.memo(({ content, onChange, onSaveContent, saving, saved }: ServiceModalEditorProps) => {
+  const [servicesList, setServicesList] = useState<any[]>(() => {
+    if (Array.isArray(content?.cmsServices) && content.cmsServices.length > 0) {
+      return content.cmsServices;
+    }
+    return SEED_SERVICES.map(s => ({ ...s }));
+  });
+  const [modalFilter, setModalFilter] = useState<'all' | 'primary' | 'secondary'>('all');
+
+  // Synchronize when content.cmsServices changes from backend
+  useEffect(() => {
+    if (Array.isArray(content?.cmsServices) && content.cmsServices.length > 0) {
+      setServicesList(content.cmsServices);
+    }
+  }, [content?.cmsServices]);
+
+  const applyChange = (nextList: any[]) => {
+    setServicesList(nextList);
+    onChange((prev: any) => ({ ...prev, cmsServices: nextList }));
+  };
+
+  const updateItem = (id: string, updater: (item: any) => any) => {
+    applyChange(servicesList.map((s: any) => (s.id === id ? updater(s) : s)));
+  };
+
+  const addServiceOption = (type: 'primary' | 'secondary' = 'primary') => {
+    const newId = `srv-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+    const newItem = {
+      id: newId,
+      title: {
+        AZ: 'Yeni Xidmət Seçimi',
+        EN: 'New Service Selection',
+        TR: 'Yeni Hizmet Seçeneği',
+        RU: 'Новая опция услуги',
+        AR: 'خيار خدمة جديد',
+        ES: 'Nueva opción de servicio'
+      },
+      description: { AZ: '', EN: '', TR: '', RU: '', AR: '', ES: '' },
+      targetAudience: {
+        AZ: 'Hədəf auditoriya və ya qısa alt başlıq',
+        EN: 'Target audience or brief subtext',
+        TR: 'Hedef kitle veya kısa açıklama',
+        RU: 'Целевая аудитория или краткое описание',
+        AR: 'الجمهور المستهدف أو النص الفرعي',
+        ES: 'Público objetivo o subtítulo'
+      },
+      scope: { AZ: [], EN: [], TR: [], RU: [], AR: [], ES: [] },
+      iconClass: type === 'primary' ? 'fa-solid fa-chart-line' : 'fa-solid fa-briefcase',
+      colorClass: type === 'primary' ? 'bg-[#0f3156]' : 'bg-slate-700',
+      serviceType: type,
+      category: 'Export',
+      isActive: true,
+      sortOrder: servicesList.length + 1,
+    };
+    applyChange([...servicesList, newItem]);
+  };
+
+  const removeServiceOption = (id: string) => {
+    if (confirm('Bu xidmət seçimini müraciət modalından silmək istədiyinizə əminsiniz?')) {
+      applyChange(servicesList.filter((s: any) => s.id !== id));
+    }
+  };
+
+  const setItemLoc = (id: string, field: 'title' | 'targetAudience', loc: string, value: string) => {
+    updateItem(id, (s: any) => ({
+      ...s,
+      [field]: { ...(s[field] || {}), [loc]: value }
+    }));
+  };
+
+  const filteredServices = servicesList.filter(s => {
+    if (modalFilter === 'all') return true;
+    return s.serviceType === modalFilter;
+  });
+
+  return (
+    <div className="space-y-4">
+      {/* Header & Controls */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3.5 border border-slate-200/90 rounded-lg shadow-2xs">
+        <div>
+          <div className="text-xs font-bold text-slate-900 uppercase tracking-tight flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            Xidmət Müraciəti Seçimləri (+/- İdarəetmə)
+          </div>
+          <p className="text-[11px] text-slate-500 mt-0.5">
+            Müştərinin "Xidmət Müraciəti" modalında gördüyü xidmət kartlarını artırıb-azaldın, ikonlarını canlı önizləmə ilə dəyişin.
+          </p>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center bg-slate-100 p-0.5 rounded text-[10px] font-bold">
+            <button
+              type="button"
+              onClick={() => setModalFilter('all')}
+              className={`px-2 py-1 rounded transition-colors ${modalFilter === 'all' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-900'}`}
+            >
+              Hamısı ({servicesList.length})
+            </button>
+            <button
+              type="button"
+              onClick={() => setModalFilter('primary')}
+              className={`px-2 py-1 rounded transition-colors ${modalFilter === 'primary' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-900'}`}
+            >
+              Əsas ({servicesList.filter(s => s.serviceType === 'primary').length})
+            </button>
+            <button
+              type="button"
+              onClick={() => setModalFilter('secondary')}
+              className={`px-2 py-1 rounded transition-colors ${modalFilter === 'secondary' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-900'}`}
+            >
+              Əlavə ({servicesList.filter(s => s.serviceType === 'secondary').length})
+            </button>
+          </div>
+          <button
+            type="button"
+            onClick={() => addServiceOption('primary')}
+            className="h-7 px-2.5 flex items-center gap-1.5 text-[11px] font-bold rounded bg-emerald-600 hover:bg-emerald-700 text-white shadow-2xs transition-colors cursor-pointer"
+          >
+            <Plus className="w-3.5 h-3.5" /> + Əsas Xidmət
+          </button>
+          <button
+            type="button"
+            onClick={() => addServiceOption('secondary')}
+            className="h-7 px-2.5 flex items-center gap-1.5 text-[11px] font-bold rounded bg-slate-700 hover:bg-slate-800 text-white shadow-2xs transition-colors cursor-pointer"
+          >
+            <Plus className="w-3.5 h-3.5" /> + Əlavə Xidmət
+          </button>
+        </div>
+      </div>
+
+      {/* List of service items */}
+      <div className="space-y-3">
+        {filteredServices.map((srv: any, idx: number) => {
+          const isPrimary = srv.serviceType === 'primary';
+          return (
+            <div key={srv.id} className="border border-slate-200/90 rounded-lg p-3.5 bg-white space-y-3 shadow-2xs transition-all hover:border-slate-300">
+              <div className="flex items-center justify-between gap-2.5 pb-2 border-b border-slate-100">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className={`w-8 h-8 rounded-lg ${srv.colorClass || (isPrimary ? 'bg-[#0f3156]' : 'bg-slate-700')} flex items-center justify-center text-white shrink-0 text-sm shadow-xs`}>
+                    <i className={srv.iconClass || 'fa-solid fa-briefcase'}></i>
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-xs font-bold text-slate-900 truncate flex items-center gap-2">
+                      <span>{idx + 1}. {srv.title?.AZ || srv.title?.EN || srv.id}</span>
+                      <span className={`text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded ${isPrimary ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-600 border border-slate-200'}`}>
+                        {isPrimary ? 'Əsas xidmət' : 'Əlavə xidmət'}
+                      </span>
+                    </div>
+                    <div className="text-[10px] text-slate-400 font-mono truncate">
+                      {srv.targetAudience?.AZ || srv.targetAudience?.EN || 'Alt izahat təyin olunmayıb'}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      updateItem(srv.id, (prev: any) => ({
+                        ...prev,
+                        serviceType: prev.serviceType === 'primary' ? 'secondary' : 'primary'
+                      }));
+                    }}
+                    className="px-2 py-1 text-[10px] font-bold rounded bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer"
+                    title="Növü dəyiş (Əsas / Əlavə)"
+                  >
+                    Növü Dəyiş
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      updateItem(srv.id, (prev: any) => ({
+                        ...prev,
+                        isActive: !prev.isActive
+                      }));
+                    }}
+                    className={`px-2 py-1 text-[10px] font-bold rounded transition-colors cursor-pointer ${
+                      srv.isActive !== false ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100' : 'bg-slate-100 text-slate-400'
+                    }`}
+                  >
+                    {srv.isActive !== false ? 'Aktiv' : 'Passiv'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => removeServiceOption(srv.id)}
+                    className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors cursor-pointer"
+                    title="Bu Xidmət Seçimini Sil (-)"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Icon Selector & Style */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <IconPickerDropdown
+                  label="İkon Seçimi (Önizləməli FontAwesome)"
+                  value={srv.iconClass || 'fa-solid fa-briefcase'}
+                  onChange={(ic) => updateItem(srv.id, (prev: any) => ({ ...prev, iconClass: ic }))}
+                />
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">İkon Fon Rəngi (Tailwind)</label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={srv.colorClass || 'bg-[#0f3156]'}
+                      onChange={(e) => updateItem(srv.id, (prev: any) => ({ ...prev, colorClass: e.target.value }))}
+                      placeholder="məs: bg-brandNavy, bg-emerald-600, bg-sky-600, bg-rose-600"
+                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                    />
+                    <div className={`w-8 h-8 rounded shrink-0 ${srv.colorClass || 'bg-[#0f3156]'} border border-slate-200 shadow-2xs`}></div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Multilingual Titles (6 languages) */}
+              <div>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">
+                  Xidmətin Başlığı (6 Dil)
+                </label>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {PILLAR_LOCS.map((loc) => (
+                    <div key={loc} className="flex items-center gap-1.5 bg-slate-50/70 border border-slate-200 rounded px-2 py-1">
+                      <span className="text-[9px] font-bold text-slate-400 font-mono w-4">{loc}</span>
+                      <input
+                        type="text"
+                        value={srv.title?.[loc] || ''}
+                        onChange={(e) => setItemLoc(srv.id, 'title', loc, e.target.value)}
+                        placeholder={`Başlıq (${loc})`}
+                        className="w-full text-xs bg-transparent focus:outline-none text-slate-800"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Multilingual Target Audience / Subtitle (6 languages) */}
+              <div>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">
+                  Alt İzah / Hədəf Auditoriya Mətni (6 Dil)
+                </label>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {PILLAR_LOCS.map((loc) => (
+                    <div key={loc} className="flex items-center gap-1.5 bg-slate-50/70 border border-slate-200 rounded px-2 py-1">
+                      <span className="text-[9px] font-bold text-slate-400 font-mono w-4">{loc}</span>
+                      <input
+                        type="text"
+                        value={srv.targetAudience?.[loc] || ''}
+                        onChange={(e) => setItemLoc(srv.id, 'targetAudience', loc, e.target.value)}
+                        placeholder={`Alt izah (${loc})`}
+                        className="w-full text-xs bg-transparent focus:outline-none text-slate-800"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Bottom Action Bar */}
+      <div className="flex items-center justify-between pt-2">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => addServiceOption('primary')}
+            className="h-8 px-3.5 flex items-center gap-1.5 text-xs font-bold rounded-sm bg-slate-100 hover:bg-slate-200 text-slate-800 transition-colors cursor-pointer"
+          >
+            <Plus className="w-3.5 h-3.5" /> + Əsas Xidmət Əlavə Et
+          </button>
+          <button
+            type="button"
+            onClick={() => addServiceOption('secondary')}
+            className="h-8 px-3.5 flex items-center gap-1.5 text-xs font-bold rounded-sm bg-slate-100 hover:bg-slate-200 text-slate-800 transition-colors cursor-pointer"
+          >
+            <Plus className="w-3.5 h-3.5" /> + Əlavə Xidmət Əlavə Et
+          </button>
+        </div>
+
+        <button
+          type="button"
+          onClick={async () => {
+            await onSaveContent({ ...content, cmsServices: servicesList });
+            try {
+              // Also sync with /api/azexbuy/services table
+              for (const s of servicesList) {
+                await fetch(`/api/azexbuy/services/${s.id}`, {
+                  method: 'PATCH',
+                  headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken()}` },
+                  body: JSON.stringify(s)
+                }).catch(() => {});
+              }
+            } catch {}
+          }}
+          disabled={saving}
+          className="h-8 px-5 flex items-center gap-2 text-xs font-bold rounded-sm bg-[#0f3156] hover:bg-[#081c33] text-white disabled:opacity-60 shadow-sm cursor-pointer"
+        >
+          <Save className="w-3.5 h-3.5" />
+          {saving ? 'Saxlanılır...' : 'Xidmət Müraciəti Seçimlərini Saxla'}
+        </button>
+      </div>
+
+      {saved && (
+        <div className="text-xs text-emerald-700 flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 p-2 rounded">
+          <CheckCircle className="w-3.5 h-3.5" /> Xidmət müraciəti seçimləri uğurla yadda saxlanıldı!
+        </div>
+      )}
+    </div>
+  );
+});
+
 interface LocaleTabsProps {
   locale: Loc;
   onSelect: (l: Loc) => void;
@@ -681,7 +1003,14 @@ const ImageField = React.memo(({ imgKey, label, content, uploading, onSaveConten
 
 // ── Main Component ─────────────────────────────────────────────────────────────
 export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
-  const [page, setPage] = useState<PageKey>('navbar');
+  const [page, setPage] = useState<PageKey>(() => {
+    const saved = localStorage.getItem('azexbuy_cms_initial_page');
+    if (saved) {
+      localStorage.removeItem('azexbuy_cms_initial_page');
+      return saved as PageKey;
+    }
+    return 'navbar';
+  });
   const [locale, setLocale] = useState<Loc>('EN');
 
   const [locData, setLocData] = useState<Record<string, Record<string, string>>>(DEFAULT_STRINGS);
@@ -2089,6 +2418,33 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
             </>
           )}
 
+          {/* ── SERVICE APPLICATION MODAL & OPTIONS (+/-) ── */}
+          {page === 'service_modal' && (
+            <>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-7 h-7 rounded bg-[#0f3156]/10 text-[#0f3156] flex items-center justify-center shrink-0">
+                    <Briefcase className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h2 className="text-sm font-bold text-slate-900">Xidmət Müraciəti Modalı və Seçimləri</h2>
+                    <p className="text-xs text-slate-500">
+                      Pop-up müraciət pəncərəsindəki bütün xidmətləri (+/-) artırıb-azaldın, ikonlarını seçin və mətnləri tənzimləyin.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <ServiceModalEditor
+                content={content}
+                onChange={(next) => setContent(next)}
+                onSaveContent={saveContent}
+                saving={saving}
+                saved={saved}
+              />
+            </>
+          )}
+
           {/* ── CONTACT & OFFICE DETAILS ── */}
           {page === 'contact' && (
             <>
@@ -2271,6 +2627,33 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
               <MultiLocF label='"Bu Məhsulu Sifariş Et" Butonu' strKey="featuredProducts.requestProduct" locData={locData} onChange={handleMultiLocChange} />
               <MultiLocF label='"HS Kodu" Etiketi' strKey="featuredProducts.hsCodeLabel" locData={locData} onChange={handleMultiLocChange} />
               <SaveBar onSave={async () => { await saveContent(content); await saveStrings(locData); }} saving={saving} saved={saved} />
+            </>
+          )}
+
+          {/* ── SERVICE APPLICATION MODAL & OPTIONS (+/-) ── */}
+          {page === 'service_modal' && (
+            <>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-7 h-7 rounded bg-[#0f3156]/10 text-[#0f3156] flex items-center justify-center shrink-0">
+                    <Briefcase className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h2 className="text-sm font-bold text-slate-900">Xidmət Müraciəti Modalı və Seçimləri</h2>
+                    <p className="text-xs text-slate-500">
+                      Pop-up müraciət pəncərəsindəki bütün xidmətləri (+/-) artırıb-azaldın, ikonlarını seçin və mətnləri tənzimləyin.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <ServiceModalEditor
+                content={content}
+                onChange={(next) => setContent(next)}
+                onSaveContent={saveContent}
+                saving={saving}
+                saved={saved}
+              />
             </>
           )}
 
@@ -3254,6 +3637,7 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                                 const items = [...(p.activities.items || [])];
                                 items.push({
                                   icon: 'fa-solid fa-circle-check',
+                                  color: 'from-blue-600 to-indigo-600',
                                   title: { AZ: '', EN: '', TR: '', RU: '', AR: '', ES: '' },
                                   desc: { AZ: '', EN: '', TR: '', RU: '', AR: '', ES: '' }
                                 });
@@ -3678,6 +4062,8 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                                 const items = [...(p.sectors?.items || [])];
                                 items.push({
                                   image: '',
+                                  icon: 'fa-solid fa-industry',
+                                  color: 'from-amber-500 to-orange-600',
                                   title: { AZ: '', EN: '', TR: '', RU: '', AR: '', ES: '' },
                                   desc: { AZ: '', EN: '', TR: '', RU: '', AR: '', ES: '' }
                                 });
