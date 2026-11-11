@@ -2587,12 +2587,45 @@ function getSmtpSettings() {
   return mainDb.prepare('SELECT * FROM smtp_settings WHERE id = 1').get() as any;
 }
 
-async function createTransport() {
-  const s = getSmtpSettings();
+// Parse per-account SMTP configs from email_routes JSON
+function getAccountSmtpConfig(targetEmail?: string) {
+  const globalSmtp = getSmtpSettings();
+  if (!targetEmail) return globalSmtp;
+
+  let routes: Record<string, any> = {};
+  try {
+    if (globalSmtp?.email_routes) {
+      routes = typeof globalSmtp.email_routes === 'string'
+        ? JSON.parse(globalSmtp.email_routes)
+        : globalSmtp.email_routes;
+    }
+  } catch {
+    routes = {};
+  }
+
+  const custom = routes[targetEmail.toLowerCase().trim()];
+  if (custom && custom.host && custom.user && custom.password) {
+    return {
+      host: custom.host,
+      port: custom.port || 587,
+      secure: Boolean(custom.secure),
+      user: custom.user,
+      password: custom.password,
+      from_name: custom.from_name || globalSmtp?.from_name || 'AZEXBUY',
+      from_email: custom.from_email || custom.user,
+      enabled: custom.enabled !== undefined ? custom.enabled : globalSmtp?.enabled,
+    };
+  }
+
+  return globalSmtp;
+}
+
+async function createTransport(targetEmail?: string) {
+  const s = getAccountSmtpConfig(targetEmail);
   if (!s?.enabled || !s?.host || !s?.user || !s?.password) return null;
   return nodemailer.createTransport({
     host: s.host,
-    port: s.port || 587,
+    port: parseInt(s.port) || 587,
     secure: Boolean(s.secure),
     auth: { user: s.user, pass: s.password },
     tls: { rejectUnauthorized: false },
@@ -2613,7 +2646,8 @@ async function sendNotificationEmail(subject: string, html: string, toOverride?:
       } catch {}
       return;
     }
-    const transporter = await createTransport();
+    const transporter = await createTransport(to);
+    const activeCfg = getAccountSmtpConfig(to);
     if (!transporter) {
       try {
         mainDb.prepare('INSERT INTO email_logs (id, created_at, recipient, subject, status, error_message) VALUES (?, ?, ?, ?, ?, ?)')
@@ -2622,7 +2656,7 @@ async function sendNotificationEmail(subject: string, html: string, toOverride?:
       return;
     }
     await transporter.sendMail({
-      from: `"${s.from_name || 'AZEXBUY'}" <${s.from_email || s.user}>`,
+      from: `"${activeCfg.from_name || s.from_name || 'AZEXBUY'}" <${activeCfg.from_email || activeCfg.user || s.from_email || s.user}>`,
       to,
       subject,
       html,
@@ -2678,8 +2712,31 @@ app.get('/api/azexbuy/inquiries-by-product', requireAuth, (req: Request, res: Re
 // GET SMTP settings
 app.get('/api/smtp-settings', requireAuth, (_req: Request, res: Response) => {
   const s = getSmtpSettings();
-  // Never expose password in full
-  res.json({ ...s, password: s?.password ? '••••••••' : '' });
+  let routes = {};
+  try {
+    if (s?.email_routes) {
+      routes = typeof s.email_routes === 'string' ? JSON.parse(s.email_routes) : s.email_routes;
+    }
+  } catch {
+    routes = {};
+  }
+  // Mask passwords
+  const maskedRoutes: Record<string, any> = {};
+  for (const [k, v] of Object.entries(routes)) {
+    if (v && typeof v === 'object') {
+      maskedRoutes[k] = {
+        ...(v as any),
+        password: (v as any).password ? '••••••••' : '',
+        has_password: Boolean((v as any).password),
+      };
+    }
+  }
+
+  res.json({
+    ...s,
+    password: s?.password ? '••••••••' : '',
+    email_routes: maskedRoutes,
+  });
 });
 
 // SAVE SMTP settings
@@ -2694,6 +2751,40 @@ app.post('/api/smtp-settings', requireAuth, (req: Request, res: Response) => {
   } = req.body;
   const current = getSmtpSettings();
   const newPass = password && password !== '••••••••' ? password : (current?.password || '');
+
+  // Merge per-account route configs and preserve unedited passwords
+  let existingRoutes: Record<string, any> = {};
+  try {
+    if (current?.email_routes) {
+      existingRoutes = typeof current.email_routes === 'string'
+        ? JSON.parse(current.email_routes)
+        : current.email_routes;
+    }
+  } catch {}
+
+  let incomingRoutes: Record<string, any> = {};
+  if (email_routes) {
+    try {
+      incomingRoutes = typeof email_routes === 'string' ? JSON.parse(email_routes) : email_routes;
+    } catch {
+      incomingRoutes = {};
+    }
+  }
+
+  const mergedRoutes: Record<string, any> = {};
+  for (const [accEmail, accCfg] of Object.entries(incomingRoutes)) {
+    if (accCfg && typeof accCfg === 'object') {
+      const existing = existingRoutes[accEmail] || {};
+      const accPass = (accCfg as any).password && (accCfg as any).password !== '••••••••'
+        ? (accCfg as any).password
+        : (existing.password || '');
+      mergedRoutes[accEmail] = {
+        ...(accCfg as any),
+        password: accPass,
+      };
+    }
+  }
+
   mainDb.prepare(`
     UPDATE smtp_settings SET
       host = ?, port = ?, secure = ?, user = ?,
@@ -2722,7 +2813,7 @@ app.post('/api/smtp-settings', requireAuth, (req: Request, res: Response) => {
     support_email || 'support@azexbuy.com',
     finance_email || 'finance@azexbuy.com',
     ahmed_email || 'ahmed@azexbuy.com',
-    email_routes ? (typeof email_routes === 'string' ? email_routes : JSON.stringify(email_routes)) : '',
+    JSON.stringify(mergedRoutes),
     enabled ? 1 : 0,
     new Date().toISOString()
   );
