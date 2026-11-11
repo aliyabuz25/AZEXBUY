@@ -303,13 +303,42 @@ const ServicePillarEditor = React.memo(({ content, onChange, onSaveContent, savi
           </div>
           {/* Məsələlər (items) — each row lists all 6 locales compactly */}
           <div>
-            <div className="text-[10px] font-bold text-slate-500 uppercase mb-1.5">
-              Məsələlər (6 dil × {p.items?.length || 0})
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-[10px] font-bold text-slate-500 uppercase">
+                Məsələlər (6 dil × {p.items?.length || 0})
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  updatePillar(p.id, (prev: any) => ({
+                    ...prev,
+                    items: [...(prev.items || []), { EN: '', AZ: '', TR: '', RU: '', AR: '', ES: '' }]
+                  }));
+                }}
+                className="h-6 px-2 flex items-center gap-1 text-[10px] font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 rounded transition-colors"
+              >
+                <Plus className="w-3 h-3" /> Məsələ Əlavə Et
+              </button>
             </div>
             <div className="space-y-1.5">
               {(p.items || []).map((item: PillarItem, idx: number) => (
                 <div key={idx} className="border border-slate-100 rounded-sm p-2 bg-slate-50/50 space-y-1">
-                  <div className="text-[10px] text-slate-400 font-mono">{idx + 1}. {item.EN || item.AZ || ''}</div>
+                  <div className="flex items-center justify-between text-[10px] text-slate-400 font-mono">
+                    <span>{idx + 1}. {item.EN || item.AZ || 'Yeni maddə'}</span>
+                    <button
+                      type="button"
+                      title="Sil"
+                      onClick={() => {
+                        updatePillar(p.id, (prev: any) => ({
+                          ...prev,
+                          items: (prev.items || []).filter((_: any, i: number) => i !== idx)
+                        }));
+                      }}
+                      className="p-1 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </button>
+                  </div>
                   <div className="grid grid-cols-2 gap-1.5">
                     {PILLAR_LOCS.map((loc) => (
                       <input
@@ -2229,11 +2258,27 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
               )}
               {(content.buyer_steps || []).map((step: any, idx: number) => (
                 <div key={idx} className="bg-white border border-slate-200 rounded overflow-hidden">
-                  <button onClick={() => setExpandedId(expandedId === 'bs'+idx ? null : 'bs'+idx)}
-                    className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-50">
-                    <span className="text-xs font-bold text-slate-900">Addım {step.number}: {step.title?.EN || ''}</span>
-                    {expandedId === 'bs'+idx ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
-                  </button>
+                  <div className="flex items-center justify-between px-4 py-3 hover:bg-slate-50">
+                    <button onClick={() => setExpandedId(expandedId === 'bs'+idx ? null : 'bs'+idx)}
+                      className="flex-1 flex items-center justify-between text-left cursor-pointer">
+                      <span className="text-xs font-bold text-slate-900">Addım {step.number || idx + 1}: {step.title?.EN || step.title?.AZ || ''}</span>
+                      {expandedId === 'bs'+idx ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
+                    </button>
+                    <button
+                      type="button"
+                      title="Bu addımı sil"
+                      onClick={() => {
+                        if (!confirm(`Addım ${step.number || idx + 1} silinsin?`)) return;
+                        const steps = (content.buyer_steps || []).filter((_: any, i: number) => i !== idx).map((s: any, i: number) => ({ ...s, number: i + 1 }));
+                        const updated = { ...content, buyer_steps: steps };
+                        setContent(updated);
+                        saveContent(updated);
+                      }}
+                      className="ml-3 p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                   {expandedId === 'bs'+idx && (
                     <div className="border-t border-slate-100 p-4 space-y-3 bg-slate-50/50">
                       {[['SLA','sla'],['Səlahiyyətli İnstitut','authority']].map(([lbl, fld]) => (
@@ -2293,11 +2338,27 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
               )}
               {(content.producer_steps || []).map((step: any, idx: number) => (
                 <div key={idx} className="bg-white border border-slate-200 rounded overflow-hidden">
-                  <button onClick={() => setExpandedId(expandedId === 'ps'+idx ? null : 'ps'+idx)}
-                    className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-50">
-                    <span className="text-xs font-bold text-slate-900">Mərhələ {step.number}: {step.title?.EN || ''}</span>
-                    {expandedId === 'ps'+idx ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
-                  </button>
+                  <div className="flex items-center justify-between px-4 py-3 hover:bg-slate-50">
+                    <button onClick={() => setExpandedId(expandedId === 'ps'+idx ? null : 'ps'+idx)}
+                      className="flex-1 flex items-center justify-between text-left cursor-pointer">
+                      <span className="text-xs font-bold text-slate-900">Mərhələ {step.number || idx + 1}: {step.title?.EN || step.title?.AZ || ''}</span>
+                      {expandedId === 'ps'+idx ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
+                    </button>
+                    <button
+                      type="button"
+                      title="Bu mərhələni sil"
+                      onClick={() => {
+                        if (!confirm(`Mərhələ ${step.number || idx + 1} silinsin?`)) return;
+                        const steps = (content.producer_steps || []).filter((_: any, i: number) => i !== idx).map((s: any, i: number) => ({ ...s, number: i + 1 }));
+                        const updated = { ...content, producer_steps: steps };
+                        setContent(updated);
+                        saveContent(updated);
+                      }}
+                      className="ml-3 p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                   {expandedId === 'ps'+idx && (
                     <div className="border-t border-slate-100 p-4 space-y-3 bg-slate-50/50">
                       {[['SLA','sla'],['Səlahiyyətli Institut','authority']].map(([lbl, fld]) => (
@@ -2542,12 +2603,47 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
 
                       {/* Items */}
                       <div className="space-y-2 mt-2">
-                        <div className="text-xs font-bold text-slate-700">Fəaliyyət Maddələri (5 ədəd)</div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-slate-700">Fəaliyyət Maddələri ({(ab.activities.items || []).length} ədəd)</span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              updateAb(p => {
+                                const items = [...(p.activities.items || [])];
+                                items.push({
+                                  icon: 'fa-solid fa-circle-check',
+                                  title: { AZ: '', EN: '', TR: '', RU: '', AR: '', ES: '' },
+                                  desc: { AZ: '', EN: '', TR: '', RU: '', AR: '', ES: '' }
+                                });
+                                return { ...p, activities: { ...p.activities, items } };
+                              });
+                            }}
+                            className="h-6 px-2 flex items-center gap-1 text-[10px] font-bold bg-[#0f3156] text-white hover:bg-[#081c33] rounded transition-colors"
+                          >
+                            <Plus className="w-3 h-3" /> Maddə Əlavə Et
+                          </button>
+                        </div>
                         {(ab.activities.items || []).map((act: any, idx: number) => (
                           <div key={idx} className="bg-white border border-slate-200 rounded p-3 space-y-2">
                             <div className="text-[11px] font-bold text-brandNavy flex items-center justify-between">
                               <span>Maddə {idx + 1}: {act.title?.EN || act.title?.AZ || ''}</span>
-                              <span className="text-[10px] text-slate-400 font-mono">{act.icon}</span>
+                              <div className="flex items-center gap-2">
+                                <span className="text-[10px] text-slate-400 font-mono">{act.icon}</span>
+                                <button
+                                  type="button"
+                                  title="Maddəni sil"
+                                  onClick={() => {
+                                    if (!confirm(`Maddə ${idx + 1} silinsin?`)) return;
+                                    updateAb(p => {
+                                      const items = (p.activities.items || []).filter((_: any, i: number) => i !== idx);
+                                      return { ...p, activities: { ...p.activities, items } };
+                                    });
+                                  }}
+                                  className="p-1 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
                             </div>
                             <div className="grid grid-cols-2 gap-2">
                               {LOCALES.map(loc => (
@@ -2929,9 +3025,28 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                         </div>
                       ))}
 
-                      {/* 6 Sector cards with Image Upload */}
+                      {/* Sector cards with Image Upload */}
                       <div className="space-y-3 pt-2">
-                        <div className="text-xs font-bold text-slate-800 uppercase tracking-wider">6 İxrac Sektorunun Şəkilləri və Mətnləri</div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">İxrac Sektorlarının Şəkilləri və Mətnləri ({(ab.sectors?.items || []).length} ədəd)</span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              updateAb(p => {
+                                const items = [...(p.sectors?.items || [])];
+                                items.push({
+                                  image: '',
+                                  title: { AZ: '', EN: '', TR: '', RU: '', AR: '', ES: '' },
+                                  desc: { AZ: '', EN: '', TR: '', RU: '', AR: '', ES: '' }
+                                });
+                                return { ...p, sectors: { ...p.sectors, items } };
+                              });
+                            }}
+                            className="h-6 px-2 flex items-center gap-1 text-[10px] font-bold bg-[#0f3156] text-white hover:bg-[#081c33] rounded transition-colors"
+                          >
+                            <Plus className="w-3 h-3" /> Sektor Əlavə Et
+                          </button>
+                        </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                           {(ab.sectors?.items || []).map((sec: any, idx: number) => {
                             const imgUrl = sec.image || '';
@@ -2939,7 +3054,23 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                               <div key={idx} className="bg-white border border-slate-200 rounded p-3 space-y-2">
                                 <div className="flex items-center justify-between">
                                   <span className="text-[11px] font-bold text-slate-700">Sektor #{idx + 1} — {sec.title?.AZ || sec.title?.EN || `Sektor ${idx + 1}`}</span>
-                                  <span className="text-[10px] text-slate-400 font-mono">ID: {idx}</span>
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-[10px] text-slate-400 font-mono">ID: {idx}</span>
+                                    <button
+                                      type="button"
+                                      title="Sektoru sil"
+                                      onClick={() => {
+                                        if (!confirm(`Sektor #${idx + 1} silinsin?`)) return;
+                                        updateAb(p => {
+                                          const items = (p.sectors?.items || []).filter((_: any, i: number) => i !== idx);
+                                          return { ...p, sectors: { ...p.sectors, items } };
+                                        });
+                                      }}
+                                      className="p-1 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+                                    >
+                                      <Trash2 className="w-3.5 h-3.5" />
+                                    </button>
+                                  </div>
                                 </div>
                                 <div>
                                   <label className="block text-[9px] font-bold text-slate-400 uppercase mb-1">Şəkil URL & Yükləmə</label>
