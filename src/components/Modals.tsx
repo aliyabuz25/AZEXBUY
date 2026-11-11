@@ -16,6 +16,7 @@ import {
 } from '../data/translations';
 import { useLocalization } from '../context/LocalizationContext';
 import { CountrySelect } from './CountrySelect';
+import { SafeImage } from './SafeImage';
 
 // ── Modal localization strings ─────────────────────────────────────────────
 const ML: Record<string, Record<string, string>> = {
@@ -1605,12 +1606,15 @@ export const GlobalSearchModal: React.FC<SearchModalProps> = ({
                 }}
                 className="flex items-center gap-3.5 cursor-pointer flex-1"
               >
-                <img
-                  src={p.image}
-                  alt={getLocalizedText(p.name, locale)}
-                  referrerPolicy="no-referrer"
-                  className="w-12 h-12 rounded object-cover bg-slate-100 shrink-0"
-                />
+                <div className="w-12 h-12 rounded overflow-hidden bg-slate-100 shrink-0">
+                  <SafeImage
+                    src={p.image}
+                    alt={getLocalizedText(p.name, locale)}
+                    className="w-full h-full object-cover"
+                    fallbackIcon="fa-solid fa-triangle-exclamation"
+                    fallbackText="N/A"
+                  />
+                </div>
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-bold text-slate-900">{getLocalizedText(p.name, locale)}</span>

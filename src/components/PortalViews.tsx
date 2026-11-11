@@ -18,6 +18,7 @@ import {
   UI_STRINGS as UI_STRINGS_STATIC,
 } from '../data/translations';
 import { useLocalization } from '../context/LocalizationContext';
+import { SafeImage } from './SafeImage';
 
 interface CatalogViewProps {
   locale: Locale;
@@ -181,13 +182,14 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
                       onClick={() => onInspectProduct(product)}
                       className="h-44 rounded overflow-hidden bg-slate-100 mb-3 relative cursor-pointer group"
                     >
-                      <img
+                      <SafeImage
                         src={product.image}
                         alt={getLocalizedText(product.name, locale)}
-                        referrerPolicy="no-referrer"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        fallbackIcon="fa-solid fa-triangle-exclamation"
+                        fallbackText={locale === 'AZ' ? 'Şəkil tapılmadı' : 'Corrupted / Missing'}
                       />
-                      <div className="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-xs text-slate-700 text-[11px] font-semibold px-2.5 py-1 rounded shadow-xs border border-slate-200/80">
+                      <div className="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-xs text-slate-700 text-[11px] font-semibold px-2.5 py-1 rounded shadow-xs border border-slate-200/80 pointer-events-none">
                         {getLocalizedText(product.categoryLabel, locale)}
                       </div>
                       <button
@@ -196,7 +198,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
                           e.stopPropagation();
                           onToggleShortlist(product.id);
                         }}
-                        className={`absolute top-2.5 right-2.5 w-7 h-7 rounded flex items-center justify-center text-xs transition-colors cursor-pointer ${
+                        className={`absolute top-2.5 right-2.5 w-7 h-7 rounded flex items-center justify-center text-xs transition-colors cursor-pointer z-10 ${
                           isShortlisted
                             ? 'bg-brandGreen text-white'
                             : 'bg-white/90 text-slate-700 hover:bg-white'
@@ -214,12 +216,13 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
 
                     <h3
                       onClick={() => onInspectProduct(product)}
-                      className="text-base font-bold text-slate-900 hover:text-brandNavy cursor-pointer mb-1"
+                      className="text-base font-bold text-slate-900 hover:text-brandNavy cursor-pointer mb-1 line-clamp-1"
+                      title={getLocalizedText(product.name, locale)}
                     >
                       {getLocalizedText(product.name, locale)}
                     </h3>
 
-                    <p className="text-xs text-slate-600 leading-relaxed mb-3">
+                    <p className="text-xs text-slate-600 leading-relaxed mb-3 line-clamp-2" title={getLocalizedText(product.shortDesc, locale)}>
                       {getLocalizedText(product.shortDesc, locale)}
                     </p>
                   </div>
@@ -275,21 +278,22 @@ export const ProductSpecModal: React.FC<ProductSpecModalProps> = ({
     >
       <div className="bg-white border border-slate-200 rounded-t-2xl sm:rounded-xl w-full sm:max-w-2xl sm:mx-4 overflow-hidden shadow-2xl sm:my-8">
         <div className="relative h-52 bg-slate-900">
-          <img
+          <SafeImage
             src={product.image}
             alt={getLocalizedText(product.name, locale)}
-            referrerPolicy="no-referrer"
             className="w-full h-full object-cover opacity-90"
+            fallbackIcon="fa-solid fa-triangle-exclamation"
+            fallbackText={locale === 'AZ' ? 'Şəkil tapılmadı' : 'Corrupted / Missing Image'}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-brandNavy via-brandNavy/40 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-brandNavy via-brandNavy/40 to-transparent pointer-events-none"></div>
           <button
             type="button"
             onClick={onClose}
-            className="absolute top-3 right-3 bg-white/90 hover:bg-white text-slate-900 w-8 h-8 rounded flex items-center justify-center cursor-pointer"
+            className="absolute top-3 right-3 bg-white/90 hover:bg-white text-slate-900 w-8 h-8 rounded flex items-center justify-center cursor-pointer z-10"
           >
             <i className="fa-solid fa-xmark"></i>
           </button>
-          <div className="absolute bottom-4 left-6 right-6 text-white">
+          <div className="absolute bottom-4 left-6 right-6 text-white pointer-events-none">
             <div className="flex items-center gap-2 mb-1.5">
               <span className="bg-white/20 backdrop-blur-xs text-white text-[11px] font-semibold px-2 py-0.5 rounded">
                 {getLocalizedText(product.categoryLabel, locale)}
