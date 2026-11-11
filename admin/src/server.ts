@@ -2539,14 +2539,25 @@ mainDb.exec(`
     id INTEGER PRIMARY KEY DEFAULT 1,
     provider TEXT DEFAULT 'openrouter',
     api_key TEXT DEFAULT '',
-    model TEXT DEFAULT 'google/gemini-2.5-flash',
+    api_keys TEXT DEFAULT '[]',
+    model TEXT DEFAULT 'openrouter/free',
     system_prompt TEXT DEFAULT '',
     temperature REAL DEFAULT 0.2,
+    max_tokens INTEGER DEFAULT 450,
     enabled INTEGER DEFAULT 1,
+    round_robin_index INTEGER DEFAULT 0,
     updated_at TEXT
   );
   INSERT OR IGNORE INTO ai_settings (id) VALUES (1);
 `);
+
+// Additive migration: check ai_settings columns
+try {
+  const aiCols = (mainDb.prepare("PRAGMA table_info(ai_settings)").all() as any[]).map((c: any) => c.name);
+  if (!aiCols.includes('api_keys')) mainDb.exec("ALTER TABLE ai_settings ADD COLUMN api_keys TEXT DEFAULT '[]'");
+  if (!aiCols.includes('max_tokens')) mainDb.exec("ALTER TABLE ai_settings ADD COLUMN max_tokens INTEGER DEFAULT 450");
+  if (!aiCols.includes('round_robin_index')) mainDb.exec("ALTER TABLE ai_settings ADD COLUMN round_robin_index INTEGER DEFAULT 0");
+} catch (err) { console.warn('[DB] ai_settings migration warning:', err); }
 
 // Additive migration: add routing email columns if missing
 try {
@@ -2739,21 +2750,119 @@ app.post('/api/smtp-test', requireAuth, async (req: Request, res: Response) => {
   }
 });
 
-// ─── AI / OpenRouter Settings & Chat Gateway ──────────────────────────────────
+// ─── AI / OpenRouter Settings & Multi-Key Load Balanced Gateway ─────────────
 function getAiSettings() {
   return mainDb.prepare('SELECT * FROM ai_settings WHERE id = 1').get() as any;
+}
+
+// In-memory cache for OpenRouter models list (cached for 1 hour)
+let cachedOpenRouterModels: { data: any[]; cachedAt: number } | null = null;
+
+// GET available OpenRouter models (with free models prioritized)
+app.get('/api/ai-models', async (_req: Request, res: Response) => {
+  try {
+    const now = Date.now();
+    if (cachedOpenRouterModels && now - cachedOpenRouterModels.cachedAt < 3600000) {
+      return res.json(cachedOpenRouterModels.data);
+    }
+
+    const response = await fetch('https://openrouter.ai/api/v1/models', {
+      headers: {
+        'HTTP-Referer': 'https://beta.azexbuy.com',
+        'X-Title': 'AZEXBUY Admin Model Explorer',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch models from OpenRouter: ${response.status}`);
+    }
+
+    const json = await response.json();
+    const rawList: any[] = Array.isArray(json?.data) ? json.data : [];
+
+    // Parse and augment with free flag and pricing
+    const formatted = rawList.map((m: any) => {
+      const isFree =
+        m.id.endsWith(':free') ||
+        m.id === 'openrouter/free' ||
+        (m.pricing && parseFloat(m.pricing.prompt || '0') === 0 && parseFloat(m.pricing.completion || '0') === 0);
+      return {
+        id: m.id,
+        name: m.name || m.id,
+        description: m.description ? m.description.slice(0, 160) + '...' : '',
+        context_length: m.context_length || 0,
+        isFree,
+        promptPrice: m.pricing?.prompt || '0',
+        completionPrice: m.pricing?.completion || '0',
+      };
+    });
+
+    // Sort: Free models first, then popularity / name
+    formatted.sort((a, b) => {
+      if (a.isFree && !b.isFree) return -1;
+      if (!a.isFree && b.isFree) return 1;
+      return a.name.localeCompare(b.name);
+    });
+
+    cachedOpenRouterModels = { data: formatted, cachedAt: now };
+    res.json(formatted);
+  } catch (err: any) {
+    console.error('[OpenRouter Models Error]:', err);
+    // Return sensible fallback list if network is down
+    res.json([
+      { id: 'openrouter/free', name: 'OpenRouter Free Models Router (Auto-select)', isFree: true },
+      { id: 'google/gemma-4-31b-it:free', name: 'Google: Gemma 4 31B (free)', isFree: true },
+      { id: 'google/gemma-4-26b-a4b-it:free', name: 'Google: Gemma 4 26B A4B (free)', isFree: true },
+      { id: 'nvidia/nemotron-3.5-lightning:free', name: 'NVIDIA: Nemotron 3.5 Lightning (free)', isFree: true },
+      { id: 'nvidia/nemotron-3-ultra-550b-a55b:free', name: 'NVIDIA: Nemotron 3 Ultra (free)', isFree: true },
+      { id: 'thinkingmachines/inkling-2-small:free', name: 'Thinking Machines: Inkling 2 Small (free)', isFree: true },
+      { id: 'google/gemini-2.5-flash', name: 'Google: Gemini 2.5 Flash', isFree: false },
+      { id: 'openai/gpt-4o-mini', name: 'OpenAI: GPT-4o Mini', isFree: false },
+    ]);
+  }
+});
+
+// Helper: Parse list of active keys from DB
+function parseApiKeys(s: any): string[] {
+  let keys: string[] = [];
+  try {
+    if (s?.api_keys) {
+      const parsed = JSON.parse(s.api_keys);
+      if (Array.isArray(parsed)) {
+        keys = parsed.map((k: any) => String(k || '').trim()).filter(Boolean);
+      }
+    }
+  } catch {
+    keys = [];
+  }
+  // Also include legacy single api_key if not already in array
+  if (s?.api_key && typeof s.api_key === 'string' && s.api_key.trim() && !keys.includes(s.api_key.trim())) {
+    keys.unshift(s.api_key.trim());
+  }
+  return keys;
 }
 
 // GET AI settings (Admin)
 app.get('/api/ai-settings', requireAuth, (_req: Request, res: Response) => {
   const s = getAiSettings();
+  const keys = parseApiKeys(s);
+
+  // Mask keys for security (show only last 4 chars)
+  const maskedKeys = keys.map((k) =>
+    k.length > 8 ? '••••••••' + k.slice(-4) : '••••••••'
+  );
+
   res.json({
     provider: s?.provider || 'openrouter',
-    api_key: s?.api_key ? '••••••••' + s.api_key.slice(-4) : '',
-    has_key: Boolean(s?.api_key),
-    model: s?.model || 'google/gemini-2.5-flash',
+    api_key: keys[0] ? '••••••••' + keys[0].slice(-4) : '',
+    api_keys: maskedKeys,
+    keys_count: keys.length,
+    has_key: keys.length > 0,
+    model: s?.model || 'openrouter/free',
     system_prompt: s?.system_prompt || '',
     temperature: s?.temperature ?? 0.2,
+    max_tokens: s?.max_tokens ?? 350,
+    round_robin_index: s?.round_robin_index ?? 0,
     enabled: Boolean(s?.enabled ?? 1),
     updated_at: s?.updated_at || '',
   });
@@ -2761,32 +2870,63 @@ app.get('/api/ai-settings', requireAuth, (_req: Request, res: Response) => {
 
 // SAVE AI settings (Admin)
 app.post('/api/ai-settings', requireAuth, (req: Request, res: Response) => {
-  const { provider, api_key, model, system_prompt, temperature, enabled } = req.body;
+  const { provider, api_key, api_keys, model, system_prompt, temperature, max_tokens, enabled } = req.body;
   const current = getAiSettings();
-  const newKey = api_key && !api_key.startsWith('••••') ? api_key.trim() : (current?.api_key || '');
+  const existingKeys = parseApiKeys(current);
+
+  let newKeys: string[] = [];
+
+  if (Array.isArray(api_keys)) {
+    // If user sent list of keys, preserve unedited masked keys with their existing originals
+    newKeys = api_keys
+      .map((k: string, idx: number) => {
+        const val = String(k || '').trim();
+        if (val.startsWith('••••') && existingKeys[idx]) {
+          return existingKeys[idx];
+        }
+        return val;
+      })
+      .filter((k: string) => Boolean(k) && !k.startsWith('••••'));
+  } else if (typeof api_key === 'string' && api_key.trim() && !api_key.startsWith('••••')) {
+    // Legacy single key fallback
+    newKeys = [api_key.trim()];
+  } else {
+    newKeys = existingKeys;
+  }
+
+  // Deduplicate and cap at 15 keys
+  newKeys = Array.from(new Set(newKeys)).slice(0, 15);
+
+  const primaryKey = newKeys[0] || '';
+
   mainDb.prepare(`
     UPDATE ai_settings SET
       provider = ?,
       api_key = ?,
+      api_keys = ?,
       model = ?,
       system_prompt = ?,
       temperature = ?,
+      max_tokens = ?,
       enabled = ?,
       updated_at = ?
     WHERE id = 1
   `).run(
     provider || 'openrouter',
-    newKey,
-    model || 'google/gemini-2.5-flash',
+    primaryKey,
+    JSON.stringify(newKeys),
+    model || 'openrouter/free',
     system_prompt || '',
     typeof temperature === 'number' ? temperature : 0.2,
+    typeof max_tokens === 'number' ? max_tokens : 350,
     enabled ? 1 : 0,
     new Date().toISOString()
   );
-  res.json({ success: true });
+
+  res.json({ success: true, count: newKeys.length });
 });
 
-// Public AI Chat Gateway (Secured through OpenRouter server-side proxy)
+// Public AI Chat Gateway with Intelligent Round-Robin & Failover across multiple API keys
 app.post('/api/azexbuy/ai-chat', async (req: Request, res: Response) => {
   try {
     const { message, history, locale } = req.body;
@@ -2795,67 +2935,115 @@ app.post('/api/azexbuy/ai-chat', async (req: Request, res: Response) => {
     }
 
     const s = getAiSettings();
-    const apiKey = s?.api_key || process.env.OPENROUTER_API_KEY || '';
-    const model = s?.model || 'google/gemini-2.5-flash';
+    if (s && s.enabled === 0) {
+      return res.status(503).json({ error: 'AI_DISABLED', message: 'Chat is currently disabled.' });
+    }
 
-    if (!apiKey) {
+    const availableKeys = parseApiKeys(s);
+    if (availableKeys.length === 0 && process.env.OPENROUTER_API_KEY) {
+      availableKeys.push(process.env.OPENROUTER_API_KEY.trim());
+    }
+
+    if (availableKeys.length === 0) {
       return res.status(503).json({
         error: 'AI_KEY_NOT_CONFIGURED',
-        message: 'OpenRouter API key is not configured in Admin Panel.'
+        message: 'No OpenRouter API key found in Admin Panel.'
       });
     }
 
-    const systemPrompt = s?.system_prompt?.trim() || `Sən AZEXBUY (Azərbaycan İxrac və Qlobal Təchizat Portalı) üzrə rəsmi Beynəlxalq Ticarət və İxrac Mütəxəssisisən.
-Məqsədin: xarici alıcılara və yerli istehsalçılara dəqiq, ciddi, peşəkar və operativ ticarət məlumatı verməkdir.
+    // Default to the intelligent zero-cost Free router or Gemma / Nemotron
+    const model = s?.model || 'openrouter/free';
+    const temperature = s?.temperature ?? 0.2;
+    // Keep max_tokens concise to save tokens and prevent endless rambling
+    const maxTokens = Math.min(Math.max(s?.max_tokens || 350, 150), 600);
 
-QAYDALAR VƏ TON:
-1. Əsla süni, boş və şablon ("ai slop", "əlbbətdə", "sizə kömək etməkdən çox şadam", "əziz istifadəçi") danışma. Birbaşa fakta və cavaba keç.
-2. Qısa, dəqiq və ticarət yönümlü cavablar ver.
-3. Uyğun olduqda dəqiq HS kodlarını (məs. Fındıq: 0802.22, Nar və şirə: 0810.90 / 2009.89, Xurma: 0810.70, Mərmər: 2515, Xalça: 5701, Polad: 7306), Incoterms 2020 şərtlərini (FOB Ələt/Bakı, CIF Konstansa/Mersin, DAP), Orta Dəhliz tranzit müddətlərini və AQTA/EUR.1/CT-1 sertifikatlaşdırmasını qeyd et.
-4. Xüsusi sifariş, fərdi qiymət və ya rəsmi əməkdaşlıq tələb edildikdə istifadəçiyə bildir ki, mesajını və e-poçtunu çatda qeyd etsin və ya yuxarıdakı "RFQ / Tələb Göndər" düyməsindən istifadə etsin, komanda dərhal onunla əlaqə saxlayacaq.
-5. İstifadəçinin müraciət etdiyi dildə (${locale || 'AZ'}) rəsmi, səliqəli və etibarlı dildə cavab ver.`;
+    // Ultra-clean, anti-slop, token-efficient system instruction
+    const systemPrompt = s?.system_prompt?.trim() || `Sən AZEXBUY (Azərbaycan İxrac və Qlobal Təchizat Portalı) Beynəlxalq Ticarət Masasısan.
+QAYDALAR (Anti-AI-Slop & Minimum Token İstifadəsı):
+1. Giriş/çıxış tərifləri, şablon sözlər ("əlbəttə", "əziz müştəri", "sizə kömək etməyə şadam") ƏSLA YAZMA. Birbaşa fakta və cavaba keç.
+2. Qısa, dəqiq və ticarət yönümlü cavab ver (maksimum 2-3 cümlə və ya konkret maddələr).
+3. Lazım olduqda dəqiq HS kodları (Fındıq: 0802.22, Nar/şirə: 0810.90, Xurma: 0810.70, Mərmər: 2515, Xalça: 5701, Polad: 7306), Incoterms 2020 və Orta Dəhliz tranzit müddətlərini qeyd et.
+4. Fərdi qiymət və sifariş üçün istifadəçiyə çatda e-poçtunu yazmağı və ya yuxarıdakı "RFQ / Tələb Göndər" düyməsindən istifadə etməyi bildir.
+5. İstifadəçinin dilində (${locale || 'AZ'}) rəsmi və səliqəli cavab ver.`;
 
-    const chatHistory = Array.isArray(history)
-      ? history.slice(-6).map((m: any) => ({
+    // Only keep last 3 user/assistant turns to strictly conserve prompt tokens
+    const recentHistory = Array.isArray(history)
+      ? history.slice(-4).map((m: any) => ({
           role: m.sender === 'user' ? 'user' : 'assistant',
-          content: String(m.text || ''),
+          content: String(m.text || '').slice(0, 300),
         }))
       : [];
 
     const messages = [
       { role: 'system', content: systemPrompt },
-      ...chatHistory,
-      { role: 'user', content: message.trim() },
+      ...recentHistory,
+      { role: 'user', content: message.trim().slice(0, 500) },
     ];
 
-    const openRouterRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://beta.azexbuy.com',
-        'X-Title': 'AZEXBUY Trade Desk',
-      },
-      body: JSON.stringify({
-        model,
-        messages,
-        temperature: s?.temperature ?? 0.2,
-        max_tokens: 650,
-      }),
-    });
+    // Intelligent Round-Robin & Automatic Fallback across the pool of up to 10+ keys
+    let currentIdx = (s?.round_robin_index || 0) % availableKeys.length;
+    let selectedKey = availableKeys[currentIdx];
+    let success = false;
+    let replyText = '';
+    let lastError = '';
 
-    if (!openRouterRes.ok) {
-      const errText = await openRouterRes.text();
-      console.error('[OpenRouter Error]:', openRouterRes.status, errText);
-      return res.status(502).json({ error: 'OPENROUTER_ERROR', details: errText });
+    // Try up to availableKeys.length attempts with automatic failover if rate-limited (429) or invalid
+    for (let attempt = 0; attempt < availableKeys.length; attempt++) {
+      const keyToUse = availableKeys[(currentIdx + attempt) % availableKeys.length];
+      try {
+        const openRouterRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${keyToUse}`,
+            'Content-Type': 'application/json',
+            'HTTP-Referer': 'https://beta.azexbuy.com',
+            'X-Title': 'AZEXBUY Trade Desk',
+          },
+          body: JSON.stringify({
+            model,
+            messages,
+            temperature,
+            max_tokens: maxTokens,
+          }),
+        });
+
+        if (openRouterRes.ok) {
+          const data = await openRouterRes.json();
+          replyText = data?.choices?.[0]?.message?.content || '';
+          success = true;
+
+          // Advance round robin pointer for the next request to evenly distribute quota
+          const nextIdx = (currentIdx + attempt + 1) % availableKeys.length;
+          mainDb.prepare('UPDATE ai_settings SET round_robin_index = ? WHERE id = 1').run(nextIdx);
+          break;
+        } else {
+          const errBody = await openRouterRes.text();
+          lastError = `Status ${openRouterRes.status}: ${errBody}`;
+          console.warn(`[OpenRouter Key ${attempt + 1} Failed]:`, lastError);
+          // Loop will naturally try next key in the pool (e.g. quota exhausted 429)
+        }
+      } catch (reqErr: any) {
+        lastError = reqErr.message || 'Network error';
+        console.warn(`[OpenRouter Network Failover Key ${attempt + 1}]:`, lastError);
+      }
     }
 
-    const data = await openRouterRes.json();
-    const replyText = data?.choices?.[0]?.message?.content || '';
+    if (!success) {
+      return res.status(502).json({
+        error: 'ALL_OPENROUTER_KEYS_FAILED',
+        details: lastError || 'All configured API keys encountered errors or rate limits.'
+      });
+    }
 
-    res.json({ success: true, reply: replyText, model });
+    res.json({
+      success: true,
+      reply: replyText,
+      model,
+      keyIndexUsed: currentIdx,
+      poolSize: availableKeys.length
+    });
   } catch (err: any) {
-    console.error('[AI Chat Route Exception]:', err);
+    console.error('[AI Chat Exception]:', err);
     res.status(500).json({ error: err.message || 'Internal server error' });
   }
 });
