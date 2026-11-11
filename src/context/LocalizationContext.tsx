@@ -13,6 +13,9 @@ import {
   WHY_AZERBAIJAN_IMAGE as WHY_AZ_DEFAULT,
   HOW_IT_WORKS_BUYERS_IMAGE as HOW_BUYERS_DEFAULT,
   HOW_IT_WORKS_SELLERS_IMAGE as HOW_SELLERS_DEFAULT,
+  SERVICES_HERO_IMAGE as SERVICES_HERO_DEFAULT,
+  PRODUCTS_HERO_IMAGE as PRODUCTS_HERO_DEFAULT,
+  HOW_IT_WORKS_HERO_IMAGE as HOW_IT_WORKS_HERO_DEFAULT,
   ABOUT_PAGE_DEFAULT,
   DEFAULT_TEAM_MEMBERS,
 } from '../data/translations';
@@ -80,6 +83,9 @@ type LocalizationContextType = {
   whyAzImage: string;
   howItWorksBuyersImage: string;
   howItWorksSellersImage: string;
+  servicesHeroImage: string;
+  productsHeroImage: string;
+  howItWorksHeroImage: string;
   products: typeof PRODUCTS_DEFAULT;
   services: typeof SERVICES_DEFAULT;
   buyerSteps: typeof BUYER_STEPS_DEFAULT;
@@ -107,6 +113,9 @@ const LocalizationContext = createContext<LocalizationContextType>({
   whyAzImage: WHY_AZ_DEFAULT,
   howItWorksBuyersImage: HOW_BUYERS_DEFAULT,
   howItWorksSellersImage: HOW_SELLERS_DEFAULT,
+  servicesHeroImage: SERVICES_HERO_DEFAULT,
+  productsHeroImage: PRODUCTS_HERO_DEFAULT,
+  howItWorksHeroImage: HOW_IT_WORKS_HERO_DEFAULT,
   products: PRODUCTS_DEFAULT,
   services: SERVICES_DEFAULT,
   buyerSteps: BUYER_STEPS_DEFAULT,
@@ -240,6 +249,9 @@ function applyContentOverrides(content: any) {
     whyAzImage: images['WHY_AZERBAIJAN_IMAGE'] || WHY_AZ_DEFAULT,
     howItWorksBuyersImage: images['HOW_IT_WORKS_BUYERS_IMAGE'] || HOW_BUYERS_DEFAULT,
     howItWorksSellersImage: images['HOW_IT_WORKS_SELLERS_IMAGE'] || HOW_SELLERS_DEFAULT,
+    servicesHeroImage: images['SERVICES_HERO_IMAGE'] || SERVICES_HERO_DEFAULT,
+    productsHeroImage: images['PRODUCTS_HERO_IMAGE'] || PRODUCTS_HERO_DEFAULT,
+    howItWorksHeroImage: images['HOW_IT_WORKS_HERO_IMAGE'] || HOW_IT_WORKS_HERO_DEFAULT,
     products: products.length ? products : PRODUCTS_DEFAULT,
     services: content?.services?.length ? content.services : SERVICES_DEFAULT,
     buyerSteps: content?.buyer_steps?.length ? content.buyer_steps : BUYER_STEPS_DEFAULT,

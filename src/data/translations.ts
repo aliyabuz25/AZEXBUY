@@ -23,6 +23,15 @@ export const HOW_IT_WORKS_BUYERS_IMAGE =
 export const HOW_IT_WORKS_SELLERS_IMAGE =
   'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&q=80';
 
+export const SERVICES_HERO_IMAGE =
+  'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1600&q=80';
+
+export const PRODUCTS_HERO_IMAGE =
+  'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1600&q=80';
+
+export const HOW_IT_WORKS_HERO_IMAGE =
+  'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1600&q=80';
+
 export const PRODUCTS_CATALOG: ProductItem[] = [
   {
     id: 'hazelnut-080222',

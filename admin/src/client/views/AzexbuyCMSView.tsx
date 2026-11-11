@@ -109,8 +109,11 @@ type PageKey = typeof CMS_PAGES[number]['key'];
 const CMS_GROUPS = ['Əsas Səhifə', 'Daxili Səhifələr', 'Kataloq və Axınlar', 'Qlobal Redaktor'] as const;
 
 const IMAGE_KEYS = [
-  // ── Əsas Səhifə Görsəlləri ──
-  { key: 'HERO_IMAGE',                   label: 'Hero Arxa Fon',                    defaultUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB9ZWqLLmb30gHFdTBf7cfY60pAMzYSTWRn2keRDZ7k8a3eQicd1I5xuOR1U44ux_eyOl79BjhxRaXdEbzovzXexqRo8oDy3gVECJAAKnDsq1DYgw7oR-p-U-VjFeMqmdwPl27SJVIP7hTVWchM1LYBR1EY2hy5C8iSkUcytv0qKVFgxmbifXswWW8UTnyUsQw5XBb81qNG2tremLOg_k5EPGCl-K_AWwSN8UQ3T1EN7HyePk3pvGD9' },
+  // ── Əsas Səhifə & Daxili Səhifə Hero Görsəlləri ──
+  { key: 'HERO_IMAGE',                   label: 'Hero Arxa Fon (Ana Səhifə)',       defaultUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB9ZWqLLmb30gHFdTBf7cfY60pAMzYSTWRn2keRDZ7k8a3eQicd1I5xuOR1U44ux_eyOl79BjhxRaXdEbzovzXexqRo8oDy3gVECJAAKnDsq1DYgw7oR-p-U-VjFeMqmdwPl27SJVIP7hTVWchM1LYBR1EY2hy5C8iSkUcytv0qKVFgxmbifXswWW8UTnyUsQw5XBb81qNG2tremLOg_k5EPGCl-K_AWwSN8UQ3T1EN7HyePk3pvGD9' },
+  { key: 'SERVICES_HERO_IMAGE',          label: 'Xidmətlər Səhifəsi Hero Arxa Fon', defaultUrl: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1600&q=80' },
+  { key: 'PRODUCTS_HERO_IMAGE',          label: 'Məhsul Kataloqu Hero Arxa Fon',    defaultUrl: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1600&q=80' },
+  { key: 'HOW_IT_WORKS_HERO_IMAGE',      label: 'Necə İşləyir Hero Arxa Fon',       defaultUrl: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1600&q=80' },
   { key: 'BUYER_CARD_IMAGE',             label: 'Alıcı Kartı Görseli',              defaultUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCHfBjlFdQNaNAsP2RbAdqbBzskyL-GFgkaTpjwu0U6iT-t0tvmdQxrsHV7DOVkxLI4TCvj6qWpEawxqKJPqQE9f5GeXtwvTu7-fs3s495aRNM41LY0ardk4_DhtXk2RrKbiZgwssXvlrrI_EThET-4vRXO-9SbspxRcE3KXflGW-LnO8LzAq_bYYS10R-r010CzBLBwMqbd6slv40ntEvn3OyeauJszJaHkxnHTcGCq-0XAIDQmj6_' },
   { key: 'PRODUCER_CARD_IMAGE',          label: 'İstehsalçı Kartı Görseli',         defaultUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDgrvRVBxN_YV05A8C2ZBQC2V2WHmgN9IrmvxhBvoVre7FKYjEbaR95Ew5PqX6-T-FG67u-0fHLCX6KeLtUrAkBIiJfWZGu7t3Ez2RyKvMerWTAHV1ROVLxhP4wE2oqLK-k9t1i6hrPmq-YJ-GDzjbqNDrNf2-SyjbXUmuQAJa5ScuKsRahZQdVKWyzFzRNPNYzxr3XOkiIb2BLWy4KJO-b-RWiNaaRqebQkQINqnQZfyBkDjpvxMId' },
   { key: 'BUYER_HERO_IMAGE',             label: 'Alıcı Portalı Hero Arxa Fon',      defaultUrl: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=1600&q=80' },

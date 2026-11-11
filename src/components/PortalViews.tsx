@@ -36,7 +36,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
   onInspectProduct,
   onOpenMultiRFQ,
 }) => {
-  const { strings, products: cmsProducts } = useLocalization();
+  const { strings, products: cmsProducts, productsHeroImage } = useLocalization();
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [incotermFilter, setIncotermFilter] = useState<IncotermCode | 'ALL'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
@@ -69,31 +69,52 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
   });
 
   return (
-    <section className="py-8 bg-slate-50/60 min-h-[70vh]">
-      <div className="custom-container space-y-6">
-        {/* Top Banner */}
-        <div className="bg-brandNavy text-white rounded-lg p-6 sm:p-8 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+    <div className="bg-[#F8FAFC] min-h-screen">
+      {/* Hero with background image — flush to topbar */}
+      <div className="relative w-full overflow-hidden bg-[#0b2440]">
+        <img
+          src={productsHeroImage}
+          alt="Export Commodities Catalog"
+          className="w-full h-[360px] sm:h-[400px] object-cover object-center"
+          referrerPolicy="no-referrer"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0b2440] via-[#0b2440]/60 to-[#0b2440]/25"></div>
+        <div className="absolute inset-x-0 bottom-0 z-10">
+          <div className="custom-container py-8 sm:py-10">
+            <span className="inline-block px-3 py-1 bg-white/15 backdrop-blur-xs text-white text-[11px] font-bold rounded-full mb-3 uppercase tracking-wider border border-white/20">
+              {locale === 'AZ' ? 'Azərbaycan Milli İxrac Kataloqu' : locale === 'TR' ? 'Azerbaycan Milli İhracat Kataloğu' : 'Azerbaijan National Export Catalog'}
+            </span>
+            <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight mb-3 leading-tight max-w-2xl">
               {strings[locale]?.featuredProducts?.heading || strings.AZ?.featuredProducts?.heading || strings.EN?.featuredProducts?.heading || 'Export Commodities'}
             </h1>
-            <p className="text-xs sm:text-sm text-slate-200 mt-1 max-w-2xl">
+            <p className="text-sm sm:text-base text-slate-100/90 leading-relaxed mb-6 max-w-2xl">
               Direct factory and agro-cluster sourcing across all 14 economic regions of Azerbaijan with verified AQTA phytosanitary, ISO, and EUR.1/CT-1 origin documentation.
             </p>
-          </div>
-          <div className="flex items-center gap-3 shrink-0">
-            {shortlistedIds.length > 0 && (
+            <div className="flex flex-wrap items-center gap-3">
+              {shortlistedIds.length > 0 && (
+                <button
+                  type="button"
+                  onClick={onOpenMultiRFQ}
+                  className="bg-brandGreen hover:bg-brandGreenDark text-white text-xs font-bold px-5 py-2.5 rounded cursor-pointer flex items-center gap-2 shadow-sm"
+                >
+                  <span>Quote Shortlist ({shortlistedIds.length})</span>
+                  <i className="fa-solid fa-arrow-right text-[10px]"></i>
+                </button>
+              )}
               <button
                 type="button"
                 onClick={onOpenMultiRFQ}
-                className="bg-brandGreen hover:bg-brandGreenDark text-white text-xs font-bold px-4 py-2.5 rounded cursor-pointer flex items-center gap-2"
+                className="bg-brandNavy hover:bg-brandNavyDark text-white text-xs font-semibold px-5 py-2.5 rounded transition-colors cursor-pointer"
               >
-                <span>Quote Shortlist ({shortlistedIds.length})</span>
-                <i className="fa-solid fa-arrow-right text-[10px]"></i>
+                {locale === 'AZ' ? 'Ümumi RFQ Aç' : locale === 'TR' ? 'Genel RFQ Aç' : 'Open General RFQ'}
               </button>
-            )}
+            </div>
           </div>
         </div>
+      </div>
+
+      <section className="py-8 bg-slate-50/60 min-h-[70vh]">
+        <div className="custom-container space-y-6">
 
         {/* Filter Bar */}
         <div className="bg-white border border-slate-200 rounded-lg p-4 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
@@ -230,6 +251,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
         )}
       </div>
     </section>
+  </div>
   );
 };
 
@@ -945,7 +967,7 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
   onOpenServiceApp,
   onNavigate,
 }) => {
-  const { strings, buyerSteps: cmsBuyerSteps, producerSteps: cmsProducerSteps, cmsServices, howItWorksBuyersImage, howItWorksSellersImage, buyerHeroImage, producerHeroImage, contact } = useLocalization();
+  const { strings, buyerSteps: cmsBuyerSteps, producerSteps: cmsProducerSteps, cmsServices, howItWorksBuyersImage, howItWorksSellersImage, buyerHeroImage, producerHeroImage, servicesHeroImage, productsHeroImage, howItWorksHeroImage, contact } = useLocalization();
   const [selectedBuyerStep, setSelectedBuyerStep] = useState<number>(1);
   const [selectedProducerStep, setSelectedProducerStep] = useState<number>(1);
   const [contactSubmitted, setContactSubmitted] = useState(false);
@@ -1202,11 +1224,52 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
     const ctaSellerBtn = locale === 'AZ' ? 'Satıcı kimi müraciət et' : locale === 'TR' ? 'Satıcı olarak başvur' : locale === 'RU' ? 'Подать заявку как продавец' : 'Apply as a seller';
 
     return (
-      <section className="py-8 bg-[#F5F6F7]">
-        <div className="custom-container">
-          {/* Main light panel */}
-          <div className="bg-white border border-[#E5E7EB] rounded-[22px] overflow-hidden shadow-sm">
-            <div className="p-6 sm:p-7">
+      <div className="bg-[#F8FAFC] min-h-screen">
+        {/* Hero with background image — flush to topbar */}
+        <div className="relative w-full overflow-hidden bg-[#0b2440]">
+          <img
+            src={howItWorksHeroImage}
+            alt="AZEXBUY Process"
+            className="w-full h-[360px] sm:h-[400px] object-cover object-center"
+            referrerPolicy="no-referrer"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0b2440] via-[#0b2440]/60 to-[#0b2440]/25"></div>
+          <div className="absolute inset-x-0 bottom-0 z-10">
+            <div className="custom-container py-8 sm:py-10">
+              <span className="inline-block px-3 py-1 bg-white/15 backdrop-blur-xs text-white text-[11px] font-bold rounded-full mb-3 uppercase tracking-wider border border-white/20">
+                {locale === 'AZ' ? 'AZEXBUY Əməliyyat Mexanizmi' : locale === 'TR' ? 'AZEXBUY Operasyon Mekanizması' : 'AZEXBUY Operational Workflow'}
+              </span>
+              <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight mb-3 leading-tight max-w-2xl">
+                {howTitle}
+              </h1>
+              <p className="text-sm sm:text-base text-slate-100/90 leading-relaxed mb-6 max-w-2xl">
+                {howSubtitle}
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={onOpenRFQ}
+                  className="bg-brandNavy hover:bg-brandNavyDark text-white text-xs font-bold px-5 py-2.5 rounded transition-colors cursor-pointer shadow-sm"
+                >
+                  {locale === 'AZ' ? 'Alıcı kimi başla (RFQ)' : locale === 'TR' ? 'Alıcı olarak başla' : 'Start as Buyer (RFQ)'}
+                </button>
+                <button
+                  type="button"
+                  onClick={onOpenProducer}
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-5 py-2.5 rounded transition-colors cursor-pointer shadow-sm"
+                >
+                  {locale === 'AZ' ? 'İstehsalçı kimi qoşul' : locale === 'TR' ? 'Üretici olarak katıl' : 'Join as Producer'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <section className="py-8 bg-[#F5F6F7]">
+          <div className="custom-container">
+            {/* Main light panel */}
+            <div className="bg-white border border-[#E5E7EB] rounded-[22px] overflow-hidden shadow-sm">
+              <div className="p-6 sm:p-7">
 
               {/* Top heading */}
               <div className="text-center mb-6">
@@ -1386,6 +1449,7 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
           </div>
         </div>
       </section>
+      </div>
     );
   }
 
@@ -1557,30 +1621,50 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
 
   if (activeView === 'services') {
     return (
-      <section className="py-8 bg-slate-50/70">
-        <div className="custom-container space-y-8">
-          <div className="bg-brandNavy text-white rounded-xl p-6 sm:p-8 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-            <div className="max-w-2xl">
-              
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight mb-2">
+      <div className="bg-[#F8FAFC] min-h-screen">
+        {/* Hero with background image — flush to topbar */}
+        <div className="relative w-full overflow-hidden bg-[#0b2440]">
+          <img
+            src={servicesHeroImage}
+            alt="AZEXBUY Services"
+            className="w-full h-[360px] sm:h-[400px] object-cover object-center"
+            referrerPolicy="no-referrer"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0b2440] via-[#0b2440]/60 to-[#0b2440]/25"></div>
+          <div className="absolute inset-x-0 bottom-0 z-10">
+            <div className="custom-container py-8 sm:py-10">
+              <span className="inline-block px-3 py-1 bg-white/15 backdrop-blur-xs text-white text-[11px] font-bold rounded-full mb-3 uppercase tracking-wider border border-white/20">
+                {locale === 'AZ' ? 'AZEXBUY İxrac və Təchizat Xidmətləri' : locale === 'TR' ? 'AZEXBUY İhracat ve Tedarik Hizmetleri' : 'AZEXBUY Trade & Export Solutions'}
+              </span>
+              <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight mb-3 leading-tight max-w-2xl">
                 {strings[locale]?.services?.heading || strings.AZ?.services?.heading || 'Services'}
               </h1>
-              <p className="text-xs sm:text-sm text-slate-200 leading-relaxed">
-                {strings[locale]?.services?.outsourcedDesc || strings.AZ?.services?.outsourcedDesc || ''}
+              <p className="text-sm sm:text-base text-slate-100/90 leading-relaxed mb-6 max-w-2xl">
+                {strings[locale]?.services?.outsourcedDesc || strings.AZ?.services?.outsourcedDesc || 'Beynəlxalq ticarət əməliyyatları, aqrar və sənaye ixracatı, logistika və gömrük dəstəyi.'}
               </p>
-            </div>
-            <div className="flex items-center gap-3 shrink-0">
-              <button
-                type="button"
-                onClick={onOpenProducer}
-                className="bg-white text-brandNavy hover:bg-slate-100 text-xs font-extrabold px-5 py-3 rounded cursor-pointer"
-              >
-                Register Producer Facility →
-              </button>
+              <div className="flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={onOpenProducer}
+                  className="bg-brandNavy hover:bg-brandNavyDark text-white text-xs font-bold px-5 py-2.5 rounded transition-colors cursor-pointer shadow-sm"
+                >
+                  {locale === 'AZ' ? 'İstehsalçı Müəssisə Qeydiyyatı →' : locale === 'TR' ? 'Üretici Tesisi Kaydı →' : 'Register Producer Facility →'}
+                </button>
+                <button
+                  type="button"
+                  onClick={onOpenRFQ}
+                  className="bg-white/15 hover:bg-white/25 text-white border border-white/25 text-xs font-semibold px-5 py-2.5 rounded transition-colors cursor-pointer"
+                >
+                  {locale === 'AZ' ? 'Alıcı Sorğusu Göndər' : locale === 'TR' ? 'Alıcı Talebi Gönder' : 'Submit RFQ'}
+                </button>
+              </div>
             </div>
           </div>
+        </div>
 
-          {/* Services Grid — light card design */}
+        <section className="py-8 bg-slate-50/70">
+          <div className="custom-container space-y-8">
+            {/* Services Grid — light card design */}
           {cmsServices.length > 0 && (
             <div className="space-y-6">
               {/* Primary */}
@@ -1720,7 +1804,8 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
           )}
 
           </div>
-      </section>
+        </section>
+      </div>
     );
   }
 
