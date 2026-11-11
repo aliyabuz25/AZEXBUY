@@ -4165,45 +4165,15 @@ if (catCount === 0) {
   for (const c of defaultCats) insertCat.run(c.id, now, c.name, c.slug, c.description, c.sort_order);
 }
 try {
+  const prodCount = azexbuyDb.prepare("SELECT COUNT(*) as c FROM azexbuy_products").get().c;
   const srvCount = azexbuyDb.prepare("SELECT COUNT(*) as c FROM azexbuy_services").get().c;
-  if (srvCount === 0) {
-    console.log("[Seed] Auto-seeding initial AZEXBUY services & articles...");
+  if (prodCount === 0 || srvCount === 0) {
+    console.log("[Seed] Auto-seeding initial AZEXBUY products, services & articles...");
     seedAzexbuyData(azexbuyDb);
     console.log("[Seed] Auto-seeding completed.");
   }
 } catch (seedErr) {
   console.error("[Seed] Initial check/seed error:", seedErr);
-}
-try {
-  const mockProductIds = [
-    "prod-hazelnut-atababa",
-    "prod-pomegranate-goychay",
-    "prod-saffron-absheron",
-    "prod-sheki-silk-yarn",
-    "prod-cotton-lint-yarn",
-    "prod-licorice-root-extract",
-    "prod-absheron-olive-oil",
-    "prod-goygol-alpine-honey",
-    "prod-bentonite-clay-agstafa",
-    "prod-polypropylene-big-bags"
-  ];
-  const placeholders = mockProductIds.map(() => "?").join(",");
-  azexbuyDb.prepare(`DELETE FROM azexbuy_products WHERE id IN (${placeholders})`).run(...mockProductIds);
-  const kvRow = azexbuyDb.prepare("SELECT value FROM azexbuy_kv WHERE key = 'content'").get();
-  if (kvRow && kvRow.value) {
-    try {
-      const cVal = JSON.parse(kvRow.value);
-      if (Array.isArray(cVal.products)) {
-        cVal.products = cVal.products.filter(
-          (p) => !mockProductIds.includes(p.id) && !["hazelnut-080222", "pomegranate-081090", "saffron-091020", "silk-500200", "carpet-5701"].includes(p.id)
-        );
-        azexbuyDb.prepare("UPDATE azexbuy_kv SET value = ? WHERE key = 'content'").run(JSON.stringify(cVal));
-      }
-    } catch {
-    }
-  }
-} catch (cleanErr) {
-  console.error("[Mock Cleanup] Error cleaning mock products:", cleanErr);
 }
 var azRedis = null;
 try {
