@@ -23,7 +23,405 @@ export const HOW_IT_WORKS_BUYERS_IMAGE =
 export const HOW_IT_WORKS_SELLERS_IMAGE =
   'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&q=80';
 
-export const PRODUCTS_CATALOG: ProductItem[] = [];
+export const PRODUCTS_CATALOG: ProductItem[] = [
+  {
+    id: 'hazelnut-080222',
+    featured: true,
+    hsCode: '080222',
+    categoryKey: 'agro',
+    name: {
+      EN: 'Hazelnut',
+      AZ: 'Fındıq Ləpəsi',
+      RU: 'Фундук очищенный',
+    },
+    categoryLabel: {
+      EN: 'Agriculture & Food',
+      AZ: 'Kənd Təsərrüfatı və Qida',
+      RU: 'Сельское хозяйство и продукты',
+    },
+    shortDesc: {
+      EN: 'Extra-grade shelled natural & roasted Ata-Baba hazelnuts from Zaqatala-Sheki orchards.',
+      AZ: 'Zaqatala-Şəki bağlarından ekstra növlü təbii və qovrulmuş Ata-Baba fındıq ləpəsi.',
+      RU: 'Очищенный натуральный и обжаренный фундук сорта Ата-Баба высшего качества из Загаталы и Шеки.',
+    },
+    originRegion: {
+      EN: 'Zaqatala – Sheki Economic Region',
+      AZ: 'Zaqatala – Şəki İqtisadi Rayonu',
+      RU: 'Загатало-Шекинский экономический район',
+    },
+    image:
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuD6iP6ACTY6rFPAXNJlK_W-AfkWR_1OBE8I3wLkCwVMAlQIyNvxAXxK1kYe6-itoVecrpqtsSok0_wQ1QnYyWcn40Hikz269v2ag3TbKrY9lfqw3mEVtR-I0GvclcQXFDi0q_xVPYMdzpIFMaXwgeJEs4gwsCpcf-Dn7Df8QGIeKoSael0DxSBY2ZpmoWYe8Ynhio_Q0dONzHarqS9Kp31IStn01T44xVmJ90B5TY2WFQr7mOmo4Ucq',
+    minOrderQty: '20 MT (1x 20ft FCL)',
+    annualCapacity: '24,000 MT',
+    verifiedSuppliersCount: 38,
+    incoterms: ['FCA', 'FOB', 'CIF', 'DAP'],
+    certifications: ['ISO 22000', 'FSSC 22000', 'AQTA Phytosanitary', 'EUR.1 / CT-1', 'Halal'],
+    leadTimeDays: '7–12 Days',
+    packaging: {
+      EN: '25kg / 50kg vacuum foil bags in corrugated cartons or 800kg big-bags',
+      AZ: '25kq / 50kq vakuum folqa kisələr və ya 800kq biq-bəqlər',
+      RU: 'Вакуумные пакеты по 25/50 кг в картонных коробах или биг-бэги по 800 кг',
+    },
+    gradeSpecs: {
+      EN: 'Caliber 11–13mm, 13–15mm | Moisture < 5.5% | Aflatoxin B1 < 2ppb (EU Standard)',
+      AZ: 'Kalibr 11–13mm, 13–15mm | Nəmlik < 5.5% | Aflatoksin B1 < 2ppb (Aİ Standartı)',
+      RU: 'Калибр 11–13мм, 13–15мм | Влажность < 5.5% | Афлатоксин B1 < 2ppb (Стандарт ЕС)',
+    },
+  },
+  {
+    id: 'pomegranate-081090',
+    featured: true,
+    hsCode: '081090',
+    categoryKey: 'agro',
+    name: {
+      EN: 'Pomegranate',
+      AZ: 'Göyçay Narı',
+      RU: 'Гранат свежий и сок прямого отжима',
+    },
+    categoryLabel: {
+      EN: 'Agriculture & Food',
+      AZ: 'Kənd Təsərrüfatı və Qida',
+      RU: 'Сельское хозяйство и продукты',
+    },
+    shortDesc: {
+      EN: 'Goychay Guloysha & Bala Mursal fresh export pomegranates and NFC cold-pressed concentrate.',
+      AZ: 'Göyçay Gülöyşə və Bala Mürsəl təzə ixrac narı və soyuq sıxım NFC şirə konsentratı.',
+      RU: 'Свежие гранаты сортов Гюлейша и Бала Мюрсаль из Гёйчая и концентрат холодного отжима.',
+    },
+    originRegion: {
+      EN: 'Central Aran (Goychay – Kurdamir)',
+      AZ: 'Mərkəzi Aran (Göyçay – Kürdəmir)',
+      RU: 'Центральный Аран (Гёйчай – Кюрдамир)',
+    },
+    image:
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuDHo5g8iKevybJcG4jlFPGTNzuPMU2721wxSfNRS3s0FmbZeA3YW4AxkdXtyhH_55x-4s5Uh_5-S2-S3LVPexC1O1ahPg_Hgeeion6snYi_eyi7MNDXh5coR3k9acztB4DSA_PV9JjS_JAitpfDEAmO4UUbAUjAs0VuwpjvFbKeEaRXeqGiJ2JKU_vHqlhTa6Meil6iamn-3I_33E-Y7Tii2hclP8mfc_jBNp_gJSQpmbKniKtPJu5s',
+    minOrderQty: '18 MT (Reefer 40ft)',
+    annualCapacity: '45,000 MT',
+    verifiedSuppliersCount: 42,
+    incoterms: ['FCA', 'FOB', 'CIF', 'DAP'],
+    certifications: ['GLOBALG.A.P.', 'ISO 22000', 'USDA Organic', 'EU Organic', 'AQTA'],
+    leadTimeDays: '5–9 Days',
+    packaging: {
+      EN: '4.5kg / 5kg open-top euro trays with modified atmosphere liner (Reefer +5°C)',
+      AZ: '4.5kq / 5kq modifikasiya olunmuş atmosfer örtüklü avro-lotoklar (+5°C)',
+      RU: 'Евролотки по 4.5 / 5 кг с вкладышем модифицированной атмосферы (Реф +5°C)',
+    },
+    gradeSpecs: {
+      EN: 'Fruit weight 350g–650g | Brix > 16.5° | Zero cold-chain break certification',
+      AZ: 'Meyvə çəkisi 350q–650q | Brix > 16.5° | Fasiləsiz soyuq zəncir zəmanəti',
+      RU: 'Вес плода 350–650 г | Brix > 16.5° | Сертификация непрерывной холодовой цепи',
+    },
+  },
+  {
+    id: 'carpet-5701',
+    featured: true,
+    hsCode: '5701',
+    categoryKey: 'textile',
+    name: {
+      EN: 'Carpet',
+      AZ: 'Azərbaycan Xalçası',
+      RU: 'Азербайджанские ковры',
+    },
+    categoryLabel: {
+      EN: 'Textile & Apparel',
+      AZ: 'Tekstil və Xalçaçılıq',
+      RU: 'Текстиль и ковры',
+    },
+    shortDesc: {
+      EN: 'Hand-knotted wool and silk Azerbaijani carpets alongside high-density commercial woven looms.',
+      AZ: 'Əl ilə toxunmuş yun və ipək Azərbaycan xalçaları və yüksək sıxlıqlı sənaye xalça məmulatları.',
+      RU: 'Шерстяные и шелковые азербайджанские ковры ручной работы и коммерческий ковровый текстиль.',
+    },
+    originRegion: {
+      EN: 'Quba, Karabakh, Shirvan & Baku',
+      AZ: 'Quba, Qarabağ, Şirvan və Bakı',
+      RU: 'Губа, Карабах, Ширван и Баку',
+    },
+    image:
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuDtNJYRxE2w63MPzGdjf8CPD9AEFm8HRgiA_8S4bLzI4JlWkzMSr7mOrBFN0clACdJ8Z4fdPmTxcUeQZoVHwM8X0BSrp3Ge5V1rjnXGei5GwaARNkgff5T_0xspZitbC-LuPEjlYnoFGRTUx9-xnXkSS6296Qbk6OBMxFoPcu45Ph_IWPgxe8ghwkwSRb4DFc747hiqPs4hl6mD0u0fkbzXC86IW3Go3l5Gt49vsGvyFE6w27cyqJpi',
+    minOrderQty: '50 m² / Custom Lot',
+    annualCapacity: '180,000 m²',
+    verifiedSuppliersCount: 19,
+    incoterms: ['EXW', 'FCA', 'CIF', 'DAP', 'DDP'],
+    certifications: ['UNESCO Heritage Passport', 'OEKO-TEX Standard 100', 'Certificate of Origin'],
+    leadTimeDays: '10–21 Days',
+    packaging: {
+      EN: 'Moisture-proof breathable tyvek roll sleeve with reinforced export crating',
+      AZ: 'Nəmə davamlı qoruyucu örtük və gücləndirilmiş ixrac qablaşdırması',
+      RU: 'Влагозащитный дышащий чехол Tyvek с усиленной экспортной обрешеткой',
+    },
+    gradeSpecs: {
+      EN: '100% highland virgin wool / Sheki mulberry silk | 160,000–350,000 knots/m² | Natural vegetal dyes',
+      AZ: '100% təbii dağ yunu / Şəki ipəyi | 160,000–350,000 ilmə/m² | Təbii boyalar',
+      RU: '100% горная шерсть / шекинский шелк | 160 000–350 000 узлов/м² | Натуральные красители',
+    },
+  },
+  {
+    id: 'marble-2515',
+    featured: true,
+    hsCode: '2515',
+    categoryKey: 'construction',
+    name: {
+      EN: 'Marble',
+      AZ: 'Mərmər və Travertin',
+      RU: 'Мрамор и строительный камень',
+    },
+    categoryLabel: {
+      EN: 'Construction Materials',
+      AZ: 'Tikinti Materialları',
+      RU: 'Строительные материалы',
+    },
+    shortDesc: {
+      EN: 'Dashkasan crystalline marble, Nakhchivan travertine slabs, and architectural Aglay limestone.',
+      AZ: 'Daşkəsən kristal mərməri, Naxçıvan travertin plitələri və memarlıq Ağlay daşı.',
+      RU: 'Дашкесанский кристаллический мрамор, нахчыванский травертин и архитектурный камень Аглай.',
+    },
+    originRegion: {
+      EN: 'Dashkasan, Nakhchivan & Qaradagh',
+      AZ: 'Daşkəsən, Naxçıvan və Qaradağ',
+      RU: 'Дашкесан, Нахчыван и Гарадаг',
+    },
+    image:
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuD03XXHtlryKOF4P13Jsyapcx1cJC4md04R7W4OmhEOlilzH3GXC84pohKdFeZC2E26PSlasR8hsE1ZhUMI_m0G3EvLUmCLYXAFuMf-8fVmPxAaSz6rXZE5DhZfy_GWTdrnj6b_8WD4Q3Rrvlu3AYTUq_hrwc41KTaORWxIqz41fZ3sVhVp_icHS5yhXQKuIuOFb0jjF16nF7IcXL9rWJ5SplYRdK1DWGo-wlLK2UlgnkEWl6JIaR20',
+    minOrderQty: '250 m² (1x 20ft Heavy FCL)',
+    annualCapacity: '650,000 m²',
+    verifiedSuppliersCount: 24,
+    incoterms: ['EXW', 'FCA', 'FOB', 'CIF', 'DAP'],
+    certifications: ['CE EN 1469', 'ISO 9001:2015', 'Radiation Safety Class I', 'ASTM C503'],
+    leadTimeDays: '12–18 Days',
+    packaging: {
+      EN: 'ISPM-15 heat-treated fumigated wooden A-frames and reinforced slab bundles',
+      AZ: 'ISPM-15 standartlı fumiqasiya olunmuş taxta A-karkaslar və plitə bağlamaları',
+      RU: 'Термообработанные деревянные А-стойки стандарта ISPM-15 и усиленные пачки слэбов',
+    },
+    gradeSpecs: {
+      EN: '20mm / 30mm calibrated slabs & cut-to-size tiles | Mirror-polished, honed, or brushed finish',
+      AZ: '20mm / 30mm kalibrlənmiş plitələr | Cilalanmış, mat və ya teksturalı səth',
+      RU: 'Калиброванные слэбы 20 / 30 мм и плитка в размер | Полированная, лощеная или брашированная',
+    },
+  },
+  {
+    id: 'sunflower-oil-151219',
+    featured: true,
+    hsCode: '151219',
+    categoryKey: 'agro',
+    name: {
+      EN: 'Sunflower Oil',
+      AZ: 'Günəbaxan Yağı',
+      RU: 'Подсолнечное масло рафинированное',
+    },
+    categoryLabel: {
+      EN: 'Agriculture & Food',
+      AZ: 'Kənd Təsərrüfatı və Qida',
+      RU: 'Сельское хозяйство и продукты',
+    },
+    shortDesc: {
+      EN: 'Refined winterized deodorized (RBDW) sunflower and corn edible oils in PET and flexitanks.',
+      AZ: 'PET qablaşdırma və fleksitanklarda rafinə edilmiş dezodorasiya olunmuş (RBDW) günəbaxan yağı.',
+      RU: 'Рафинированное дезодорированное вымороженное подсолнечное масло в ПЭТ-бутылках и флекситанках.',
+    },
+    originRegion: {
+      EN: 'Baku & Sumgayit Food Processing Cluster',
+      AZ: 'Bakı və Sumqayıt Qida Sənaye Klasteri',
+      RU: 'Пищевой промышленный кластер Баку и Сумгайыта',
+    },
+    image:
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuC5UBl6ky2E1o6RbrVtIlz6xdPHcSBD7sd8H309gALUQoxK5e7r7Jx8q159V1clhGMbdLSh4P9jCngmrLKo1SRNMt8pOyjcZAA6ESFVNV4ezFkDuGcGpnQTuFuS1mN_y1GCw0fUeMaghixWmXvDOKyonKRvDbft5TQiqBmLD-rRRmW-WA8ynGJG10G8Glm_TPlhHHVb7hRwLDWJ8xhd-hOjeMKGIxnS1XfZVRCXaB1IDAY3cUYFZPhn',
+    minOrderQty: '22 MT (1x Flexitank / FCL)',
+    annualCapacity: '110,000 MT',
+    verifiedSuppliersCount: 14,
+    incoterms: ['FCA', 'FOB', 'CIF', 'DAP'],
+    certifications: ['IFS Food', 'BRCGS', 'ISO 22000', 'Halal', 'Kosher'],
+    leadTimeDays: '7–14 Days',
+    packaging: {
+      EN: '1L, 2L, 5L retail PET bottles (private label supported) or 24,000L bulk flexitanks',
+      AZ: '1L, 2L, 5L PET şüşələr (Private Label dəstəyi) və ya 24,000L fleksitanklar',
+      RU: 'ПЭТ-бутылки 1л, 2л, 5л (поддержка СТМ / Private Label) или наливные флекситанки 24 000 л',
+    },
+    gradeSpecs: {
+      EN: 'Free Fatty Acid (FFA) < 0.1% | Peroxide Value < 1.0 meq/kg | Moisture < 0.05%',
+      AZ: 'Sərbəst Yağ Turşusu (FFA) < 0.1% | Peroksid ədədi < 1.0 meq/kq | Nəmlik < 0.05%',
+      RU: 'Свободные жирные кислоты < 0.1% | Перекисное число < 1.0 мэкв/кг | Влажность < 0.05%',
+    },
+  },
+  {
+    id: 'metal-products-7306',
+    featured: true,
+    hsCode: '7306',
+    categoryKey: 'metals',
+    name: {
+      EN: 'Metal Products',
+      AZ: 'Metal və Polad Məmulatları',
+      RU: 'Металлопродукция и стальные трубы',
+    },
+    categoryLabel: {
+      EN: 'Metals & Industrial',
+      AZ: 'Metallurgiya və Sənaye',
+      RU: 'Металлургия и промышленность',
+    },
+    shortDesc: {
+      EN: 'Seamless & ERW structural steel pipes, reinforcement rebar, and Sumgayit primary aluminum.',
+      AZ: 'Tikişsiz və qaynaqlı polad borular, inşaat armaturu və Sumqayıt ilkin alüminium profilləri.',
+      RU: 'Бесшовные и электросварные стальные трубы, арматурный прокат и алюминиевые профили.',
+    },
+    originRegion: {
+      EN: 'Sumgayit & Ganja Industrial Parks',
+      AZ: 'Sumqayıt və Gəncə Sənaye Parkları',
+      RU: 'Промышленные парки Сумгайыта и Гянджи',
+    },
+    image:
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuDGgRuRr9uJiYiCy0AeiN7FvX1CWCTQLdRAG2TJXnfii1yXyI2WeKI6wMo6E8nydnbcUg27wH11AYMDuRy4WLTd0MRbPlzPT3f1Wzw2BN132jDlE2pKhDZ_BpSyUWXlgaEpX1_ukFt7IpSBL9Cnc3ILMPL8scPCgkSNob0PCSAa30dUKuSc0TBkoYnhfmiO58w10Zuz4eKBXbVNTk92SLbvxAconUj8wUxkDU7y1H7Ks3do6--khlfP',
+    minOrderQty: '25 MT (Rail Wagon / FCL)',
+    annualCapacity: '420,000 MT',
+    verifiedSuppliersCount: 21,
+    incoterms: ['EXW', 'FCA', 'FOB', 'CIF', 'DAP'],
+    certifications: ['API Spec 5L / 5CT', 'EN 10219', 'DIN 10080', 'ISO 9001', 'Mill Test 3.1'],
+    leadTimeDays: '10–20 Days',
+    packaging: {
+      EN: 'Hexagonal steel-strapped bundles with beveled plastic end caps and anti-corrosion coating',
+      AZ: 'Polad lentlə bərkidilmiş altıbucaqlı bağlamalar, qoruyucu qapaqlar və antikorroziv örtük',
+      RU: 'Шестигранные пачки со стальной обвязкой, торцевыми заглушками и антикоррозийным покрытием',
+    },
+    gradeSpecs: {
+      EN: 'S235JR / S355J2H structural steel | B500B / B500C rebar | 6060 / 6063-T6 aluminum alloys',
+      AZ: 'S235JR / S355J2H konstruksiya poladı | B500B / B500C armatur | 6060 / 6063-T6 alüminium',
+      RU: 'Конструкционная сталь S235JR / S355J2H | Арматура B500B | Алюминиевый сплав 6063-T6',
+    },
+  },
+  // Additional Catalog Commodities for Full Catalog View
+  {
+    id: 'persimmon-081070',
+    featured: false,
+    hsCode: '081070',
+    categoryKey: 'agro',
+    name: {
+      EN: 'Persimmons & Dried Fruit',
+      AZ: 'Xurma və Quru Meyvələr',
+      RU: 'Хурма свежая и сухофрукты',
+    },
+    categoryLabel: {
+      EN: 'Agriculture & Food',
+      AZ: 'Kənd Təsərrüfatı və Qida',
+      RU: 'Сельское хозяйство и продукты',
+    },
+    shortDesc: {
+      EN: 'Fresh Hachiya & Fuyu persimmons and solar-dehydrated gourmet persimmon slices from Goychay-Agdash.',
+      AZ: 'Göyçay-Ağdaş bölgəsindən təzə Hachiya və Fuyu xurması və qurudulmuş xurma dilimləri.',
+      RU: 'Свежая хурма сортов Хачия и Фую и вяленые дольки хурмы из региона Гёйчай-Агдаш.',
+    },
+    originRegion: {
+      EN: 'Goychay – Agdash – Balakan',
+      AZ: 'Göyçay – Ağdaş – Balakən',
+      RU: 'Гёйчай – Агдаш – Балакен',
+    },
+    image:
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuDHo5g8iKevybJcG4jlFPGTNzuPMU2721wxSfNRS3s0FmbZeA3YW4AxkdXtyhH_55x-4s5Uh_5-S2-S3LVPexC1O1ahPg_Hgeeion6snYi_eyi7MNDXh5coR3k9acztB4DSA_PV9JjS_JAitpfDEAmO4UUbAUjAs0VuwpjvFbKeEaRXeqGiJ2JKU_vHqlhTa6Meil6iamn-3I_33E-Y7Tii2hclP8mfc_jBNp_gJSQpmbKniKtPJu5s',
+    minOrderQty: '19 MT (Reefer FCL)',
+    annualCapacity: '130,000 MT',
+    verifiedSuppliersCount: 47,
+    incoterms: ['FCA', 'CIF', 'DAP'],
+    certifications: ['GLOBALG.A.P.', 'AQTA Phytosanitary', 'ISO 22000'],
+    leadTimeDays: '5–8 Days',
+    packaging: {
+      EN: 'Single-layeralveolar plastic crates (3.5kg–7kg) and 500g retail dried fruit pouches',
+      AZ: 'Təkqat alveol plastik yeşiklər (3.5kq–7kq) və 500q pərakəndə quru meyvə paketləri',
+      RU: 'Однорядные пластиковые ящики с ячейками (3.5–7 кг) и крафт-пакеты по 500 г',
+    },
+    gradeSpecs: {
+      EN: 'Caliber 65mm+ | Firmness > 5.5 kg/cm² | Zero astringency post-treatment',
+      AZ: 'Kalibr 65mm+ | Bərklik > 5.5 kq/sm² | Ağızbüzücülüksüz şirin sort',
+      RU: 'Калибр 65мм+ | Плотность > 5.5 кг/см² | Полное удаление терпкости',
+    },
+  },
+  {
+    id: 'cotton-yarn-5205',
+    featured: false,
+    hsCode: '5205',
+    categoryKey: 'textile',
+    name: {
+      EN: 'Combed Cotton Yarn',
+      AZ: 'Darama Pambıq İplik',
+      RU: 'Гребенная хлопчатобумажная пряжа',
+    },
+    categoryLabel: {
+      EN: 'Textile & Apparel',
+      AZ: 'Tekstil və Xalçaçılıq',
+      RU: 'Текстиль и ковры',
+    },
+    shortDesc: {
+      EN: 'Ring-spun and open-end 100% long-staple Azerbaijani cotton yarn from Mingachevir & Sumgayit mills.',
+      AZ: 'Mingəçevir və Sumqayıt tekstil parklarından 100% uzunlifli Azərbaycan pambıq ipliyi.',
+      RU: 'Кольцевая и пневмомеханическая 100% хлопковая пряжа из Мингячевира и Сумгайыта.',
+    },
+    originRegion: {
+      EN: 'Mingachevir Industrial Park & Barda',
+      AZ: 'Mingəçevir Sənaye Parkı və Bərdə',
+      RU: 'Мингячевирский промышленный парк и Барда',
+    },
+    image:
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuDtNJYRxE2w63MPzGdjf8CPD9AEFm8HRgiA_8S4bLzI4JlWkzMSr7mOrBFN0clACdJ8Z4fdPmTxcUeQZoVHwM8X0BSrp3Ge5V1rjnXGei5GwaARNkgff5T_0xspZitbC-LuPEjlYnoFGRTUx9-xnXkSS6296Qbk6OBMxFoPcu45Ph_IWPgxe8ghwkwSRb4DFc747hiqPs4hl6mD0u0fkbzXC86IW3Go3l5Gt49vsGvyFE6w27cyqJpi',
+    minOrderQty: '20 MT (1x 40ft HC)',
+    annualCapacity: '35,000 MT',
+    verifiedSuppliersCount: 16,
+    incoterms: ['FCA', 'FOB', 'CIF', 'DAP'],
+    certifications: ['OEKO-TEX Standard 100', 'BCI Cotton', 'ISO 9001', 'EUR.1'],
+    leadTimeDays: '8–14 Days',
+    packaging: {
+      EN: 'Waxed paper cones (1.89kg each) packed in palletized export cartons or PP bags',
+      AZ: 'Mumlanmış kağız konuslar (1.89kq) paletlənmiş ixrac qutularında',
+      RU: 'Вощеные конусы по 1.89 кг на европаллетах в экспортном гофрокартоне',
+    },
+    gradeSpecs: {
+      EN: 'Ne 20/1, Ne 24/1, Ne 30/1, Ne 40/1 Combed & Carded | Uster 5%–25% quality class',
+      AZ: 'Ne 20/1, Ne 24/1, Ne 30/1, Ne 40/1 Karde və Kome | Uster 5%–25% keyfiyyət sinfi',
+      RU: 'Номера Ne 20/1, 24/1, 30/1, 40/1 кардная и гребенная | Стандарт Uster 5–25%',
+    },
+  },
+  {
+    id: 'urea-polymer-310210',
+    featured: false,
+    hsCode: '310210',
+    categoryKey: 'chemicals',
+    name: {
+      EN: 'Prilled & Granular Urea + Polymers',
+      AZ: 'Karbamid və Polipropilen Qranulları',
+      RU: 'Карбамид гранулированный и полимеры',
+    },
+    categoryLabel: {
+      EN: 'Metals & Industrial',
+      AZ: 'Kimya və Sənaye',
+      RU: 'Химия и промышленность',
+    },
+    shortDesc: {
+      EN: '46.2% Nitrogen granular agricultural urea and high-density polyethylene/polypropylene resins from Sumgayit Chemical Park.',
+      AZ: 'Sumqayıt Kimya Sənaye Parkından 46.2% azotlu dənəvər karbamid və polietilen/polipropilen qranulları.',
+      RU: 'Гранулированный карбамид (азот 46.2%) и первичный полипропилен/полиэтилен из Сумгайыта.',
+    },
+    originRegion: {
+      EN: 'Sumgayit Chemical Industrial Park',
+      AZ: 'Sumqayıt Kimya Sənaye Parkı',
+      RU: 'Сумгайытский химический промышленный парк',
+    },
+    image:
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuDGgRuRr9uJiYiCy0AeiN7FvX1CWCTQLdRAG2TJXnfii1yXyI2WeKI6wMo6E8nydnbcUg27wH11AYMDuRy4WLTd0MRbPlzPT3f1Wzw2BN132jDlE2pKhDZ_BpSyUWXlgaEpX1_ukFt7IpSBL9Cnc3ILMPL8scPCgkSNob0PCSAa30dUKuSc0TBkoYnhfmiO58w10Zuz4eKBXbVNTk92SLbvxAconUj8wUxkDU7y1H7Ks3do6--khlfP',
+    minOrderQty: '100 MT (Rail / Bulk Vessel)',
+    annualCapacity: '650,000 MT',
+    verifiedSuppliersCount: 11,
+    incoterms: ['FCA', 'FOB', 'CIF', 'DAP'],
+    certifications: ['REACH Registered', 'ISO 9001', 'ISO 14001', 'SGS Inspection Certificate'],
+    leadTimeDays: '10–16 Days',
+    packaging: {
+      EN: '50kg woven PP bags with PE inner liner or 1,000kg UV-stabilized bulk FIBC bags',
+      AZ: '50kq polipropilen kisələr və ya 1,000kq UB-davamlı biq-bəqlər',
+      RU: 'Полипропиленовые мешки по 50 кг с ПЭ-вкладышем или МКР биг-бэги по 1000 кг',
+    },
+    gradeSpecs: {
+      EN: 'Total Nitrogen ≥ 46.2% | Biuret ≤ 0.8% | Granule size 2–4mm ≥ 95%',
+      AZ: 'Ümumi Azot ≥ 46.2% | Biuret ≤ 0.8% | Qranul ölçüsü 2–4mm ≥ 95%',
+      RU: 'Массовая доля азота ≥ 46.2% | Биурет ≤ 0.8% | Гранулометрический состав 2–4 мм ≥ 95%',
+    },
+  },
+];
 
 export const SERVICES_PILLARS: ServicePillar[] = [
   {

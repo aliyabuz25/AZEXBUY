@@ -1196,11 +1196,11 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
                 <p className="text-base font-normal text-[#666]">{howSubtitle}</p>
               </div>
 
-              {/* Split in two — Buyers (navy tones) | Sellers (green tones) */}
+              {/* Split in two — Buyers (Navy) | Sellers (Green) */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-7">
 
                 {/* ── LEFT: BUYERS ── */}
-                <div className="rounded-[18px] overflow-hidden bg-gradient-to-br from-brandNavy to-[#0b2440] p-6 sm:p-7 flex flex-col gap-5 min-h-[480px]">
+                <div className="rounded-[18px] overflow-hidden bg-brandNavy p-6 sm:p-7 flex flex-col gap-5 min-h-[480px]">
                   <div>
                     <div className="rounded-[14px] overflow-hidden w-full aspect-[1.81/1] mb-4">
                       <img src={howItWorksBuyersImage} alt="Buyers" className="w-full h-full object-cover" />
@@ -1282,7 +1282,7 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
                 </div>
 
                 {/* ── RIGHT: SELLERS ── */}
-                <div className="rounded-[18px] overflow-hidden bg-gradient-to-br from-emerald-700 to-emerald-950 p-6 sm:p-7 flex flex-col gap-5 min-h-[480px]">
+                <div className="rounded-[18px] overflow-hidden bg-brandGreenDark p-6 sm:p-7 flex flex-col gap-5 min-h-[480px]">
                   <div>
                     <div className="rounded-[14px] overflow-hidden w-full aspect-[1.81/1] mb-4">
                       <img src={howItWorksSellersImage} alt="Sellers" className="w-full h-full object-cover" />
@@ -1356,7 +1356,7 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
                     <button
                       type="button"
                       onClick={onOpenProducer}
-                      className="self-start px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-[14px] font-bold rounded-full transition-colors cursor-pointer"
+                      className="self-start px-5 py-2.5 bg-brandGreen hover:bg-brandGreenDark text-white text-[14px] font-bold rounded-full transition-colors cursor-pointer"
                     >
                       {ctaSellerBtn}
                     </button>
