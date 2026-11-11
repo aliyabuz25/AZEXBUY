@@ -811,7 +811,7 @@ export default function App() {
                           {isBuyerLast && (
                             <button
                               type="button"
-                              onClick={() => handleOpenGeneralRFQ()}
+                              onClick={() => setActiveView('buyers')}
                               className="bg-brandNavy text-white text-xs font-bold px-3.5 py-2 rounded cursor-pointer"
                             >
                               Start Buyer RFQ

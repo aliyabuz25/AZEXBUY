@@ -10,7 +10,7 @@ export const PRODUCER_CARD_IMAGE =
   'https://lh3.googleusercontent.com/aida-public/AB6AXuDgrvRVBxN_YV05A8C2ZBQC2V2WHmgN9IrmvxhBvoVre7FKYjEbaR95Ew5PqX6-T-FG67u-0fHLCX6KeLtUrAkBIiJfWZGu7t3Ez2RyKvMerWTAHV1ROVLxhP4wE2oqLK-k9t1i6hrPmq-YJ-GDzjbqNDrNf2-SyjbXUmuQAJa5ScuKsRahZQdVKWyzFzRNPNYzxr3XOkiIb2BLWy4KJO-b-RWiNaaRqebQkQINqnQZfyBkDjpvxMId';
 
 export const BUYER_HERO_IMAGE =
-  'https://images.unsplash.com/photo-1494412574643-71b2511b1f07?w=1600&q=80';
+  'https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=1600&q=80';
 export const PRODUCER_HERO_IMAGE =
   'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=1600&q=80';
 

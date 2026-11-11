@@ -1273,7 +1273,7 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
                     </div>
                     <button
                       type="button"
-                      onClick={onOpenRFQ}
+                      onClick={() => onNavigate('buyers')}
                       className="self-start px-5 py-2.5 bg-brandNavy hover:bg-brandNavyDark text-white text-[14px] font-bold rounded-full transition-colors cursor-pointer"
                     >
                       {ctaBuyerBtn}
