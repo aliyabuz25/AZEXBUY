@@ -4428,7 +4428,7 @@ app.get("/api/azexbuy/products", async (req, res) => {
     query += " AND p.is_featured = 1";
   }
   query += " ORDER BY p.sort_order ASC, p.created_at DESC LIMIT ? OFFSET ?";
-  params.push(Number(lim) || 50, Number(off) || 0);
+  params.push(Math.min(Number(lim) || 1e3, 2e3), Number(off) || 0);
   const rows = azexbuyDb.prepare(query).all(...params);
   const result = rows.map((r) => ({ ...mapProduct(r), categoryName: r.category_name, categorySlug: r.category_slug }));
   await azSet(cacheKey, JSON.stringify(result));

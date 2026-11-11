@@ -311,7 +311,7 @@ export const LocalizationProvider: React.FC<{ children: React.ReactNode }> = ({ 
         fetch(`${OCTO_API_BASE}/api/azexbuy/content`),
         fetch(`${OCTO_API_BASE}/api/azexbuy/services`),
         fetch(`${OCTO_API_BASE}/api/azexbuy/team`),
-        fetch(`${OCTO_API_BASE}/api/azexbuy/products`),
+        fetch(`${OCTO_API_BASE}/api/azexbuy/products?limit=1000`),
       ]);
       if (locRes.ok) {
         const overrides = await locRes.json();

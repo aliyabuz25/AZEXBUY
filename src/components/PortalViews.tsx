@@ -38,9 +38,14 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
   onOpenMultiRFQ,
 }) => {
   const { strings, products: cmsProducts, productsHeroImage } = useLocalization();
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('table');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [incotermFilter, setIncotermFilter] = useState<IncotermCode | 'ALL'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
+  const [sortField, setSortField] = useState<'name' | 'hsCode' | 'category' | 'origin'>('name');
+  const [sortAsc, setSortAsc] = useState<boolean>(true);
+  const [page, setPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(25);
 
   const categories = [
     { key: 'all', label: locale === 'AZ' ? 'Bütün Kateqoriyalar' : locale === 'RU' ? 'Все категории' : 'All Commodities' },
@@ -51,23 +56,36 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
     { key: 'chemicals', label: locale === 'AZ' ? 'Kimya və Polimerlər' : locale === 'RU' ? 'Химия и удобрения' : 'Chemicals & Urea' },
   ];
 
-  const filtered = cmsProducts.filter((p: any) => {
-    const matchesCat =
-      categoryFilter === 'all' ||
-      p.categoryKey === categoryFilter ||
-      p.categoryId === categoryFilter ||
-      p.categorySlug === categoryFilter;
-    const matchesIncoterm =
-      incotermFilter === 'ALL' ||
-      (Array.isArray(p.incoterms) && p.incoterms.includes(incotermFilter));
-    const q = searchQuery.trim().toLowerCase();
-    const matchesSearch =
-      !q ||
-      getLocalizedText(p.name, locale).toLowerCase().includes(q) ||
-      String(p.hsCode || '').toLowerCase().includes(q) ||
-      getLocalizedText(p.originRegion, locale).toLowerCase().includes(q);
-    return matchesCat && matchesIncoterm && matchesSearch;
+  const sortedFiltered = [...filtered].sort((a, b) => {
+    let aVal = '';
+    let bVal = '';
+    if (sortField === 'name') {
+      aVal = getLocalizedText(a.name, locale);
+      bVal = getLocalizedText(b.name, locale);
+    } else if (sortField === 'hsCode') {
+      aVal = a.hsCode || '';
+      bVal = b.hsCode || '';
+    } else if (sortField === 'category') {
+      aVal = getLocalizedText(a.categoryLabel, locale);
+      bVal = getLocalizedText(b.categoryLabel, locale);
+    } else if (sortField === 'origin') {
+      aVal = getLocalizedText(a.originRegion, locale);
+      bVal = getLocalizedText(b.originRegion, locale);
+    }
+    return sortAsc ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
   });
+
+  const totalPages = Math.ceil(sortedFiltered.length / pageSize) || 1;
+  const paginated = sortedFiltered.slice((page - 1) * pageSize, page * pageSize);
+
+  const handleSort = (field: 'name' | 'hsCode' | 'category' | 'origin') => {
+    if (sortField === field) {
+      setSortAsc(!sortAsc);
+    } else {
+      setSortField(field);
+      setSortAsc(true);
+    }
+  };
 
   return (
     <div className="bg-[#F8FAFC] min-h-screen">
@@ -134,21 +152,21 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
             ))}
           </div>
 
-          {/* Search & Incoterm Filter */}
+          {/* Search & Incoterm Filter & View Switcher */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
             <div className="relative">
               <i className="fa-solid fa-magnifying-glass text-slate-400 text-xs absolute left-3 top-1/2 -translate-y-1/2"></i>
               <input
                 type="text"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
                 placeholder="Filter by HS Code or name..."
                 className="h-9 pl-8 pr-3 text-xs bg-white border border-slate-300 rounded text-slate-900 w-full sm:w-56"
               />
             </div>
             <select
               value={incotermFilter}
-              onChange={(e) => setIncotermFilter(e.target.value as IncotermCode | 'ALL')}
+              onChange={(e) => { setIncotermFilter(e.target.value as IncotermCode | 'ALL'); setPage(1); }}
               className="h-9 px-3 text-xs font-semibold bg-white border border-slate-300 rounded text-slate-800"
             >
               <option value="ALL">All Incoterms® 2020</option>
@@ -158,19 +176,224 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
                 </option>
               ))}
             </select>
+
+            {/* View Mode Toggle: Grid vs DataGrid Rows */}
+            <div className="flex items-center border border-slate-300 rounded bg-slate-50 p-0.5 shrink-0">
+              <button
+                type="button"
+                onClick={() => setViewMode('table')}
+                className={`px-2.5 py-1.5 rounded text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${
+                  viewMode === 'table' ? 'bg-[#0f3156] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                }`}
+                title="Sətir-bə-sətir DataGrid cədvəl görünüşü"
+              >
+                <i className="fa-solid fa-table-list"></i>
+                <span className="hidden sm:inline">Cədvəl</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode('grid')}
+                className={`px-2.5 py-1.5 rounded text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${
+                  viewMode === 'grid' ? 'bg-[#0f3156] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                }`}
+                title="Şəkilli Kart Görünüşü"
+              >
+                <i className="fa-solid fa-grip"></i>
+                <span className="hidden sm:inline">Kartlar</span>
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Product Cards Grid */}
-        {filtered.length === 0 ? (
+        {/* Total stats and pagination bar */}
+        <div className="flex items-center justify-between text-xs text-slate-600 px-1">
+          <div>
+            <span className="font-bold text-slate-900">{sortedFiltered.length}</span> məhsul tapıldı
+            {sortedFiltered.length > pageSize && (
+              <span className="text-slate-400 ml-1">
+                (Səhifə {page} / {totalPages})
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-slate-500 hidden sm:inline">Göstər:</span>
+            <select
+              value={pageSize}
+              onChange={e => { setPageSize(Number(e.target.value)); setPage(1); }}
+              className="h-7 px-2 bg-white border border-slate-300 rounded text-xs font-semibold text-slate-700"
+            >
+              <option value="25">25 sətir</option>
+              <option value="50">50 sətir</option>
+              <option value="100">100 sətir</option>
+              <option value="500">Hamısı</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Data Container: Table vs Grid */}
+        {sortedFiltered.length === 0 ? (
           <div className="bg-white border border-dashed border-slate-300 rounded-lg p-12 text-center text-slate-500">
             <i className="fa-solid fa-box-open text-3xl mb-3 text-slate-400"></i>
             <p className="font-semibold text-slate-700">Məhsul tapılmadı / No products found</p>
             <p className="text-xs text-slate-400 mt-1">Axtarış filtrini dəyişin və ya daha sonra təkrar yoxlayın.</p>
           </div>
+        ) : viewMode === 'table' ? (
+          /* ── FAST CLEAN ROW-BY-ROW DATAGRID (IMAGELESS) ── */
+          <div className="bg-white border border-slate-200 rounded-lg shadow-2xs overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-[#0f3156] text-white text-[11px] font-bold uppercase tracking-wider select-none">
+                    <th className="py-3 px-3 w-10 text-center">#</th>
+                    <th
+                      onClick={() => handleSort('hsCode')}
+                      className="py-3 px-3 cursor-pointer hover:bg-white/10 transition-colors w-28 whitespace-nowrap"
+                    >
+                      <div className="flex items-center gap-1">
+                        <span>HS Kodu</span>
+                        <i className={`fa-solid ${sortField === 'hsCode' ? (sortAsc ? 'fa-arrow-up' : 'fa-arrow-down') : 'fa-sort'} opacity-70 text-[9px]`}></i>
+                      </div>
+                    </th>
+                    <th
+                      onClick={() => handleSort('name')}
+                      className="py-3 px-4 cursor-pointer hover:bg-white/10 transition-colors"
+                    >
+                      <div className="flex items-center gap-1">
+                        <span>Məhsulun Adı</span>
+                        <i className={`fa-solid ${sortField === 'name' ? (sortAsc ? 'fa-arrow-up' : 'fa-arrow-down') : 'fa-sort'} opacity-70 text-[9px]`}></i>
+                      </div>
+                    </th>
+                    <th
+                      onClick={() => handleSort('category')}
+                      className="py-3 px-3 cursor-pointer hover:bg-white/10 transition-colors w-44 hidden md:table-cell"
+                    >
+                      <div className="flex items-center gap-1">
+                        <span>Sektor / Kateqoriya</span>
+                        <i className={`fa-solid ${sortField === 'category' ? (sortAsc ? 'fa-arrow-up' : 'fa-arrow-down') : 'fa-sort'} opacity-70 text-[9px]`}></i>
+                      </div>
+                    </th>
+                    <th
+                      onClick={() => handleSort('origin')}
+                      className="py-3 px-3 cursor-pointer hover:bg-white/10 transition-colors w-32 hidden lg:table-cell"
+                    >
+                      <div className="flex items-center gap-1">
+                        <span>Mənşə</span>
+                        <i className={`fa-solid ${sortField === 'origin' ? (sortAsc ? 'fa-arrow-up' : 'fa-arrow-down') : 'fa-sort'} opacity-70 text-[9px]`}></i>
+                      </div>
+                    </th>
+                    <th className="py-3 px-3 w-28 hidden sm:table-cell">MOQ</th>
+                    <th className="py-3 px-3 text-right w-36">Əməliyyat</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 text-xs text-slate-700 font-medium">
+                  {paginated.map((product, idx) => {
+                    const isShortlisted = shortlistedIds.includes(product.id);
+                    const rowNum = (page - 1) * pageSize + idx + 1;
+                    return (
+                      <tr
+                        key={product.id}
+                        className="hover:bg-slate-50/80 transition-colors group"
+                      >
+                        <td className="py-2.5 px-3 text-center text-slate-400 text-[11px] font-mono">
+                          {rowNum}
+                        </td>
+                        <td className="py-2.5 px-3">
+                          <span className="font-mono text-[11px] font-bold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200/80">
+                            {product.hsCode || '—'}
+                          </span>
+                        </td>
+                        <td className="py-2.5 px-4">
+                          <div
+                            onClick={() => onInspectProduct(product)}
+                            className="font-bold text-slate-900 group-hover:text-[#0f3156] cursor-pointer transition-colors"
+                          >
+                            {getLocalizedText(product.name, locale)}
+                          </div>
+                          {product.shortDesc && (
+                            <div className="text-[11px] text-slate-500 line-clamp-1 mt-0.5 font-normal">
+                              {getLocalizedText(product.shortDesc, locale)}
+                            </div>
+                          )}
+                        </td>
+                        <td className="py-2.5 px-3 hidden md:table-cell text-[11px] text-slate-600">
+                          <span className="inline-block px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-semibold text-[10px]">
+                            {getLocalizedText(product.categoryLabel, locale)}
+                          </span>
+                        </td>
+                        <td className="py-2.5 px-3 hidden lg:table-cell text-[11px] text-slate-600">
+                          {getLocalizedText(product.originRegion, locale) || 'Azərbaycan'}
+                        </td>
+                        <td className="py-2.5 px-3 hidden sm:table-cell text-[11px] font-mono text-slate-600">
+                          {product.minOrderQty || '1x 20ft FCL'}
+                        </td>
+                        <td className="py-2.5 px-3 text-right">
+                          <div className="flex items-center justify-end gap-1.5">
+                            <button
+                              type="button"
+                              onClick={() => onInspectProduct(product)}
+                              className="px-2 py-1 text-[11px] font-bold text-slate-600 hover:text-[#0f3156] hover:bg-slate-100 rounded transition-colors cursor-pointer"
+                              title="Spesifikasiyalara Bax"
+                            >
+                              Detallar
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => onRequestProduct(product)}
+                              className="px-2.5 py-1 text-[11px] font-bold text-white bg-brandGreen hover:bg-brandGreenDark rounded transition-colors cursor-pointer flex items-center gap-1 shadow-2xs"
+                              title="RFQ Qiymət Təklifi İstə"
+                            >
+                              <span>RFQ</span>
+                              <i className="fa-solid fa-arrow-right text-[9px]"></i>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => onToggleShortlist(product.id)}
+                              className={`w-7 h-7 rounded flex items-center justify-center transition-colors cursor-pointer ${
+                                isShortlisted ? 'bg-brandGreen text-white' : 'text-slate-400 hover:text-slate-700 hover:bg-slate-100'
+                              }`}
+                              title={isShortlisted ? 'Seçilmişlərdən çıxar' : 'Seçilmişlərə əlavə et'}
+                            >
+                              <i className={`fa-${isShortlisted ? 'solid' : 'regular'} fa-bookmark text-[11px]`}></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="p-3 border-t border-slate-200 flex items-center justify-between bg-slate-50/70">
+                <button
+                  type="button"
+                  disabled={page <= 1}
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                  className="px-3 py-1.5 text-xs font-bold text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-100 disabled:opacity-40 cursor-pointer"
+                >
+                  ← Əvvəlki
+                </button>
+                <div className="text-xs text-slate-600 font-semibold">
+                  Səhifə {page} / {totalPages}
+                </div>
+                <button
+                  type="button"
+                  disabled={page >= totalPages}
+                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                  className="px-3 py-1.5 text-xs font-bold text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-100 disabled:opacity-40 cursor-pointer"
+                >
+                  Növbəti →
+                </button>
+              </div>
+            )}
+          </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {filtered.map((product) => {
+          /* ── GRID MODE (CARDS) ── */
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {paginated.map((product) => {
               const isShortlisted = shortlistedIds.includes(product.id);
               return (
                 <div
@@ -248,9 +471,35 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
               );
             })}
           </div>
-        )}
-      </div>
-    </section>
+
+          {/* Grid Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="p-3 bg-white border border-slate-200 rounded-lg flex items-center justify-between">
+              <button
+                type="button"
+                disabled={page <= 1}
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+                className="px-3 py-1.5 text-xs font-bold text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-100 disabled:opacity-40 cursor-pointer"
+              >
+                ← Əvvəlki
+              </button>
+              <div className="text-xs text-slate-600 font-semibold">
+                Səhifə {page} / {totalPages}
+              </div>
+              <button
+                type="button"
+                disabled={page >= totalPages}
+                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                className="px-3 py-1.5 text-xs font-bold text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-100 disabled:opacity-40 cursor-pointer"
+              >
+                Növbəti →
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  </section>
   </div>
   );
 };

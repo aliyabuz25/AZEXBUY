@@ -1567,7 +1567,7 @@ app.get('/api/azexbuy/products', async (req: Request, res: Response) => {
   if (category) { query += ' AND c.slug = ?'; params.push(category); }
   if (featured === '1') { query += ' AND p.is_featured = 1'; }
   query += ' ORDER BY p.sort_order ASC, p.created_at DESC LIMIT ? OFFSET ?';
-  params.push(Number(lim) || 50, Number(off) || 0);
+  params.push(Math.min(Number(lim) || 1000, 2000), Number(off) || 0);
 
   const rows = azexbuyDb.prepare(query).all(...params) as any[];
   const result = rows.map(r => ({ ...mapProduct(r), categoryName: r.category_name, categorySlug: r.category_slug }));
