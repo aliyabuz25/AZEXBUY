@@ -56,6 +56,24 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
     { key: 'chemicals', label: locale === 'AZ' ? 'Kimya və Polimerlər' : locale === 'RU' ? 'Химия и удобрения' : 'Chemicals & Urea' },
   ];
 
+  const filtered = cmsProducts.filter((p: any) => {
+    const matchesCat =
+      categoryFilter === 'all' ||
+      p.categoryKey === categoryFilter ||
+      p.categoryId === categoryFilter ||
+      p.categorySlug === categoryFilter;
+    const matchesIncoterm =
+      incotermFilter === 'ALL' ||
+      (Array.isArray(p.incoterms) && p.incoterms.includes(incotermFilter));
+    const q = searchQuery.trim().toLowerCase();
+    const matchesSearch =
+      !q ||
+      getLocalizedText(p.name, locale).toLowerCase().includes(q) ||
+      String(p.hsCode || '').toLowerCase().includes(q) ||
+      getLocalizedText(p.originRegion, locale).toLowerCase().includes(q);
+    return matchesCat && matchesIncoterm && matchesSearch;
+  });
+
   const sortedFiltered = [...filtered].sort((a, b) => {
     let aVal = '';
     let bVal = '';
