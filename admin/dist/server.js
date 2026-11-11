@@ -5515,12 +5515,15 @@ app.post("/api/azexbuy/ai-chat", async (req, res) => {
     const temperature = s?.temperature ?? 0.2;
     const maxTokens = Math.min(Math.max(s?.max_tokens || 350, 150), 600);
     const systemPrompt = s?.system_prompt?.trim() || `S\u0259n AZEXBUY (Az\u0259rbaycan \u0130xrac v\u0259 Qlobal T\u0259chizat Portal\u0131) Beyn\u0259lxalq Ticar\u0259t Masas\u0131san.
-QAYDALAR (Anti-AI-Slop & Minimum Token \u0130stifad\u0259s\u0131):
-1. Giri\u015F/\xE7\u0131x\u0131\u015F t\u0259rifl\u0259ri, \u015Fablon s\xF6zl\u0259r ("\u0259lb\u0259tt\u0259", "\u0259ziz m\xFC\u015Ft\u0259ri", "siz\u0259 k\xF6m\u0259k etm\u0259y\u0259 \u015Fadam") \u018FSLA YAZMA. Birba\u015Fa fakta v\u0259 cavaba ke\xE7.
-2. Q\u0131sa, d\u0259qiq v\u0259 ticar\u0259t y\xF6n\xFCml\xFC cavab ver (maksimum 2-3 c\xFCml\u0259 v\u0259 ya konkret madd\u0259l\u0259r).
+ROLU V\u018F DAVRANI\u015E QAYDALARI:
+1. \u0130stifad\u0259\xE7i il\u0259 canl\u0131, m\u0259ntiqli v\u0259 pe\u015F\u0259kar s\xF6hb\u0259ti s\u0259n apar\u0131rsan. \u0130stifad\u0259\xE7inin suallar\u0131na ayd\u0131n, konkret v\u0259 s\u0259liq\u0259li cavab ver\u0259r\u0259k dan\u0131\u015F\u0131\u011F\u0131 davam etdir.
+2. S\xFCni robot t\u0259rifl\u0259ri v\u0259 bo\u015F \u015Fablonlar ("\u0259lb\u0259tt\u0259", "\u0259ziz m\xFC\u015Ft\u0259ri", "siz\u0259 k\xF6m\u0259k etm\u0259y\u0259 \xE7ox \u015Fadam") \u018FSLA \u0130\u015EL\u018FTM\u018F. Birba\u015Fa fakta v\u0259 cavaba ke\xE7.
 3. Laz\u0131m olduqda d\u0259qiq HS kodlar\u0131 (F\u0131nd\u0131q: 0802.22, Nar/\u015Fir\u0259: 0810.90, Xurma: 0810.70, M\u0259rm\u0259r: 2515, Xal\xE7a: 5701, Polad: 7306), Incoterms 2020 v\u0259 Orta D\u0259hliz tranzit m\xFCdd\u0259tl\u0259rini qeyd et.
-4. F\u0259rdi qiym\u0259t v\u0259 sifari\u015F \xFC\xE7\xFCn istifad\u0259\xE7iy\u0259 \xE7atda e-po\xE7tunu yazma\u011F\u0131 v\u0259 ya yuxar\u0131dak\u0131 "RFQ / T\u0259l\u0259b G\xF6nd\u0259r" d\xFCym\u0259sind\u0259n istifad\u0259 etm\u0259yi bildir.
-5. \u0130stifad\u0259\xE7inin dilind\u0259 (${locale || "AZ"}) r\u0259smi v\u0259 s\u0259liq\u0259li cavab ver.`;
+4. \u018FG\u018FR m\u0259s\u0259l\u0259 x\xFCsusi f\u0259rdi qiym\u0259t raz\u0131la\u015Fmas\u0131, b\xF6y\xFCk tonajl\u0131 m\xFCqavil\u0259, r\u0259smi audit v\u0259 ya s\u0259nin s\u0259lahiyy\u0259tind\u0259n k\u0259nar d\u0259rin h\xFCquqi/idar\u0259etm\u0259 q\u0259rar\u0131 t\u0259l\u0259b edirs\u0259 (y\u0259ni \xE7ata AI olaraq t\u0259kba\u015F\u0131na tam h\u0259ll ed\u0259 bilm\u0259y\u0259c\u0259yin bir m\u0259rh\u0259l\u0259y\u0259 \xE7atarsa), cavab\u0131n\u0131n sonunda d\u0259qiq bu c\xFCml\u0259ni i\u015Fl\u0259t:
+"[ESCALATE_TO_MANAGEMENT]"
+v\u0259 istifad\u0259\xE7iy\u0259 bildir ki, m\u0259s\u0259l\u0259ni r\u0259hb\u0259rliy\u0259 y\xF6nl\u0259ndirirs\u0259n, \u0259laq\u0259 \xFC\xE7\xFCn e-po\xE7tunu qeyd etsin.
+5. \u018Fks t\u0259qdird\u0259 (adi ticar\u0259t, m\u0259hsul, da\u015F\u0131ma, standartlar, suallar zaman\u0131) s\xF6hb\u0259ti normal, operativ v\u0259 yard\u0131msev\u0259r \u015F\u0259kild\u0259 \xF6z\xFCn idar\u0259 et.
+6. \u0130stifad\u0259\xE7inin dilind\u0259 (${locale || "AZ"}) t\u0259miz v\u0259 etibarl\u0131 dild\u0259 cavab ver.`;
     const recentHistory = Array.isArray(history) ? history.slice(-4).map((m) => ({
       role: m.sender === "user" ? "user" : "assistant",
       content: String(m.text || "").slice(0, 300)
@@ -5576,9 +5579,16 @@ QAYDALAR (Anti-AI-Slop & Minimum Token \u0130stifad\u0259s\u0131):
         details: lastError || "All configured API keys encountered errors or rate limits."
       });
     }
+    let shouldEscalate = false;
+    let cleanReply = replyText;
+    if (replyText.includes("[ESCALATE_TO_MANAGEMENT]")) {
+      shouldEscalate = true;
+      cleanReply = replyText.replace(/\[ESCALATE_TO_MANAGEMENT\]/g, "").trim();
+    }
     res.json({
       success: true,
-      reply: replyText,
+      reply: cleanReply,
+      escalate: shouldEscalate,
       model,
       keyIndexUsed: currentIdx,
       poolSize: availableKeys.length

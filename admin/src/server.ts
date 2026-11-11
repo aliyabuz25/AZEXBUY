@@ -3000,14 +3000,17 @@ app.post('/api/azexbuy/ai-chat', async (req: Request, res: Response) => {
     // Keep max_tokens concise to save tokens and prevent endless rambling
     const maxTokens = Math.min(Math.max(s?.max_tokens || 350, 150), 600);
 
-    // Ultra-clean, anti-slop, token-efficient system instruction
+    // Ultra-clean, conversational, anti-slop, token-efficient system instruction
     const systemPrompt = s?.system_prompt?.trim() || `Sən AZEXBUY (Azərbaycan İxrac və Qlobal Təchizat Portalı) Beynəlxalq Ticarət Masasısan.
-QAYDALAR (Anti-AI-Slop & Minimum Token İstifadəsı):
-1. Giriş/çıxış tərifləri, şablon sözlər ("əlbəttə", "əziz müştəri", "sizə kömək etməyə şadam") ƏSLA YAZMA. Birbaşa fakta və cavaba keç.
-2. Qısa, dəqiq və ticarət yönümlü cavab ver (maksimum 2-3 cümlə və ya konkret maddələr).
+ROLU VƏ DAVRANIŞ QAYDALARI:
+1. İstifadəçi ilə canlı, məntiqli və peşəkar söhbəti sən aparırsan. İstifadəçinin suallarına aydın, konkret və səliqəli cavab verərək danışığı davam etdir.
+2. Süni robot tərifləri və boş şablonlar ("əlbəttə", "əziz müştəri", "sizə kömək etməyə çox şadam") ƏSLA İŞLƏTMƏ. Birbaşa fakta və cavaba keç.
 3. Lazım olduqda dəqiq HS kodları (Fındıq: 0802.22, Nar/şirə: 0810.90, Xurma: 0810.70, Mərmər: 2515, Xalça: 5701, Polad: 7306), Incoterms 2020 və Orta Dəhliz tranzit müddətlərini qeyd et.
-4. Fərdi qiymət və sifariş üçün istifadəçiyə çatda e-poçtunu yazmağı və ya yuxarıdakı "RFQ / Tələb Göndər" düyməsindən istifadə etməyi bildir.
-5. İstifadəçinin dilində (${locale || 'AZ'}) rəsmi və səliqəli cavab ver.`;
+4. ƏGƏR məsələ xüsusi fərdi qiymət razılaşması, böyük tonajlı müqavilə, rəsmi audit və ya sənin səlahiyyətindən kənar dərin hüquqi/idarəetmə qərarı tələb edirsə (yəni çata AI olaraq təkbaşına tam həll edə bilməyəcəyin bir mərhələyə çatarsa), cavabının sonunda dəqiq bu cümləni işlət:
+"[ESCALATE_TO_MANAGEMENT]"
+və istifadəçiyə bildir ki, məsələni rəhbərliyə yönləndirirsən, əlaqə üçün e-poçtunu qeyd etsin.
+5. Əks təqdirdə (adi ticarət, məhsul, daşıma, standartlar, suallar zamanı) söhbəti normal, operativ və yardımsevər şəkildə özün idarə et.
+6. İstifadəçinin dilində (${locale || 'AZ'}) təmiz və etibarlı dildə cavab ver.`;
 
     // Only keep last 3 user/assistant turns to strictly conserve prompt tokens
     const recentHistory = Array.isArray(history)
@@ -3078,9 +3081,17 @@ QAYDALAR (Anti-AI-Slop & Minimum Token İstifadəsı):
       });
     }
 
+    let shouldEscalate = false;
+    let cleanReply = replyText;
+    if (replyText.includes('[ESCALATE_TO_MANAGEMENT]')) {
+      shouldEscalate = true;
+      cleanReply = replyText.replace(/\[ESCALATE_TO_MANAGEMENT\]/g, '').trim();
+    }
+
     res.json({
       success: true,
-      reply: replyText,
+      reply: cleanReply,
+      escalate: shouldEscalate,
       model,
       keyIndexUsed: currentIdx,
       poolSize: availableKeys.length

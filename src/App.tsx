@@ -1221,14 +1221,18 @@ export default function App() {
         <button
           type="button"
           onClick={() => setAiDeskOpen(true)}
-          className="fixed bottom-6 right-6 z-40 bg-[#0f3156] hover:bg-[#081c33] text-white px-4 py-3 rounded-full shadow-2xl flex items-center gap-2.5 text-xs font-bold border border-white/20 cursor-pointer transition-all hover:scale-105 active:scale-95 no-print"
+          className="fixed bottom-6 right-6 z-40 bg-white hover:bg-slate-50 text-slate-800 px-4 py-2.5 rounded-full shadow-2xl flex items-center gap-2.5 text-xs font-bold border border-slate-200 cursor-pointer transition-all hover:scale-105 active:scale-95 no-print"
           title="AZEXBUY Trade Desk Chat"
         >
           <div className="relative flex items-center justify-center">
-            <i className="fa-solid fa-headset text-sm"></i>
-            <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-emerald-400"></span>
+            <img
+              src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f916/512.webp"
+              alt="AI Assistant"
+              className="w-7 h-7 object-contain drop-shadow-sm"
+            />
+            <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white animate-pulse"></span>
           </div>
-          <span>Trade Desk</span>
+          <span className="text-[#0f3156] font-extrabold text-[12px] tracking-tight">Trade Desk</span>
         </button>
       )}
 
