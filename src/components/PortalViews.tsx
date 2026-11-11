@@ -81,14 +81,11 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
         <div className="absolute inset-0 bg-gradient-to-t from-[#0b2440] via-[#0b2440]/60 to-[#0b2440]/25"></div>
         <div className="absolute inset-x-0 bottom-0 z-10">
           <div className="custom-container py-8 sm:py-10">
-            <span className="inline-block px-3 py-1 bg-white/15 backdrop-blur-xs text-white text-[11px] font-bold rounded-full mb-3 uppercase tracking-wider border border-white/20">
-              {locale === 'AZ' ? 'Azərbaycan Milli İxrac Kataloqu' : locale === 'TR' ? 'Azerbaycan Milli İhracat Kataloğu' : 'Azerbaijan National Export Catalog'}
-            </span>
             <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight mb-3 leading-tight max-w-2xl">
               {strings[locale]?.featuredProducts?.heading || strings.AZ?.featuredProducts?.heading || strings.EN?.featuredProducts?.heading || 'Export Commodities'}
             </h1>
             <p className="text-sm sm:text-base text-slate-100/90 leading-relaxed mb-6 max-w-2xl">
-              Direct factory and agro-cluster sourcing across all 14 economic regions of Azerbaijan with verified AQTA phytosanitary, ISO, and EUR.1/CT-1 origin documentation.
+              {strings[locale]?.featuredProducts?.subheading || strings.AZ?.featuredProducts?.subheading || 'Direct factory and agro-cluster sourcing across all 14 economic regions of Azerbaijan with verified AQTA phytosanitary, ISO, and EUR.1/CT-1 origin documentation.'}
             </p>
             <div className="flex flex-wrap items-center gap-3">
               {shortlistedIds.length > 0 && (
@@ -1236,14 +1233,11 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
           <div className="absolute inset-0 bg-gradient-to-t from-[#0b2440] via-[#0b2440]/60 to-[#0b2440]/25"></div>
           <div className="absolute inset-x-0 bottom-0 z-10">
             <div className="custom-container py-8 sm:py-10">
-              <span className="inline-block px-3 py-1 bg-white/15 backdrop-blur-xs text-white text-[11px] font-bold rounded-full mb-3 uppercase tracking-wider border border-white/20">
-                {locale === 'AZ' ? 'AZEXBUY Əməliyyat Mexanizmi' : locale === 'TR' ? 'AZEXBUY Operasyon Mekanizması' : 'AZEXBUY Operational Workflow'}
-              </span>
               <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight mb-3 leading-tight max-w-2xl">
-                {howTitle}
+                {strings[locale]?.howItWorks?.heading || howTitle}
               </h1>
               <p className="text-sm sm:text-base text-slate-100/90 leading-relaxed mb-6 max-w-2xl">
-                {howSubtitle}
+                {strings[locale]?.howItWorks?.subheading || howSubtitle}
               </p>
               <div className="flex flex-wrap gap-3">
                 <button
@@ -1633,14 +1627,11 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
           <div className="absolute inset-0 bg-gradient-to-t from-[#0b2440] via-[#0b2440]/60 to-[#0b2440]/25"></div>
           <div className="absolute inset-x-0 bottom-0 z-10">
             <div className="custom-container py-8 sm:py-10">
-              <span className="inline-block px-3 py-1 bg-white/15 backdrop-blur-xs text-white text-[11px] font-bold rounded-full mb-3 uppercase tracking-wider border border-white/20">
-                {locale === 'AZ' ? 'AZEXBUY İxrac və Təchizat Xidmətləri' : locale === 'TR' ? 'AZEXBUY İhracat ve Tedarik Hizmetleri' : 'AZEXBUY Trade & Export Solutions'}
-              </span>
               <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight mb-3 leading-tight max-w-2xl">
                 {strings[locale]?.services?.heading || strings.AZ?.services?.heading || 'Services'}
               </h1>
               <p className="text-sm sm:text-base text-slate-100/90 leading-relaxed mb-6 max-w-2xl">
-                {strings[locale]?.services?.outsourcedDesc || strings.AZ?.services?.outsourcedDesc || 'Beynəlxalq ticarət əməliyyatları, aqrar və sənaye ixracatı, logistika və gömrük dəstəyi.'}
+                {strings[locale]?.services?.outsourcedDesc || strings[locale]?.services?.subheading || strings.AZ?.services?.outsourcedDesc || 'Beynəlxalq ticarət əməliyyatları, aqrar və sənaye ixracatı, logistika və gömrük dəstəyi.'}
               </p>
               <div className="flex flex-wrap gap-3">
                 <button

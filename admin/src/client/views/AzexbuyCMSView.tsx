@@ -1684,7 +1684,16 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
           {page === 'services' && (
             <>
               <h2 className="text-sm font-bold text-slate-800">Xidmətlər Bölməsi</h2>
-              <MultiLocF label="Bölmə Başlığı" strKey="services.heading" locData={locData} onChange={handleMultiLocChange} />
+
+              <div className="bg-slate-100 px-3 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider rounded">Səhifə Hero Görseli</div>
+              <ImageField imgKey="SERVICES_HERO_IMAGE" label="Xidmətlər Səhifəsi Hero Banneri"
+                content={content} uploading={uploading}
+                onSaveContent={saveContent} onTriggerUpload={triggerUpload}
+                onUpdateImgUrl={handleUpdateImgUrl} onPreview={setPreview}
+                saving={saving} saved={saved} />
+
+              <div className="bg-slate-100 px-3 py-2 text-[10px] font-bold text-slate-500 uppercase rounded mt-2">Hero və Bölmə Mətnləri</div>
+              <MultiLocF label="Bölmə / Hero Başlığı" strKey="services.heading" locData={locData} onChange={handleMultiLocChange} />
               <MultiLocF label="Alt Başlıq" strKey="services.subheading" multi locData={locData} onChange={handleMultiLocChange} />
               <MultiLocF label='"Ətraflı" Buton Mətni' strKey="services.learnMore" locData={locData} onChange={handleMultiLocChange} />
               <div className="bg-slate-100 px-3 py-2 text-[10px] font-bold text-slate-500 uppercase rounded mt-2">Outsourced Export Department Bloku</div>
@@ -1838,7 +1847,12 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
               <h2 className="text-sm font-bold text-slate-800">Necə İşləyir Bölməsi</h2>
 
               <div className="bg-slate-100 px-3 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider rounded">Görsellər</div>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <ImageField imgKey="HOW_IT_WORKS_HERO_IMAGE" label="Necə İşləyir Səhifəsi Hero Banneri"
+                content={content} uploading={uploading}
+                onSaveContent={saveContent} onTriggerUpload={triggerUpload}
+                onUpdateImgUrl={handleUpdateImgUrl} onPreview={setPreview}
+                saving={saving} saved={saved} />
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-2">
                 <ImageField imgKey="HOW_IT_WORKS_BUYERS_IMAGE" label="Alıcılar Görseli"
                   content={content} uploading={uploading}
                   onSaveContent={saveContent} onTriggerUpload={triggerUpload}
@@ -1851,8 +1865,8 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                   saving={saving} saved={saved} />
               </div>
 
-              <div className="bg-slate-100 px-3 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider rounded mt-2">Mətnlər</div>
-              <MultiLocF label="Bölmə Başlığı" strKey="howItWorks.heading" locData={locData} onChange={handleMultiLocChange} />
+              <div className="bg-slate-100 px-3 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider rounded mt-2">Hero və Bölmə Mətnləri</div>
+              <MultiLocF label="Bölmə / Hero Başlığı" strKey="howItWorks.heading" locData={locData} onChange={handleMultiLocChange} />
               <MultiLocF label="Alt Başlıq" strKey="howItWorks.subheading" multi locData={locData} onChange={handleMultiLocChange} />
               <MultiLocF label='"Tam Prosesə Bax" Butonu' strKey="howItWorks.seeFullProcess" locData={locData} onChange={handleMultiLocChange} />
               <MultiLocF label="Alıcılar Etiketi" strKey="howItWorks.forBuyersLabel" locData={locData} onChange={handleMultiLocChange} />
@@ -1866,12 +1880,21 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
           {page === 'featured_products' && (
             <>
               <h2 className="text-sm font-bold text-slate-800">Öne Çıxan Məhsullar Bölməsi</h2>
-              <MultiLocF label="Başlıq" strKey="featuredProducts.heading" locData={locData} onChange={handleMultiLocChange} />
+
+              <div className="bg-slate-100 px-3 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider rounded">Səhifə Hero Görseli</div>
+              <ImageField imgKey="PRODUCTS_HERO_IMAGE" label="Məhsullar Səhifəsi Hero Banneri"
+                content={content} uploading={uploading}
+                onSaveContent={saveContent} onTriggerUpload={triggerUpload}
+                onUpdateImgUrl={handleUpdateImgUrl} onPreview={setPreview}
+                saving={saving} saved={saved} />
+
+              <div className="bg-slate-100 px-3 py-2 text-[10px] font-bold text-slate-500 uppercase rounded mt-2">Hero və Bölmə Mətnləri</div>
+              <MultiLocF label="Bölmə / Hero Başlığı" strKey="featuredProducts.heading" locData={locData} onChange={handleMultiLocChange} />
               <MultiLocF label="Alt Başlıq" strKey="featuredProducts.subheading" multi locData={locData} onChange={handleMultiLocChange} />
               <MultiLocF label='"Bütün Məhsullar" Linki' strKey="featuredProducts.viewAll" locData={locData} onChange={handleMultiLocChange} />
               <MultiLocF label='"Bu Məhsulu Sifariş Et" Butonu' strKey="featuredProducts.requestProduct" locData={locData} onChange={handleMultiLocChange} />
               <MultiLocF label='"HS Kodu" Etiketi' strKey="featuredProducts.hsCodeLabel" locData={locData} onChange={handleMultiLocChange} />
-              <SaveBar onSave={() => saveStrings(locData)} saving={saving} saved={saved} />
+              <SaveBar onSave={async () => { await saveContent(content); await saveStrings(locData); }} saving={saving} saved={saved} />
             </>
           )}
 
