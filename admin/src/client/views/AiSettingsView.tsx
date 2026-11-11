@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   Cpu, Save, CheckCircle2, AlertCircle, Key, Sparkles, Sliders, ShieldCheck, RefreshCw,
-  Plus, Trash2, Layers, Zap, Gift, Search
+  Plus, Trash2, Zap, Gift, Search, HelpCircle, MessageSquare
 } from 'lucide-react';
 import { UiLanguage } from '../types';
 
@@ -17,6 +17,12 @@ interface OpenRouterModel {
   context_length: number;
 }
 
+interface CustomFaqItem {
+  id: string;
+  question: string;
+  answer: string;
+}
+
 export const AiSettingsView: React.FC<AiSettingsViewProps> = () => {
   const [apiKeys, setApiKeys] = useState<string[]>(['']);
   const [model, setModel] = useState('openrouter/free');
@@ -24,6 +30,10 @@ export const AiSettingsView: React.FC<AiSettingsViewProps> = () => {
   const [temperature, setTemperature] = useState(0.2);
   const [maxTokens, setMaxTokens] = useState(350);
   const [enabled, setEnabled] = useState(true);
+
+  // FAQ options
+  const [faqMode, setFaqMode] = useState<'hybrid' | 'manual' | 'ai'>('hybrid');
+  const [customFaqs, setCustomFaqs] = useState<CustomFaqItem[]>([]);
 
   const [modelsList, setModelsList] = useState<OpenRouterModel[]>([]);
   const [modelsLoading, setModelsLoading] = useState(false);
@@ -60,6 +70,17 @@ export const AiSettingsView: React.FC<AiSettingsViewProps> = () => {
         setTemperature(data.temperature ?? 0.2);
         setMaxTokens(data.max_tokens ?? 350);
         setEnabled(data.enabled ?? true);
+        setFaqMode(data.faq_mode || 'hybrid');
+        if (Array.isArray(data.custom_faqs) && data.custom_faqs.length > 0) {
+          setCustomFaqs(data.custom_faqs);
+        } else {
+          setCustomFaqs([
+            { id: '1', question: 'Orta Dəhliz tranzit müddətləri və Ələt Limanı marşrutları', answer: 'Trans-Xəzər Beynəlxalq Nəqliyyat Marşrutu (Orta Dəhliz):\n• Bakı (Ələt) - Qara dəniz: 24-36 saat\n• Bakı - Türkiyə: 3-5 gün\n• Qara dəniz - Aİ: 2-3 gün.' },
+            { id: '2', question: 'Azərbaycan fındığı üçün HS kodu və ixrac standartları', answer: '🌰 Azərbaycan Fındığı (HS: 0802.22):\n• Mənşə: Zaqatala-Şəki\n• Kalibr: 11-13mm, 13-15mm | Nəmlik < 5.5% | AQTA, EUR.1, ISO 22000.' },
+            { id: '3', question: 'Incoterms 2020: FOB Bakı və CIF Konstansa fərqi', answer: 'FOB: Satıcı Ələt limanında malları gəmiyə yükləyir, daşımanı alıcı ödəyir.\nCIF: AZEXBUY və ya satıcı dəniz daşımasını və sığortasını hədəf limana qədər qarşılayır.' },
+            { id: '4', question: 'AQTA Fitosanitar və EUR.1 mənşə sertifikatları qaydaları', answer: 'AQTA kənd təsərrüfatı və qida məhsulları üçün icbaridir. EUR.1 Avropa İttifaqına güzəştli tarif, CT-1 isə MDB-yə rüsumsuz ixrac üçündür.' },
+          ]);
+        }
       }
 
       // 2. Fetch OpenRouter models
@@ -112,6 +133,23 @@ export const AiSettingsView: React.FC<AiSettingsViewProps> = () => {
     setApiKeys(updated);
   };
 
+  const handleAddFaq = () => {
+    setCustomFaqs([
+      ...customFaqs,
+      { id: `faq-${Date.now()}`, question: '', answer: '' },
+    ]);
+  };
+
+  const handleRemoveFaq = (index: number) => {
+    setCustomFaqs(customFaqs.filter((_, i) => i !== index));
+  };
+
+  const handleFaqChange = (index: number, field: 'question' | 'answer', val: string) => {
+    const updated = [...customFaqs];
+    updated[index] = { ...updated[index], [field]: val };
+    setCustomFaqs(updated);
+  };
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
@@ -120,6 +158,8 @@ export const AiSettingsView: React.FC<AiSettingsViewProps> = () => {
 
     try {
       const cleanedKeys = apiKeys.map((k) => k.trim()).filter(Boolean);
+      const cleanedFaqs = customFaqs.filter((f) => f.question.trim().length > 0);
+
       const res = await fetch('/api/ai-settings', {
         method: 'POST',
         headers: authHeaders,
@@ -130,13 +170,15 @@ export const AiSettingsView: React.FC<AiSettingsViewProps> = () => {
           system_prompt: systemPrompt,
           temperature,
           max_tokens: maxTokens,
+          faq_mode: faqMode,
+          custom_faqs: cleanedFaqs,
           enabled,
         }),
       });
 
       const data = await res.json();
       if (res.ok && data.success) {
-        setSavedMsg(`✅ ${cleanedKeys.length} ədəd API açarı və model parametrləri uğurla yadda saxlanıldı (Smart Load Balancer aktivdir).`);
+        setSavedMsg(`✅ Parametrlər uğurla saxlanıldı (${cleanedKeys.length} API açarı, ${cleanedFaqs.length} hazır sual).`);
         setTimeout(() => setSavedMsg(''), 4000);
       } else {
         throw new Error(data.error || 'Saxlanarkən xəta baş verdi');
@@ -178,9 +220,9 @@ export const AiSettingsView: React.FC<AiSettingsViewProps> = () => {
             <Cpu className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-slate-900">OpenRouter AI & Smart Load Balancer</h2>
+            <h2 className="text-xl font-bold text-slate-900">OpenRouter AI & Trade Desk Qaydaları</h2>
             <p className="text-xs text-slate-500">
-              10-dək API açarı arasında ağıllı kvota paylanması, pulsuz (free) modellər və minimum token istifadəsi
+              Model qoşulma tələbi, 10 ədəd açar hovuzu, pulsuz modellər və hazır sualların tənzimlənməsi
             </p>
           </div>
         </div>
@@ -188,12 +230,12 @@ export const AiSettingsView: React.FC<AiSettingsViewProps> = () => {
           {activeKeysCount > 0 ? (
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
               <ShieldCheck className="w-3.5 h-3.5" />
-              {activeKeysCount} Açar Aktiv (Load Balanced)
+              Model Qoşulub ({activeKeysCount} Açar Aktiv)
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">
               <AlertCircle className="w-3.5 h-3.5" />
-              Açar Yoxdur
+              Model Qoşulmayıb (Trade Desk Deaktivdir)
             </span>
           )}
         </div>
@@ -220,10 +262,10 @@ export const AiSettingsView: React.FC<AiSettingsViewProps> = () => {
             <div>
               <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                 <Key className="w-4 h-4 text-purple-600" />
-                <span>OpenRouter API Açarları Hovuzu (Pool)</span>
+                <span>OpenRouter API Açarları (Model Qoşulması)</span>
               </h3>
               <p className="text-[11px] text-slate-500 mt-0.5">
-                10-dək fərqli OpenRouter açarı əlavə edə bilərsiniz. Hər sorğu açarlar arasında bərabər bölüşdürülür (Round-Robin), biri limitə düşərsə digərinə avtomatik keçir.
+                Model qoşulmadan saytda Trade Desk çatı açılmır. 10-dək açar əlavə edərək kvotanı bərabər paylaya bilərsiniz.
               </p>
             </div>
             <button
@@ -264,11 +306,8 @@ export const AiSettingsView: React.FC<AiSettingsViewProps> = () => {
             ))}
           </div>
 
-          <div className="p-3 bg-purple-50/60 rounded-xl border border-purple-100 flex items-center justify-between text-[11.5px] text-purple-900">
-            <div className="flex items-center gap-2">
-              <Zap className="w-4 h-4 text-purple-600 shrink-0" />
-              <span><b>Zəmanətli Yük Balansı:</b> Sorğular növbə ilə paylanır, token israfı olmur və pulsuz limitlər 10 qat artırılır.</span>
-            </div>
+          <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-[11.5px] text-slate-600">
+            <span className="font-semibold text-slate-800">Qeyd:</span> Əgər heç bir API açarı daxil edilməyibsə və ya deaktiv edilibsə, istifadəçilərə modelin hələ qoşulmadığı və ya birbaşa rəhbərliyə e-poçtla müraciət etmələri bildirilir.
           </div>
         </div>
 
@@ -278,10 +317,10 @@ export const AiSettingsView: React.FC<AiSettingsViewProps> = () => {
             <div>
               <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-purple-600" />
-                <span>OpenRouter Model Seçimi</span>
+                <span>OpenRouter Modeli</span>
               </h3>
               <p className="text-[11px] text-slate-500">
-                Bütün OpenRouter modelləri arasından seçim edin. Pulsuz və qənaətli modellər xüsusi vurğulanıb.
+                Aşağıdakı pulsuz (0$) və ya premium modellərdən birini təyin edin.
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -316,7 +355,7 @@ export const AiSettingsView: React.FC<AiSettingsViewProps> = () => {
               type="text"
               value={modelSearch}
               onChange={(e) => setModelSearch(e.target.value)}
-              placeholder="Model adına və ya ID-yə görə axtarın (məs. free, gemini, gemma, nemotron)..."
+              placeholder="Model adına və ya ID-yə görə axtarın..."
               className="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 text-xs bg-slate-50 focus:bg-white focus:outline-none focus:border-brandNavy"
             />
           </div>
@@ -328,15 +367,15 @@ export const AiSettingsView: React.FC<AiSettingsViewProps> = () => {
               onChange={(e) => setModel(e.target.value)}
               className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs bg-slate-50 focus:bg-white focus:border-brandNavy focus:outline-none"
             >
-              <optgroup label="Tövsiyə Olunan Ən Yaxşı Pulsuz Modellər (Zero Cost)">
-                <option value="openrouter/free">🌟 openrouter/free (Avtomatik Ən Yaxşı Pulsuz Model Seçicisi)</option>
+              <optgroup label="Tövsiyə Olunan Pulsuz Modellər (0$ Free)">
+                <option value="openrouter/free">🌟 openrouter/free (Ağıllı Pulsuz Router — Avtomatik)</option>
                 <option value="google/gemma-4-31b-it:free">Google: Gemma 4 31B (Pulsuz / Free)</option>
                 <option value="google/gemma-4-26b-a4b-it:free">Google: Gemma 4 26B A4B (Pulsuz / Free)</option>
                 <option value="nvidia/nemotron-3.5-lightning:free">NVIDIA: Nemotron 3.5 Lightning (Pulsuz / Free)</option>
                 <option value="nvidia/nemotron-3-ultra-550b-a55b:free">NVIDIA: Nemotron 3 Ultra 550B (Pulsuz / Free)</option>
                 <option value="thinkingmachines/inkling-2-small:free">Thinking Machines: Inkling 2 Small (Pulsuz / Free)</option>
               </optgroup>
-              <optgroup label="Bütün Axtarılan Modellər">
+              <optgroup label="Bütün Digər Modellər">
                 {filteredModels.map((m) => (
                   <option key={m.id} value={m.id}>
                     {m.isFree ? '🎁 [PULSUZ] ' : ''}{m.name} ({m.id})
@@ -344,14 +383,97 @@ export const AiSettingsView: React.FC<AiSettingsViewProps> = () => {
                 ))}
               </optgroup>
             </select>
+          </div>
+        </div>
 
-            <div className="flex items-center gap-2 pt-1 text-[11px] text-slate-500">
-              <span className="font-semibold text-slate-700">Seçilmiş Model:</span>
-              <span className="font-mono bg-slate-100 px-2 py-0.5 rounded text-brandNavy font-bold">{model}</span>
-              {model.includes(':free') || model === 'openrouter/free' ? (
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">0$ Pulsuz</span>
-              ) : null}
+        {/* FAQ Management: AI vs Manual */}
+        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                <HelpCircle className="w-4 h-4 text-purple-600" />
+                <span>Hazır Sualların İdarə Edilməsi (FAQ)</span>
+              </h3>
+              <p className="text-[11px] text-slate-500">
+                İstifadəçiyə təqdim olunan hazır sualları əl ilə müəyyən edə və ya AI-nin mövzuya uyğun cavablandırmasını təyin edə bilərsiniz.
+              </p>
             </div>
+            <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
+              <button
+                type="button"
+                onClick={() => setFaqMode('manual')}
+                className={`px-3 py-1 rounded-lg text-xs font-semibold cursor-pointer transition-all ${
+                  faqMode === 'manual' ? 'bg-white text-slate-900 shadow-2xs font-bold' : 'text-slate-500 hover:text-slate-900'
+                }`}
+              >
+                Əl ilə (Manual)
+              </button>
+              <button
+                type="button"
+                onClick={() => setFaqMode('ai')}
+                className={`px-3 py-1 rounded-lg text-xs font-semibold cursor-pointer transition-all ${
+                  faqMode === 'ai' ? 'bg-white text-slate-900 shadow-2xs font-bold' : 'text-slate-500 hover:text-slate-900'
+                }`}
+              >
+                Yalnız AI Təhlil
+              </button>
+              <button
+                type="button"
+                onClick={() => setFaqMode('hybrid')}
+                className={`px-3 py-1 rounded-lg text-xs font-semibold cursor-pointer transition-all ${
+                  faqMode === 'hybrid' ? 'bg-white text-slate-900 shadow-2xs font-bold' : 'text-slate-500 hover:text-slate-900'
+                }`}
+              >
+                Hibrid (Tövsiyə)
+              </button>
+            </div>
+          </div>
+
+          {/* Custom FAQ Items List */}
+          <div className="space-y-3 pt-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-slate-700">Çatda Görünən Hazır Suallar və Cavabları:</span>
+              <button
+                type="button"
+                onClick={handleAddFaq}
+                className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg flex items-center gap-1 cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Yeni Sual Əlavə Et</span>
+              </button>
+            </div>
+
+            {customFaqs.map((faq, idx) => (
+              <div key={faq.id || idx} className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 flex-1">
+                    <span className="text-xs font-mono font-bold text-purple-700">Q{idx + 1}</span>
+                    <input
+                      type="text"
+                      value={faq.question}
+                      onChange={(e) => handleFaqChange(idx, 'question', e.target.value)}
+                      placeholder="Hazır Sual (məs: Orta Dəhliz tranzit müddətləri nə qədərdir?)"
+                      className="flex-1 px-3 py-1.5 rounded-lg border border-slate-300 text-xs bg-white focus:outline-none focus:border-brandNavy"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveFaq(idx)}
+                    className="w-7 h-7 text-slate-400 hover:text-rose-600 rounded flex items-center justify-center cursor-pointer"
+                    title="Sualı sil"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+                <textarea
+                  rows={2}
+                  value={faq.answer}
+                  onChange={(e) => handleFaqChange(idx, 'answer', e.target.value)}
+                  placeholder="Dəqiq cavab və ya qeyd (boş buraxılarsa klikləndikdə AI dərhal cavablayacaq)..."
+                  className="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs bg-white focus:outline-none focus:border-brandNavy font-sans leading-relaxed"
+                />
+              </div>
+            ))}
           </div>
         </div>
 
@@ -365,7 +487,7 @@ export const AiSettingsView: React.FC<AiSettingsViewProps> = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <label className="text-xs font-bold text-slate-700">Maksimum Token Limiti (Cavab Uzunluğu)</label>
+                <label className="text-xs font-bold text-slate-700">Maksimum Token Limiti</label>
                 <span className="text-xs font-mono font-bold text-brandNavy">{maxTokens} token</span>
               </div>
               <input
@@ -378,13 +500,13 @@ export const AiSettingsView: React.FC<AiSettingsViewProps> = () => {
                 className="w-full accent-brandNavy cursor-pointer"
               />
               <p className="text-[10px] text-slate-500">
-                Az token (250-350) botun uzun şablon və lazımsız sözlər yazmasının qarşısını alır, cavabı 2-3 saniyədə çatdırır və kvotanı qoruyur.
+                250-350 token cavabların qısa, dəqiq və sürətli olmasını təmin edir, israfın qarşısını alır.
               </p>
             </div>
 
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <label className="text-xs font-bold text-slate-700">Temperatur (Dəqiqlik)</label>
+                <label className="text-xs font-bold text-slate-700">Temperatur</label>
                 <span className="text-xs font-mono font-bold text-brandNavy">{temperature}</span>
               </div>
               <input
@@ -397,35 +519,9 @@ export const AiSettingsView: React.FC<AiSettingsViewProps> = () => {
                 className="w-full accent-brandNavy cursor-pointer"
               />
               <p className="text-[10px] text-slate-500">
-                Aşağı temperatur (0.1 - 0.2) ticarət məlumatlarında (HS kodlar, Incoterms, limanlar) dəqiqliyi təmin edir.
+                0.2 temperatur ticarət məlumatlarında (HS kodları, sənədlər) ən yüksək dəqiqliyi verir.
               </p>
             </div>
-          </div>
-
-          {/* System Prompt Customization */}
-          <div className="space-y-2 pt-2">
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-slate-800">
-                Sistem Təlimatı (Anti-AI-Slop & Dəqiq İxrac Masası Təlimatı)
-              </label>
-              <button
-                type="button"
-                onClick={() => setSystemPrompt('')}
-                className="text-[11px] text-purple-700 hover:underline cursor-pointer font-medium"
-              >
-                Defolt Təlimata Qaytar
-              </button>
-            </div>
-            <textarea
-              rows={4}
-              value={systemPrompt}
-              onChange={(e) => setSystemPrompt(e.target.value)}
-              placeholder="Boş buraxdıqda ticarət portalının rəsmi, dəqiq və süni intellekt şablonlarından (slop) təmizlənmiş defolt sistemi işə düşür."
-              className="w-full p-3 rounded-xl border border-slate-300 text-xs bg-slate-50 focus:bg-white focus:border-brandNavy focus:outline-none font-mono leading-relaxed"
-            />
-            <p className="text-[11px] text-slate-500">
-              Defolt təlimat şablon ("əlbəttə", "əziz müştəri", "sizə necə kömək edə bilərəm") cümlələri qadağan edir, son 3 mesajı saxlayaraq prompt tokenlərini 70% azaldır.
-            </p>
           </div>
         </div>
 

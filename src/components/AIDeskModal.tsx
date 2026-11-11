@@ -17,7 +17,12 @@ interface ChatMessage {
   timestamp: string;
 }
 
-const FAQ_LIST: Record<Locale, { q: string; a: string }[]> = {
+interface FaqItem {
+  q: string;
+  a: string;
+}
+
+const DEFAULT_FAQS: Record<Locale, FaqItem[]> = {
   AZ: [
     {
       q: 'Orta Dəhliz tranzit müddətləri və Ələt Limanı marşrutları',
@@ -120,7 +125,7 @@ const FAQ_LIST: Record<Locale, { q: string; a: string }[]> = {
       a: 'FOB باكو: يتحمل المشتري الشحن البحري والتأمين.\nCIF مرسين: يغطي البائع تكاليف الشحن البحري والتأمين حتى ميناء الوجهة.',
     },
     {
-      q: 'شهادات الصحة النباتية AQTA وشهادة المنشأ',
+      q: 'شهادات الصحة النباتية AQTA وشهادة المنşأ',
       a: 'شهادة AQTA إلزامية للصادرات الغذائية والزراعية من أذربيجان.',
     },
     {
@@ -159,16 +164,20 @@ export const AIDeskModal: React.FC<AIDeskModalProps> = ({
   onOpenRFQ,
   onOpenProducer,
 }) => {
+  const [modelConnected, setModelConnected] = useState<boolean | null>(null);
+  const [faqMode, setFaqMode] = useState<string>('hybrid');
+  const [customFaqs, setCustomFaqs] = useState<FaqItem[]>([]);
+
   const getGreeting = () => {
     switch (locale) {
       case 'AZ':
-        return 'Salam! AZEXBUY İxrac və Təchizat Masasına xoş gəlmisiniz. Sizə necə kömək edə bilərik? Aşağıdakı hazır mövzulardan birini seçə və ya bizə birbaşa mesajınızı yaza bilərsiniz.';
+        return 'Salam! AZEXBUY İxrac və Təchizat Masasına xoş gəlmisiniz. Sizə necə kömək edə bilərik?';
       case 'TR':
-        return 'Merhaba! AZEXBUY İhracat ve Tedarik Masasına hoş geldiniz. Size nasıl yardımcı olabiliriz? Aşağıdaki hazır sorulardan seçebilir veya doğrudan mesajınızı iletebilirsiniz.';
+        return 'Merhaba! AZEXBUY İhracat ve Tedarik Masasına hoş geldiniz. Size nasıl yardımcı olabiliriz?';
       case 'RU':
-        return 'Здравствуйте! Добро пожаловать в центр поддержки AZEXBUY. Выберите готовый вопрос ниже или напишите нам сообщение.';
+        return 'Здравствуйте! Добро пожаловать в центр поддержки AZEXBUY. Чем можем помочь?';
       default:
-        return 'Hello! Welcome to AZEXBUY Trade & Sourcing Desk. How can we help you today? Choose a question below or send us a direct message.';
+        return 'Hello! Welcome to AZEXBUY Trade & Sourcing Desk. How can we help you today?';
     }
   };
 
@@ -181,7 +190,7 @@ export const AIDeskModal: React.FC<AIDeskModalProps> = ({
     },
   ]);
 
-  // Form states for sending message to manager & AI chat
+  // Form states
   const [userMessage, setUserMessage] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [userName, setUserName] = useState('');
@@ -190,6 +199,29 @@ export const AIDeskModal: React.FC<AIDeskModalProps> = ({
   const [isAiThinking, setIsAiThinking] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Check backend AI status on mount / open
+  useEffect(() => {
+    if (isOpen) {
+      fetch('/api/azexbuy/ai-status')
+        .then((res) => res.json())
+        .then((data) => {
+          setModelConnected(Boolean(data.connected));
+          setFaqMode(data.faq_mode || 'hybrid');
+          if (Array.isArray(data.custom_faqs) && data.custom_faqs.length > 0) {
+            setCustomFaqs(
+              data.custom_faqs.map((f: any) => ({
+                q: f.question,
+                a: f.answer || '',
+              }))
+            );
+          }
+        })
+        .catch(() => {
+          setModelConnected(false);
+        });
+    }
+  }, [isOpen]);
+
   // Auto scroll
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -197,7 +229,7 @@ export const AIDeskModal: React.FC<AIDeskModalProps> = ({
     }
   }, [messages, step, isAiThinking]);
 
-  // Reset or re-greet if closed
+  // Reset if closed
   useEffect(() => {
     if (!isOpen) {
       setStep('chat');
@@ -208,9 +240,17 @@ export const AIDeskModal: React.FC<AIDeskModalProps> = ({
 
   if (!isOpen) return null;
 
-  const faqs = FAQ_LIST[locale] || FAQ_LIST.EN;
+  // Decide FAQs list based on admin settings
+  let activeFaqs: FaqItem[] = [];
+  if (faqMode === 'manual' && customFaqs.length > 0) {
+    activeFaqs = customFaqs;
+  } else if (faqMode === 'hybrid' && customFaqs.length > 0) {
+    activeFaqs = customFaqs;
+  } else {
+    activeFaqs = DEFAULT_FAQS[locale] || DEFAULT_FAQS.EN;
+  }
 
-  const handleSelectFaq = (item: { q: string; a: string }) => {
+  const handleSelectFaq = async (item: FaqItem) => {
     const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const userMsg: ChatMessage = {
       id: `usr-${Date.now()}`,
@@ -218,25 +258,47 @@ export const AIDeskModal: React.FC<AIDeskModalProps> = ({
       text: item.q,
       timestamp: time,
     };
-    const deskReply: ChatMessage = {
-      id: `desk-${Date.now() + 1}`,
-      sender: 'desk',
-      text: item.a,
-      timestamp: time,
-    };
-    const followUp: ChatMessage = {
-      id: `desk-follow-${Date.now() + 2}`,
-      sender: 'desk',
-      text:
-        locale === 'AZ'
-          ? 'Bu mövzuda xüsusi tələbiniz, qiymət sorğunuz və ya rəsmi sifarişiniz varsa, mesajınızı aşağıya yaza bilərsiniz — rəhbərliyə çatdırılacaq.'
-          : locale === 'TR'
-          ? 'Bu konuda özel bir sorunuz veya talebiniz varsa mesajınızı aşağıya yazabilirsiniz — yöneticimize iletilecektir.'
-          : 'If you have a custom inquiry or order, please type your message below to route it to management.',
-      timestamp: time,
-    };
 
-    setMessages((prev) => [...prev, userMsg, deskReply, followUp]);
+    setMessages((prev) => [...prev, userMsg]);
+
+    // If answer exists in manual/hybrid FAQ, show immediately
+    if (item.a && item.a.trim().length > 0 && faqMode !== 'ai') {
+      const deskReply: ChatMessage = {
+        id: `desk-${Date.now() + 1}`,
+        sender: 'desk',
+        text: item.a,
+        timestamp: time,
+      };
+      setMessages((prev) => [...prev, deskReply]);
+    } else {
+      // Answer is empty or faqMode is 'ai' -> AI dynamically answers this topic
+      setIsAiThinking(true);
+      try {
+        const res = await fetch('/api/azexbuy/ai-chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: item.q,
+            history: messages,
+            locale,
+          }),
+        });
+        const data = await res.json();
+        if (res.ok && data.success && data.reply) {
+          const aiReply: ChatMessage = {
+            id: `desk-ai-${Date.now()}`,
+            sender: 'desk',
+            text: data.reply,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          };
+          setMessages((prev) => [...prev, aiReply]);
+        }
+      } catch {
+        // Fallback
+      } finally {
+        setIsAiThinking(false);
+      }
+    }
   };
 
   const handleSendMessage = async (e: React.FormEvent) => {
@@ -257,7 +319,6 @@ export const AIDeskModal: React.FC<AIDeskModalProps> = ({
     setIsAiThinking(true);
 
     try {
-      // Call backend AI gateway (proxies to OpenRouter with anti-slop system prompt)
       const res = await fetch('/api/azexbuy/ai-chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -279,13 +340,12 @@ export const AIDeskModal: React.FC<AIDeskModalProps> = ({
         };
         setMessages((prev) => [...prev, aiReply]);
       } else {
-        // Fallback: If no AI key yet or fallback needed, offer direct manager dispatch
         const fallbackMsg: ChatMessage = {
           id: `desk-fb-${Date.now()}`,
           sender: 'desk',
           text:
             locale === 'AZ'
-              ? 'Mesajınız qəbul edildi. Ticarət menecerimizin və rəhbərliyin sizinlə birbaşa əlaqə saxlaması üçün zəhmət olmasa e-poçt ünvanınızı qeyd edin.'
+              ? 'Mesajınız qəbul edildi. Ticarət menecerimizin sizinlə birbaşa əlaqə saxlaması üçün zəhmət olmasa e-poçt ünvanınızı qeyd edin.'
               : 'Thank you. Please leave your email address so our trade desk manager can respond to you directly.',
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         };
@@ -298,7 +358,7 @@ export const AIDeskModal: React.FC<AIDeskModalProps> = ({
         sender: 'desk',
         text:
           locale === 'AZ'
-            ? 'Mesajınız qəbul edildi. Ticarət menecerimizin dərhal cavab verməsi üçün zəhmət olmasa e-poçtunuzu qeyd edin.'
+            ? 'Mesajınız qəbul edildi. Ticarət menecerimizin cavab verməsi üçün zəhmət olmasa e-poçtunuzu qeyd edin.'
             : 'Your message was received. Please provide your email address so our team can follow up.',
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
@@ -367,15 +427,30 @@ export const AIDeskModal: React.FC<AIDeskModalProps> = ({
               <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-white border border-white/20">
                 <i className="fa-solid fa-headset text-sm"></i>
               </div>
-              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#0f3156]"></span>
+              <span className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-[#0f3156] ${
+                modelConnected ? 'bg-emerald-400' : 'bg-amber-400'
+              }`}></span>
             </div>
             <div>
               <div className="flex items-center gap-1.5">
                 <h4 className="text-sm font-bold tracking-tight">AZEXBUY Trade Desk</h4>
               </div>
-              <p className="text-[11px] text-emerald-300 font-medium flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>{locale === 'AZ' ? 'Onlayn Dəstək' : locale === 'TR' ? 'Çevrimiçi Destek' : 'Online Desk'}</span>
+              <p className="text-[11px] font-medium flex items-center gap-1 text-slate-200">
+                {modelConnected ? (
+                  <>
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span className="text-emerald-300">
+                      {locale === 'AZ' ? 'AI Model Aktiv' : 'AI Active'}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                    <span className="text-amber-300">
+                      {locale === 'AZ' ? 'Rəhbərlik Masası' : 'Desk Management'}
+                    </span>
+                  </>
+                )}
               </p>
             </div>
           </div>
@@ -398,6 +473,16 @@ export const AIDeskModal: React.FC<AIDeskModalProps> = ({
             </button>
           </div>
         </div>
+
+        {/* If model not connected banner */}
+        {modelConnected === false && (
+          <div className="bg-amber-50 border-b border-amber-200 px-3.5 py-2 text-[11px] text-amber-900 flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <i className="fa-solid fa-triangle-exclamation text-amber-600"></i>
+              <span>{locale === 'AZ' ? 'AI modeli hələ bağlanmayıb. Sorğularınızı birbaşa menecerə göndərə bilərsiniz.' : 'AI model is offline. Direct manager routing is active.'}</span>
+            </div>
+          </div>
+        )}
 
         {/* Message Stream */}
         <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-[#f8fafc]/70 text-xs">
@@ -427,13 +512,13 @@ export const AIDeskModal: React.FC<AIDeskModalProps> = ({
           )}
 
           {/* FAQ Quick Selection Chips inside stream */}
-          {step === 'chat' && (
+          {step === 'chat' && activeFaqs.length > 0 && (
             <div className="pt-1 pb-2 space-y-1.5">
               <span className="text-[10.5px] font-semibold text-slate-500 uppercase tracking-wider block px-1">
-                {locale === 'AZ' ? 'Tez-tez verilən suallar:' : locale === 'TR' ? 'Hazır Sorular:' : 'Suggested topics:'}
+                {locale === 'AZ' ? 'Mövzu üzrə hazır suallar:' : locale === 'TR' ? 'Konuya Uygun Sorular:' : 'Suggested topics:'}
               </span>
               <div className="flex flex-col gap-1.5">
-                {faqs.map((faq, idx) => (
+                {activeFaqs.map((faq, idx) => (
                   <button
                     key={idx}
                     type="button"
@@ -454,18 +539,16 @@ export const AIDeskModal: React.FC<AIDeskModalProps> = ({
         {/* Bottom Input Area */}
         <div className="p-3 bg-white border-t border-slate-100 shrink-0">
           {step === 'chat' && (
-            <form onSubmit={handleSendMessage} className="space-y-2">
+            <form onSubmit={modelConnected ? handleSendMessage : (e) => { e.preventDefault(); setStep('ask_email'); }} className="space-y-2">
               <div className="flex items-center gap-2">
                 <input
                   type="text"
                   value={userMessage}
                   onChange={(e) => setUserMessage(e.target.value)}
                   placeholder={
-                    locale === 'AZ'
-                      ? 'Sualınızı və ya tələbinizi yazın...'
-                      : locale === 'TR'
-                      ? 'Sorunuzu veya mesajınızı yazın...'
-                      : 'Type your trade question or inquiry...'
+                    !modelConnected
+                      ? (locale === 'AZ' ? 'Menecerə mesaj yazmaq üçün klikləyin...' : 'Click to send message to management...')
+                      : (locale === 'AZ' ? 'Sualınızı və ya tələbinizi yazın...' : 'Type your trade question or inquiry...')
                   }
                   className="flex-1 h-10 px-3.5 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#0f3156] focus:bg-white transition-all"
                 />

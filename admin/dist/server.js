@@ -5094,6 +5094,8 @@ mainDb.exec(`
     system_prompt TEXT DEFAULT '',
     temperature REAL DEFAULT 0.2,
     max_tokens INTEGER DEFAULT 450,
+    faq_mode TEXT DEFAULT 'hybrid',
+    custom_faqs TEXT DEFAULT '[]',
     enabled INTEGER DEFAULT 1,
     round_robin_index INTEGER DEFAULT 0,
     updated_at TEXT
@@ -5105,6 +5107,8 @@ try {
   if (!aiCols.includes("api_keys")) mainDb.exec("ALTER TABLE ai_settings ADD COLUMN api_keys TEXT DEFAULT '[]'");
   if (!aiCols.includes("max_tokens")) mainDb.exec("ALTER TABLE ai_settings ADD COLUMN max_tokens INTEGER DEFAULT 450");
   if (!aiCols.includes("round_robin_index")) mainDb.exec("ALTER TABLE ai_settings ADD COLUMN round_robin_index INTEGER DEFAULT 0");
+  if (!aiCols.includes("faq_mode")) mainDb.exec("ALTER TABLE ai_settings ADD COLUMN faq_mode TEXT DEFAULT 'hybrid'");
+  if (!aiCols.includes("custom_faqs")) mainDb.exec("ALTER TABLE ai_settings ADD COLUMN custom_faqs TEXT DEFAULT '[]'");
 } catch (err) {
   console.warn("[DB] ai_settings migration warning:", err);
 }
@@ -5387,12 +5391,39 @@ function parseApiKeys(s) {
   }
   return keys;
 }
+app.get("/api/azexbuy/ai-status", (_req, res) => {
+  const s = getAiSettings();
+  const keys = parseApiKeys(s);
+  const isConnected = keys.length > 0 && Boolean(s?.enabled ?? 1);
+  let customFaqs = [];
+  try {
+    if (s?.custom_faqs) {
+      customFaqs = JSON.parse(s.custom_faqs);
+    }
+  } catch {
+    customFaqs = [];
+  }
+  res.json({
+    connected: isConnected,
+    model: s?.model || "openrouter/free",
+    faq_mode: s?.faq_mode || "hybrid",
+    custom_faqs: customFaqs
+  });
+});
 app.get("/api/ai-settings", requireAuth, (_req, res) => {
   const s = getAiSettings();
   const keys = parseApiKeys(s);
   const maskedKeys = keys.map(
     (k) => k.length > 8 ? "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022" + k.slice(-4) : "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"
   );
+  let customFaqs = [];
+  try {
+    if (s?.custom_faqs) {
+      customFaqs = JSON.parse(s.custom_faqs);
+    }
+  } catch {
+    customFaqs = [];
+  }
   res.json({
     provider: s?.provider || "openrouter",
     api_key: keys[0] ? "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022" + keys[0].slice(-4) : "",
@@ -5404,12 +5435,14 @@ app.get("/api/ai-settings", requireAuth, (_req, res) => {
     temperature: s?.temperature ?? 0.2,
     max_tokens: s?.max_tokens ?? 350,
     round_robin_index: s?.round_robin_index ?? 0,
+    faq_mode: s?.faq_mode || "hybrid",
+    custom_faqs: customFaqs,
     enabled: Boolean(s?.enabled ?? 1),
     updated_at: s?.updated_at || ""
   });
 });
 app.post("/api/ai-settings", requireAuth, (req, res) => {
-  const { provider, api_key, api_keys, model, system_prompt, temperature, max_tokens, enabled } = req.body;
+  const { provider, api_key, api_keys, model, system_prompt, temperature, max_tokens, faq_mode, custom_faqs, enabled } = req.body;
   const current = getAiSettings();
   const existingKeys = parseApiKeys(current);
   let newKeys = [];
@@ -5428,6 +5461,7 @@ app.post("/api/ai-settings", requireAuth, (req, res) => {
   }
   newKeys = Array.from(new Set(newKeys)).slice(0, 15);
   const primaryKey = newKeys[0] || "";
+  const faqsJson = Array.isArray(custom_faqs) ? JSON.stringify(custom_faqs) : current?.custom_faqs || "[]";
   mainDb.prepare(`
     UPDATE ai_settings SET
       provider = ?,
@@ -5437,6 +5471,8 @@ app.post("/api/ai-settings", requireAuth, (req, res) => {
       system_prompt = ?,
       temperature = ?,
       max_tokens = ?,
+      faq_mode = ?,
+      custom_faqs = ?,
       enabled = ?,
       updated_at = ?
     WHERE id = 1
@@ -5448,6 +5484,8 @@ app.post("/api/ai-settings", requireAuth, (req, res) => {
     system_prompt || "",
     typeof temperature === "number" ? temperature : 0.2,
     typeof max_tokens === "number" ? max_tokens : 350,
+    faq_mode || "hybrid",
+    faqsJson,
     enabled ? 1 : 0,
     (/* @__PURE__ */ new Date()).toISOString()
   );
