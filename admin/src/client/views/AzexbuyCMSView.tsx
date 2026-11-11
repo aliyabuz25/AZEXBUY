@@ -109,6 +109,7 @@ type PageKey = typeof CMS_PAGES[number]['key'];
 const CMS_GROUPS = ['Əsas Səhifə', 'Daxili Səhifələr', 'Kataloq və Axınlar', 'Qlobal Redaktor'] as const;
 
 const IMAGE_KEYS = [
+  // ── Əsas Səhifə Görsəlləri ──
   { key: 'HERO_IMAGE',                   label: 'Hero Arxa Fon',                    defaultUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB9ZWqLLmb30gHFdTBf7cfY60pAMzYSTWRn2keRDZ7k8a3eQicd1I5xuOR1U44ux_eyOl79BjhxRaXdEbzovzXexqRo8oDy3gVECJAAKnDsq1DYgw7oR-p-U-VjFeMqmdwPl27SJVIP7hTVWchM1LYBR1EY2hy5C8iSkUcytv0qKVFgxmbifXswWW8UTnyUsQw5XBb81qNG2tremLOg_k5EPGCl-K_AWwSN8UQ3T1EN7HyePk3pvGD9' },
   { key: 'BUYER_CARD_IMAGE',             label: 'Alıcı Kartı Görseli',              defaultUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCHfBjlFdQNaNAsP2RbAdqbBzskyL-GFgkaTpjwu0U6iT-t0tvmdQxrsHV7DOVkxLI4TCvj6qWpEawxqKJPqQE9f5GeXtwvTu7-fs3s495aRNM41LY0ardk4_DhtXk2RrKbiZgwssXvlrrI_EThET-4vRXO-9SbspxRcE3KXflGW-LnO8LzAq_bYYS10R-r010CzBLBwMqbd6slv40ntEvn3OyeauJszJaHkxnHTcGCq-0XAIDQmj6_' },
   { key: 'PRODUCER_CARD_IMAGE',          label: 'İstehsalçı Kartı Görseli',         defaultUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDgrvRVBxN_YV05A8C2ZBQC2V2WHmgN9IrmvxhBvoVre7FKYjEbaR95Ew5PqX6-T-FG67u-0fHLCX6KeLtUrAkBIiJfWZGu7t3Ez2RyKvMerWTAHV1ROVLxhP4wE2oqLK-k9t1i6hrPmq-YJ-GDzjbqNDrNf2-SyjbXUmuQAJa5ScuKsRahZQdVKWyzFzRNPNYzxr3XOkiIb2BLWy4KJO-b-RWiNaaRqebQkQINqnQZfyBkDjpvxMId' },
@@ -117,6 +118,21 @@ const IMAGE_KEYS = [
   { key: 'WHY_AZERBAIJAN_IMAGE',         label: 'Niyə Azərbaycan Görseli',          defaultUrl: 'https://lh3.googleusercontent.com/aida/AEtjO1WtUBR_2hOeUbRABsre_R7H-yW12FldWdxDp_6_abkiZuNwgF3fMTiwxdQCKdfEbdEWa-6CSQc0bQgUbjojei2itk13mAz_e09yOnKuFWP_7AO2BpMiNUQByyYnqtrPMywT0b4g4COdLkLc5_L75NtOsKv5OOgHz7VdAMCF-WDWgmhqccS9HdQKKY8cwD4AeVg_Z5AczT8rfvCVFXyJrgDuQKAsNiyYL54OeN2_HoFxHi9ltf4bUcbHSmM' },
   { key: 'HOW_IT_WORKS_BUYERS_IMAGE',    label: 'Necə İşləyir — Alıcılar Görseli',  defaultUrl: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800&q=80' },
   { key: 'HOW_IT_WORKS_SELLERS_IMAGE',   label: 'Necə İşləyir — Satıcılar Görseli', defaultUrl: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&q=80' },
+
+  // ── Haqqımızda & Korporativ Görsəllər ──
+  { key: 'ABOUT_WHO_WE_ARE_IMAGE',       label: 'Haqqımızda — Biz Kimik Şəkli',    defaultUrl: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=800&q=80' },
+  { key: 'ABOUT_MISSION_IMAGE',          label: 'Haqqımızda — Missiya Şəkli',       defaultUrl: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=800&q=80' },
+  { key: 'ABOUT_VISION_IMAGE',           label: 'Haqqımızda — Viziya Şəkli',        defaultUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80' },
+
+  // ── İxrac Sektorları (Haqqımızda Səhifəsi) ──
+  { key: 'ABOUT_SECTOR_0_IMAGE',         label: 'Sektor 1: Kənd Təsərrüfatı & Qida', defaultUrl: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&q=80' },
+  { key: 'ABOUT_SECTOR_1_IMAGE',         label: 'Sektor 2: Emal Sənayesi',          defaultUrl: 'https://images.unsplash.com/photo-1565793298595-6a879b1d9492?w=400&q=80' },
+  { key: 'ABOUT_SECTOR_2_IMAGE',         label: 'Sektor 3: Tikinti Materialları',   defaultUrl: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&q=80' },
+  { key: 'ABOUT_SECTOR_3_IMAGE',         label: 'Sektor 4: Sənaye & Metal',         defaultUrl: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&q=80' },
+  { key: 'ABOUT_SECTOR_4_IMAGE',         label: 'Sektor 5: Kimya & Xammal',         defaultUrl: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=400&q=80' },
+  { key: 'ABOUT_SECTOR_5_IMAGE',         label: 'Sektor 6: Elektrik & Avadanlıq',   defaultUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=80' },
+  { key: 'ABOUT_SECTOR_6_IMAGE',         label: 'Sektor 7: Tekstil & Yüngül Sənaye', defaultUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80' },
+  { key: 'ABOUT_SECTOR_7_IMAGE',         label: 'Sektor 8: Qablaşdırma & Mallar',   defaultUrl: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&q=80' },
 ];
 
 // ── Standalone field components (defined OUTSIDE main component to prevent remounting) ──
@@ -1135,7 +1151,7 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                 </div>
                 <div>
                   <h2 className="text-sm font-bold text-slate-900">Bütün Sayt Görsəlləri</h2>
-                  <p className="text-xs text-slate-500">Əsas səhifə, haqqımızda və ixrac sektorlarının 15 əsas şəklini buradan idarə edin.</p>
+                  <p className="text-xs text-slate-500">Əsas səhifə, portallar, haqqımızda və 8 ixrac sektorunun 19 əsas şəklini buradan tək-tək dəyişdirin.</p>
                 </div>
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

@@ -224,6 +224,8 @@ function applyContentOverrides(content: any) {
     if (images['ABOUT_SECTOR_3_IMAGE'] && about.sectors.items[3]) about.sectors.items[3].image = images['ABOUT_SECTOR_3_IMAGE'];
     if (images['ABOUT_SECTOR_4_IMAGE'] && about.sectors.items[4]) about.sectors.items[4].image = images['ABOUT_SECTOR_4_IMAGE'];
     if (images['ABOUT_SECTOR_5_IMAGE'] && about.sectors.items[5]) about.sectors.items[5].image = images['ABOUT_SECTOR_5_IMAGE'];
+    if (images['ABOUT_SECTOR_6_IMAGE'] && about.sectors.items[6]) about.sectors.items[6].image = images['ABOUT_SECTOR_6_IMAGE'];
+    if (images['ABOUT_SECTOR_7_IMAGE'] && about.sectors.items[7]) about.sectors.items[7].image = images['ABOUT_SECTOR_7_IMAGE'];
   }
 
   const rawProducts = content?.products?.length ? content.products : PRODUCTS_DEFAULT;
