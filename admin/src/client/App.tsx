@@ -34,6 +34,7 @@ import { AzexbuyCMSView } from './views/AzexbuyCMSView';
 import { UserManagementView } from './views/UserManagementView';
 import { InboxView } from './views/InboxView';
 import { SmtpSettingsView } from './views/SmtpSettingsView';
+import { AiSettingsView } from './views/AiSettingsView';
 import { LogsView } from './views/LogsView';
 import { ProductCatalogView } from './views/ProductCatalogView';
 import { ArticlesView } from './views/ArticlesView';
@@ -811,6 +812,9 @@ export const App: React.FC = () => {
           )}
           {activeTabId === 'smtp-settings' && (
             <SmtpSettingsView uiLang={uiLang} />
+          )}
+          {activeTabId === 'ai-settings' && (
+            <AiSettingsView uiLang={uiLang} />
           )}
           {activeTabId === 'logs' && (
             <LogsView uiLang={uiLang} />

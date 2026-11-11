@@ -5084,6 +5084,18 @@ mainDb.exec(`
     updated_at TEXT
   );
   INSERT OR IGNORE INTO smtp_settings (id) VALUES (1);
+
+  CREATE TABLE IF NOT EXISTS ai_settings (
+    id INTEGER PRIMARY KEY DEFAULT 1,
+    provider TEXT DEFAULT 'openrouter',
+    api_key TEXT DEFAULT '',
+    model TEXT DEFAULT 'google/gemini-2.5-flash',
+    system_prompt TEXT DEFAULT '',
+    temperature REAL DEFAULT 0.2,
+    enabled INTEGER DEFAULT 1,
+    updated_at TEXT
+  );
+  INSERT OR IGNORE INTO ai_settings (id) VALUES (1);
 `);
 try {
   const smtpCols = mainDb.prepare("PRAGMA table_info(smtp_settings)").all().map((c) => c.name);
@@ -5291,6 +5303,108 @@ app.post("/api/smtp-test", requireAuth, async (req, res) => {
     res.json({ success: true, message: "Test e-po\xE7tu g\xF6nd\u0259rildi." });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message || "SMTP x\u0259tas\u0131" });
+  }
+});
+function getAiSettings() {
+  return mainDb.prepare("SELECT * FROM ai_settings WHERE id = 1").get();
+}
+app.get("/api/ai-settings", requireAuth, (_req, res) => {
+  const s = getAiSettings();
+  res.json({
+    provider: s?.provider || "openrouter",
+    api_key: s?.api_key ? "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022" + s.api_key.slice(-4) : "",
+    has_key: Boolean(s?.api_key),
+    model: s?.model || "google/gemini-2.5-flash",
+    system_prompt: s?.system_prompt || "",
+    temperature: s?.temperature ?? 0.2,
+    enabled: Boolean(s?.enabled ?? 1),
+    updated_at: s?.updated_at || ""
+  });
+});
+app.post("/api/ai-settings", requireAuth, (req, res) => {
+  const { provider, api_key, model, system_prompt, temperature, enabled } = req.body;
+  const current = getAiSettings();
+  const newKey = api_key && !api_key.startsWith("\u2022\u2022\u2022\u2022") ? api_key.trim() : current?.api_key || "";
+  mainDb.prepare(`
+    UPDATE ai_settings SET
+      provider = ?,
+      api_key = ?,
+      model = ?,
+      system_prompt = ?,
+      temperature = ?,
+      enabled = ?,
+      updated_at = ?
+    WHERE id = 1
+  `).run(
+    provider || "openrouter",
+    newKey,
+    model || "google/gemini-2.5-flash",
+    system_prompt || "",
+    typeof temperature === "number" ? temperature : 0.2,
+    enabled ? 1 : 0,
+    (/* @__PURE__ */ new Date()).toISOString()
+  );
+  res.json({ success: true });
+});
+app.post("/api/azexbuy/ai-chat", async (req, res) => {
+  try {
+    const { message, history, locale } = req.body;
+    if (!message || typeof message !== "string") {
+      return res.status(400).json({ error: "Message is required" });
+    }
+    const s = getAiSettings();
+    const apiKey = s?.api_key || process.env.OPENROUTER_API_KEY || "";
+    const model = s?.model || "google/gemini-2.5-flash";
+    if (!apiKey) {
+      return res.status(503).json({
+        error: "AI_KEY_NOT_CONFIGURED",
+        message: "OpenRouter API key is not configured in Admin Panel."
+      });
+    }
+    const systemPrompt = s?.system_prompt?.trim() || `S\u0259n AZEXBUY (Az\u0259rbaycan \u0130xrac v\u0259 Qlobal T\u0259chizat Portal\u0131) \xFCzr\u0259 r\u0259smi Beyn\u0259lxalq Ticar\u0259t v\u0259 \u0130xrac M\xFCt\u0259x\u0259ssisis\u0259n.
+M\u0259qs\u0259din: xarici al\u0131c\u0131lara v\u0259 yerli istehsal\xE7\u0131lara d\u0259qiq, ciddi, pe\u015F\u0259kar v\u0259 operativ ticar\u0259t m\u0259lumat\u0131 verm\u0259kdir.
+
+QAYDALAR V\u018F TON:
+1. \u018Fsla s\xFCni, bo\u015F v\u0259 \u015Fablon ("ai slop", "\u0259lbb\u0259td\u0259", "siz\u0259 k\xF6m\u0259k etm\u0259kd\u0259n \xE7ox \u015Fadam", "\u0259ziz istifad\u0259\xE7i") dan\u0131\u015Fma. Birba\u015Fa fakta v\u0259 cavaba ke\xE7.
+2. Q\u0131sa, d\u0259qiq v\u0259 ticar\u0259t y\xF6n\xFCml\xFC cavablar ver.
+3. Uy\u011Fun olduqda d\u0259qiq HS kodlar\u0131n\u0131 (m\u0259s. F\u0131nd\u0131q: 0802.22, Nar v\u0259 \u015Fir\u0259: 0810.90 / 2009.89, Xurma: 0810.70, M\u0259rm\u0259r: 2515, Xal\xE7a: 5701, Polad: 7306), Incoterms 2020 \u015F\u0259rtl\u0259rini (FOB \u018Fl\u0259t/Bak\u0131, CIF Konstansa/Mersin, DAP), Orta D\u0259hliz tranzit m\xFCdd\u0259tl\u0259rini v\u0259 AQTA/EUR.1/CT-1 sertifikatla\u015Fd\u0131rmas\u0131n\u0131 qeyd et.
+4. X\xFCsusi sifari\u015F, f\u0259rdi qiym\u0259t v\u0259 ya r\u0259smi \u0259m\u0259kda\u015Fl\u0131q t\u0259l\u0259b edildikd\u0259 istifad\u0259\xE7iy\u0259 bildir ki, mesaj\u0131n\u0131 v\u0259 e-po\xE7tunu \xE7atda qeyd etsin v\u0259 ya yuxar\u0131dak\u0131 "RFQ / T\u0259l\u0259b G\xF6nd\u0259r" d\xFCym\u0259sind\u0259n istifad\u0259 etsin, komanda d\u0259rhal onunla \u0259laq\u0259 saxlayacaq.
+5. \u0130stifad\u0259\xE7inin m\xFCraci\u0259t etdiyi dild\u0259 (${locale || "AZ"}) r\u0259smi, s\u0259liq\u0259li v\u0259 etibarl\u0131 dild\u0259 cavab ver.`;
+    const chatHistory = Array.isArray(history) ? history.slice(-6).map((m) => ({
+      role: m.sender === "user" ? "user" : "assistant",
+      content: String(m.text || "")
+    })) : [];
+    const messages = [
+      { role: "system", content: systemPrompt },
+      ...chatHistory,
+      { role: "user", content: message.trim() }
+    ];
+    const openRouterRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://beta.azexbuy.com",
+        "X-Title": "AZEXBUY Trade Desk"
+      },
+      body: JSON.stringify({
+        model,
+        messages,
+        temperature: s?.temperature ?? 0.2,
+        max_tokens: 650
+      })
+    });
+    if (!openRouterRes.ok) {
+      const errText = await openRouterRes.text();
+      console.error("[OpenRouter Error]:", openRouterRes.status, errText);
+      return res.status(502).json({ error: "OPENROUTER_ERROR", details: errText });
+    }
+    const data = await openRouterRes.json();
+    const replyText = data?.choices?.[0]?.message?.content || "";
+    res.json({ success: true, reply: replyText, model });
+  } catch (err) {
+    console.error("[AI Chat Route Exception]:", err);
+    res.status(500).json({ error: err.message || "Internal server error" });
   }
 });
 app.get("/octo-fix-localization-xK9mP2qL", (_req, res) => {

@@ -18,6 +18,7 @@ import {
   Inbox,
   Users,
   Mail,
+  Cpu,
   Activity
 } from 'lucide-react';
 import { TabItem, UiLanguage } from '../types';
@@ -51,6 +52,7 @@ const iconMap: Record<string, React.FC<{ className?: string }>> = {
   services: Briefcase,
   inbox: Inbox,
   'user-management': Users,
+  'ai-settings': Cpu,
   'smtp-settings': Mail,
   logs: Activity,
 };

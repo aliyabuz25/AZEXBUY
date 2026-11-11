@@ -2534,6 +2534,18 @@ mainDb.exec(`
     updated_at TEXT
   );
   INSERT OR IGNORE INTO smtp_settings (id) VALUES (1);
+
+  CREATE TABLE IF NOT EXISTS ai_settings (
+    id INTEGER PRIMARY KEY DEFAULT 1,
+    provider TEXT DEFAULT 'openrouter',
+    api_key TEXT DEFAULT '',
+    model TEXT DEFAULT 'google/gemini-2.5-flash',
+    system_prompt TEXT DEFAULT '',
+    temperature REAL DEFAULT 0.2,
+    enabled INTEGER DEFAULT 1,
+    updated_at TEXT
+  );
+  INSERT OR IGNORE INTO ai_settings (id) VALUES (1);
 `);
 
 // Additive migration: add routing email columns if missing
@@ -2724,6 +2736,127 @@ app.post('/api/smtp-test', requireAuth, async (req: Request, res: Response) => {
     res.json({ success: true, message: 'Test e-poçtu göndərildi.' });
   } catch (err: any) {
     res.status(500).json({ success: false, error: err.message || 'SMTP xətası' });
+  }
+});
+
+// ─── AI / OpenRouter Settings & Chat Gateway ──────────────────────────────────
+function getAiSettings() {
+  return mainDb.prepare('SELECT * FROM ai_settings WHERE id = 1').get() as any;
+}
+
+// GET AI settings (Admin)
+app.get('/api/ai-settings', requireAuth, (_req: Request, res: Response) => {
+  const s = getAiSettings();
+  res.json({
+    provider: s?.provider || 'openrouter',
+    api_key: s?.api_key ? '••••••••' + s.api_key.slice(-4) : '',
+    has_key: Boolean(s?.api_key),
+    model: s?.model || 'google/gemini-2.5-flash',
+    system_prompt: s?.system_prompt || '',
+    temperature: s?.temperature ?? 0.2,
+    enabled: Boolean(s?.enabled ?? 1),
+    updated_at: s?.updated_at || '',
+  });
+});
+
+// SAVE AI settings (Admin)
+app.post('/api/ai-settings', requireAuth, (req: Request, res: Response) => {
+  const { provider, api_key, model, system_prompt, temperature, enabled } = req.body;
+  const current = getAiSettings();
+  const newKey = api_key && !api_key.startsWith('••••') ? api_key.trim() : (current?.api_key || '');
+  mainDb.prepare(`
+    UPDATE ai_settings SET
+      provider = ?,
+      api_key = ?,
+      model = ?,
+      system_prompt = ?,
+      temperature = ?,
+      enabled = ?,
+      updated_at = ?
+    WHERE id = 1
+  `).run(
+    provider || 'openrouter',
+    newKey,
+    model || 'google/gemini-2.5-flash',
+    system_prompt || '',
+    typeof temperature === 'number' ? temperature : 0.2,
+    enabled ? 1 : 0,
+    new Date().toISOString()
+  );
+  res.json({ success: true });
+});
+
+// Public AI Chat Gateway (Secured through OpenRouter server-side proxy)
+app.post('/api/azexbuy/ai-chat', async (req: Request, res: Response) => {
+  try {
+    const { message, history, locale } = req.body;
+    if (!message || typeof message !== 'string') {
+      return res.status(400).json({ error: 'Message is required' });
+    }
+
+    const s = getAiSettings();
+    const apiKey = s?.api_key || process.env.OPENROUTER_API_KEY || '';
+    const model = s?.model || 'google/gemini-2.5-flash';
+
+    if (!apiKey) {
+      return res.status(503).json({
+        error: 'AI_KEY_NOT_CONFIGURED',
+        message: 'OpenRouter API key is not configured in Admin Panel.'
+      });
+    }
+
+    const systemPrompt = s?.system_prompt?.trim() || `Sən AZEXBUY (Azərbaycan İxrac və Qlobal Təchizat Portalı) üzrə rəsmi Beynəlxalq Ticarət və İxrac Mütəxəssisisən.
+Məqsədin: xarici alıcılara və yerli istehsalçılara dəqiq, ciddi, peşəkar və operativ ticarət məlumatı verməkdir.
+
+QAYDALAR VƏ TON:
+1. Əsla süni, boş və şablon ("ai slop", "əlbbətdə", "sizə kömək etməkdən çox şadam", "əziz istifadəçi") danışma. Birbaşa fakta və cavaba keç.
+2. Qısa, dəqiq və ticarət yönümlü cavablar ver.
+3. Uyğun olduqda dəqiq HS kodlarını (məs. Fındıq: 0802.22, Nar və şirə: 0810.90 / 2009.89, Xurma: 0810.70, Mərmər: 2515, Xalça: 5701, Polad: 7306), Incoterms 2020 şərtlərini (FOB Ələt/Bakı, CIF Konstansa/Mersin, DAP), Orta Dəhliz tranzit müddətlərini və AQTA/EUR.1/CT-1 sertifikatlaşdırmasını qeyd et.
+4. Xüsusi sifariş, fərdi qiymət və ya rəsmi əməkdaşlıq tələb edildikdə istifadəçiyə bildir ki, mesajını və e-poçtunu çatda qeyd etsin və ya yuxarıdakı "RFQ / Tələb Göndər" düyməsindən istifadə etsin, komanda dərhal onunla əlaqə saxlayacaq.
+5. İstifadəçinin müraciət etdiyi dildə (${locale || 'AZ'}) rəsmi, səliqəli və etibarlı dildə cavab ver.`;
+
+    const chatHistory = Array.isArray(history)
+      ? history.slice(-6).map((m: any) => ({
+          role: m.sender === 'user' ? 'user' : 'assistant',
+          content: String(m.text || ''),
+        }))
+      : [];
+
+    const messages = [
+      { role: 'system', content: systemPrompt },
+      ...chatHistory,
+      { role: 'user', content: message.trim() },
+    ];
+
+    const openRouterRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+        'HTTP-Referer': 'https://beta.azexbuy.com',
+        'X-Title': 'AZEXBUY Trade Desk',
+      },
+      body: JSON.stringify({
+        model,
+        messages,
+        temperature: s?.temperature ?? 0.2,
+        max_tokens: 650,
+      }),
+    });
+
+    if (!openRouterRes.ok) {
+      const errText = await openRouterRes.text();
+      console.error('[OpenRouter Error]:', openRouterRes.status, errText);
+      return res.status(502).json({ error: 'OPENROUTER_ERROR', details: errText });
+    }
+
+    const data = await openRouterRes.json();
+    const replyText = data?.choices?.[0]?.message?.content || '';
+
+    res.json({ success: true, reply: replyText, model });
+  } catch (err: any) {
+    console.error('[AI Chat Route Exception]:', err);
+    res.status(500).json({ error: err.message || 'Internal server error' });
   }
 });
 
