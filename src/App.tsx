@@ -1217,15 +1217,20 @@ export default function App() {
       />
 
       {/* Floating Trade Desk Trigger Button */}
-      <button
-        type="button"
-        onClick={() => setAiDeskOpen(true)}
-        className="fixed bottom-6 right-6 z-40 bg-white hover:bg-slate-50 text-brandNavy px-4 py-2.5 rounded-full shadow-lg flex items-center gap-2 text-xs font-semibold border border-slate-200 cursor-pointer transition-all hover:shadow-md no-print"
-        title="AZEXBUY Trade Desk"
-      >
-        <i className="fa-solid fa-comments text-brandNavy text-xs"></i>
-        <span>Trade Desk</span>
-      </button>
+      {!aiDeskOpen && (
+        <button
+          type="button"
+          onClick={() => setAiDeskOpen(true)}
+          className="fixed bottom-6 right-6 z-40 bg-[#0f3156] hover:bg-[#081c33] text-white px-4 py-3 rounded-full shadow-2xl flex items-center gap-2.5 text-xs font-bold border border-white/20 cursor-pointer transition-all hover:scale-105 active:scale-95 no-print"
+          title="AZEXBUY Trade Desk Chat"
+        >
+          <div className="relative flex items-center justify-center">
+            <i className="fa-solid fa-headset text-sm"></i>
+            <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-emerald-400"></span>
+          </div>
+          <span>Trade Desk</span>
+        </button>
+      )}
 
       {/* Instant Action Feedback Toast */}
       {toastMessage && (
