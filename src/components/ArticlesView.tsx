@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { Article, Locale } from '../types';
 import { MarkdownRenderer } from '../utils/markdownRenderer';
 
@@ -85,16 +86,21 @@ const ShareModal: React.FC<ShareModalProps> = ({ article, onClose }) => {
     if (e.target === e.currentTarget) onClose();
   };
 
-  // Close on Escape
+  // Close on Escape & Lock body scroll
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
     document.addEventListener('keydown', handler);
-    return () => document.removeEventListener('keydown', handler);
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', handler);
+      document.body.style.overflow = originalOverflow;
+    };
   }, [onClose]);
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
       onClick={handleBackdrop}
     >
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 relative animate-fade-in">
@@ -162,6 +168,15 @@ const ShareModal: React.FC<ShareModalProps> = ({ article, onClose }) => {
                 ? 'bg-brandGreen text-white'
                 : 'bg-brandNavy hover:bg-brandNavyDark text-white'
             }`}
+          >
+            <i className={`fa-solid ${copied ? 'fa-check' : 'fa-copy'} text-xs`}></i>
+            <span>{copied ? 'Copied!' : 'Copy'}</span>
+          </button>
+        </div>
+      </div>
+    </div>,
+    document.body
+  );
           >
             <i className={`fa-solid ${copied ? 'fa-check' : 'fa-copy'} text-xs`}></i>
             <span>{copied ? 'Copied!' : 'Copy'}</span>

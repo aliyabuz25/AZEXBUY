@@ -24,7 +24,7 @@ function PageTransition({ viewKey, children }: { viewKey: string; children: Reac
   return (
     <div style={{
       opacity: animating ? 0 : 1,
-      transform: animating ? 'translateY(10px)' : 'translateY(0)',
+      transform: animating ? 'translateY(10px)' : 'none',
       transition: 'opacity 0.16s ease, transform 0.16s ease',
     }}>
       {displayed}

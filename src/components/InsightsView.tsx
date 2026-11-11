@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { Locale } from '../types';
 import { MarkdownRenderer } from '../utils/markdownRenderer';
 
@@ -78,7 +79,12 @@ const ShareModal: React.FC<{ article: AzArticle; onClose: () => void }> = ({ art
   useEffect(() => {
     const h = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
     document.addEventListener('keydown', h);
-    return () => document.removeEventListener('keydown', h);
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', h);
+      document.body.style.overflow = originalOverflow;
+    };
   }, [onClose]);
 
   const copy = async () => {
@@ -99,11 +105,11 @@ const ShareModal: React.FC<{ article: AzArticle; onClose: () => void }> = ({ art
     { label: 'Facebook', icon: 'fa-brands fa-facebook-f', bg: '#1877F2', href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}` },
   ];
 
-  return (
-    <div className="fixed inset-0 z-[300] flex items-center justify-center p-4"
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
       style={{ backgroundColor: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)' }}
       onClick={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 relative">
         <div className="flex items-center justify-between mb-5">
           <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#17231D' }}>Share Article</h3>
           <button onClick={onClose} className="w-7 h-7 rounded-full flex items-center justify-center cursor-pointer"
@@ -135,7 +141,8 @@ const ShareModal: React.FC<{ article: AzArticle; onClose: () => void }> = ({ art
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
