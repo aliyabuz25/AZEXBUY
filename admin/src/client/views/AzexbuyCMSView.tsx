@@ -231,6 +231,125 @@ const SaveBar = React.memo(({ onSave, saving, saved }: SaveBarProps) => (
   </div>
 ));
 
+// ── Common Icon Picker for FontAwesome Icons ────────────────────────────
+export const AVAILABLE_FA_ICONS = [
+  { cls: 'fa-regular fa-circle-check', label: 'Check Circle (Seçim / Yoxlanmış)' },
+  { cls: 'fa-solid fa-circle-check', label: 'Solid Check (Təsdiqlənmiş)' },
+  { cls: 'fa-solid fa-globe', label: 'Qlobal / Dünya (Globe)' },
+  { cls: 'fa-solid fa-earth-americas', label: 'Dünya Xəritəsi' },
+  { cls: 'fa-solid fa-chart-line', label: 'Bazar / Qrafik (Chart Line)' },
+  { cls: 'fa-solid fa-chart-pie', label: 'Diaqram / Analitika' },
+  { cls: 'fa-regular fa-clipboard', label: 'Sənəd / Qeydiyyat (Clipboard)' },
+  { cls: 'fa-solid fa-file-contract', label: 'Müqavilə (Contract)' },
+  { cls: 'fa-solid fa-truck', label: 'Yük Maşını / TIR (Truck)' },
+  { cls: 'fa-solid fa-truck-fast', label: 'Sürətli Çatdırılma' },
+  { cls: 'fa-solid fa-ship', label: 'Gəmi / Dəniz Nəqliyyatı (Ship)' },
+  { cls: 'fa-solid fa-plane-departure', label: 'Təyyarə / Hava Yükü' },
+  { cls: 'fa-solid fa-train', label: 'Qatar / Dəmir Yolu' },
+  { cls: 'fa-solid fa-warehouse', label: 'Anbar / Saxlama' },
+  { cls: 'fa-solid fa-boxes-stacked', label: 'Yüklər / Qutular' },
+  { cls: 'fa-solid fa-location-dot', label: 'Məkan / Mövqe (Location Dot)' },
+  { cls: 'fa-solid fa-map-location-dot', label: 'Xəritə Məkanı' },
+  { cls: 'fa-solid fa-cubes-stacked', label: 'Sənaye / Kublar (Cubes)' },
+  { cls: 'fa-solid fa-industry', label: 'Fabrik / Sənaye (Industry)' },
+  { cls: 'fa-solid fa-factory', label: 'İstehsal Müəssisəsi (Factory)' },
+  { cls: 'fa-solid fa-seedling', label: 'Aqrar / Bitki / İnkişaf (Seedling)' },
+  { cls: 'fa-solid fa-wheat-awn', label: 'Buğda / Kənd Təsərrüfatı' },
+  { cls: 'fa-solid fa-apple-whole', label: 'Meyvə / Qida' },
+  { cls: 'fa-solid fa-shield-halved', label: 'Təhlükəsizlik / Zəmanət (Shield)' },
+  { cls: 'fa-solid fa-award', label: 'Mükafat / Keyfiyyət Sertifikatı' },
+  { cls: 'fa-solid fa-certificate', label: 'Sertifikat (Certificate)' },
+  { cls: 'fa-solid fa-store', label: 'Mağaza / Ticarət (Store)' },
+  { cls: 'fa-solid fa-shop', label: 'Satış / Topdansatış' },
+  { cls: 'fa-solid fa-network-wired', label: 'Şəbəkə / Tərəfdaşlıq (Network)' },
+  { cls: 'fa-solid fa-users', label: 'İstifadəçilər / Komanda' },
+  { cls: 'fa-solid fa-handshake', label: 'Əməkdaşlıq / Razılaşma' },
+  { cls: 'fa-solid fa-scale-balanced', label: 'Gömrük / Hüquq / Uyğunluq' },
+  { cls: 'fa-solid fa-flask', label: 'Laboratoriya / Sınaq' },
+  { cls: 'fa-solid fa-magnifying-glass', label: 'Axtarış / Araşdırma' },
+  { cls: 'fa-solid fa-bullseye', label: 'Hədəf Bazar / Strategiya' },
+  { cls: 'fa-solid fa-bolt', label: 'Sürət / Enerji' },
+  { cls: 'fa-solid fa-briefcase', label: 'Biznes / Portfel' },
+  { cls: 'fa-solid fa-building', label: 'Korporativ / Bina' },
+  { cls: 'fa-solid fa-coins', label: 'Maliyyə / Valyuta' },
+];
+
+export const IconPickerDropdown: React.FC<{
+  value: string;
+  onChange: (val: string) => void;
+  label?: string;
+}> = ({ value, onChange, label = 'İkon' }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [filter, setFilter] = useState('');
+
+  const filteredIcons = AVAILABLE_FA_ICONS.filter(
+    (ic) => ic.cls.toLowerCase().includes(filter.toLowerCase()) || ic.label.toLowerCase().includes(filter.toLowerCase())
+  );
+
+  return (
+    <div className="relative">
+      {label && <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">{label}</label>}
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full h-8 px-2.5 bg-white border border-slate-200 hover:border-[#0f3156] rounded-sm flex items-center justify-between gap-2 text-xs text-slate-700 shadow-2xs transition-colors"
+      >
+        <div className="flex items-center gap-2 truncate">
+          <div className="w-5 h-5 rounded bg-slate-100 flex items-center justify-center shrink-0 text-[#0f3156]">
+            <i className={value || 'fa-solid fa-circle-check'}></i>
+          </div>
+          <span className="truncate font-mono text-[11px]">
+            {AVAILABLE_FA_ICONS.find((ic) => ic.cls === value)?.label || value || 'İkon seçin'}
+          </span>
+        </div>
+        <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+      </button>
+
+      {isOpen && (
+        <div className="absolute z-50 left-0 right-0 mt-1 bg-white border border-slate-200 rounded shadow-xl p-2 max-h-64 overflow-y-auto space-y-2">
+          <div className="sticky top-0 bg-white pb-1 border-b border-slate-100">
+            <input
+              type="text"
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              placeholder="İkon axtar (məs: truck, globe, ship)..."
+              className="w-full h-7 px-2 text-xs border border-slate-200 rounded focus:outline-none focus:border-[#0f3156]"
+              autoFocus
+            />
+          </div>
+          <div className="grid grid-cols-1 gap-1">
+            {filteredIcons.map((ic) => {
+              const isSelected = ic.cls === value;
+              return (
+                <button
+                  key={ic.cls}
+                  type="button"
+                  onClick={() => {
+                    onChange(ic.cls);
+                    setIsOpen(false);
+                  }}
+                  className={`flex items-center gap-2.5 px-2 py-1.5 rounded text-left text-xs transition-colors ${
+                    isSelected ? 'bg-[#0f3156] text-white' : 'hover:bg-slate-100 text-slate-700'
+                  }`}
+                >
+                  <div className={`w-5 h-5 rounded flex items-center justify-center text-sm shrink-0 ${isSelected ? 'text-white' : 'text-[#0f3156]'}`}>
+                    <i className={ic.cls}></i>
+                  </div>
+                  <div className="truncate flex-1">
+                    <div className="font-medium text-[11px] truncate">{ic.label}</div>
+                    <div className={`text-[9px] font-mono truncate ${isSelected ? 'text-slate-200' : 'text-slate-400'}`}>{ic.cls}</div>
+                  </div>
+                  {isSelected && <CheckCircle className="w-3.5 h-3.5 text-white shrink-0" />}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 // ── Home-page "Our Services" pillar editor ──────────────────────────────
 interface PillarLocText { AZ?: string; EN?: string; TR?: string; RU?: string; AR?: string; ES?: string; }
 interface PillarItem { EN?: string; AZ?: string; TR?: string; RU?: string; AR?: string; ES?: string; }
@@ -258,12 +377,40 @@ const ServicePillarEditor = React.memo(({ content, onChange, onSaveContent, savi
     applyChange(pillars.map((p: any) => (p.id === id ? updater(p) : p)));
   };
 
+  const addPillar = () => {
+    const newId = `service-${Date.now().toString(36).slice(-4)}`;
+    const newPillar = {
+      id: newId,
+      iconClass: 'fa-solid fa-chart-line',
+      colorClass: 'bg-blue-600',
+      linkColorClass: 'text-blue-600',
+      title: { AZ: 'Yeni Xidmət', EN: 'New Service', TR: 'Yeni Hizmet', RU: 'Новая услуга', AR: '', ES: '' },
+      subtitle: { AZ: 'Xidmət haqqında qısa izah', EN: 'Brief service description', TR: '', RU: '', AR: '', ES: '' },
+      turnaround: '3–5 Days',
+      items: [
+        { AZ: 'Maddə 1', EN: 'Item 1', TR: '', RU: '', AR: '', ES: '' },
+        { AZ: 'Maddə 2', EN: 'Item 2', TR: '', RU: '', AR: '', ES: '' },
+      ]
+    };
+    applyChange([...pillars, newPillar]);
+  };
+
+  const removePillar = (id: string) => {
+    if (confirm('Bu xidmət kartını silmək istədiyinizdən əminsiniz?')) {
+      applyChange(pillars.filter((p: any) => p.id !== id));
+    }
+  };
+
   const setPillarLoc = (id: string, field: 'title' | 'subtitle', loc: string, value: string) => {
     updatePillar(id, (p: any) => ({ ...p, [field]: { ...(p[field] || {}), [loc]: value } }));
   };
 
   const setPillarTurnaround = (id: string, value: string) => {
     updatePillar(id, (p: any) => ({ ...p, turnaround: value }));
+  };
+
+  const setPillarIcon = (id: string, iconClass: string) => {
+    updatePillar(id, (p: any) => ({ ...p, iconClass }));
   };
 
   const setPillarItemLoc = (id: string, idx: number, loc: string, value: string) => {
@@ -276,15 +423,63 @@ const ServicePillarEditor = React.memo(({ content, onChange, onSaveContent, savi
 
   return (
     <div className="space-y-4">
-      {pillars.map((p: any) => (
+      <div className="flex items-center justify-between pb-1">
+        <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+          Aktiv Servis Kartları ({pillars.length} ədəd)
+        </span>
+        <button
+          type="button"
+          onClick={addPillar}
+          className="h-7 px-3 flex items-center gap-1.5 text-xs font-bold rounded-sm bg-emerald-600 hover:bg-emerald-700 text-white shadow-2xs transition-colors"
+        >
+          <Plus className="w-3.5 h-3.5" /> Yeni Servis Kartı Əlavə Et
+        </button>
+      </div>
+
+      {pillars.map((p: any, pIdx: number) => (
         <div key={p.id} className="border border-slate-200/90 rounded-lg p-4 bg-white space-y-3 shadow-2xs">
-          <div className="flex items-center gap-2.5 pb-2 border-b border-slate-100">
-            <i className={`${p.iconClass} text-base text-slate-500`}></i>
-            <span className="text-xs font-bold text-slate-800">{p.id}</span>
-            <span className="text-[10px] text-slate-400 font-mono">
-              {p.turnaround ? `· ${p.turnaround}` : '· Məhdudiyyət müddəti təyin edilməyib'}
-            </span>
+          <div className="flex items-center justify-between gap-2.5 pb-2 border-b border-slate-100">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded bg-slate-100 flex items-center justify-center text-slate-700 text-base">
+                <i className={`${p.iconClass || 'fa-solid fa-circle-check'}`}></i>
+              </div>
+              <div>
+                <div className="text-xs font-bold text-slate-800">
+                  {pIdx + 1}. {p.title?.AZ || p.title?.EN || p.id}
+                </div>
+                <div className="text-[10px] text-slate-400 font-mono">
+                  ID: {p.id} {p.turnaround ? `· SLA: ${p.turnaround}` : ''}
+                </div>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => removePillar(p.id)}
+              className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+              title="Kartı Sil"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
           </div>
+
+          {/* İkon və SLA Seçici */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <IconPickerDropdown
+              label="Kartın İkonu"
+              value={p.iconClass || 'fa-solid fa-circle-check'}
+              onChange={(newIcon) => setPillarIcon(p.id, newIcon)}
+            />
+            <div>
+              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Turnaround / SLA</label>
+              <input
+                value={p.turnaround || ''}
+                onChange={(e) => setPillarTurnaround(p.id, e.target.value)}
+                placeholder="məs: 5 Business Days"
+                className="w-full h-8 text-xs bg-slate-50/70 border border-slate-200 rounded px-2.5 focus:outline-none focus:bg-white focus:border-[#0f3156]"
+              />
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             {PILLAR_LOCS.map((loc) => (
               <div key={loc} className="flex items-start gap-2">
@@ -307,18 +502,6 @@ const ServicePillarEditor = React.memo(({ content, onChange, onSaveContent, savi
                 </div>
               </div>
             ))}
-          </div>
-          {/* Turnaround */}
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-7 rounded bg-slate-100 border border-slate-200 text-slate-600 font-bold text-[10px] font-mono flex items-center justify-center shrink-0">
-              SLA
-            </div>
-            <input
-              value={p.turnaround || ''}
-              onChange={(e) => setPillarTurnaround(p.id, e.target.value)}
-              placeholder="Turnaround müddəti (məs: 5 Business Days)"
-              className="flex-1 h-7 text-[11px] bg-slate-50/70 border border-slate-200 rounded px-2 focus:outline-none focus:bg-white focus:border-[#0f3156]"
-            />
           </div>
           {/* Məsələlər (items) — each row lists all 6 locales compactly */}
           <div>
@@ -358,7 +541,7 @@ const ServicePillarEditor = React.memo(({ content, onChange, onSaveContent, savi
                       <Trash2 className="w-3 h-3" />
                     </button>
                   </div>
-                  <div className="grid grid-cols-2 gap-1.5">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
                     {PILLAR_LOCS.map((loc) => (
                       <input
                         key={loc}
@@ -375,15 +558,24 @@ const ServicePillarEditor = React.memo(({ content, onChange, onSaveContent, savi
           </div>
         </div>
       ))}
-      <button
-        type="button"
-        onClick={() => onSaveContent({ ...content, services: pillars })}
-        disabled={saving}
-        className="h-8 px-4 flex items-center gap-2 text-xs font-bold rounded-sm bg-[#0f3156] hover:bg-[#081c33] text-white disabled:opacity-60"
-      >
-        <Save className="w-3 h-3" />
-        {saving ? 'Saxlanılır...' : 'Kartları Saxla'}
-      </button>
+      <div className="flex items-center justify-between pt-2">
+        <button
+          type="button"
+          onClick={addPillar}
+          className="h-8 px-3.5 flex items-center gap-1.5 text-xs font-bold rounded-sm bg-slate-100 hover:bg-slate-200 text-slate-800 transition-colors"
+        >
+          <Plus className="w-3.5 h-3.5" /> Kart Əlavə Et
+        </button>
+        <button
+          type="button"
+          onClick={() => onSaveContent({ ...content, services: pillars })}
+          disabled={saving}
+          className="h-8 px-5 flex items-center gap-2 text-xs font-bold rounded-sm bg-[#0f3156] hover:bg-[#081c33] text-white disabled:opacity-60 shadow-sm"
+        >
+          <Save className="w-3.5 h-3.5" />
+          {saving ? 'Saxlanılır...' : 'Xidmət Kartlarını Yadda Saxla'}
+        </button>
+      </div>
       {saved && <div className="text-xs text-emerald-700 flex items-center gap-1.5"><CheckCircle className="w-3.5 h-3.5" /> Dəyişikliklər saxlanıldı</div>}
     </div>
   );
@@ -1362,21 +1554,205 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
           )}
 
           {/* ── WHY AZEXBUY ── */}
-          {page === 'why_azexbuy' && (
-            <>
-              <h2 className="text-sm font-bold text-slate-800">Niyə AZEXBUY? Bölməsi</h2>
-              <MultiLocF label="Bölmə Başlığı" strKey="whyAzexbuy.heading" locData={locData} onChange={handleMultiLocChange} />
-              {[0,1,2,3,4].map(i => (
-                <div key={i} className="bg-slate-100 p-3 rounded space-y-2">
-                  <div className="text-[10px] font-bold text-slate-500 uppercase">Kart {i+1}</div>
-                  <MultiLocF label="Başlıq" strKey={`whyAzexbuy.items[${i}].title`} locData={locData} onChange={handleMultiLocChange} />
-                  <MultiLocF label="Açıqlama" strKey={`whyAzexbuy.items[${i}].desc`} multi locData={locData} onChange={handleMultiLocChange} />
-                  <MultiLocF label="Metrik" strKey={`whyAzexbuy.items[${i}].metric`} locData={locData} onChange={handleMultiLocChange} />
+          {page === 'why_azexbuy' && (() => {
+            const DEFAULT_WHY_ITEMS = [
+              {
+                icon: 'fa-regular fa-circle-check',
+                title: { AZ: 'Yoxlanılmış Təchizatçılar', EN: 'Verified Suppliers', TR: 'Doğrulanmış Tedarikçiler', RU: 'Проверенные поставщики', AR: '', ES: '' },
+                desc: { AZ: 'Yalnız etibarlı Azərbaycan istehsalçıları ilə işləyirik.', EN: 'We work only with trusted Azerbaijani manufacturers.', TR: 'Yalnızca güvenilir Azerbaycan üreticileriyle çalışıyoruz.', RU: 'Мы работаем только с проверенными производителями Азербайджана.', AR: '', ES: '' },
+                metric: '250+ Certified Facilities'
+              },
+              {
+                icon: 'fa-solid fa-globe',
+                title: { AZ: 'Qlobal Alıcı Çıxışı', EN: 'Global Buyer Access', TR: 'Küresel Alıcı Erişimi', RU: 'Доступ к глобальным покупателям', AR: '', ES: '' },
+                desc: { AZ: 'Sizi beynəlxalq satınalma şəbəkələri ilə əlaqələndiririk.', EN: 'We connect you with international procurement networks.', TR: 'Sizi uluslararası satın alma ağlarıyla buluşturuyoruz.', RU: 'Мы связываем вас с международными сетями закупок.', AR: '', ES: '' },
+                metric: '42 Export Destinations'
+              },
+              {
+                icon: 'fa-solid fa-chart-line',
+                title: { AZ: 'Bazar Analitikası', EN: 'Market Intelligence', TR: 'Pazar Analitiği', RU: 'Рыночная аналитика', AR: '', ES: '' },
+                desc: { AZ: 'Daha dəqiq qərarlar üçün məlumat əsaslı təhlillər.', EN: 'Data-driven insights for better decisions.', TR: 'Daha isabetli kararlar için veri odaklı analizler.', RU: 'Аналитика на основе данных для точных решений.', AR: '', ES: '' },
+                metric: 'HS-6 Tariff & Route Data'
+              },
+              {
+                icon: 'fa-regular fa-clipboard',
+                title: { AZ: 'Tam İxrac İdarəetməsi', EN: 'End-to-End Export', TR: 'Uçtan Uca İhracat Yönetimi', RU: 'Полное управление экспортом', AR: '', ES: '' },
+                desc: { AZ: 'Tədarükdən çatdırılmaya qədər bütün prosesi idarə edirik.', EN: 'From sourcing to delivery, we manage the process.', TR: 'Tedarikten teslimata kadar tüm süreci yönetiyoruz.', RU: 'От закупки до поставки — мы управляем всем процессом.', AR: '', ES: '' },
+                metric: 'Incoterms 2020 Desk'
+              },
+              {
+                icon: 'fa-solid fa-truck',
+                title: { AZ: 'Beynəlxalq Logistika', EN: 'International Logistics', TR: 'Uluslararası Lojistik', RU: 'Международная логистика', AR: '', ES: '' },
+                desc: { AZ: 'Etibarlı və səmərəli multimodal nəqliyyat həlləri.', EN: 'Reliable and efficient multimodal transport solutions.', TR: 'Güvenilir ve verimli çok modlu taşımacılık çözümleri.', RU: 'Надежные и эффективные мультимодальные транспортные решения.', AR: '', ES: '' },
+                metric: 'Middle Corridor Hub'
+              }
+            ];
+
+            const curItems = Array.isArray(content.whyAzexbuy?.items) && content.whyAzexbuy.items.length > 0
+              ? content.whyAzexbuy.items
+              : DEFAULT_WHY_ITEMS;
+
+            const updateWhyItems = (newItems: any[]) => {
+              setContent((p: any) => ({
+                ...p,
+                whyAzexbuy: {
+                  ...(p.whyAzexbuy || {}),
+                  items: newItems,
+                }
+              }));
+            };
+
+            const addWhyCard = () => {
+              const newCard = {
+                icon: 'fa-solid fa-circle-check',
+                title: { AZ: 'Yeni Üstünlük', EN: 'New Advantage', TR: 'Yeni Avantaj', RU: 'Новое преимущество', AR: '', ES: '' },
+                desc: { AZ: 'Üstünlük haqqında qısa təsvir', EN: 'Description of advantage', TR: '', RU: '', AR: '', ES: '' },
+                metric: '100% Quality'
+              };
+              updateWhyItems([...curItems, newCard]);
+            };
+
+            const removeWhyCard = (index: number) => {
+              if (confirm('Bu üstünlük kartını silmək istədiyinizdən əminsiniz?')) {
+                updateWhyItems(curItems.filter((_: any, i: number) => i !== index));
+              }
+            };
+
+            const setWhyItemField = (index: number, fld: 'icon' | 'metric', val: string) => {
+              const copy = [...curItems];
+              copy[index] = { ...copy[index], [fld]: val };
+              updateWhyItems(copy);
+            };
+
+            const setWhyItemLoc = (index: number, fld: 'title' | 'desc', loc: string, val: string) => {
+              const copy = [...curItems];
+              copy[index] = {
+                ...copy[index],
+                [fld]: { ...(copy[index][fld] || {}), [loc]: val }
+              };
+              updateWhyItems(copy);
+            };
+
+            return (
+              <>
+                <div className="flex items-center justify-between pb-2 border-b border-slate-200 mb-3">
+                  <div>
+                    <h2 className="text-sm font-bold text-slate-800">Niyə AZEXBUY? Bölməsi</h2>
+                    <p className="text-xs text-slate-500">Ana səhifədəki üstünlük kartlarını (+/-) artırıb azaldın və ikonlarını seçin.</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={addWhyCard}
+                    className="h-7 px-3 flex items-center gap-1.5 text-xs font-bold rounded-sm bg-emerald-600 hover:bg-emerald-700 text-white shadow-2xs transition-colors"
+                  >
+                    <Plus className="w-3.5 h-3.5" /> Yeni Kart Əlavə Et
+                  </button>
                 </div>
-              ))}
-              <SaveBar onSave={() => saveStrings(locData)} saving={saving} saved={saved} />
-            </>
-          )}
+
+                <MultiLocF label="Bölmə Başlığı" strKey="whyAzexbuy.heading" locData={locData} onChange={handleMultiLocChange} />
+
+                <div className="space-y-3 pt-2">
+                  {curItems.map((item: any, i: number) => (
+                    <div key={i} className="bg-slate-50 border border-slate-200 rounded-lg p-3.5 space-y-3 shadow-2xs">
+                      <div className="flex items-center justify-between border-b border-slate-200/80 pb-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-7 h-7 rounded bg-blue-50 text-brandNavy flex items-center justify-center text-sm">
+                            <i className={item.icon || 'fa-solid fa-circle-check'}></i>
+                          </div>
+                          <span className="text-xs font-bold text-slate-800">
+                            Kart #{i + 1} — {item.title?.AZ || item.title?.EN || `Kart ${i + 1}`}
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removeWhyCard(i)}
+                          className="p-1 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                          title="Kartı Sil"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+
+                      {/* İkon Dropdown və Metrik */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <IconPickerDropdown
+                          label="İkon (FontAwesome)"
+                          value={item.icon || 'fa-solid fa-circle-check'}
+                          onChange={(ic) => setWhyItemField(i, 'icon', ic)}
+                        />
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Metrik / Etiket</label>
+                          <input
+                            type="text"
+                            value={item.metric || ''}
+                            onChange={(e) => setWhyItemField(i, 'metric', e.target.value)}
+                            placeholder="məs: 250+ Certified Facilities"
+                            className="w-full h-8 text-xs bg-white border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156]"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Başlıq (6 Dil) */}
+                      <div>
+                        <div className="text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Kart Başlığı (6 Dil)</div>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                          {LOCALES.map(loc => (
+                            <div key={loc} className="flex items-center gap-1.5 bg-white border border-slate-200 rounded px-2 py-1">
+                              <span className="text-[9px] font-bold text-slate-400 font-mono w-4">{loc}</span>
+                              <input
+                                type="text"
+                                value={item.title?.[loc] || ''}
+                                onChange={(e) => setWhyItemLoc(i, 'title', loc, e.target.value)}
+                                placeholder={`Başlıq (${loc})`}
+                                className="w-full text-xs bg-transparent focus:outline-none text-slate-800"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Açıqlama (6 Dil) */}
+                      <div>
+                        <div className="text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Açıqlama Mətni (6 Dil)</div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          {LOCALES.map(loc => (
+                            <div key={loc} className="bg-white border border-slate-200 rounded p-1.5">
+                              <div className="text-[9px] font-bold text-slate-400 font-mono mb-1">{loc}</div>
+                              <textarea
+                                rows={2}
+                                value={item.desc?.[loc] || ''}
+                                onChange={(e) => setWhyItemLoc(i, 'desc', loc, e.target.value)}
+                                placeholder={`Təsvir (${loc})`}
+                                className="w-full text-xs bg-transparent focus:outline-none text-slate-800"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex items-center justify-between pt-3">
+                  <button
+                    type="button"
+                    onClick={addWhyCard}
+                    className="h-8 px-3.5 flex items-center gap-1.5 text-xs font-bold rounded-sm bg-slate-100 hover:bg-slate-200 text-slate-800 transition-colors"
+                  >
+                    <Plus className="w-3.5 h-3.5" /> Kart Əlavə Et
+                  </button>
+                  <SaveBar
+                    onSave={async () => {
+                      await saveContent(content);
+                      await saveStrings(locData);
+                    }}
+                    saving={saving}
+                    saved={saved}
+                  />
+                </div>
+              </>
+            );
+          })()}
 
           {/* ── CONTACT & OFFICE DETAILS ── */}
           {page === 'contact' && (
@@ -2027,28 +2403,252 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
           )}
 
           {/* ── WHY AZERBAIJAN ── */}
-          {page === 'why_azerbaijan' && (
-            <>
-              <h2 className="text-sm font-bold text-slate-800">Niyə Azərbaycan Bölməsi</h2>
-              <ImageField imgKey="WHY_AZERBAIJAN_IMAGE" label="Arxa Fon Şəkli"
-                content={content} uploading={uploading}
-                onSaveContent={saveContent} onTriggerUpload={triggerUpload}
-                onUpdateImgUrl={handleUpdateImgUrl} onPreview={setPreview}
-                saving={saving} saved={saved} />
-              <MultiLocF label="Başlıq" strKey="whyAzerbaijan.heading" locData={locData} onChange={handleMultiLocChange} />
-              <MultiLocF label="Açıqlama" strKey="whyAzerbaijan.desc" multi locData={locData} onChange={handleMultiLocChange} />
-              <MultiLocF label='"Ətraflı" Linki' strKey="whyAzerbaijan.learnMore" locData={locData} onChange={handleMultiLocChange} />
-              {[0,1,2,3].map(i => (
-                <div key={i} className="bg-slate-100 p-3 rounded space-y-2">
-                  <div className="text-[10px] font-bold text-slate-500 uppercase">Xüsusiyyət {i+1}</div>
-                  <MultiLocF label="Sətir 1" strKey={`whyAzerbaijan.features[${i}].line1`} locData={locData} onChange={handleMultiLocChange} />
-                  <MultiLocF label="Sətir 2" strKey={`whyAzerbaijan.features[${i}].line2`} locData={locData} onChange={handleMultiLocChange} />
-                  <MultiLocF label="Detal" strKey={`whyAzerbaijan.features[${i}].detail`} multi locData={locData} onChange={handleMultiLocChange} />
+          {page === 'why_azerbaijan' && (() => {
+            const DEFAULT_AZ_FEATURES = [
+              {
+                icon: 'fa-solid fa-location-dot',
+                line1: { AZ: 'Strateji', EN: 'Strategic', TR: 'Stratejik', RU: 'Стратегическое', AR: '', ES: '' },
+                line2: { AZ: 'Mövqe', EN: 'Location', TR: 'Konum', RU: 'Положение', AR: '', ES: '' },
+                detail: {
+                  AZ: 'Bakı Limanı (Ələt) və BTQ dəmir yolu vasitəsilə Avropa, Mərkəzi Asiya və Yaxın Şərqi birləşdirən Orta Dəhliz mərkəzi.',
+                  EN: 'Nexus of the Trans-Caspian Middle Corridor linking Europe, Central Asia, CIS, and MENA via Port of Baku (Alat) and BTK Railway.',
+                  TR: 'Bakü Limanı (Alat) ve BTK demiryolu ile Avrupa, Orta Asya ve Orta Doğu\'yu bağlayan Orta Koridor merkezi.',
+                  RU: 'Узел Транскаспийского Среднего коридора, соединяющий Европу, Центральную Азию и Ближний Восток.',
+                  AR: '',
+                  ES: ''
+                }
+              },
+              {
+                icon: 'fa-solid fa-cubes-stacked',
+                line1: { AZ: 'Çoxşaxəli', EN: 'Diverse', TR: 'Çok Yönlü', RU: 'Диверсифицированная', AR: '', ES: '' },
+                line2: { AZ: 'Sənaye', EN: 'Industries', TR: 'Sanayi', RU: 'Промышленность', AR: '', ES: '' },
+                detail: {
+                  AZ: '9 iqlim qurşağında kənd təsərrüfatı ilə yanaşı Sumqayıt kimya parkları, metallurgiya, tekstil və təbii daş sənayesi.',
+                  EN: '9 climatic zones supporting premium agriculture alongside Sumgayit chemical parks, metallurgy, textiles, and natural stone.',
+                  TR: '9 iklim kuşağında tarımın yanı sıra Sumgayıt kimya parkları, metalurji, tekstil ve doğal taş sanayisi.',
+                  RU: '9 климатических зон для агросектора, химические парки Сумгайыта, металлургия, текстиль и натуральный камень.',
+                  AR: '',
+                  ES: ''
+                }
+              },
+              {
+                icon: 'fa-regular fa-circle-check',
+                line1: { AZ: 'Keyfiyyətli', EN: 'Quality', TR: 'Kaliteli', RU: 'Качественная', AR: '', ES: '' },
+                line2: { AZ: 'Məhsullar', EN: 'Products', TR: 'Ürünler', RU: 'Продукция', AR: '', ES: '' },
+                detail: {
+                  AZ: 'AQTA fitosanitar izlənilməsi ilə dəstəklənən ISO 22000, GLOBALG.A.P., OEKO-TEX və API sertifikatlı istehsalat.',
+                  EN: 'ISO 22000, GLOBALG.A.P., OEKO-TEX, and API-certified manufacturing backed by strict AQTA phytosanitary traceability.',
+                  TR: 'AQTA fitosaniter izlenebilirliği ile desteklenen ISO 22000, GLOBALG.A.P., OEKO-TEX ve API sertifikalı üretim.',
+                  RU: 'Производство по стандартам ISO 22000, GLOBALG.A.P., OEKO-TEX и API с полным фитосанитарным контролем AQTA.',
+                  AR: '',
+                  ES: ''
+                }
+              },
+              {
+                icon: 'fa-solid fa-seedling',
+                line1: { AZ: 'Böyüyən', EN: 'Growing', TR: 'Büyüyen', RU: 'Растущая', AR: '', ES: '' },
+                line2: { AZ: 'İxrac Ekosistemi', EN: 'Export Ecosystem', TR: 'İhracat Ekosistemi', RU: 'Экспортная экосистема', AR: '', ES: '' },
+                detail: {
+                  AZ: 'Ələt Azad İqtisadi Zonası, yaşıl gömrük dəhlizi və MDB, Türkiyə və Aİ GSP+ ilə güzəştli ticarət rejimləri.',
+                  EN: 'Modern free economic zones (AFEZ), green customs corridors, and preferential trade regimes with CIS, Turkey, and EU GSP+.',
+                  TR: 'Alat Serbest Ticaret Bölgesi, yeşil gümrük koridoru ve BDT, Türkiye ve AB GSP+ ile tercihli ticaret rejimleri.',
+                  RU: 'СЭЗ Алят, зелёные таможенные коридоры и преференциальные режимы торговли со странами СНГ, Турцией и ЕС.',
+                  AR: '',
+                  ES: ''
+                }
+              }
+            ];
+
+            const curFeatures = Array.isArray(content.whyAzerbaijan?.features) && content.whyAzerbaijan.features.length > 0
+              ? content.whyAzerbaijan.features
+              : DEFAULT_AZ_FEATURES;
+
+            const updateFeatures = (newFeats: any[]) => {
+              setContent((p: any) => ({
+                ...p,
+                whyAzerbaijan: {
+                  ...(p.whyAzerbaijan || {}),
+                  features: newFeats,
+                }
+              }));
+            };
+
+            const addFeature = () => {
+              const newFeat = {
+                icon: 'fa-solid fa-circle-check',
+                line1: { AZ: 'Yeni', EN: 'New', TR: 'Yeni', RU: 'Новый', AR: '', ES: '' },
+                line2: { AZ: 'Xüsusiyyət', EN: 'Feature', TR: 'Özellik', RU: 'Фактор', AR: '', ES: '' },
+                detail: {
+                  AZ: 'Azərbaycan haqqında xüsusiyyətin geniş izahı.',
+                  EN: 'Comprehensive detail of the strategic advantage.',
+                  TR: 'Stratejik avantajın detaylı açıklaması.',
+                  RU: 'Подробное описание преимущества.',
+                  AR: '',
+                  ES: ''
+                }
+              };
+              updateFeatures([...curFeatures, newFeat]);
+            };
+
+            const removeFeature = (idx: number) => {
+              if (confirm('Bu xüsusiyyəti silmək istədiyinizdən əminsiniz?')) {
+                updateFeatures(curFeatures.filter((_: any, i: number) => i !== idx));
+              }
+            };
+
+            const setFeatureIcon = (idx: number, icon: string) => {
+              const copy = [...curFeatures];
+              copy[idx] = { ...copy[idx], icon };
+              updateFeatures(copy);
+            };
+
+            const setFeatureLoc = (idx: number, fld: 'line1' | 'line2' | 'detail', loc: string, val: string) => {
+              const copy = [...curFeatures];
+              copy[idx] = {
+                ...copy[idx],
+                [fld]: { ...(copy[idx][fld] || {}), [loc]: val }
+              };
+              updateFeatures(copy);
+            };
+
+            return (
+              <>
+                <div className="flex items-center justify-between pb-2 border-b border-slate-200 mb-3">
+                  <div>
+                    <h2 className="text-sm font-bold text-slate-800">Niyə Azərbaycan Bölməsi</h2>
+                    <p className="text-xs text-slate-500">Banner arxa fonu, başlıqlar və 4 xüsusiyyət kartını (+/-) idarə edin.</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={addFeature}
+                    className="h-7 px-3 flex items-center gap-1.5 text-xs font-bold rounded-sm bg-emerald-600 hover:bg-emerald-700 text-white shadow-2xs transition-colors"
+                  >
+                    <Plus className="w-3.5 h-3.5" /> Yeni Xüsusiyyət Əlavə Et
+                  </button>
                 </div>
-              ))}
-              <SaveBar onSave={async () => { await saveContent(content); await saveStrings(locData); }} saving={saving} saved={saved} />
-            </>
-          )}
+
+                <ImageField imgKey="WHY_AZERBAIJAN_IMAGE" label="Arxa Fon Şəkli"
+                  content={content} uploading={uploading}
+                  onSaveContent={saveContent} onTriggerUpload={triggerUpload}
+                  onUpdateImgUrl={handleUpdateImgUrl} onPreview={setPreview}
+                  saving={saving} saved={saved} />
+                <MultiLocF label="Başlıq" strKey="whyAzerbaijan.heading" locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label="Açıqlama" strKey="whyAzerbaijan.desc" multi locData={locData} onChange={handleMultiLocChange} />
+                <MultiLocF label='"Ətraflı" Linki' strKey="whyAzerbaijan.learnMore" locData={locData} onChange={handleMultiLocChange} />
+
+                <div className="space-y-3 pt-3">
+                  <div className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                    Ölkə Üstünlükləri & Xüsusiyyətlər ({curFeatures.length} ədəd)
+                  </div>
+                  {curFeatures.map((feat: any, i: number) => (
+                    <div key={i} className="bg-slate-50 border border-slate-200 rounded-lg p-3.5 space-y-3 shadow-2xs">
+                      <div className="flex items-center justify-between border-b border-slate-200/80 pb-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-7 h-7 rounded bg-amber-50 text-amber-700 flex items-center justify-center text-sm">
+                            <i className={feat.icon || 'fa-solid fa-circle-check'}></i>
+                          </div>
+                          <span className="text-xs font-bold text-slate-800">
+                            Xüsusiyyət #{i + 1} — {feat.line1?.AZ || feat.line1?.EN || ''} {feat.line2?.AZ || feat.line2?.EN || ''}
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removeFeature(i)}
+                          className="p-1 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                          title="Xüsusiyyəti Sil"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+
+                      {/* İkon Seçici */}
+                      <IconPickerDropdown
+                        label="İkon (FontAwesome)"
+                        value={feat.icon || 'fa-solid fa-circle-check'}
+                        onChange={(ic) => setFeatureIcon(i, ic)}
+                      />
+
+                      {/* Sətir 1 və Sətir 2 (6 Dil) */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <div className="text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Sətir 1 (Qısa etiket)</div>
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                            {LOCALES.map(loc => (
+                              <div key={loc} className="flex items-center gap-1.5 bg-white border border-slate-200 rounded px-2 py-1">
+                                <span className="text-[9px] font-bold text-slate-400 font-mono w-4">{loc}</span>
+                                <input
+                                  type="text"
+                                  value={feat.line1?.[loc] || ''}
+                                  onChange={(e) => setFeatureLoc(i, 'line1', loc, e.target.value)}
+                                  placeholder={loc}
+                                  className="w-full text-xs bg-transparent focus:outline-none text-slate-800"
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div>
+                          <div className="text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Sətir 2 (Alt etiket)</div>
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                            {LOCALES.map(loc => (
+                              <div key={loc} className="flex items-center gap-1.5 bg-white border border-slate-200 rounded px-2 py-1">
+                                <span className="text-[9px] font-bold text-slate-400 font-mono w-4">{loc}</span>
+                                <input
+                                  type="text"
+                                  value={feat.line2?.[loc] || ''}
+                                  onChange={(e) => setFeatureLoc(i, 'line2', loc, e.target.value)}
+                                  placeholder={loc}
+                                  className="w-full text-xs bg-transparent focus:outline-none text-slate-800"
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Geniş Detal / İzah (6 Dil) */}
+                      <div>
+                        <div className="text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Klik edildikdə açılan geniş izah (6 Dil)</div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          {LOCALES.map(loc => (
+                            <div key={loc} className="bg-white border border-slate-200 rounded p-1.5">
+                              <div className="text-[9px] font-bold text-slate-400 font-mono mb-1">{loc}</div>
+                              <textarea
+                                rows={2}
+                                value={feat.detail?.[loc] || ''}
+                                onChange={(e) => setFeatureLoc(i, 'detail', loc, e.target.value)}
+                                placeholder={`Geniş detal (${loc})`}
+                                className="w-full text-xs bg-transparent focus:outline-none text-slate-800"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex items-center justify-between pt-3">
+                  <button
+                    type="button"
+                    onClick={addFeature}
+                    className="h-8 px-3.5 flex items-center gap-1.5 text-xs font-bold rounded-sm bg-slate-100 hover:bg-slate-200 text-slate-800 transition-colors"
+                  >
+                    <Plus className="w-3.5 h-3.5" /> Xüsusiyyət Əlavə Et
+                  </button>
+                  <SaveBar
+                    onSave={async () => {
+                      await saveContent(content);
+                      await saveStrings(locData);
+                    }}
+                    saving={saving}
+                    saved={saved}
+                  />
+                </div>
+              </>
+            );
+          })()}
 
           {/* ── FOOTER ── */}
           {page === 'footer' && (
@@ -3214,6 +3814,162 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                           </div>
                         </div>
                       ))}
+
+                      {/* Tərəfdaşlıq & Ekosistem Kartları (İstehsalçılar, Alıcılar, Distribütorlar, Xidmət Tərəfdaşları) */}
+                      <div className="space-y-3 pt-3 border-t border-slate-200">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                            Tərəfdaşlıq Kartları ({(ab.partnership?.items || []).length} ədəd)
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              updateAb(p => {
+                                const items = [...(p.partnership?.items || [])];
+                                items.push({
+                                  icon: 'fa-solid fa-handshake',
+                                  color: 'bg-indigo-600',
+                                  title: { AZ: 'Yeni Tərəfdaş Qrupu', EN: 'New Partner Category', TR: 'Yeni İş Ortağı Grubu', RU: 'Новая категория партнеров', AR: '', ES: '' },
+                                  desc: { AZ: 'Tərəfdaş qrupunun fəaliyyət sahəsi və imkanları.', EN: 'Scope and capabilities of partner group.', TR: '', RU: '', AR: '', ES: '' }
+                                });
+                                return {
+                                  ...p,
+                                  partnership: {
+                                    ...p.partnership,
+                                    items,
+                                  }
+                                };
+                              });
+                            }}
+                            className="h-7 px-3 flex items-center gap-1.5 text-xs font-bold rounded-sm bg-emerald-600 hover:bg-emerald-700 text-white shadow-2xs transition-colors"
+                          >
+                            <Plus className="w-3.5 h-3.5" /> Tərəfdaş Əlavə Et
+                          </button>
+                        </div>
+
+                        {(ab.partnership?.items || []).map((pItem: any, pIdx: number) => (
+                          <div key={pIdx} className="bg-white border border-slate-200 rounded p-3 space-y-3 shadow-2xs">
+                            <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                              <div className="flex items-center gap-2">
+                                <div className={`w-7 h-7 rounded ${pItem.color || 'bg-brandNavy'} text-white flex items-center justify-center text-sm shadow-xs`}>
+                                  <i className={pItem.icon || 'fa-solid fa-handshake'}></i>
+                                </div>
+                                <span className="text-xs font-bold text-slate-800">
+                                  #{pIdx + 1} — {pItem.title?.AZ || pItem.title?.EN || `Tərəfdaş ${pIdx + 1}`}
+                                </span>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (confirm('Bu tərəfdaşlıq kartını silmək istədiyinizdən əminsiniz?')) {
+                                    updateAb(p => ({
+                                      ...p,
+                                      partnership: {
+                                        ...p.partnership,
+                                        items: (p.partnership?.items || []).filter((_: any, i: number) => i !== pIdx),
+                                      }
+                                    }));
+                                  }
+                                }}
+                                className="p-1 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                                title="Kartı Sil"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+
+                            {/* İkon və Rəng */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                              <IconPickerDropdown
+                                label="İkon (FontAwesome)"
+                                value={pItem.icon || 'fa-solid fa-handshake'}
+                                onChange={(ic) => {
+                                  updateAb(p => {
+                                    const items = [...(p.partnership?.items || [])];
+                                    items[pIdx] = { ...items[pIdx], icon: ic };
+                                    return { ...p, partnership: { ...p.partnership, items } };
+                                  });
+                                }}
+                              />
+                              <div>
+                                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Arxa Fon Rəngi (Tailwind)</label>
+                                <input
+                                  type="text"
+                                  value={pItem.color || 'bg-brandNavy'}
+                                  onChange={(e) => {
+                                    const c = e.target.value;
+                                    updateAb(p => {
+                                      const items = [...(p.partnership?.items || [])];
+                                      items[pIdx] = { ...items[pIdx], color: c };
+                                      return { ...p, partnership: { ...p.partnership, items } };
+                                    });
+                                  }}
+                                  placeholder="məs: bg-blue-600, bg-emerald-600, bg-violet-600"
+                                  className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                                />
+                              </div>
+                            </div>
+
+                            {/* Başlıq (6 Dil) */}
+                            <div>
+                              <div className="text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Tərəfdaş Başlığı (6 Dil)</div>
+                              <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                                {LOCALES.map(loc => (
+                                  <div key={loc} className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded px-2 py-1">
+                                    <span className="text-[9px] font-bold text-slate-400 font-mono w-4">{loc}</span>
+                                    <input
+                                      type="text"
+                                      value={pItem.title?.[loc] || ''}
+                                      onChange={(e) => {
+                                        const val = e.target.value;
+                                        updateAb(p => {
+                                          const items = [...(p.partnership?.items || [])];
+                                          items[pIdx] = {
+                                            ...items[pIdx],
+                                            title: { ...(items[pIdx].title || {}), [loc]: val }
+                                          };
+                                          return { ...p, partnership: { ...p.partnership, items } };
+                                        });
+                                      }}
+                                      placeholder={loc}
+                                      className="w-full text-xs bg-transparent focus:outline-none text-slate-800"
+                                    />
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Təsvir (6 Dil) */}
+                            <div>
+                              <div className="text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Təsvir (6 Dil)</div>
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                {LOCALES.map(loc => (
+                                  <div key={loc} className="bg-slate-50 border border-slate-200 rounded p-1.5">
+                                    <div className="text-[9px] font-bold text-slate-400 font-mono mb-1">{loc}</div>
+                                    <textarea
+                                      rows={2}
+                                      value={pItem.desc?.[loc] || ''}
+                                      onChange={(e) => {
+                                        const val = e.target.value;
+                                        updateAb(p => {
+                                          const items = [...(p.partnership?.items || [])];
+                                          items[pIdx] = {
+                                            ...items[pIdx],
+                                            desc: { ...(items[pIdx].desc || {}), [loc]: val }
+                                          };
+                                          return { ...p, partnership: { ...p.partnership, items } };
+                                        });
+                                      }}
+                                      placeholder={`Təsvir (${loc})`}
+                                      className="w-full text-xs bg-transparent focus:outline-none text-slate-800"
+                                    />
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                       <SaveBar onSave={() => saveContent(content)} saving={saving} saved={saved} />
                     </div>
                   )}

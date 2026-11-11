@@ -90,6 +90,8 @@ type LocalizationContextType = {
   services: typeof SERVICES_DEFAULT;
   buyerSteps: typeof BUYER_STEPS_DEFAULT;
   producerSteps: typeof PRODUCER_STEPS_DEFAULT;
+  whyAzexbuyCustom?: any;
+  whyAzerbaijanCustom?: any;
   cmsServices: CmsService[];
   about: AboutPageContent;
   team: TeamMember[];
@@ -256,6 +258,8 @@ function applyContentOverrides(content: any) {
     services: content?.services?.length ? content.services : SERVICES_DEFAULT,
     buyerSteps: content?.buyer_steps?.length ? content.buyer_steps : BUYER_STEPS_DEFAULT,
     producerSteps: content?.producer_steps?.length ? content.producer_steps : PRODUCER_STEPS_DEFAULT,
+    whyAzexbuyCustom: content?.whyAzexbuy || null,
+    whyAzerbaijanCustom: content?.whyAzerbaijan || null,
     about,
     contact: {
       phone: content?.contact?.phone || '+994 (12) 404 85 00',

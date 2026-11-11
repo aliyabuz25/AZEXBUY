@@ -513,42 +513,6 @@ export const InsightsView: React.FC<InsightsViewProps> = ({ locale, onNavigateHo
 
   return (
     <div style={{ backgroundColor: '#F8F8F3', minHeight: '100vh' }}>
-
-      {/* ═══════════════════════════════════════════
-          1. COMPACT DARK GREEN NAV — 40px high
-      ═══════════════════════════════════════════ */}
-      <nav style={{ backgroundColor: '#00382D', height: '44px' }} className="flex items-center">
-        <div className="custom-container w-full">
-          <div className="flex items-center justify-between w-full">
-            <div className="flex items-center" style={{ gap: '10px' }}>
-              <span className="font-serif text-white shrink-0" style={{ fontSize: '14px', fontWeight: 700, letterSpacing: '0.03em' }}>
-                AZEXBUY
-              </span>
-              <span style={{ color: 'rgba(255,255,255,0.35)', fontSize: '14px' }}>·</span>
-              <span style={{ fontSize: '12px', fontWeight: 500, color: 'rgba(255,255,255,0.65)', letterSpacing: '0.04em' }}>
-                {loc === 'AZ' ? 'Analitika' : loc === 'TR' ? 'Analitik' : loc === 'RU' ? 'Аналитика' : 'Insights'}
-              </span>
-            </div>
-            <button
-              type="button"
-              onClick={onNavigateHome}
-              style={{
-                fontSize: '11px', fontWeight: 500,
-                color: 'rgba(255,255,255,0.6)',
-                background: 'none', border: 'none',
-                cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px',
-                padding: '0',
-              }}
-              onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = '#fff'}
-              onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.6)'}
-            >
-              <i className="fa-solid fa-arrow-left" style={{ fontSize: '9px' }}></i>
-              {loc === 'AZ' ? 'Ana Səhifə' : loc === 'TR' ? 'Ana Sayfa' : loc === 'RU' ? 'Главная' : 'Home'}
-            </button>
-          </div>
-        </div>
-      </nav>
-
       {/* ═══════════════════════════════════════════
           2. HERO — ~200px, dark green, 2-column
       ═══════════════════════════════════════════ */}

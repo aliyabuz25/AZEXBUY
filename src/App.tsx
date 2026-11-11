@@ -323,17 +323,58 @@ export default function App() {
     showToast('Producer record removed from registry.');
   };
 
-  const { strings, heroImage, buyerCardImage, producerCardImage, whyAzImage, products: cmsProducts, services: cmsServicesPillars, buyerSteps: cmsBuyerSteps, producerSteps: cmsProducerSteps, cmsServices, contact } = useLocalization();
+  const { strings, heroImage, buyerCardImage, producerCardImage, whyAzImage, products: cmsProducts, services: cmsServicesPillars, buyerSteps: cmsBuyerSteps, producerSteps: cmsProducerSteps, cmsServices, contact, whyAzexbuyCustom, whyAzerbaijanCustom } = useLocalization();
   const t = strings[locale] || strings.AZ || strings.EN;
   const featuredProducts = cmsProducts.filter((p: any) => p.featured);
 
-  const whyIcons = [
-    'fa-regular fa-circle-check',
-    'fa-solid fa-globe',
-    'fa-solid fa-chart-line',
-    'fa-regular fa-clipboard',
-    'fa-solid fa-truck',
-  ];
+  // Dynamic WhyAZEXBUY items (from CMS content or localized translations)
+  const effectiveWhyAzexbuyItems = useMemo(() => {
+    if (Array.isArray(whyAzexbuyCustom?.items) && whyAzexbuyCustom.items.length > 0) {
+      return whyAzexbuyCustom.items.map((it: any) => ({
+        icon: it.icon || 'fa-solid fa-circle-check',
+        title: getLocalizedText(it.title, locale) || it.title?.AZ || it.title?.EN || '',
+        desc: getLocalizedText(it.desc, locale) || it.desc?.AZ || it.desc?.EN || '',
+        metric: it.metric || '',
+      }));
+    }
+    const fallbackIcons = [
+      'fa-regular fa-circle-check',
+      'fa-solid fa-globe',
+      'fa-solid fa-chart-line',
+      'fa-regular fa-clipboard',
+      'fa-solid fa-truck',
+    ];
+    return (t.whyAzexbuy.items || []).map((it, idx) => ({
+      icon: fallbackIcons[idx] || 'fa-solid fa-circle-check',
+      title: it.title,
+      desc: it.desc,
+      metric: it.metric,
+    }));
+  }, [whyAzexbuyCustom, t.whyAzexbuy, locale]);
+
+  // Dynamic WhyAzerbaijan features (from CMS content or localized translations)
+  const effectiveWhyAzFeatures = useMemo(() => {
+    if (Array.isArray(whyAzerbaijanCustom?.features) && whyAzerbaijanCustom.features.length > 0) {
+      return whyAzerbaijanCustom.features.map((ft: any) => ({
+        icon: ft.icon || 'fa-solid fa-circle-check',
+        line1: getLocalizedText(ft.line1, locale) || ft.line1?.AZ || ft.line1?.EN || '',
+        line2: getLocalizedText(ft.line2, locale) || ft.line2?.AZ || ft.line2?.EN || '',
+        detail: getLocalizedText(ft.detail, locale) || ft.detail?.AZ || ft.detail?.EN || '',
+      }));
+    }
+    const fallbackAzIcons = [
+      'fa-solid fa-location-dot',
+      'fa-solid fa-cubes-stacked',
+      'fa-regular fa-circle-check',
+      'fa-solid fa-seedling',
+    ];
+    return (t.whyAzerbaijan.features || []).map((ft, idx) => ({
+      icon: fallbackAzIcons[idx] || 'fa-solid fa-circle-check',
+      line1: ft.line1,
+      line2: ft.line2,
+      detail: ft.detail,
+    }));
+  }, [whyAzerbaijanCustom, t.whyAzerbaijan, locale]);
 
   // ── Category tiles (home "Selected Products" section) ────────────────────
   const CAT_ICONS: Record<string, string> = {
@@ -368,17 +409,10 @@ export default function App() {
       }));
   }, [cmsProducts]);
 
-  const azIcons = [
-    'fa-solid fa-location-dot',
-    'fa-solid fa-cubes-stacked',
-    'fa-regular fa-circle-check',
-    'fa-solid fa-seedling',
-  ];
-
   return (
     <div className="min-h-screen flex flex-col bg-white text-brandText">
-      {/* Main Sticky Header — hidden on insights page */}
-      {activeView !== 'insights' && <Navbar
+      {/* Main Sticky Header */}
+      <Navbar
         locale={locale}
         setLocale={setLocale}
         activeView={activeView}
@@ -388,10 +422,10 @@ export default function App() {
         onOpenAIDesk={() => setAiDeskOpen(true)}
         dossiersCount={rfqSubmissions.length + producerApps.length}
         shortlistCount={shortlistedIds.length}
-      />}
+      />
 
       {/* Breadcrumb bar when inside a dedicated portal view */}
-      {activeView !== 'home' && activeView !== 'insights' && (
+      {activeView !== 'home' && (
         <div className="bg-slate-100 border-b border-slate-200 py-2 no-print">
           <div className="custom-container flex items-center justify-between text-xs">
             <div className="flex items-center gap-2 text-slate-600">
@@ -505,13 +539,18 @@ export default function App() {
                   {t.whyAzexbuy.heading}
                 </h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-                  {t.whyAzexbuy.items.map((item, idx) => (
+                  {effectiveWhyAzexbuyItems.map((item, idx) => (
                     <div key={idx} className="flex flex-col items-start pr-2">
-                      <div className="w-11 h-11 rounded-lg bg-blue-50 text-brandNavy flex items-center justify-center text-xl mb-3">
-                        <i className={whyIcons[idx] ?? 'fa-solid fa-circle-check'}></i>
+                      <div className="w-11 h-11 rounded-lg bg-blue-50 text-brandNavy flex items-center justify-center text-xl mb-3 shadow-xs">
+                        <i className={item.icon || 'fa-solid fa-circle-check'}></i>
                       </div>
                       <h3 className="text-sm font-bold text-gray-900 mb-1">{item.title}</h3>
                       <p className="text-xs text-gray-500 leading-relaxed">{item.desc}</p>
+                      {item.metric && (
+                        <span className="text-[10px] font-bold text-brandGreen font-mono mt-1.5 block">
+                          {item.metric}
+                        </span>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -925,9 +964,9 @@ export default function App() {
                     </button>
                   </div>
 
-                  {/* Middle: 4 Crisp White Icons with Labels */}
+                  {/* Middle: Crisp White Icons with Labels */}
                   <div className="flex flex-wrap items-center gap-6 sm:gap-9 text-center z-10">
-                    {t.whyAzerbaijan.features.map((feat, idx) => (
+                    {effectiveWhyAzFeatures.map((feat, idx) => (
                       <button
                         key={idx}
                         type="button"
@@ -937,7 +976,7 @@ export default function App() {
                         className="flex flex-col items-center group cursor-pointer"
                       >
                         <div className="w-8 h-8 flex items-center justify-center text-white/90 group-hover:text-amber-300 text-lg mb-1 transition-colors">
-                          <i className={azIcons[idx] ?? 'fa-solid fa-circle-check'}></i>
+                          <i className={feat.icon || 'fa-solid fa-circle-check'}></i>
                         </div>
                         <span className="text-[11px] leading-tight font-medium text-white/90 max-w-[85px]">
                           {feat.line1}
@@ -949,9 +988,9 @@ export default function App() {
                   </div>
                 </div>
 
-                {activeAzFeatureIdx !== null && (
+                {activeAzFeatureIdx !== null && effectiveWhyAzFeatures[activeAzFeatureIdx] && (
                   <div className="mt-4 p-3.5 bg-[#08233d]/90 border border-white/20 rounded text-xs text-slate-100 flex items-center justify-between gap-4 max-w-2xl">
-                    <span>{t.whyAzerbaijan.features[activeAzFeatureIdx].detail}</span>
+                    <span>{effectiveWhyAzFeatures[activeAzFeatureIdx].detail}</span>
                     <button
                       type="button"
                       onClick={() => setActiveAzFeatureIdx(null)}
