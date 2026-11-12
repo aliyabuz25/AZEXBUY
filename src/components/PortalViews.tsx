@@ -40,7 +40,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
   onOpenMultiRFQ,
 }) => {
   const { strings, products: cmsProducts, productsHeroImage } = useLocalization();
-  const [viewMode, setViewMode] = useState<'grid' | 'table'>('table');
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
   const [categoryFilter, setCategoryFilter] = useState<string>(initialCategory || 'all');
   const [incotermFilter, setIncotermFilter] = useState<IncotermCode | 'ALL'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
