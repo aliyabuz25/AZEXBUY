@@ -1417,9 +1417,17 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
   const { strings, services: cmsServicesPillars, buyerSteps: cmsBuyerSteps, producerSteps: cmsProducerSteps, cmsServices, howItWorksBuyersImage, howItWorksSellersImage, buyerHeroImage, producerHeroImage, servicesHeroImage, productsHeroImage, howItWorksHeroImage, contact } = useLocalization();
   const [selectedBuyerStep, setSelectedBuyerStep] = useState<number>(1);
   const [selectedProducerStep, setSelectedProducerStep] = useState<number>(1);
+  const [expandedServiceItems, setExpandedServiceItems] = useState<Record<string, boolean>>({});
   const [contactSubmitted, setContactSubmitted] = useState(false);
   const [contactLoading, setContactLoading] = useState(false);
   const [contactForm, setContactForm] = useState({ fullName: '', organization: '', email: '', inquiryType: 'Buyer Sourcing Inquiry', message: '' });
+
+  const toggleServiceItem = (key: string) => {
+    setExpandedServiceItems((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  };
 
   const activeBuyerStepObj = cmsBuyerSteps.find((s: any) => s.number === selectedBuyerStep) || cmsBuyerSteps[0];
   const activeProducerStepObj =
@@ -2158,18 +2166,99 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
                         {descText}
                       </p>
 
-                      {/* Items checklist */}
+                      {/* Items checklist with Collapsible Accordion */}
                       <div className="pt-4 border-t border-slate-100">
-                        <ul className="space-y-2.5 mb-6">
+                        <div className="flex items-center justify-between mb-2.5">
+                          <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider font-mono">
+                            {locale === 'AZ'
+                              ? 'Xidmət Bəndləri və Təfərrüatlar'
+                              : locale === 'TR'
+                              ? 'Hizmet Kapsamı ve Detaylar'
+                              : locale === 'RU'
+                              ? 'Состав услуги и детали'
+                              : locale === 'AR'
+                              ? 'تفاصيل ونطاق الخدمة'
+                              : locale === 'ES'
+                              ? 'Alcance del Servicio y Detalles'
+                              : 'Service Scope & Details'}
+                          </span>
+                          <span className="text-[10px] text-slate-400 font-mono">
+                            {locale === 'TR' ? 'Detay için tıklayın' : locale === 'AZ' ? 'İzah üçün klikləyin' : 'Click for details'}
+                          </span>
+                        </div>
+                        <ul className="space-y-2 mb-6">
                           {(srv.items || []).map((it: any, idx: number) => {
-                            const itemText = typeof it === 'string' ? it : getLocalizedText(it, locale);
-                            if (!itemText) return null;
+                            const itemTitle = typeof it === 'string'
+                              ? it
+                              : (it.title ? getLocalizedText(it.title, locale) : getLocalizedText(it, locale));
+                            const itemDesc = it && typeof it === 'object'
+                              ? (it.desc ? getLocalizedText(it.desc, locale) : it.description ? getLocalizedText(it.description, locale) : '')
+                              : '';
+                            if (!itemTitle) return null;
+
+                            const itemKey = `${srv.id}-${idx}`;
+                            const isExpanded = !!expandedServiceItems[itemKey];
+
                             return (
-                              <li key={idx} className="flex items-center gap-2.5 text-xs sm:text-sm text-slate-700">
-                                <span className="w-5 h-5 rounded-full bg-slate-100 group-hover:bg-brandBlueLight flex items-center justify-center shrink-0 text-brandNavy text-[10px] transition-colors">
-                                  <i className="fa-solid fa-check"></i>
-                                </span>
-                                <span className="font-medium text-slate-800">{itemText}</span>
+                              <li
+                                key={idx}
+                                className={`border rounded-xl transition-all duration-200 overflow-hidden ${
+                                  isExpanded
+                                    ? 'bg-slate-50/90 border-slate-300 shadow-2xs'
+                                    : 'bg-white hover:bg-slate-50/70 border-slate-200/80'
+                                }`}
+                              >
+                                <button
+                                  type="button"
+                                  onClick={() => toggleServiceItem(itemKey)}
+                                  className="w-full text-left p-3 flex items-center justify-between gap-3 cursor-pointer group/item select-none"
+                                  aria-expanded={isExpanded}
+                                >
+                                  <div className="flex items-center gap-2.5 min-w-0">
+                                    <span className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 text-[10px] transition-colors ${
+                                      isExpanded
+                                        ? 'bg-brandNavy text-white'
+                                        : 'bg-slate-100 group-hover/item:bg-brandBlueLight text-brandNavy'
+                                    }`}>
+                                      <i className="fa-solid fa-check"></i>
+                                    </span>
+                                    <span className={`text-xs sm:text-sm font-medium transition-colors ${
+                                      isExpanded ? 'text-brandNavy font-semibold' : 'text-slate-800'
+                                    }`}>
+                                      {itemTitle}
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                                    {itemDesc && (
+                                      <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded transition-colors ${
+                                        isExpanded ? 'bg-brandNavy/10 text-brandNavy font-semibold' : 'text-slate-400 group-hover/item:text-slate-600'
+                                      }`}>
+                                        {isExpanded
+                                          ? (locale === 'TR' ? 'Kapat' : locale === 'AZ' ? 'Bağla' : 'Close')
+                                          : (locale === 'TR' ? 'Detay' : locale === 'AZ' ? 'İzah' : 'Detail')}
+                                      </span>
+                                    )}
+                                    <i
+                                      className={`fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200 ${
+                                        isExpanded ? 'rotate-180 text-brandNavy' : 'group-hover/item:text-slate-600'
+                                      }`}
+                                    ></i>
+                                  </div>
+                                </button>
+
+                                {isExpanded && (
+                                  <div className="px-3.5 pb-3 pt-1 text-xs text-slate-600 leading-relaxed border-t border-slate-200/60 bg-white/70">
+                                    {itemDesc || (
+                                      <span className="text-slate-400 italic">
+                                        {locale === 'TR'
+                                          ? 'Bu başlık için detaylı açıklama yakında eklenecektir.'
+                                          : locale === 'AZ'
+                                          ? 'Bu bənd üçün ətraflı izah tezliklə əlavə olunacaq.'
+                                          : 'Detailed description for this item will be available shortly.'}
+                                      </span>
+                                    )}
+                                  </div>
+                                )}
                               </li>
                             );
                           })}

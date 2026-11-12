@@ -94,6 +94,18 @@ export interface StepItem {
   authority: string;
 }
 
+export interface ServicePillarItem {
+  EN?: string;
+  AZ?: string;
+  TR?: string;
+  RU?: string;
+  AR?: string;
+  ES?: string;
+  title?: LocalizedText;
+  desc?: LocalizedText;
+  description?: LocalizedText;
+}
+
 export interface ServicePillar {
   id: string;
   iconClass: string;
@@ -101,7 +113,7 @@ export interface ServicePillar {
   linkColorClass: string;
   title: LocalizedText;
   subtitle: LocalizedText;
-  items: LocalizedText[];
+  items: (LocalizedText | ServicePillarItem)[];
   deliverables: LocalizedText[];
   turnaround: string;
 }

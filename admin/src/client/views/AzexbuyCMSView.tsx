@@ -448,13 +448,19 @@ const mergeServicePillarsWithDefaults = (services: any[]): any[] => {
       return result;
     };
 
-    const items = (defPillar.items || []).map((defItem, itemIdx) => {
+    const items = (defPillar.items || []).map((defItem: any, itemIdx: number) => {
       const savedItem = saved.items?.[itemIdx];
       if (!savedItem) return defItem;
       if (typeof savedItem === 'string') {
         return { ...defItem, AZ: savedItem };
       }
-      return mergeLoc(savedItem, defItem);
+      const mergedItem = mergeLoc(savedItem, defItem);
+      const defDesc = defItem.desc || defItem.description || {};
+      const savedDesc = savedItem.desc || savedItem.description || {};
+      const mergedDesc = mergeLoc(savedDesc, defDesc);
+      mergedItem.desc = mergedDesc;
+      mergedItem.description = mergedDesc;
+      return mergedItem;
     });
 
     if (Array.isArray(saved.items) && saved.items.length > (defPillar.items || []).length) {
@@ -523,12 +529,18 @@ const ServicePillarEditor = React.memo(({ content, onChange, onSaveContent, savi
       iconClass: 'fa-solid fa-chart-line',
       colorClass: 'bg-brandNavy',
       linkColorClass: 'text-brandNavy',
-      title: { AZ: 'Yeni Xidmət', EN: 'New Service', TR: 'Yeni Hizmet', RU: 'Новая услуga', AR: '', ES: 'Nuevo Servicio' },
+      title: { AZ: 'Yeni Xidmət', EN: 'New Service', TR: 'Yeni Hizmet', RU: 'Новая услуга', AR: '', ES: 'Nuevo Servicio' },
       subtitle: { AZ: 'Xidmət haqqında qısa izah', EN: 'Brief service description', TR: 'Hizmet hakkında kısa açıklama', RU: '', AR: '', ES: 'Descripción breve del servicio' },
       turnaround: '3–5 Days',
       items: [
-        { AZ: 'Yeni Maddə 1', EN: 'Item 1', TR: 'Madde 1', RU: '', AR: '', ES: 'Elemento 1' },
-        { AZ: 'Yeni Maddə 2', EN: 'Item 2', TR: 'Madde 2', RU: '', AR: '', ES: 'Elemento 2' },
+        {
+          AZ: 'Yeni Maddə 1', EN: 'Item 1', TR: 'Madde 1', RU: '', AR: '', ES: 'Elemento 1',
+          desc: { AZ: 'Maddə 1 üçün ətraflı izah', EN: 'Detailed description for item 1', TR: 'Madde 1 için detaylı açıklama', RU: '', AR: '', ES: '' }
+        },
+        {
+          AZ: 'Yeni Maddə 2', EN: 'Item 2', TR: 'Madde 2', RU: '', AR: '', ES: 'Elemento 2',
+          desc: { AZ: 'Maddə 2 üçün ətraflı izah', EN: 'Detailed description for item 2', TR: 'Madde 2 için detaylı açıklama', RU: '', AR: '', ES: '' }
+        },
       ],
       deliverables: []
     };
@@ -565,6 +577,24 @@ const ServicePillarEditor = React.memo(({ content, onChange, onSaveContent, savi
         ? { ...cur }
         : { AZ: String(cur || ''), EN: String(cur || ''), TR: '', RU: '', AR: '', ES: '' };
       curObj[loc] = value;
+      if (!curObj.title) curObj.title = {};
+      curObj.title[loc] = value;
+      items[idx] = curObj;
+      return { ...p, items };
+    });
+  };
+
+  const setPillarItemDesc = (id: string, idx: number, loc: string, value: string) => {
+    updatePillar(id, (p: any) => {
+      const items = [...(p.items || [])];
+      const cur = items[idx];
+      const curObj = typeof cur === 'object' && cur !== null
+        ? { ...cur }
+        : { AZ: String(cur || ''), EN: String(cur || ''), TR: '', RU: '', AR: '', ES: '' };
+      const curDesc = { ...(curObj.desc || curObj.description || {}) };
+      curDesc[loc] = value;
+      curObj.desc = curDesc;
+      curObj.description = curDesc;
       items[idx] = curObj;
       return { ...p, items };
     });
@@ -573,7 +603,10 @@ const ServicePillarEditor = React.memo(({ content, onChange, onSaveContent, savi
   const addItemToPillar = (id: string, afterIdx?: number) => {
     updatePillar(id, (prev: any) => {
       const items = [...(prev.items || [])];
-      const newItem = { AZ: '', EN: '', TR: '', RU: '', AR: '', ES: '' };
+      const newItem = {
+        AZ: '', EN: '', TR: '', RU: '', AR: '', ES: '',
+        desc: { AZ: '', EN: '', TR: '', RU: '', AR: '', ES: '' }
+      };
       if (typeof afterIdx === 'number') {
         items.splice(afterIdx + 1, 0, newItem);
       } else {
@@ -821,10 +854,13 @@ const ServicePillarEditor = React.memo(({ content, onChange, onSaveContent, savi
                       const itemVal = typeof item === 'object' ? item?.[activeTab] || '' : '';
                       const itemRefEn = typeof item === 'object' ? item?.EN || '' : '';
                       const itemRefAz = typeof item === 'object' ? item?.AZ || '' : String(item || '');
+                      const itemRefDescEn = (item?.desc as any)?.EN || (item?.description as any)?.EN || '';
+                      const itemRefDescAz = (item?.desc as any)?.AZ || (item?.description as any)?.AZ || '';
+                      const itemDescVal = (item?.desc as any)?.[activeTab] || (item?.description as any)?.[activeTab] || '';
 
                       return (
-                        <div key={idx} className="border border-slate-200 rounded-lg p-2.5 bg-slate-50/70 hover:bg-slate-50 transition-colors">
-                          <div className="flex items-center justify-between text-xs mb-1.5">
+                        <div key={idx} className="border border-slate-200 rounded-lg p-2.5 bg-slate-50/70 hover:bg-slate-50 transition-colors space-y-2">
+                          <div className="flex items-center justify-between text-xs">
                             <div className="flex items-center gap-2">
                               <span className="w-5 h-5 rounded bg-white border border-slate-200 flex items-center justify-center text-[10px] text-slate-600 font-bold font-mono">
                                 {idx + 1}
@@ -858,12 +894,37 @@ const ServicePillarEditor = React.memo(({ content, onChange, onSaveContent, savi
                             </div>
                           </div>
 
-                          <input
-                            value={itemVal}
-                            onChange={(e) => setPillarItemLoc(p.id, idx, activeTab, e.target.value)}
-                            placeholder={`Maddə ${idx + 1} (${activeTab} mətni)`}
-                            className="w-full h-8 text-xs bg-white border border-slate-300 rounded px-2.5 focus:outline-none focus:border-[#0f3156] font-medium"
-                          />
+                          <div className="space-y-1.5 pt-1">
+                            <div>
+                              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-0.5 font-mono">
+                                Bənd Başlığı ({activeTab})
+                              </label>
+                              <input
+                                value={itemVal}
+                                onChange={(e) => setPillarItemLoc(p.id, idx, activeTab, e.target.value)}
+                                placeholder={`Maddə ${idx + 1} başlığı (${activeTab})`}
+                                className="w-full h-8 text-xs bg-white border border-slate-300 rounded px-2.5 focus:outline-none focus:border-[#0f3156] font-medium"
+                              />
+                            </div>
+                            <div>
+                              <div className="flex items-center justify-between mb-0.5">
+                                <label className="text-[10px] font-bold text-brandNavy flex items-center gap-1 uppercase font-mono">
+                                  <i className="fa-solid fa-chevron-down text-[9px]"></i>
+                                  Açılan / Collapsible İzah ({activeTab})
+                                </label>
+                                <span className="text-[10px] text-slate-400 font-mono truncate max-w-[280px]" title={itemRefDescEn || itemRefDescAz}>
+                                  Ref: {itemRefDescEn || itemRefDescAz || '-'}
+                                </span>
+                              </div>
+                              <textarea
+                                rows={2}
+                                value={itemDescVal}
+                                onChange={(e) => setPillarItemDesc(p.id, idx, activeTab, e.target.value)}
+                                placeholder={`İstifadəçi bu bəndə kliklədikdə açılan detallı açıqlama / izah (${activeTab})...`}
+                                className="w-full text-xs bg-white border border-slate-300 rounded p-2 focus:outline-none focus:border-[#0f3156] leading-relaxed resize-y"
+                              />
+                            </div>
+                          </div>
                         </div>
                       );
                     })}
@@ -961,27 +1022,63 @@ const ServicePillarEditor = React.memo(({ content, onChange, onSaveContent, savi
                           </div>
 
                           {/* Multilingual inputs for this item */}
-                          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1.5">
-                            {PILLAR_LOCS.map((loc) => {
-                              const isTrOrEs = loc === 'TR' || loc === 'ES';
-                              return (
-                                <div key={loc} className="relative">
-                                  <input
-                                    value={(item as any)?.[loc] ?? (loc === 'AZ' && typeof item === 'string' ? item : '')}
-                                    onChange={(e) => setPillarItemLoc(p.id, idx, loc, e.target.value)}
-                                    placeholder={loc}
-                                    className={`h-7 text-[11px] bg-white border rounded px-2 pr-7 focus:outline-none focus:border-[#0f3156] w-full ${
-                                      isTrOrEs ? 'border-amber-300 font-medium' : 'border-slate-200'
-                                    }`}
-                                  />
-                                  <span className={`absolute right-1.5 top-1.5 text-[9px] font-bold pointer-events-none font-mono ${
-                                    isTrOrEs ? 'text-amber-700' : 'text-slate-400'
-                                  }`}>
-                                    {loc}
-                                  </span>
-                                </div>
-                              );
-                            })}
+                          <div className="space-y-1.5 pt-1">
+                            <div>
+                              <div className="text-[10px] font-bold text-slate-500 uppercase font-mono mb-1">
+                                Başlıqlar (AZ, EN, TR, ES, RU, AR):
+                              </div>
+                              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1.5">
+                                {PILLAR_LOCS.map((loc) => {
+                                  const isTrOrEs = loc === 'TR' || loc === 'ES';
+                                  return (
+                                    <div key={loc} className="relative">
+                                      <input
+                                        value={(item as any)?.[loc] ?? (loc === 'AZ' && typeof item === 'string' ? item : '')}
+                                        onChange={(e) => setPillarItemLoc(p.id, idx, loc, e.target.value)}
+                                        placeholder={loc}
+                                        className={`h-7 text-[11px] bg-white border rounded px-2 pr-7 focus:outline-none focus:border-[#0f3156] w-full ${
+                                          isTrOrEs ? 'border-amber-300 font-medium' : 'border-slate-200'
+                                        }`}
+                                      />
+                                      <span className={`absolute right-1.5 top-1.5 text-[9px] font-bold pointer-events-none font-mono ${
+                                        isTrOrEs ? 'text-amber-700' : 'text-slate-400'
+                                      }`}>
+                                        {loc}
+                                      </span>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+
+                            <div className="pt-1 border-t border-slate-200/60">
+                              <div className="text-[10px] font-bold text-brandNavy uppercase font-mono mb-1 flex items-center gap-1">
+                                <i className="fa-solid fa-chevron-down text-[9px]"></i> Açılan / Collapsible İzahlar (Bütün Dillər):
+                              </div>
+                              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                                {PILLAR_LOCS.map((loc) => {
+                                  const isTrOrEs = loc === 'TR' || loc === 'ES';
+                                  const descVal = (item?.desc as any)?.[loc] || (item?.description as any)?.[loc] || '';
+                                  return (
+                                    <div key={loc} className="relative">
+                                      <div className="text-[9px] font-bold text-slate-400 mb-0.5 font-mono flex items-center justify-between">
+                                        <span>İzah ({loc})</span>
+                                        {isTrOrEs && <span className="text-amber-700 font-bold">Önəmli</span>}
+                                      </div>
+                                      <textarea
+                                        rows={2}
+                                        value={descVal}
+                                        onChange={(e) => setPillarItemDesc(p.id, idx, loc, e.target.value)}
+                                        placeholder={`Açılan izah (${loc})`}
+                                        className={`w-full text-[11px] bg-white border rounded p-1.5 focus:outline-none focus:border-[#0f3156] resize-y ${
+                                          isTrOrEs ? 'border-amber-300' : 'border-slate-200'
+                                        }`}
+                                      />
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
                           </div>
                         </div>
                       );

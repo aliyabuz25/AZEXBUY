@@ -25,7 +25,7 @@ import { CmsService, AboutPageContent, TeamMember } from '../types';
 const OCTO_API_BASE = '';
 const LOC_CACHE_KEY = 'azexbuy_loc_override';
 const CONTENT_CACHE_KEY = 'azexbuy_content_override';
-const CACHE_VERSION = 'v8';
+const CACHE_VERSION = 'v9';
 const CACHE_VERSION_KEY = 'azexbuy_cache_ver';
 
 // Clear stale cache on version mismatch
@@ -368,13 +368,19 @@ export function mergeServicePillarsWithDefaults(services: any[]): typeof SERVICE
       return result;
     };
 
-    const items = (defPillar.items || []).map((defItem, itemIdx) => {
+    const items = (defPillar.items || []).map((defItem: any, itemIdx: number) => {
       const savedItem = saved.items?.[itemIdx];
       if (!savedItem) return defItem;
       if (typeof savedItem === 'string') {
         return { ...defItem, AZ: savedItem };
       }
-      return mergeLoc(savedItem, defItem);
+      const mergedItem = mergeLoc(savedItem, defItem);
+      const defDesc = defItem.desc || defItem.description || {};
+      const savedDesc = savedItem.desc || savedItem.description || {};
+      const mergedDesc = mergeLoc(savedDesc, defDesc);
+      mergedItem.desc = mergedDesc;
+      mergedItem.description = mergedDesc;
+      return mergedItem;
     });
 
     if (Array.isArray(saved.items) && saved.items.length > (defPillar.items || []).length) {

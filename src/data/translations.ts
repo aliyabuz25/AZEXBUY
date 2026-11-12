@@ -775,6 +775,14 @@ export const SERVICES_PILLARS: ServicePillar[] = [
         RU: 'Исследование рынка',
         AR: 'أبحاث السوق',
         ES: 'Investigación de Mercado',
+        desc: {
+          AZ: 'Hədəf ölkənin bazar dinamikası, idxal həcmləri, istehlakçı tələbləri və rəqabət mühitinin dərin təhlili.',
+          EN: 'Comprehensive market dynamics, import trends, consumer demand patterns, and competitive benchmarking.',
+          TR: 'Hedef pazar dinamikleri, ithalat eğilimleri, tüketici talebi ve rekabet ortamının kapsamlı analizi.',
+          RU: 'Комплексный анализ рыночной динамики, объемов импорта, потребительского спроса и конкурентной среды.',
+          AR: 'تحليل شامل لديناميكيات السوق المستهدف واتجاهات الاستيراد ومتطلبات المستهلكين.',
+          ES: 'Análisis integral de la dinámica del mercado objetivo, tendencias de importación y demanda del consumidor.',
+        },
       },
       {
         EN: 'Target Market Selection',
@@ -783,6 +791,14 @@ export const SERVICES_PILLARS: ServicePillar[] = [
         RU: 'Выбор целевого рынка',
         AR: 'اختيار السوق المستهدف',
         ES: 'Selección de Mercado Objetivo',
+        desc: {
+          AZ: 'Tarif güzəştləri, loqistika xərcləri və alıcılıq qabiliyyəti üzrə ən perspektivli xarici bazarların müəyyənləşdirilməsi.',
+          EN: 'Data-driven prioritization of optimal destination markets based on tariffs, logistics feasibility, and demand.',
+          TR: 'Gümrük tarifleri, lojistik maliyetler ve talep verilerine dayalı en karlı hedef pazarların tespiti.',
+          RU: 'Выбор наиболее перспективных рынков сбыта на основе тарифных преференций и логистических затрат.',
+          AR: 'تحديد الأسواق الأكثر جدوى بناءً على الرسوم الجمركية وتكاليف النقل وحجم الطلب.',
+          ES: 'Priorización de mercados óptimos basada en aranceles, viabilidad logística y demanda comercial.',
+        },
       },
       {
         EN: 'Export Potential Analysis',
@@ -791,6 +807,14 @@ export const SERVICES_PILLARS: ServicePillar[] = [
         RU: 'Анализ экспортного потенциала',
         AR: 'تحليل إمكانات التصدير',
         ES: 'Análisis de Potencial de Exportación',
+        desc: {
+          AZ: 'Məhsulun texniki parametrlərinin, istehsal gücünün və maya dəyərinin xarici bazar standartlarına uyğunluğunun qiymətləndirilməsi.',
+          EN: 'Rigorous assessment of product readiness, production scalability, and landed-cost price competitiveness.',
+          TR: 'Ürün özelliklerinin, üretim kapasitesinin ve nihai maliyetin hedef pazar standartlarına göre değerlendirilmesi.',
+          RU: 'Оценка экспортной готовности продукции, объемов производства и конкурентоспособности себестоимости.',
+          AR: 'تقييم جاهزية المنتج التصديرية والقدرة الإنتاجية والتنافسية السعرية.',
+          ES: 'Evaluación rigurosa de la competitividad de producto, capacidad de producción y coste final.',
+        },
       },
       {
         EN: 'Market Entry Strategy',
@@ -799,6 +823,14 @@ export const SERVICES_PILLARS: ServicePillar[] = [
         RU: 'Стратегия выхода на рынок',
         AR: 'استراتيجية دخول السوق',
         ES: 'Estrategia de Entrada al Mercado',
+        desc: {
+          AZ: 'Fərdi satış kanalları, sertifikatlaşdırma yol xəritəsi və yerli tərəfdaşlarla iş üzrə addım-addım strateji plan.',
+          EN: 'Actionable roadmap covering distribution channel mapping, pricing tiers, compliance timelines, and partner models.',
+          TR: 'Dağıtım kanalları, fiyatlandırma mimarisi ve yerel ortaklıkları kapsayan adım adım pazara giriş yol haritası.',
+          RU: 'Пошаговая дорожная карта: каналы дистрибуции, ценообразование, стандарты соответствия и партнерские модели.',
+          AR: 'خارطة طريق تنفيذية لقنوات التوزيع واستراتيجيات التسعير ونماذج الشراكة الإقليمية.',
+          ES: 'Hoja de ruta operativa sobre canales de distribución, estructura de precios y modelos de asociación.',
+        },
       },
     ],
     deliverables: [
@@ -850,6 +882,14 @@ export const SERVICES_PILLARS: ServicePillar[] = [
         RU: 'Поиск покупателей',
         AR: 'البحث عن المشترين',
         ES: 'Búsqueda de Compradores',
+        desc: {
+          AZ: 'Böyük beynəlxalq pərakəndə şəbəkələri, topdansatış mərkəzləri və sənaye idxalatçıları daxilində birbaşa alıcı tapılması.',
+          EN: 'Targeted sourcing of active corporate buyers, retail procurement desks, and major regional distributors.',
+          TR: 'Aktif uluslararası satın alma departmanları, zincir marketler ve toptan ithalatçılarla doğrudan eşleşme.',
+          RU: 'Целевой поиск корпоративных закупщиков, торговых сетей и крупных региональных дистрибьюторов.',
+          AR: 'البحث المستهدف عن المشترين الدوليين المعتمدين وسلاسل التوريد وكبار المستوردين.',
+          ES: 'Búsqueda directa de compradores corporativos, centrales de compras y distribuidores mayoristas.',
+        },
       },
       {
         EN: 'Buyer Verification',
@@ -858,6 +898,14 @@ export const SERVICES_PILLARS: ServicePillar[] = [
         RU: 'Верификация покупателей',
         AR: 'التحقق من المشترين',
         ES: 'Verificación de Compradores',
+        desc: {
+          AZ: 'Beynəlxalq alıcının hüquqi statusu, maliyyə etibarlılığı və KYB yoxlanışının aparılması.',
+          EN: 'KYB verification, corporate registry checks, payment history screening, and commercial credit scoring.',
+          TR: 'Uluslararası alıcının ticari sicili, finansal güvenilirliği ve KYB kurumsal geçmiş doğrulaması.',
+          RU: 'Проверка юридического статуса контрагента, платежеспособности и кредитного рейтинга (KYB).',
+          AR: 'التحقق المؤسسي من السجل التجاري والملاءة المالية وسوابق الدفع للمشتري.',
+          ES: 'Verificación de solvencia comercial, registro corporativo y análisis de riesgo crediticio KYB.',
+        },
       },
       {
         EN: 'Distributor Search',
@@ -866,6 +914,14 @@ export const SERVICES_PILLARS: ServicePillar[] = [
         RU: 'Поиск дистрибьюторов',
         AR: 'البحث عن الموزعين',
         ES: 'Búsqueda de Distribuidores',
+        desc: {
+          AZ: 'Müvafiq ölkədə anbar, satış və logistika infrastrukturuna malik etibarlı distribütorların seçilməsi.',
+          EN: 'Identification and vetting of distributors with proven regional warehousing, sales force, and logistics reach.',
+          TR: 'Bölgesel depolama, yerel satış ağı ve lojistik kabiliyeti olan yetkili distribütörlerin belirlenmesi.',
+          RU: 'Подбор дистрибьюторов с развитой складской сетью, торговыми представителями и логистикой.',
+          AR: 'تحديد واختيار الموزعين الإقليميين ذوي البنية التحتية اللوجستية وشبكات التوزيع القوية.',
+          ES: 'Selección de distribuidores autorizados con red de almacenamiento, fuerza de ventas y logística.',
+        },
       },
       {
         EN: 'Lead Generation',
@@ -874,6 +930,14 @@ export const SERVICES_PILLARS: ServicePillar[] = [
         RU: 'Генерация лидов',
         AR: 'جذب العملاء المحتملين',
         ES: 'Generación de Prospectos',
+        desc: {
+          AZ: 'Fokuslaşdırılmış B2B kanalları və sənaye məlumat bazaları vasitəsilə yeni sifarişçi axınının təmin edilməsi.',
+          EN: 'Continuous pipeline of high-intent enterprise buyers generated through verified trade intelligence channels.',
+          TR: 'Doğrulanmış ticaret veritabanları ve sektörel kanallar üzerinden nitelikli satın alma taleplerinin üretilmesi.',
+          RU: 'Формирование воронки коммерческих лидов и регулярных запросов на закупку от профильных предприятий.',
+          AR: 'توليد تدفق مستمر من العملاء المحتملين ذوي الجدية العالية في الشراء عبر قنوات تجارية موثوقة.',
+          ES: 'Generación de prospectos de alta intención comercial mediante bases de datos de compras verificadas.',
+        },
       },
       {
         EN: 'B2B Meetings',
@@ -882,6 +946,14 @@ export const SERVICES_PILLARS: ServicePillar[] = [
         RU: 'Организация B2B-встреч',
         AR: 'تنظيم اجتماعات B2B',
         ES: 'Reuniones B2B',
+        desc: {
+          AZ: 'Maraqlı xarici satınalma menecerləri ilə fərdi onlayn və ya fiziki B2B danışıqlarının təşkili və moderatorluğu.',
+          EN: 'Direct pitch facilitation and meeting coordination with authorized procurement directors.',
+          TR: 'Yetkili satın alma yöneticileriyle birebir ticari görüşmelerin planlanması ve toplantı moderasyonu.',
+          RU: 'Организация и модерирование целевых переговоров с директорами по закупкам и байерами.',
+          AR: 'تنسيق وتنظيم اجتماعات عمل مباشرة مع مسؤولي المشتريات والمديرين التنفيذيين.',
+          ES: 'Coordinación y moderación de reuniones comerciales directas con directores de compras internacionales.',
+        },
       },
       {
         EN: 'Negotiation Support',
@@ -890,6 +962,14 @@ export const SERVICES_PILLARS: ServicePillar[] = [
         RU: 'Поддержка переговоров',
         AR: 'دعم المفاوضات',
         ES: 'Apoyo en Negociaciones',
+        desc: {
+          AZ: 'Qiymət, ödəniş şərtləri (L/C, CAD), İncoterms və tədarük müqavilələrinin razılaşdırılmasında peşəkar dəstək.',
+          EN: 'Commercial contract alignment, payment terms negotiation (L/C, CAD), Incoterms, and volume pricing.',
+          TR: 'Fiyatlandırma, ödeme koşulları (Akreditif, Vesaik Mukabili), Incoterms ve ihracat sözleşmesi müzakere desteği.',
+          RU: 'Экспертное сопровождение при согласовании цен, условий оплаты (аккредитив, CAD) и контрактов.',
+          AR: 'دعم تفاوضي احترافي في هيكلة الأسعار، وشروط الدفع (اعتمادات مستندية)، وصياغة العقود.',
+          ES: 'Asesoramiento experto en negociación de precios, condiciones de pago (cartas de crédito) e Incoterms.',
+        },
       },
     ],
     deliverables: [
@@ -941,6 +1021,14 @@ export const SERVICES_PILLARS: ServicePillar[] = [
         RU: 'Документация',
         AR: 'الوثائق والمستندات',
         ES: 'Documentación',
+        desc: {
+          AZ: 'İnvoys, qablaşdırma vərəqəsi (Packing List), CMR və daşıma sənədlərinin beynəlxalq standartlara uyğun tərtibi.',
+          EN: 'Full export documentation suite: Commercial Invoices, Packing Lists, CMR, Bill of Lading, and Air Waybills.',
+          TR: 'Ticari fatura, çeki listesi (Packing List), CMR, konşimento ve tüm ihracat evraklarının eksiksiz hazırlanması.',
+          RU: 'Оформление полного пакета экспортных документов: инвойсы, упаковочные листы, CMR и коносаменты.',
+          AR: 'إعداد حزمة وثائق التصدير المتكاملة: الفواتير التجارية، قوائم التعبئة، وبوالص الشحن.',
+          ES: 'Emisión de documentación completa de exportación: facturas comerciales, listas de empaque y cartas de porte.',
+        },
       },
       {
         EN: 'Certification & Compliance',
@@ -949,6 +1037,14 @@ export const SERVICES_PILLARS: ServicePillar[] = [
         RU: 'Сертификация и соответствие',
         AR: 'الشهادات والامتثال',
         ES: 'Certificación y Cumplimiento',
+        desc: {
+          AZ: 'Mənşə sertifikatları (EUR.1, CT-1), ISO standartları və fitosanitar uyğunluq rəylərinin alınması.',
+          EN: 'Certificates of origin (EUR.1, CT-1, Form A), quality standards (ISO/HACCP), and laboratory test assays.',
+          TR: 'Menşe şahadetnameleri (EUR.1, CT-1), ISO/HACCP kalite standartları ve akredite laboratuvar testleri.',
+          RU: 'Получение сертификатов происхождения (СТ-1, EUR.1), фитосанитарных заключений и стандартов качества.',
+          AR: 'استخراج شهادات المنشأ (EUR.1, CT-1) ومطابقة معايير الجودة الدولية والفحوصات المخبرية.',
+          ES: 'Obtención de certificados de origen (EUR.1, CT-1), normas de calidad y ensayos de laboratorio acreditados.',
+        },
       },
       {
         EN: 'Permits & Approvals',
@@ -957,6 +1053,14 @@ export const SERVICES_PILLARS: ServicePillar[] = [
         RU: 'Разрешения и согласования',
         AR: 'التصاريح والموافقات',
         ES: 'Permisos y Aprobaciones',
+        desc: {
+          AZ: 'Dövlət qurumlarından, AQTA və müvafiq nazirliklərdən tələb olunan ixrac lisenziyaları və icazələr.',
+          EN: 'Regulatory clearances, export licenses, ministry approvals, and state agency sanitary releases.',
+          TR: 'İlgili bakanlıklar, gıda güvenlik kurumları ve resmi mercilerden zorunlu ihracat izin ve onaylarının temini.',
+          RU: 'Получение экспортных лицензий, разрешений профильных министерств и агентств безопасности.',
+          AR: 'استصدار تراخيص التصدير والموافقات الرسمية من الوزارات والهيئات الحكومية المختصة.',
+          ES: 'Tramitación de licencias de exportación y autorizaciones de ministerios y agencias regulatorias.',
+        },
       },
       {
         EN: 'Customs Clearance',
@@ -965,6 +1069,14 @@ export const SERVICES_PILLARS: ServicePillar[] = [
         RU: 'Таможенное оформление',
         AR: 'التخليص الجمركي',
         ES: 'Despacho Aduanero',
+        desc: {
+          AZ: 'DGK Yaşıl Dəhliz sistemi vasitəsilə elektron gömrük bəyannamələrinin sürətli və problemsiz rəsmiləşdirilməsi.',
+          EN: 'Full customs brokerage, HS-code tariff classifications, and Green Corridor expedited electronic clearance.',
+          TR: 'GTİP sınıflandırması, Yeşil Koridor hızlı beyan işlemleri ve sorunsuz gümrükleme hizmetleri.',
+          RU: 'Таможенное декларирование, классификация по ТН ВЭД и ускоренное оформление через Зеленый коридор.',
+          AR: 'التخليص الجمركي المتكامل، وتصنيف البنود الجمركية، والتخليص الإلكتروني السريع عبر المسار الأخضر.',
+          ES: 'Despacho aduanero integral, clasificación arancelaria y tramitación rápida por el Corredor Verde.',
+        },
       },
     ],
     deliverables: [
@@ -1016,6 +1128,14 @@ export const SERVICES_PILLARS: ServicePillar[] = [
         RU: 'Автомобильные перевозки (TIR)',
         AR: 'الشحن البري (TIR)',
         ES: 'Transporte Terrestre (TIR)',
+        desc: {
+          AZ: 'Türkiyə, Rusiya, Gürcüstan və Avropa istiqamətində tentli və refrijerator TIR daşımaları.',
+          EN: 'FTL/LTL road freight, temperature-controlled reefers, and standard tilt trailers across regional corridors.',
+          TR: 'Orta Doğu, Rusya, Gürcistan ve Avrupa rotalarında standart ve soğutuculu (frigorifik) TIR taşımacılığı.',
+          RU: 'Автоперевозки тентованными и рефрижераторными фурами (FTL/LTL) по международным маршрутам.',
+          AR: 'شحن بري متكامل بشاحنات مبردة وعادية عبر الممرات الإقليمية والدولية.',
+          ES: 'Transporte terrestre en camiones lona y frigoríficos con control de temperatura (FTL/LTL).',
+        },
       },
       {
         EN: 'Sea Freight',
@@ -1024,6 +1144,14 @@ export const SERVICES_PILLARS: ServicePillar[] = [
         RU: 'Морские перевозки (Каспий / Черное море)',
         AR: 'الشحن البحري (قزوين / البحر الأسود)',
         ES: 'Transporte Marítimo (Caspio / Mar Negro)',
+        desc: {
+          AZ: 'Xəzər dənizi bərə xətləri və Qara dəniz limanları üzərindən konteyner və bulk daşımaları.',
+          EN: 'Caspian Sea Ro-Ro / feeder services and Black Sea container shipping via Poti / Batumi ports.',
+          TR: 'Hazar Denizi Ro-Ro hatları ve Karadeniz limanları üzerinden FCL/LCL konteyner taşımacılığı.',
+          RU: 'Паромные переправы по Каспийскому морю и контейнерные линии через черноморские порты.',
+          AR: 'شحن بحري للحاويات وسفن الدحرجة عبر موانئ بحر قزوين والبحر الأسود.',
+          ES: 'Transporte marítimo en buques Ro-Ro por el Mar Caspio y contenedores FCL/LCL por el Mar Negro.',
+        },
       },
       {
         EN: 'Air Freight',
@@ -1032,6 +1160,14 @@ export const SERVICES_PILLARS: ServicePillar[] = [
         RU: 'Авиаперевозки грузов',
         AR: 'الشحن الجوي',
         ES: 'Transporte Aéreo de Carga',
+        desc: {
+          AZ: 'Heydər Əliyev Beynəlxalq Aeroportundan qlobal istiqamətlərə təcili və teztələf olan yüklərin hava daşınması.',
+          EN: 'Express cargo and temperature-sensitive perishable air transport via Baku Cargo Terminal.',
+          TR: 'Bakü Kargo Terminali üzerinden küresel merkezlere hızlı ve bozulabilir ürün hava kargo taşımacılığı.',
+          RU: 'Авиаперевозка срочных и скоропортящихся грузов через Бакинский грузовой терминал.',
+          AR: 'الشحن الجوي السريع للبضائع الحساسة والقابلة للتلف عبر محطة باكو للشحن الجوي.',
+          ES: 'Transporte aéreo urgente y de mercancías perecederas a través de la Terminal de Carga de Bakú.',
+        },
       },
       {
         EN: 'Rail Freight',
@@ -1040,6 +1176,14 @@ export const SERVICES_PILLARS: ServicePillar[] = [
         RU: 'Железнодорожные перевозки (БТК)',
         AR: 'الشحن بالسكك الحديدية (BTK)',
         ES: 'Transporte Ferroviario (BTK)',
+        desc: {
+          AZ: 'Bakı-Tbilisi-Qars (BTQ) dəmir yolu xətti və Orta Dəhliz boyu konteyner blok qatarları ilə çatdırılma.',
+          EN: 'Block train container transport via Baku-Tbilisi-Kars (BTK) railway and the Trans-Caspian corridor.',
+          TR: 'Bakü-Tiflis-Kars (BTK) demiryolu ve Orta Koridor boyunca blok tren konteyner taşımacılığı.',
+          RU: 'Железнодорожные контейнерные перевозки по маршруту Баку-Тбилиси-Карс и Среднему коридору.',
+          AR: 'شحن قطارات الحاويات عبر سكة حديد باكو-تبليسي-قارس وممر النقل العابر لبحر قزوين.',
+          ES: 'Transporte ferroviario de contenedores en trenes bloque vía Bakú-Tiflis-Kars (BTK) y Corredor Central.',
+        },
       },
       {
         EN: 'Warehousing',
@@ -1048,6 +1192,14 @@ export const SERVICES_PILLARS: ServicePillar[] = [
         RU: 'Складское хранение',
         AR: 'التخزين',
         ES: 'Almacenamiento',
+        desc: {
+          AZ: 'Gömrük anbarları, soyuducu kameralar və Ələt Azad İqtisadi Zonasında müasir saxlama həlləri.',
+          EN: 'Bonded warehousing, climate-controlled cold storage, and distribution hubs at Alat Port.',
+          TR: 'Gümrüklü antrepo, soğuk hava depoları ve Alat Serbest Bölgesi\'nde modern lojistik depolama.',
+          RU: 'Таможенные склады, холодильные камеры и современные логистические хабы в порту Алят.',
+          AR: 'مستودعات جمركية ومخازن تبريد محكومة بدرجات الحرارة ومراكز توزيع في منطقة ألات.',
+          ES: 'Almacenamiento aduanero, cámaras frigoríficas y centros de distribución logística en Alat.',
+        },
       },
       {
         EN: 'Insurance',
@@ -1056,6 +1208,14 @@ export const SERVICES_PILLARS: ServicePillar[] = [
         RU: 'Страхование грузов (CMR / All-Risk)',
         AR: 'تأمين البضائع (CMR / All-Risk)',
         ES: 'Seguro de Carga (CMR / All-Risk)',
+        desc: {
+          AZ: 'Bütün marşrut boyu yüklərin beynəlxalq Institute Cargo Clauses (A) standartı ilə tam sığortalanması.',
+          EN: 'All-risk cargo coverage under Institute Cargo Clauses (A) protecting high-value transit goods.',
+          TR: 'Institute Cargo Clauses (A) kapsamında tüm risklere karşı uluslararası emtia nakliyat sigortası.',
+          RU: 'Страхование грузов от всех рисков по международным стандартам Institute Cargo Clauses (A).',
+          AR: 'تأمين شامل على البضائع المنقولة وفق شروط معهد التأمين التجاري الدولي (A).',
+          ES: 'Seguro integral de carga \'a todo riesgo\' bajo las cláusulas Institute Cargo Clauses (A).',
+        },
       },
     ],
     deliverables: [
