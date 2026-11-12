@@ -359,12 +359,14 @@ export default function App() {
       title: p.title,
       description: p.subtitle,
       scope: {
-        AZ: (p.items || []).map((it: any) => it.AZ || it),
-        EN: (p.items || []).map((it: any) => it.EN || it),
-        TR: (p.items || []).map((it: any) => it.TR || it),
-        RU: (p.items || []).map((it: any) => it.RU || it),
+        AZ: (p.items || []).map((it: any) => (typeof it === 'object' ? it.AZ || it.EN || '' : it)),
+        EN: (p.items || []).map((it: any) => (typeof it === 'object' ? it.EN || it.AZ || '' : it)),
+        TR: (p.items || []).map((it: any) => (typeof it === 'object' ? it.TR || it.EN || it.AZ || '' : it)),
+        RU: (p.items || []).map((it: any) => (typeof it === 'object' ? it.RU || it.EN || it.AZ || '' : it)),
+        AR: (p.items || []).map((it: any) => (typeof it === 'object' ? it.AR || it.EN || it.AZ || '' : it)),
+        ES: (p.items || []).map((it: any) => (typeof it === 'object' ? it.ES || it.EN || it.AZ || '' : it)),
       },
-      targetAudience: {
+      targetAudience: p.subtitle || {
         AZ: 'Azərbaycan ixracatçıları və beynəlxalq alıcılar',
         EN: 'Azerbaijani exporters and global buyers',
         TR: 'Azerbaycan ihracatçıları ve küresel alıcılar',

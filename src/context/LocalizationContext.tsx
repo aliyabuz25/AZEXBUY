@@ -25,7 +25,7 @@ import { CmsService, AboutPageContent, TeamMember } from '../types';
 const OCTO_API_BASE = '';
 const LOC_CACHE_KEY = 'azexbuy_loc_override';
 const CONTENT_CACHE_KEY = 'azexbuy_content_override';
-const CACHE_VERSION = 'v6';
+const CACHE_VERSION = 'v7';
 const CACHE_VERSION_KEY = 'azexbuy_cache_ver';
 
 // Clear stale cache on version mismatch
