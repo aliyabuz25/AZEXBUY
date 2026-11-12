@@ -73,6 +73,26 @@ function buildMergedStrings(overrides: Record<string, Record<string, string>>) {
   return merged;
 }
 
+export const DEFAULT_CATEGORY_IMAGES: Record<string, string> = {
+  industrial: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=600&q=80',
+  agro: 'https://images.unsplash.com/photo-1595855759920-86582396756a?auto=format&fit=crop&w=600&q=80',
+  construction: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=600&q=80',
+  packaging: 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&w=600&q=80',
+  chemicals: 'https://images.unsplash.com/photo-1603126857599-f6e157fa2fe6?auto=format&fit=crop&w=600&q=80',
+  food: 'https://images.unsplash.com/photo-1506617420156-8e4536971650?auto=format&fit=crop&w=600&q=80',
+  metals: 'https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?auto=format&fit=crop&w=600&q=80',
+  textile: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&w=600&q=80',
+};
+
+export const DEFAULT_CATEGORY_COUNTS: Record<string, number> = {
+  industrial: 158,
+  agro: 85,
+  construction: 66,
+  packaging: 42,
+  chemicals: 36,
+  food: 3,
+};
+
 type LocalizationContextType = {
   strings: typeof UI_STRINGS_DEFAULT;
   heroImage: string;
@@ -86,6 +106,8 @@ type LocalizationContextType = {
   servicesHeroImage: string;
   productsHeroImage: string;
   howItWorksHeroImage: string;
+  categoryImages: Record<string, string>;
+  categoryCounts?: Record<string, number>;
   products: typeof PRODUCTS_DEFAULT;
   services: typeof SERVICES_DEFAULT;
   buyerSteps: typeof BUYER_STEPS_DEFAULT;
@@ -118,6 +140,8 @@ const LocalizationContext = createContext<LocalizationContextType>({
   servicesHeroImage: SERVICES_HERO_DEFAULT,
   productsHeroImage: PRODUCTS_HERO_DEFAULT,
   howItWorksHeroImage: HOW_IT_WORKS_HERO_DEFAULT,
+  categoryImages: DEFAULT_CATEGORY_IMAGES,
+  categoryCounts: DEFAULT_CATEGORY_COUNTS,
   products: PRODUCTS_DEFAULT,
   services: SERVICES_DEFAULT,
   buyerSteps: BUYER_STEPS_DEFAULT,
@@ -357,6 +381,14 @@ function applyContentOverrides(content: any) {
     servicesHeroImage: images['SERVICES_HERO_IMAGE'] || SERVICES_HERO_DEFAULT,
     productsHeroImage: images['PRODUCTS_HERO_IMAGE'] || PRODUCTS_HERO_DEFAULT,
     howItWorksHeroImage: images['HOW_IT_WORKS_HERO_IMAGE'] || HOW_IT_WORKS_HERO_DEFAULT,
+    categoryImages: {
+      ...DEFAULT_CATEGORY_IMAGES,
+      ...(content?.categoryImages || {}),
+    },
+    categoryCounts: {
+      ...DEFAULT_CATEGORY_COUNTS,
+      ...(content?.categoryCounts || {}),
+    },
     products: products.length ? products : PRODUCTS_DEFAULT,
     services: content?.services?.length ? content.services : SERVICES_DEFAULT,
     buyerSteps: content?.buyer_steps?.length ? content.buyer_steps : BUYER_STEPS_DEFAULT,

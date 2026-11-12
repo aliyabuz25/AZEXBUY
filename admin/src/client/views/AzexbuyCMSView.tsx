@@ -140,6 +140,57 @@ const IMAGE_KEYS = [
   { key: 'ABOUT_SECTOR_7_IMAGE',         label: 'Sektor 8: Qablaşdırma & Mallar',   defaultUrl: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&q=80' },
 ];
 
+export const CATEGORY_TILES_CONFIG = [
+  {
+    key: 'industrial',
+    label: 'Sənaye və Tekstil',
+    defaultCount: 158,
+    defaultImage: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=600&q=80',
+  },
+  {
+    key: 'agro',
+    label: 'Kənd Təsərrüfatı və Təzə Məhsullar',
+    defaultCount: 85,
+    defaultImage: 'https://images.unsplash.com/photo-1595855759920-86582396756a?auto=format&fit=crop&w=600&q=80',
+  },
+  {
+    key: 'construction',
+    label: 'Tikinti Materialları',
+    defaultCount: 66,
+    defaultImage: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=600&q=80',
+  },
+  {
+    key: 'packaging',
+    label: 'Qablaşdırma və Kisələr',
+    defaultCount: 42,
+    defaultImage: 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&w=600&q=80',
+  },
+  {
+    key: 'chemicals',
+    label: 'Kimya və Ekstraktlar',
+    defaultCount: 36,
+    defaultImage: 'https://images.unsplash.com/photo-1603126857599-f6e157fa2fe6?auto=format&fit=crop&w=600&q=80',
+  },
+  {
+    key: 'food',
+    label: 'Qida Məhsulları',
+    defaultCount: 3,
+    defaultImage: 'https://images.unsplash.com/photo-1506617420156-8e4536971650?auto=format&fit=crop&w=600&q=80',
+  },
+  {
+    key: 'metals',
+    label: 'Metallurgiya və Polad',
+    defaultCount: 0,
+    defaultImage: 'https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?auto=format&fit=crop&w=600&q=80',
+  },
+  {
+    key: 'textile',
+    label: 'Tekstil və Xalça',
+    defaultCount: 0,
+    defaultImage: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&w=600&q=80',
+  },
+];
+
 // ── Standalone field components (defined OUTSIDE main component to prevent remounting) ──
 
 interface FProps {
@@ -1290,6 +1341,20 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
     setContent((prev: any) => ({ ...prev, images: { ...(prev.images || {}), [key]: url } }));
   }, []);
 
+  const handleUpdateCatImageUrl = useCallback((catKey: string, url: string) => {
+    setContent((prev: any) => ({
+      ...prev,
+      categoryImages: { ...(prev.categoryImages || {}), [catKey]: url },
+    }));
+  }, []);
+
+  const handleUpdateCatCount = useCallback((catKey: string, countVal: number) => {
+    setContent((prev: any) => ({
+      ...prev,
+      categoryCounts: { ...(prev.categoryCounts || {}), [catKey]: countVal },
+    }));
+  }, []);
+
   const uploadImage = async (file: File, key: string) => {
     setUploading(key);
     const fd = new FormData();
@@ -1306,6 +1371,14 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
           setNewMember(prev => ({ ...prev, photo: url }));
         } else if (key === 'team_edit') {
           setEditingMember((prev: any) => ({ ...prev, photo: url }));
+        } else if (key.startsWith('category_')) {
+          const catKey = key.replace('category_', '');
+          const updated = {
+            ...content,
+            categoryImages: { ...(content.categoryImages || {}), [catKey]: url },
+          };
+          await saveContent(updated);
+          load();
         } else {
           const curAbout = content.about ? { ...ABOUT_PAGE_DEFAULT, ...content.about } : { ...ABOUT_PAGE_DEFAULT };
           if (key === 'about_whoWeAreImage' || key === 'ABOUT_WHO_WE_ARE_IMAGE') {
@@ -2705,6 +2778,153 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
               <MultiLocF label='"Bütün Məhsullar" Linki' strKey="featuredProducts.viewAll" locData={locData} onChange={handleMultiLocChange} />
               <MultiLocF label='"Bu Məhsulu Sifariş Et" Butonu' strKey="featuredProducts.requestProduct" locData={locData} onChange={handleMultiLocChange} />
               <MultiLocF label='"HS Kodu" Etiketi' strKey="featuredProducts.hsCodeLabel" locData={locData} onChange={handleMultiLocChange} />
+
+              {/* ── Kateqoriya Görsəlləri və Məhsul Sayları ── */}
+              <div className="mt-6 border-t border-slate-200 pt-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900">Ana Səhifə Kateqoriya Görsəlləri və Sayları</h3>
+                    <p className="text-xs text-slate-500">
+                      İkonlar əvəzinə hər kateqoriyanın özünəməxsus yüksək keyfiyyətli şəklini yükləyin və göstəriləcək məhsul sayını tənzimləyin.
+                    </p>
+                  </div>
+                  <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-md">
+                    {CATEGORY_TILES_CONFIG.length} Kateqoriya
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {CATEGORY_TILES_CONFIG.map((cat) => {
+                    const currentImg = content.categoryImages?.[cat.key] || cat.defaultImage;
+                    const currentCount = typeof content.categoryCounts?.[cat.key] === 'number'
+                      ? content.categoryCounts[cat.key]
+                      : cat.defaultCount;
+                    const isUploadingThis = uploading === `category_${cat.key}`;
+
+                    return (
+                      <div
+                        key={cat.key}
+                        className="bg-white border border-slate-200/90 rounded-xl p-3.5 flex flex-col justify-between shadow-2xs hover:border-[#0f3156]/40 transition-all"
+                      >
+                        <div>
+                          {/* Header with Title and Key */}
+                          <div className="flex items-center justify-between mb-2">
+                            <div>
+                              <h4 className="text-xs font-bold text-slate-800 leading-tight">{cat.label}</h4>
+                              <span className="text-[10px] font-mono text-slate-400">kod: {cat.key}</span>
+                            </div>
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
+                              {currentCount} məhsul
+                            </span>
+                          </div>
+
+                          {/* Image Preview */}
+                          <div className="w-full aspect-[4/3] rounded-lg overflow-hidden bg-slate-100 border border-slate-200/80 relative mb-3 flex items-center justify-center group/thumb">
+                            {currentImg ? (
+                              <img
+                                src={currentImg}
+                                alt={cat.label}
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  (e.currentTarget as HTMLElement).style.display = 'none';
+                                  const parent = (e.currentTarget as HTMLElement).parentElement;
+                                  if (parent && !parent.querySelector('.no-preview-tag')) {
+                                    const fallback = document.createElement('div');
+                                    fallback.className = 'no-preview-tag flex flex-col items-center justify-center text-slate-400 gap-1';
+                                    fallback.innerHTML = '<span class="text-[10px] font-medium text-rose-500">Görsəl yüklənmədi</span>';
+                                    parent.appendChild(fallback);
+                                  }
+                                }}
+                              />
+                            ) : (
+                              <div className="flex flex-col items-center justify-center text-slate-400 gap-1">
+                                <ImgIcon className="w-6 h-6 text-slate-300" />
+                                <span className="text-[10px] font-medium">Şəkil yoxdur</span>
+                              </div>
+                            )}
+                            {isUploadingThis && (
+                              <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white text-xs gap-1.5 font-medium">
+                                <RefreshCw className="w-4 h-4 animate-spin" /> Yüklənir...
+                              </div>
+                            )}
+                          </div>
+
+                          {/* URL input */}
+                          <div className="space-y-1 mb-2.5">
+                            <div className="flex items-center justify-between">
+                              <label className="text-[11px] font-medium text-slate-600">Görsəl URL</label>
+                              {content.categoryImages?.[cat.key] && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleUpdateCatImageUrl(cat.key, '')}
+                                  className="text-[10px] text-rose-500 hover:underline cursor-pointer"
+                                >
+                                  Təmizlə
+                                </button>
+                              )}
+                            </div>
+                            <input
+                              type="text"
+                              value={content.categoryImages?.[cat.key] ?? ''}
+                              placeholder={cat.defaultImage}
+                              onChange={(e) => handleUpdateCatImageUrl(cat.key, e.target.value)}
+                              className="w-full h-7 text-xs text-slate-900 bg-slate-50 border border-slate-200 rounded px-2 focus:outline-none focus:bg-white focus:border-[#0f3156]"
+                            />
+                          </div>
+
+                          {/* Product Count Input */}
+                          <div className="space-y-1 mb-3">
+                            <div className="flex items-center justify-between">
+                              <label className="text-[11px] font-medium text-slate-600">Göstəriləcək Məhsul Sayı</label>
+                              <span className="text-[10px] text-slate-400 font-mono">defolt: {cat.defaultCount}</span>
+                            </div>
+                            <input
+                              type="number"
+                              min="0"
+                              value={content.categoryCounts?.[cat.key] ?? cat.defaultCount}
+                              onChange={(e) => handleUpdateCatCount(cat.key, parseInt(e.target.value, 10) || 0)}
+                              className="w-full h-7 text-xs text-slate-900 bg-slate-50 border border-slate-200 rounded px-2 focus:outline-none focus:bg-white focus:border-[#0f3156]"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Action buttons */}
+                        <div className="flex items-center gap-1.5 pt-2 border-t border-slate-100">
+                          <button
+                            type="button"
+                            onClick={() => triggerUpload(`category_${cat.key}`)}
+                            disabled={Boolean(uploading)}
+                            className="flex-1 h-7 text-[11px] font-medium bg-[#0f3156]/5 text-[#0f3156] hover:bg-[#0f3156]/10 rounded flex items-center justify-center gap-1 transition-colors cursor-pointer"
+                          >
+                            <Upload className="w-3 h-3" /> Şəkil Seç & Yüklə
+                          </button>
+                          {currentImg && (
+                            <button
+                              type="button"
+                              onClick={() => setPreview(currentImg)}
+                              className="h-7 w-7 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded flex items-center justify-center transition-colors cursor-pointer"
+                              title="Böyük Baxış"
+                            >
+                              <Eye className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              handleUpdateCatImageUrl(cat.key, cat.defaultImage);
+                              handleUpdateCatCount(cat.key, cat.defaultCount);
+                            }}
+                            className="h-7 w-7 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded flex items-center justify-center transition-colors cursor-pointer"
+                            title="Defolta Qaytar"
+                          >
+                            <RotateCcw className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
               <SaveBar onSave={async () => { await saveContent(content); await saveStrings(locData); }} saving={saving} saved={saved} />
             </>
           )}

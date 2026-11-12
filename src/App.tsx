@@ -43,7 +43,12 @@ import {
   getLocalizedText,
 } from './types';
 import { SERVICES_PILLARS } from './data/translations';
-import { useLocalization, CANONICAL_CATEGORY_LABELS } from './context/LocalizationContext';
+import {
+  useLocalization,
+  CANONICAL_CATEGORY_LABELS,
+  DEFAULT_CATEGORY_IMAGES,
+  DEFAULT_CATEGORY_COUNTS,
+} from './context/LocalizationContext';
 import { Navbar } from './components/Navbar';
 import {
   GlobalSearchModal,
@@ -326,7 +331,23 @@ export default function App() {
     showToast('Producer record removed from registry.');
   };
 
-  const { strings, heroImage, buyerCardImage, producerCardImage, whyAzImage, products: cmsProducts, services: cmsServicesPillars, buyerSteps: cmsBuyerSteps, producerSteps: cmsProducerSteps, cmsServices, contact, whyAzexbuyCustom, whyAzerbaijanCustom } = useLocalization();
+  const {
+    strings,
+    heroImage,
+    buyerCardImage,
+    producerCardImage,
+    whyAzImage,
+    products: cmsProducts,
+    services: cmsServicesPillars,
+    buyerSteps: cmsBuyerSteps,
+    producerSteps: cmsProducerSteps,
+    cmsServices,
+    contact,
+    whyAzexbuyCustom,
+    whyAzerbaijanCustom,
+    categoryImages,
+    categoryCounts,
+  } = useLocalization();
   const t = strings[locale] || strings.AZ || strings.EN;
   const featuredProducts = cmsProducts.filter((p: any) => p.featured);
 
@@ -441,16 +462,27 @@ export default function App() {
     const extraKeys = Object.keys(counts).filter((k) => !primaryKeys.includes(k) && counts[k] > 0);
     const allKeys = [...primaryKeys, ...extraKeys];
 
-    // Sort by product count descending so the categories with the most items are first, while keeping all visible
-    allKeys.sort((a, b) => (counts[b] || 0) - (counts[a] || 0));
+    const getFinalCount = (k: string) => {
+      if (categoryCounts && typeof categoryCounts[k] === 'number') {
+        return categoryCounts[k];
+      }
+      if (counts[k] && counts[k] > 0) {
+        return counts[k];
+      }
+      return DEFAULT_CATEGORY_COUNTS[k] || 0;
+    };
+
+    // Sort by product count descending so the categories with the most items are first, matching requested order
+    allKeys.sort((a, b) => getFinalCount(b) - getFinalCount(a));
 
     return allKeys.map((key) => ({
       key,
       icon: CAT_ICONS[key] || 'fa-solid fa-cube',
       label: CANONICAL_CATEGORY_LABELS[key] || labels[key] || { EN: key, AZ: key },
-      count: counts[key] || 0,
+      image: categoryImages?.[key] || DEFAULT_CATEGORY_IMAGES[key] || '',
+      count: getFinalCount(key),
     }));
-  }, [cmsProducts]);
+  }, [cmsProducts, categoryImages, categoryCounts]);
 
   return (
     <div className="min-h-screen flex flex-col bg-white text-brandText">
@@ -941,7 +973,7 @@ export default function App() {
                   </button>
                 </div>
 
-                {/* Category tiles — all categories with accurate product counts */}
+                {/* Category tiles — with high quality category images, counts and graceful fallback */}
                 {categoryTiles.length > 0 ? (
                   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
                     {categoryTiles.map((cat) => (
@@ -952,16 +984,47 @@ export default function App() {
                           setSelectedCategoryFilter(cat.key);
                           setActiveView('products');
                         }}
-                        className="border border-gray-200 rounded-lg p-3.5 sm:p-4 flex flex-col items-center justify-between h-32 text-left hover:shadow-md hover:border-brandGreen/40 transition-all cursor-pointer group bg-white"
+                        className="group relative border border-gray-200/90 hover:border-brandGreen/60 rounded-xl bg-white hover:shadow-lg transition-all duration-200 text-left flex flex-col p-2.5 sm:p-3 hover:-translate-y-0.5 cursor-pointer"
                       >
-                        <div className="w-11 h-11 rounded-full bg-brandGreen/10 text-brandGreen flex items-center justify-center text-lg group-hover:scale-105 transition-transform">
-                          <i className={cat.icon}></i>
+                        {/* Category Image thumbnail */}
+                        <div className="w-full aspect-[4/3] rounded-lg overflow-hidden bg-slate-100 relative mb-2.5 flex items-center justify-center">
+                          {cat.image ? (
+                            <img
+                              src={cat.image}
+                              alt={getLocalizedText(cat.label, locale)}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              loading="lazy"
+                              onError={(e) => {
+                                const target = e.currentTarget;
+                                target.style.display = 'none';
+                                const parent = target.parentElement;
+                                if (parent && !parent.querySelector('.no-img-fallback')) {
+                                  const fallback = document.createElement('div');
+                                  fallback.className = 'no-img-fallback flex flex-col items-center justify-center gap-1 text-slate-400 p-2 text-center';
+                                  fallback.innerHTML = '<i class="fa-regular fa-image text-2xl text-slate-300"></i><span class="text-[9px] uppercase tracking-wider font-semibold text-slate-400">Şəkil yoxdur</span>';
+                                  parent.appendChild(fallback);
+                                }
+                              }}
+                            />
+                          ) : (
+                            <div className="flex flex-col items-center justify-center gap-1 text-slate-400 p-2 text-center">
+                              <i className="fa-regular fa-image text-2xl text-slate-300"></i>
+                              <span className="text-[9px] uppercase tracking-wider font-semibold text-slate-400">Şəkil yoxdur</span>
+                            </div>
+                          )}
                         </div>
-                        <div className="mt-2 text-center w-full">
-                          <span className="block text-xs font-bold text-gray-900 leading-tight line-clamp-2">{getLocalizedText(cat.label, locale)}</span>
-                          <span className="mt-1 inline-block text-[10px] font-semibold text-brandNavy bg-brandNavy/5 border border-brandNavy/10 px-2 py-0.5 rounded-full tabular-nums">
-                            {cat.count} {cat.count === 1 ? (locale === 'AZ' ? 'məhsul' : locale === 'TR' ? 'ürün' : locale === 'RU' ? 'товар' : 'item') : (locale === 'AZ' ? 'məhsul' : locale === 'TR' ? 'ürün' : locale === 'RU' ? 'товара' : 'items')}
+
+                        {/* Category Info */}
+                        <div className="flex-1 flex flex-col justify-between w-full">
+                          <span className="block text-xs font-bold text-gray-900 group-hover:text-brandGreen transition-colors leading-tight line-clamp-2 min-h-[2rem]">
+                            {getLocalizedText(cat.label, locale)}
                           </span>
+                          <div className="mt-2 pt-2 border-t border-gray-100 flex items-center justify-between">
+                            <span className="inline-block text-[10px] font-semibold text-brandNavy bg-brandNavy/5 border border-brandNavy/10 px-2 py-0.5 rounded-full tabular-nums">
+                              {cat.count} {cat.count === 1 ? (locale === 'AZ' ? 'məhsul' : locale === 'TR' ? 'ürün' : locale === 'RU' ? 'товар' : 'item') : (locale === 'AZ' ? 'məhsul' : locale === 'TR' ? 'ürün' : locale === 'RU' ? 'товара' : 'items')}
+                            </span>
+                            <i className="fa-solid fa-arrow-right text-[10px] text-gray-300 group-hover:text-brandGreen group-hover:translate-x-0.5 transition-all"></i>
+                          </div>
                         </div>
                       </button>
                     ))}
