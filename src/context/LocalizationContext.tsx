@@ -25,7 +25,7 @@ import { CmsService, AboutPageContent, TeamMember } from '../types';
 const OCTO_API_BASE = '';
 const LOC_CACHE_KEY = 'azexbuy_loc_override';
 const CONTENT_CACHE_KEY = 'azexbuy_content_override';
-const CACHE_VERSION = 'v7';
+const CACHE_VERSION = 'v8';
 const CACHE_VERSION_KEY = 'azexbuy_cache_ver';
 
 // Clear stale cache on version mismatch
@@ -347,6 +347,61 @@ function normalizeProductItem(p: any): any {
   };
 }
 
+export function mergeServicePillarsWithDefaults(services: any[]): typeof SERVICES_DEFAULT {
+  if (!Array.isArray(services) || services.length === 0) {
+    return SERVICES_DEFAULT;
+  }
+  const knownIds = new Set(SERVICES_DEFAULT.map((p) => p.id));
+  const merged = SERVICES_DEFAULT.map((defPillar, idx) => {
+    const saved = services.find((s) => s?.id === defPillar.id) || services[idx];
+    if (!saved) return defPillar;
+
+    const mergeLoc = (savedObj: any, defObj: any) => {
+      const result: any = { ...(defObj || {}) };
+      if (savedObj && typeof savedObj === 'object') {
+        for (const loc of ['EN', 'AZ', 'TR', 'RU', 'AR', 'ES']) {
+          if (savedObj[loc] !== undefined && savedObj[loc] !== null && String(savedObj[loc]).trim().length > 0) {
+            result[loc] = savedObj[loc];
+          }
+        }
+      }
+      return result;
+    };
+
+    const items = (defPillar.items || []).map((defItem, itemIdx) => {
+      const savedItem = saved.items?.[itemIdx];
+      if (!savedItem) return defItem;
+      if (typeof savedItem === 'string') {
+        return { ...defItem, AZ: savedItem };
+      }
+      return mergeLoc(savedItem, defItem);
+    });
+
+    if (Array.isArray(saved.items) && saved.items.length > (defPillar.items || []).length) {
+      for (let i = (defPillar.items || []).length; i < saved.items.length; i++) {
+        items.push(saved.items[i]);
+      }
+    }
+
+    return {
+      ...defPillar,
+      ...saved,
+      id: defPillar.id,
+      iconClass: saved.iconClass || defPillar.iconClass,
+      colorClass: saved.colorClass || defPillar.colorClass,
+      linkColorClass: saved.linkColorClass || defPillar.linkColorClass,
+      turnaround: saved.turnaround || defPillar.turnaround,
+      title: mergeLoc(saved.title, defPillar.title),
+      subtitle: mergeLoc(saved.subtitle, defPillar.subtitle),
+      items,
+      deliverables: saved.deliverables || defPillar.deliverables,
+    };
+  });
+
+  const extraPillars = services.filter((s) => s?.id && !knownIds.has(s.id));
+  return [...merged, ...extraPillars];
+}
+
 function applyContentOverrides(content: any) {
   const images = content?.images || {};
   const about = content?.about ? { ...ABOUT_PAGE_DEFAULT, ...content.about } : { ...ABOUT_PAGE_DEFAULT };
@@ -390,7 +445,7 @@ function applyContentOverrides(content: any) {
       ...(content?.categoryCounts || {}),
     },
     products: products.length ? products : PRODUCTS_DEFAULT,
-    services: content?.services?.length ? content.services : SERVICES_DEFAULT,
+    services: mergeServicePillarsWithDefaults(content?.services),
     buyerSteps: content?.buyer_steps?.length ? content.buyer_steps : BUYER_STEPS_DEFAULT,
     producerSteps: content?.producer_steps?.length ? content.producer_steps : PRODUCER_STEPS_DEFAULT,
     whyAzexbuyCustom: content?.whyAzexbuy || null,

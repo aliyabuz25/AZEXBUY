@@ -415,22 +415,101 @@ interface ServicePillarEditorProps {
 }
 const PILLAR_LOCS = ['AZ', 'EN', 'TR', 'RU', 'AR', 'ES'] as const;
 
+const PILLAR_LANG_TABS = [
+  { code: 'ALL', label: 'Bütün Dillər', flag: '🌐' },
+  { code: 'TR', label: 'Türkçe', flag: '🇹🇷', badge: 'Önəmli' },
+  { code: 'ES', label: 'Español', flag: '🇪🇸', badge: 'Önəmli' },
+  { code: 'AZ', label: 'Azərbaycan', flag: '🇦🇿' },
+  { code: 'EN', label: 'English', flag: '🇬🇧' },
+  { code: 'RU', label: 'Русский', flag: '🇷🇺' },
+  { code: 'AR', label: 'العربية', flag: '🇸🇦' },
+] as const;
+
+type PillarLangCode = typeof PILLAR_LANG_TABS[number]['code'];
+
+const mergeServicePillarsWithDefaults = (services: any[]): any[] => {
+  if (!Array.isArray(services) || services.length === 0) {
+    return SERVICES_PILLARS;
+  }
+  const knownIds = new Set(SERVICES_PILLARS.map((p) => p.id));
+  const merged = SERVICES_PILLARS.map((defPillar, idx) => {
+    const saved = services.find((s) => s?.id === defPillar.id) || services[idx];
+    if (!saved) return defPillar;
+
+    const mergeLoc = (savedObj: any, defObj: any) => {
+      const result: any = { ...(defObj || {}) };
+      if (savedObj && typeof savedObj === 'object') {
+        for (const loc of ['EN', 'AZ', 'TR', 'RU', 'AR', 'ES']) {
+          if (savedObj[loc] !== undefined && savedObj[loc] !== null && String(savedObj[loc]).trim().length > 0) {
+            result[loc] = savedObj[loc];
+          }
+        }
+      }
+      return result;
+    };
+
+    const items = (defPillar.items || []).map((defItem, itemIdx) => {
+      const savedItem = saved.items?.[itemIdx];
+      if (!savedItem) return defItem;
+      if (typeof savedItem === 'string') {
+        return { ...defItem, AZ: savedItem };
+      }
+      return mergeLoc(savedItem, defItem);
+    });
+
+    if (Array.isArray(saved.items) && saved.items.length > (defPillar.items || []).length) {
+      for (let i = (defPillar.items || []).length; i < saved.items.length; i++) {
+        items.push(saved.items[i]);
+      }
+    }
+
+    return {
+      ...defPillar,
+      ...saved,
+      id: defPillar.id,
+      iconClass: saved.iconClass || defPillar.iconClass,
+      colorClass: saved.colorClass || defPillar.colorClass,
+      linkColorClass: saved.linkColorClass || defPillar.linkColorClass,
+      turnaround: saved.turnaround || defPillar.turnaround,
+      title: mergeLoc(saved.title, defPillar.title),
+      subtitle: mergeLoc(saved.subtitle, defPillar.subtitle),
+      items,
+      deliverables: saved.deliverables || defPillar.deliverables,
+    };
+  });
+
+  const extraPillars = services.filter((s) => s?.id && !knownIds.has(s.id));
+  return [...merged, ...extraPillars];
+};
+
 const ServicePillarEditor = React.memo(({ content, onChange, onSaveContent, saving, saved }: ServicePillarEditorProps) => {
-  // Seed from the saved content (or defaults) on first mount so the fields start populated
-  const [pillars, setPillars] = useState<any[]>(
-    content?.services?.length ? content.services : SERVICES_PILLARS
+  const [activeTab, setActiveTab] = useState<PillarLangCode>('ALL');
+  const [restoreNotice, setRestoreNotice] = useState<string | null>(null);
+
+  // Seed from the saved content merged with defaults so TR and ES are always present
+  const [pillars, setPillars] = useState<any[]>(() =>
+    mergeServicePillarsWithDefaults(content?.services)
   );
 
   // Synchronize when content.services updates from backend
   useEffect(() => {
     if (Array.isArray(content?.services) && content.services.length > 0) {
-      setPillars(content.services);
+      setPillars(mergeServicePillarsWithDefaults(content.services));
     }
   }, [content?.services]);
 
   const applyChange = (nextPillars: any[]) => {
     setPillars(nextPillars);
     onChange((prev: any) => ({ ...prev, services: nextPillars }));
+  };
+
+  const handleRestoreDefaults = () => {
+    if (confirm('Bütün xidmət kartlarının çatışmayan tərcümələri (TR və ES daxil) sistem standartları ilə doldurulsun?')) {
+      const merged = mergeServicePillarsWithDefaults(pillars);
+      applyChange(merged);
+      setRestoreNotice('Standart tərcümələr uğurla tətbiq edildi! Saxlamağı unutmayın.');
+      setTimeout(() => setRestoreNotice(null), 4000);
+    }
   };
 
   const updatePillar = (id: string, updater: (p: any) => any) => {
@@ -444,12 +523,12 @@ const ServicePillarEditor = React.memo(({ content, onChange, onSaveContent, savi
       iconClass: 'fa-solid fa-chart-line',
       colorClass: 'bg-brandNavy',
       linkColorClass: 'text-brandNavy',
-      title: { AZ: 'Yeni Xidmət', EN: 'New Service', TR: 'Yeni Hizmet', RU: 'Новая услуга', AR: '', ES: '' },
-      subtitle: { AZ: 'Xidmət haqqında qısa izah', EN: 'Brief service description', TR: '', RU: '', AR: '', ES: '' },
+      title: { AZ: 'Yeni Xidmət', EN: 'New Service', TR: 'Yeni Hizmet', RU: 'Новая услуga', AR: '', ES: 'Nuevo Servicio' },
+      subtitle: { AZ: 'Xidmət haqqında qısa izah', EN: 'Brief service description', TR: 'Hizmet hakkında kısa açıklama', RU: '', AR: '', ES: 'Descripción breve del servicio' },
       turnaround: '3–5 Days',
       items: [
-        { AZ: 'Yeni Başlıq 1', EN: 'Item 1', TR: '', RU: '', AR: '', ES: '' },
-        { AZ: 'Yeni Başlıq 2', EN: 'Item 2', TR: '', RU: '', AR: '', ES: '' },
+        { AZ: 'Yeni Maddə 1', EN: 'Item 1', TR: 'Madde 1', RU: '', AR: '', ES: 'Elemento 1' },
+        { AZ: 'Yeni Maddə 2', EN: 'Item 2', TR: 'Madde 2', RU: '', AR: '', ES: 'Elemento 2' },
       ],
       deliverables: []
     };
@@ -513,183 +592,409 @@ const ServicePillarEditor = React.memo(({ content, onChange, onSaveContent, savi
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between pb-1">
-        <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-          Aktiv Servis Kartları ({pillars.length} ədəd)
-        </span>
-        <button
-          type="button"
-          onClick={addPillar}
-          className="h-7 px-3 flex items-center gap-1.5 text-xs font-bold rounded-sm bg-emerald-600 hover:bg-emerald-700 text-white shadow-2xs transition-colors cursor-pointer"
-        >
-          <Plus className="w-3.5 h-3.5" /> Yeni Servis Kartı Əlavə Et (+)
-        </button>
-      </div>
-
-      {pillars.map((p: any, pIdx: number) => (
-        <div key={p.id} className="border border-slate-200/90 rounded-lg p-4 bg-white space-y-3 shadow-2xs">
-          <div className="flex items-center justify-between gap-2.5 pb-2 border-b border-slate-100">
-            <div className="flex items-center gap-2.5">
-              <div className={`w-8 h-8 rounded ${p.colorClass || 'bg-brandNavy'} flex items-center justify-center text-white text-base shadow-xs`}>
-                <i className={`${p.iconClass || 'fa-solid fa-circle-check'}`}></i>
-              </div>
-              <div>
-                <div className="text-xs font-bold text-slate-800">
-                  {pIdx + 1}. {p.title?.AZ || p.title?.EN || p.id}
-                </div>
-                <div className="text-[10px] text-slate-400 font-mono">
-                  ID: {p.id} {p.turnaround ? `· SLA: ${p.turnaround}` : ''}
-                </div>
-              </div>
+      {/* Top Bar with Language Tabs & Action Controls */}
+      <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 space-y-2.5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <div className="text-xs font-bold text-slate-800 flex items-center gap-1.5 uppercase tracking-wide">
+              <Globe2 className="w-3.5 h-3.5 text-brandNavy" />
+              Xidmət Kartları & Tərcümələrin Detallı Redaktəsi
             </div>
+            <div className="text-[11px] text-slate-500">
+              Türkcə (TR) və İspanyolca (ES) daxil olmaqla bütün dillərdə başlıq, izah və bəndləri ayrıca redaktə edə bilərsiniz.
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={() => removePillar(p.id)}
-              className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors cursor-pointer"
-              title="Kartı Sil (-)"
+              onClick={handleRestoreDefaults}
+              className="h-7 px-2.5 flex items-center gap-1 text-[11px] font-semibold rounded bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 transition-colors cursor-pointer shadow-2xs"
+              title="Sistemdəki TR və ES tərcümələrini bərpa et"
             >
-              <Trash2 className="w-4 h-4" />
+              <RotateCcw className="w-3 h-3 text-brandGreen" /> Standart Tərcümələri Bərpa Et
             </button>
-          </div>
-
-          {/* İkon, Rəng və SLA Seçici */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <IconPickerDropdown
-              label="Kartın İkonu"
-              value={p.iconClass || 'fa-solid fa-circle-check'}
-              onChange={(newIcon) => setPillarIcon(p.id, newIcon)}
-            />
-            <div>
-              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Kart Rəngi</label>
-              <select
-                value={p.colorClass || 'bg-brandNavy'}
-                onChange={(e) => setPillarColor(p.id, e.target.value)}
-                className="w-full h-8 text-xs bg-slate-50/70 border border-slate-200 rounded px-2.5 focus:outline-none focus:bg-white focus:border-[#0f3156]"
-              >
-                <option value="bg-brandNavy">Navy (#0f3156)</option>
-                <option value="bg-emerald-600">Emerald</option>
-                <option value="bg-sky-600">Sky</option>
-                <option value="bg-purple-600">Purple</option>
-                <option value="bg-amber-500">Amber</option>
-                <option value="bg-rose-600">Rose</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Turnaround / SLA</label>
-              <input
-                value={p.turnaround || ''}
-                onChange={(e) => setPillarTurnaround(p.id, e.target.value)}
-                placeholder="məs: 5 Business Days"
-                className="w-full h-8 text-xs bg-slate-50/70 border border-slate-200 rounded px-2.5 focus:outline-none focus:bg-white focus:border-[#0f3156]"
-              />
-            </div>
-          </div>
-
-          {/* Başlıq və Tam İzah (Dillər üzrə) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            {PILLAR_LOCS.map((loc) => (
-              <div key={loc} className="flex items-start gap-2">
-                <div className="w-8 h-7 rounded bg-slate-100 border border-slate-200 text-slate-600 font-bold text-[10px] font-mono flex items-center justify-center shrink-0">
-                  {loc}
-                </div>
-                <div className="flex-1 min-w-0 space-y-1.5">
-                  <input
-                    value={(p.title as PillarLocText)?.[loc] || ''}
-                    onChange={(e) => setPillarLoc(p.id, 'title', loc, e.target.value)}
-                    placeholder={`Başlıq (${loc})`}
-                    className="w-full h-7 text-[11px] bg-slate-50/70 border border-slate-200 rounded px-2 focus:outline-none focus:bg-white focus:border-[#0f3156]"
-                  />
-                  <input
-                    value={(p.subtitle as PillarLocText)?.[loc] || ''}
-                    onChange={(e) => setPillarLoc(p.id, 'subtitle', loc, e.target.value)}
-                    placeholder={`Açıqlama / İzah (${loc})`}
-                    className="w-full h-7 text-[11px] bg-slate-50/70 border border-slate-200 rounded px-2 focus:outline-none focus:bg-white focus:border-[#0f3156]"
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Xidmət Alt Başlıqları / Maddələri (+/- İdarəetmə) */}
-          <div className="pt-2 border-t border-slate-100">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
-                <i className="fa-solid fa-list-check text-brandNavy text-xs"></i>
-                Kart Daxili Başlıqlar / Maddələr ({p.items?.length || 0} bənd)
-              </span>
-              <button
-                type="button"
-                onClick={() => addItemToPillar(p.id)}
-                className="h-6 px-2.5 flex items-center gap-1 text-[11px] font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded transition-colors cursor-pointer"
-              >
-                <Plus className="w-3 h-3" /> Başlıq Əlavə Et (+)
-              </button>
-            </div>
-
-            <div className="space-y-2">
-              {(p.items || []).map((item: any, idx: number) => {
-                const itemAz = typeof item === 'object' ? item.AZ || '' : String(item || '');
-                const itemEn = typeof item === 'object' ? item.EN || '' : '';
-                return (
-                  <div key={idx} className="border border-slate-200 rounded p-2.5 bg-slate-50/60 space-y-1.5">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-bold text-slate-700 font-mono flex items-center gap-1.5">
-                        <span className="w-5 h-5 rounded bg-white border border-slate-200 flex items-center justify-center text-[10px] text-slate-500 font-bold">
-                          {idx + 1}
-                        </span>
-                        {itemAz || itemEn || `Maddə #${idx + 1}`}
-                      </span>
-                      <div className="flex items-center gap-1">
-                        <button
-                          type="button"
-                          title="Aşağısına yeni başlıq əlavə et (+)"
-                          onClick={() => addItemToPillar(p.id, idx)}
-                          className="h-6 px-2 text-[10px] font-bold text-emerald-700 bg-white hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 rounded flex items-center gap-1 transition-colors cursor-pointer"
-                        >
-                          <Plus className="w-3 h-3" /> Əlavə et
-                        </button>
-                        <button
-                          type="button"
-                          title="Bu başlığı sil (-)"
-                          onClick={() => removeItemFromPillar(p.id, idx)}
-                          className="h-6 w-6 text-slate-400 hover:text-red-600 bg-white hover:bg-red-50 border border-slate-200 hover:border-red-200 rounded flex items-center justify-center transition-colors cursor-pointer"
-                        >
-                          <Trash2 className="w-3 h-3" />
-                        </button>
-                      </div>
-                    </div>
-                    {/* Multilingual inputs for this item */}
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1.5">
-                      {PILLAR_LOCS.map((loc) => (
-                        <div key={loc} className="relative">
-                          <input
-                            value={(item as any)?.[loc] ?? (loc === 'AZ' && typeof item === 'string' ? item : '')}
-                            onChange={(e) => setPillarItemLoc(p.id, idx, loc, e.target.value)}
-                            placeholder={loc}
-                            className="h-7 text-[11px] bg-white border border-slate-200 rounded px-2 pr-7 focus:outline-none focus:border-[#0f3156] w-full"
-                          />
-                          <span className="absolute right-1.5 top-1.5 text-[9px] font-bold text-slate-400 pointer-events-none font-mono">
-                            {loc}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
             <button
               type="button"
-              onClick={() => addItemToPillar(p.id)}
-              className="mt-2.5 w-full h-8 flex items-center justify-center gap-1.5 text-xs font-bold bg-white hover:bg-slate-50 text-slate-700 border border-dashed border-slate-300 hover:border-brandNavy rounded-lg transition-colors cursor-pointer"
+              onClick={addPillar}
+              className="h-7 px-2.5 flex items-center gap-1 text-[11px] font-bold rounded bg-emerald-600 hover:bg-emerald-700 text-white shadow-2xs transition-colors cursor-pointer"
             >
-              <Plus className="w-3.5 h-3.5 text-brandGreen" /> Yeni Başlıq / Maddə Əlavə Et (+)
+              <Plus className="w-3.5 h-3.5" /> Yeni Kart (+)
             </button>
           </div>
         </div>
-      ))}
 
+        {/* Language Tabs */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pt-1 pb-0.5 border-t border-slate-200">
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mr-1 shrink-0 font-mono">
+            Dil Seçimi:
+          </span>
+          {PILLAR_LANG_TABS.map((tab) => {
+            const isActive = activeTab === tab.code;
+            return (
+              <button
+                key={tab.code}
+                type="button"
+                onClick={() => setActiveTab(tab.code)}
+                className={`h-7 px-2.5 rounded text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer shrink-0 border ${
+                  isActive
+                    ? 'bg-[#0f3156] text-white border-[#0f3156] shadow-2xs'
+                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100 hover:text-slate-900'
+                }`}
+              >
+                <span>{tab.flag}</span>
+                <span>{tab.label}</span>
+                {'badge' in tab && tab.badge && (
+                  <span className={`text-[9px] px-1 py-0.2 rounded font-bold ${
+                    isActive ? 'bg-amber-400 text-slate-900' : 'bg-amber-100 text-amber-800'
+                  }`}>
+                    {tab.badge}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {restoreNotice && (
+        <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 px-3 py-2 rounded text-xs flex items-center gap-2">
+          <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+          <span>{restoreNotice}</span>
+        </div>
+      )}
+
+      {/* Active Language Helper Banner */}
+      {activeTab !== 'ALL' && (
+        <div className="bg-blue-50/60 border border-blue-200/80 rounded-lg p-2.5 text-xs text-blue-900 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-base">{PILLAR_LANG_TABS.find(t => t.code === activeTab)?.flag}</span>
+            <div>
+              <span className="font-bold">
+                {PILLAR_LANG_TABS.find(t => t.code === activeTab)?.label} ({activeTab})
+              </span>{' '}
+              dilində detallı redaktə rejimindəsiniz. Aşağıdakı sahələri geniş şəkildə redaktə edin.
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setActiveTab('ALL')}
+            className="text-[11px] font-bold text-blue-700 hover:underline shrink-0 ml-3"
+          >
+            Bütün Dilləri Göstər →
+          </button>
+        </div>
+      )}
+
+      {/* List of Pillars */}
+      {pillars.map((p: any, pIdx: number) => {
+        const azTitle = p.title?.AZ || '';
+        const enTitle = p.title?.EN || '';
+        const azSubtitle = p.subtitle?.AZ || '';
+        const enSubtitle = p.subtitle?.EN || '';
+
+        return (
+          <div key={p.id} className="border border-slate-200/90 rounded-lg p-4 bg-white space-y-3.5 shadow-2xs">
+            {/* Header of Pillar Card */}
+            <div className="flex items-center justify-between gap-2.5 pb-2.5 border-b border-slate-100">
+              <div className="flex items-center gap-3">
+                <div className={`w-9 h-9 rounded-lg ${p.colorClass || 'bg-brandNavy'} flex items-center justify-center text-white text-base shadow-xs`}>
+                  <i className={`${p.iconClass || 'fa-solid fa-circle-check'}`}></i>
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-slate-900 flex items-center gap-2">
+                    <span className="w-5 h-5 rounded bg-slate-100 text-slate-600 font-mono text-[10px] flex items-center justify-center font-bold">
+                      0{pIdx + 1}
+                    </span>
+                    <span>{p.title?.AZ || p.title?.EN || p.id}</span>
+                    {p.title?.TR && (
+                      <span className="text-[10px] text-slate-400 font-normal">
+                        (TR: {p.title.TR})
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-[10px] text-slate-400 font-mono mt-0.5">
+                    ID: <span className="font-semibold text-slate-600">{p.id}</span> {p.turnaround ? `· SLA: ${p.turnaround}` : ''}
+                  </div>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => removePillar(p.id)}
+                className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors cursor-pointer"
+                title="Kartı Sil (-)"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Settings (Icon, Color, SLA) */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-2.5 bg-slate-50/70 rounded-md border border-slate-100">
+              <IconPickerDropdown
+                label="Kartın İkonu"
+                value={p.iconClass || 'fa-solid fa-circle-check'}
+                onChange={(newIcon) => setPillarIcon(p.id, newIcon)}
+              />
+              <div>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Kart Rəngi</label>
+                <select
+                  value={p.colorClass || 'bg-brandNavy'}
+                  onChange={(e) => setPillarColor(p.id, e.target.value)}
+                  className="w-full h-8 text-xs bg-white border border-slate-200 rounded px-2.5 focus:outline-none focus:border-[#0f3156]"
+                >
+                  <option value="bg-brandNavy">Navy (#0f3156)</option>
+                  <option value="bg-emerald-600">Emerald</option>
+                  <option value="bg-sky-600">Sky</option>
+                  <option value="bg-purple-600">Purple</option>
+                  <option value="bg-amber-500">Amber</option>
+                  <option value="bg-rose-600">Rose</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Turnaround / SLA</label>
+                <input
+                  value={p.turnaround || ''}
+                  onChange={(e) => setPillarTurnaround(p.id, e.target.value)}
+                  placeholder="məs: 5 Business Days"
+                  className="w-full h-8 text-xs bg-white border border-slate-200 rounded px-2.5 focus:outline-none focus:border-[#0f3156]"
+                />
+              </div>
+            </div>
+
+            {/* DEDICATED SINGLE-LANGUAGE EDITING VIEW */}
+            {activeTab !== 'ALL' ? (
+              <div className="space-y-3 pt-1">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="text-[11px] font-bold text-slate-700 flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        Kart Başlığı ({activeTab})
+                      </label>
+                      <span className="text-[10px] text-slate-400 font-mono">
+                        Ref (EN): {enTitle || azTitle}
+                      </span>
+                    </div>
+                    <input
+                      value={(p.title as PillarLocText)?.[activeTab] || ''}
+                      onChange={(e) => setPillarLoc(p.id, 'title', activeTab, e.target.value)}
+                      placeholder={`Xidmət başlığını ${activeTab} dilində yazın`}
+                      className="w-full h-8 text-xs bg-white border border-slate-300 rounded px-2.5 focus:outline-none focus:border-[#0f3156] font-medium"
+                    />
+                  </div>
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="text-[11px] font-bold text-slate-700 flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                        Açıqlama / İzah ({activeTab})
+                      </label>
+                      <span className="text-[10px] text-slate-400 font-mono truncate max-w-[200px]" title={enSubtitle || azSubtitle}>
+                        Ref: {enSubtitle || azSubtitle}
+                      </span>
+                    </div>
+                    <input
+                      value={(p.subtitle as PillarLocText)?.[activeTab] || ''}
+                      onChange={(e) => setPillarLoc(p.id, 'subtitle', activeTab, e.target.value)}
+                      placeholder={`Xidmət haqqında ətraflı izahı ${activeTab} dilində yazın`}
+                      className="w-full h-8 text-xs bg-white border border-slate-300 rounded px-2.5 focus:outline-none focus:border-[#0f3156]"
+                    />
+                  </div>
+                </div>
+
+                {/* Single Language Items Checklist */}
+                <div className="pt-2 border-t border-slate-100 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                      <i className="fa-solid fa-list-check text-brandNavy text-xs"></i>
+                      Xidmət Alt Bəndləri ({activeTab}) — {p.items?.length || 0} bənd
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => addItemToPillar(p.id)}
+                      className="h-6 px-2.5 flex items-center gap-1 text-[11px] font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded transition-colors cursor-pointer"
+                    >
+                      <Plus className="w-3 h-3" /> Yeni Bənd Əlavə Et (+)
+                    </button>
+                  </div>
+
+                  <div className="space-y-2">
+                    {(p.items || []).map((item: any, idx: number) => {
+                      const itemVal = typeof item === 'object' ? item?.[activeTab] || '' : '';
+                      const itemRefEn = typeof item === 'object' ? item?.EN || '' : '';
+                      const itemRefAz = typeof item === 'object' ? item?.AZ || '' : String(item || '');
+
+                      return (
+                        <div key={idx} className="border border-slate-200 rounded-lg p-2.5 bg-slate-50/70 hover:bg-slate-50 transition-colors">
+                          <div className="flex items-center justify-between text-xs mb-1.5">
+                            <div className="flex items-center gap-2">
+                              <span className="w-5 h-5 rounded bg-white border border-slate-200 flex items-center justify-center text-[10px] text-slate-600 font-bold font-mono">
+                                {idx + 1}
+                              </span>
+                              <div className="text-[11px] text-slate-500 font-mono flex items-center gap-1.5">
+                                <span className="bg-white px-1.5 py-0.5 rounded border border-slate-200 text-slate-600">
+                                  AZ: {itemRefAz || '-'}
+                                </span>
+                                <span className="bg-white px-1.5 py-0.5 rounded border border-slate-200 text-slate-600">
+                                  EN: {itemRefEn || '-'}
+                                </span>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <button
+                                type="button"
+                                title="Aşağısına yeni bənd əlavə et (+)"
+                                onClick={() => addItemToPillar(p.id, idx)}
+                                className="h-6 px-2 text-[10px] font-bold text-emerald-700 bg-white hover:bg-emerald-50 border border-slate-200 rounded flex items-center gap-1 transition-colors cursor-pointer"
+                              >
+                                <Plus className="w-3 h-3" /> Əlavə et
+                              </button>
+                              <button
+                                type="button"
+                                title="Bu bəndi sil (-)"
+                                onClick={() => removeItemFromPillar(p.id, idx)}
+                                className="h-6 w-6 text-slate-400 hover:text-red-600 bg-white hover:bg-red-50 border border-slate-200 rounded flex items-center justify-center transition-colors cursor-pointer"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </button>
+                            </div>
+                          </div>
+
+                          <input
+                            value={itemVal}
+                            onChange={(e) => setPillarItemLoc(p.id, idx, activeTab, e.target.value)}
+                            placeholder={`Maddə ${idx + 1} (${activeTab} mətni)`}
+                            className="w-full h-8 text-xs bg-white border border-slate-300 rounded px-2.5 focus:outline-none focus:border-[#0f3156] font-medium"
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              /* MULTI-LANGUAGE ('ALL') EDITING VIEW */
+              <div className="space-y-3 pt-1">
+                {/* Titles and Subtitles Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                  {PILLAR_LOCS.map((loc) => {
+                    const isTrOrEs = loc === 'TR' || loc === 'ES';
+                    return (
+                      <div
+                        key={loc}
+                        className={`p-2.5 rounded-lg border ${
+                          isTrOrEs ? 'bg-amber-50/40 border-amber-200' : 'bg-slate-50/70 border-slate-200'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className="text-[10px] font-bold font-mono px-1.5 py-0.5 rounded bg-white border border-slate-200 text-slate-700 flex items-center gap-1">
+                            <span>{loc === 'TR' ? '🇹🇷 TR' : loc === 'ES' ? '🇪🇸 ES' : loc === 'AZ' ? '🇦🇿 AZ' : loc === 'EN' ? '🇬🇧 EN' : loc === 'RU' ? '🇷🇺 RU' : '🇸🇦 AR'}</span>
+                          </span>
+                          {isTrOrEs && (
+                            <span className="text-[9px] font-bold text-amber-700 uppercase">Detallı</span>
+                          )}
+                        </div>
+                        <div className="space-y-1.5">
+                          <input
+                            value={(p.title as PillarLocText)?.[loc] || ''}
+                            onChange={(e) => setPillarLoc(p.id, 'title', loc, e.target.value)}
+                            placeholder={`Başlıq (${loc})`}
+                            className="w-full h-7 text-[11px] bg-white border border-slate-200 rounded px-2 focus:outline-none focus:border-[#0f3156] font-medium"
+                          />
+                          <input
+                            value={(p.subtitle as PillarLocText)?.[loc] || ''}
+                            onChange={(e) => setPillarLoc(p.id, 'subtitle', loc, e.target.value)}
+                            placeholder={`Açıqlama (${loc})`}
+                            className="w-full h-7 text-[11px] bg-white border border-slate-200 rounded px-2 focus:outline-none focus:border-[#0f3156]"
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Items Checklist for ALL */}
+                <div className="pt-2 border-t border-slate-100 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                      <i className="fa-solid fa-list-check text-brandNavy text-xs"></i>
+                      Kart Daxili Maddələr ({p.items?.length || 0} bənd)
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => addItemToPillar(p.id)}
+                      className="h-6 px-2.5 flex items-center gap-1 text-[11px] font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded transition-colors cursor-pointer"
+                    >
+                      <Plus className="w-3 h-3" /> Başlıq Əlavə Et (+)
+                    </button>
+                  </div>
+
+                  <div className="space-y-2">
+                    {(p.items || []).map((item: any, idx: number) => {
+                      const itemAz = typeof item === 'object' ? item.AZ || '' : String(item || '');
+                      const itemEn = typeof item === 'object' ? item.EN || '' : '';
+                      return (
+                        <div key={idx} className="border border-slate-200 rounded p-2.5 bg-slate-50/60 space-y-2">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="font-bold text-slate-700 font-mono flex items-center gap-1.5">
+                              <span className="w-5 h-5 rounded bg-white border border-slate-200 flex items-center justify-center text-[10px] text-slate-500 font-bold">
+                                {idx + 1}
+                              </span>
+                              {itemAz || itemEn || `Maddə #${idx + 1}`}
+                            </span>
+                            <div className="flex items-center gap-1">
+                              <button
+                                type="button"
+                                title="Aşağısına yeni başlıq əlavə et (+)"
+                                onClick={() => addItemToPillar(p.id, idx)}
+                                className="h-6 px-2 text-[10px] font-bold text-emerald-700 bg-white hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 rounded flex items-center gap-1 transition-colors cursor-pointer"
+                              >
+                                <Plus className="w-3 h-3" /> Əlavə et
+                              </button>
+                              <button
+                                type="button"
+                                title="Bu başlığı sil (-)"
+                                onClick={() => removeItemFromPillar(p.id, idx)}
+                                className="h-6 w-6 text-slate-400 hover:text-red-600 bg-white hover:bg-red-50 border border-slate-200 hover:border-red-200 rounded flex items-center justify-center transition-colors cursor-pointer"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Multilingual inputs for this item */}
+                          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1.5">
+                            {PILLAR_LOCS.map((loc) => {
+                              const isTrOrEs = loc === 'TR' || loc === 'ES';
+                              return (
+                                <div key={loc} className="relative">
+                                  <input
+                                    value={(item as any)?.[loc] ?? (loc === 'AZ' && typeof item === 'string' ? item : '')}
+                                    onChange={(e) => setPillarItemLoc(p.id, idx, loc, e.target.value)}
+                                    placeholder={loc}
+                                    className={`h-7 text-[11px] bg-white border rounded px-2 pr-7 focus:outline-none focus:border-[#0f3156] w-full ${
+                                      isTrOrEs ? 'border-amber-300 font-medium' : 'border-slate-200'
+                                    }`}
+                                  />
+                                  <span className={`absolute right-1.5 top-1.5 text-[9px] font-bold pointer-events-none font-mono ${
+                                    isTrOrEs ? 'text-amber-700' : 'text-slate-400'
+                                  }`}>
+                                    {loc}
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })}
+
+      {/* Bottom Save Bar */}
       <div className="flex items-center justify-between pt-2">
         <button
           type="button"
