@@ -132,6 +132,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
       prev: 'Əvvəlki',
       next: 'Növbəti',
       page: 'Səhifə',
+      noImage: 'Şəkil yoxdur',
     },
     TR: {
       productsFound: 'ürün bulundu',
@@ -143,6 +144,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
       prev: 'Önceki',
       next: 'Sonraki',
       page: 'Sayfa',
+      noImage: 'Görsel yok',
     },
     EN: {
       productsFound: 'products found',
@@ -154,6 +156,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
       prev: 'Previous',
       next: 'Next',
       page: 'Page',
+      noImage: 'No Image',
     },
     RU: {
       productsFound: 'товаров найдено',
@@ -165,6 +168,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
       prev: 'Назад',
       next: 'Вперед',
       page: 'Страница',
+      noImage: 'Нет фото',
     },
     AR: {
       productsFound: 'منتج متاح',
@@ -176,6 +180,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
       prev: 'السابق',
       next: 'التالي',
       page: 'صفحة',
+      noImage: 'لا توجد صورة',
     },
     ES: {
       productsFound: 'productos encontrados',
@@ -187,6 +192,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
       prev: 'Anterior',
       next: 'Siguiente',
       page: 'Página',
+      noImage: 'Sin imagen',
     },
   }[locale] || {
     productsFound: 'products found',
@@ -198,6 +204,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
     prev: 'Previous',
     next: 'Next',
     page: 'Page',
+    noImage: 'No Image',
   };
 
   const getPaginationRange = (currentPage: number, total: number): (number | 'ellipsis')[] => {
@@ -525,8 +532,8 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
                         src={product.image}
                         alt={getLocalizedText(product.name, locale)}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        fallbackIcon="fa-solid fa-triangle-exclamation"
-                        fallbackText={locale === 'AZ' ? 'Şəkil tapılmadı' : 'Corrupted / Missing'}
+                        fallbackIcon="fa-regular fa-image"
+                        fallbackText={pagLabels.noImage}
                       />
                       <div className="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-xs text-slate-700 text-[11px] font-semibold px-2.5 py-1 rounded shadow-xs border border-slate-200/80 pointer-events-none">
                         {getLocalizedText(product.categoryLabel, locale)}
@@ -721,8 +728,8 @@ export const ProductSpecModal: React.FC<ProductSpecModalProps> = ({
             src={product.image}
             alt={getLocalizedText(product.name, locale)}
             className="w-full h-full object-cover opacity-90"
-            fallbackIcon="fa-solid fa-triangle-exclamation"
-            fallbackText={locale === 'AZ' ? 'Şəkil tapılmadı' : 'Corrupted / Missing Image'}
+            fallbackIcon="fa-regular fa-image"
+            fallbackText={locale === 'AZ' ? 'Şəkil yoxdur' : locale === 'TR' ? 'Görsel yok' : locale === 'RU' ? 'Нет фото' : 'No Image'}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-brandNavy via-brandNavy/40 to-transparent pointer-events-none"></div>
           <button

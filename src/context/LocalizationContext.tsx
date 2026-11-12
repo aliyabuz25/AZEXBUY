@@ -224,9 +224,9 @@ function normalizeProductItem(p: any): any {
     return { AZ: str, EN: str, TR: str, RU: str, AR: str, ES: str };
   };
 
-  const images = Array.isArray(p.images) ? p.images : (p.image ? [p.image] : []);
-  const defaultImg = 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800';
-  const imgUrl = p.image || (images.length > 0 ? images[0] : defaultImg);
+  const rawImages = Array.isArray(p.images) ? p.images.filter((img: any) => img && typeof img === 'string' && !img.includes('1542838132-92c53300491e')) : [];
+  const rawImg = (p.image && typeof p.image === 'string' && !p.image.includes('1542838132-92c53300491e')) ? p.image : '';
+  const imgUrl = rawImg || (rawImages.length > 0 ? rawImages[0] : '');
 
   const catSlug = String(
     p.categorySlug || p.categoryId || p.categoryKey || p.categoryName || (typeof p.categoryLabel === 'string' ? p.categoryLabel : p.categoryLabel?.EN || '')

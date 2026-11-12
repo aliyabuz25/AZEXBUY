@@ -1555,8 +1555,8 @@ function mapProduct(r: any) {
   else if (catSlug.includes('chem') || catSlug.includes('urea') || catSlug.includes('fertil') || catSlug.includes('kimya')) categoryKey = 'chemicals';
   else if (catSlug.includes('industr') || catSlug.includes('sənaye') || catSlug.includes('senaye') || catSlug.includes('text') || catSlug.includes('metal')) categoryKey = 'industrial';
 
-  const defaultImg = 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800';
-  const imgUrl = (images.length > 0 && images[0]) ? images[0] : defaultImg;
+  const rawImages = images.filter((img: any) => img && typeof img === 'string' && !img.includes('1542838132-92c53300491e'));
+  const imgUrl = (rawImages.length > 0 && rawImages[0]) ? rawImages[0] : '';
 
   const nameLoc = toLocalized(nameParsed, r.slug || 'Commodity');
   const shortDescLoc = toLocalized(shortDescParsed, typeof nameParsed === 'string' ? nameParsed : nameLoc.EN);

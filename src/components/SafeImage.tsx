@@ -10,26 +10,30 @@ export const SafeImage: React.FC<SafeImageProps> = ({
   src,
   alt = '',
   className = '',
-  fallbackIcon = 'fa-solid fa-image-slash',
-  fallbackText = 'Şəkil yüklənmədi',
+  fallbackIcon = 'fa-regular fa-image',
+  fallbackText = 'Şəkil yoxdur',
   containerClassName = '',
   ...props
 }) => {
   const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(Boolean(src));
 
-  if (!src || error) {
+  const isInvalid = !src || typeof src !== 'string' || !src.trim() || src.includes('1542838132-92c53300491e');
+
+  if (isInvalid || error) {
     return (
       <div
-        className={`w-full h-full flex flex-col items-center justify-center bg-slate-100 text-slate-400 p-2 select-none ${containerClassName}`}
-        title={alt || 'Image unavailable'}
+        className={`w-full h-full flex flex-col items-center justify-center bg-slate-100/90 text-slate-400 p-3 select-none ${containerClassName}`}
+        title={alt || fallbackText}
       >
-        <div className="w-9 h-9 rounded-full bg-slate-200/80 flex items-center justify-center mb-1 text-slate-500 shadow-2xs">
-          <i className={`${fallbackIcon} text-base`}></i>
+        <div className="w-11 h-11 rounded-full bg-slate-200/80 border border-slate-300/60 flex items-center justify-center mb-1.5 text-slate-400 shadow-2xs">
+          <i className={`${fallbackIcon} text-lg opacity-75`}></i>
         </div>
-        <span className="text-[10px] font-medium text-slate-400 tracking-tight text-center px-1">
-          {fallbackText}
-        </span>
+        {fallbackText ? (
+          <span className="text-[11px] font-semibold text-slate-400 tracking-tight text-center px-1">
+            {fallbackText}
+          </span>
+        ) : null}
       </div>
     );
   }

@@ -1611,8 +1611,8 @@ export const GlobalSearchModal: React.FC<SearchModalProps> = ({
                     src={p.image}
                     alt={getLocalizedText(p.name, locale)}
                     className="w-full h-full object-cover"
-                    fallbackIcon="fa-solid fa-triangle-exclamation"
-                    fallbackText="N/A"
+                    fallbackIcon="fa-regular fa-image"
+                    fallbackText=""
                   />
                 </div>
                 <div>
