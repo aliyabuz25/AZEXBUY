@@ -2281,7 +2281,7 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
       : 'Anchored by the Baku International Sea Trade Port at Alat, the Baku-Tbilisi-Kars (BTK) railway, and 14 regional agro-industrial clusters, AZEXBUY connects Eurasian supply chains with institutional assurance.';
 
   return (
-    <section className="bg-slate-50/70">
+    <section className={activeView === 'contact' ? 'bg-white' : 'bg-slate-50/70'}>
       {/* Google Maps — full-width, flush to topbar (contact view only) */}
       {activeView === 'contact' && (
         <div className="no-print w-full bg-[#e5e5e5]">
@@ -2295,7 +2295,7 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
         </div>
       )}
 
-      <div className="custom-container space-y-8 py-8">
+      <div className={activeView === 'contact' ? "custom-container py-10 sm:py-14" : "custom-container space-y-8 py-8"}>
         {/* Strategic KPIs — hidden on contact-only view */}
         {activeView !== 'contact' && <div className="bg-brandNavy text-white rounded-xl p-6 sm:p-8">
           
@@ -2372,127 +2372,310 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
         </div>}
 
         {/* Direct Institutional Correspondence Desk — hidden on insights-only view */}
-        {activeView !== 'insights' && 
-        <div className="bg-white border border-slate-200 rounded-lg p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div>
-            <h2 className="text-lg font-bold text-slate-900 mb-3">
-              Contact AZEXBUY Trade Facilitation Authority
-            </h2>
-            <div className="space-y-2.5 text-xs text-slate-600">
-              <div className="flex items-start gap-3">
-                <i className="fa-solid fa-location-dot text-slate-400 mt-0.5"></i>
-                <span>{strings[locale]?.footer?.hqAddress || strings.AZ?.footer?.hqAddress || 'Baku, Azerbaijan'}</span>
+        {activeView !== 'insights' && (
+          activeView === 'contact' ? (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start pt-2">
+              <div className="lg:col-span-5 space-y-6">
+                <div>
+                  <span className="text-[11px] font-bold text-brandGreen uppercase tracking-wider block mb-1">
+                    {locale === 'AZ' ? 'Rəsmi Əlaqə & Dəstək' : locale === 'TR' ? 'Resmi İletişim & Destek' : locale === 'RU' ? 'Официальные контакты' : 'Official Inquiry'}
+                  </span>
+                  <h2 className="text-xl sm:text-2xl font-extrabold text-brandNavy mb-2">
+                    {locale === 'AZ' ? 'AZEXBUY Ticarət Masası ilə Əlaqə' : locale === 'TR' ? 'AZEXBUY Ticaret Masası ile İletişim' : locale === 'RU' ? 'Свяжитесь с торговым отделом AZEXBUY' : 'Contact AZEXBUY Trade Facilitation Desk'}
+                  </h2>
+                  <p className="text-xs text-slate-500 leading-relaxed mb-4">
+                    {locale === 'AZ'
+                      ? 'İxrac, satınalma, gömrük və tərəfdaşlıq sorğularınız üçün birbaşa müraciət edin. Mütəxəssislərimiz 4 iş saatı ərzində cavablandıracaq.'
+                      : locale === 'TR'
+                      ? 'İhracat, satın alma, gümrük ve ortaklık talepleriniz için doğrudan iletişime geçin. Uzmanlarımız 4 iş saati içinde dönüş yapacaktır.'
+                      : 'For bilateral trade delegations, state procurement tenders, customs green-corridor inquiries, or escrow settlement structuring, reach our Baku headquarters directly.'}
+                  </p>
+                </div>
+
+                <div className="space-y-3.5 text-xs text-slate-700">
+                  <div className="flex items-start gap-3.5">
+                    <div className="w-8 h-8 rounded-lg bg-brandNavy/5 text-brandNavy flex items-center justify-center shrink-0 mt-0.5">
+                      <i className="fa-solid fa-location-dot text-sm"></i>
+                    </div>
+                    <div>
+                      <span className="block font-bold text-slate-900 mb-0.5">
+                        {locale === 'AZ' ? 'Baş Qərargah' : locale === 'TR' ? 'Genel Merkez' : locale === 'RU' ? 'Главный офис' : 'Headquarters'}
+                      </span>
+                      <span className="text-slate-600 leading-relaxed block">
+                        {strings[locale]?.footer?.hqAddress || strings.AZ?.footer?.hqAddress || 'Baku Alliance Business Center, Heydar Aliyev Ave 95, Baku AZ1033, Azerbaijan'}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3.5">
+                    <div className="w-8 h-8 rounded-lg bg-brandNavy/5 text-brandNavy flex items-center justify-center shrink-0 mt-0.5">
+                      <i className="fa-solid fa-phone text-sm"></i>
+                    </div>
+                    <div>
+                      <span className="block font-bold text-slate-900 mb-0.5">
+                        {locale === 'AZ' ? 'Telefon Xətləri' : locale === 'TR' ? 'Telefon Hatları' : locale === 'RU' ? 'Телефоны' : 'Direct Lines'}
+                      </span>
+                      <span className="tabular-nums text-slate-600 block">
+                        {contact.phone} {contact.phoneAlt ? `· ${contact.phoneAlt}` : ''}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3.5">
+                    <div className="w-8 h-8 rounded-lg bg-brandNavy/5 text-brandNavy flex items-center justify-center shrink-0 mt-0.5">
+                      <i className="fa-solid fa-envelope text-sm"></i>
+                    </div>
+                    <div>
+                      <span className="block font-bold text-slate-900 mb-0.5">
+                        {locale === 'AZ' ? 'Rəsmi E-poçt' : locale === 'TR' ? 'Resmi E-posta' : locale === 'RU' ? 'Электронная почта' : 'Official Email'}
+                      </span>
+                      <span className="text-slate-600 block">
+                        {contact.email} {contact.emailAlt ? `· ${contact.emailAlt}` : ''}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3.5">
+                    <div className="w-8 h-8 rounded-lg bg-brandNavy/5 text-brandNavy flex items-center justify-center shrink-0 mt-0.5">
+                      <i className="fa-regular fa-clock text-sm"></i>
+                    </div>
+                    <div>
+                      <span className="block font-bold text-slate-900 mb-0.5">
+                        {locale === 'AZ' ? 'İş Saatları' : locale === 'TR' ? 'Çalışma Saatleri' : locale === 'RU' ? 'Часы работы' : 'Working Hours'}
+                      </span>
+                      <span className="text-slate-600 block">
+                        {contact.hours || '09:00 – 18:00 (AZT / UTC+4)'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-start gap-3">
-                <i className="fa-solid fa-phone text-slate-400 mt-0.5"></i>
-                <span className="tabular-nums">{contact.phone} {contact.phoneAlt ? `· ${contact.phoneAlt}` : ''}</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <i className="fa-solid fa-envelope text-slate-400 mt-0.5"></i>
-                <span>{contact.email} {contact.emailAlt ? `· ${contact.emailAlt}` : ''}</span>
+
+              {/* Form without card container */}
+              <div className="lg:col-span-7">
+                {contactSubmitted ? (
+                  <div className="p-8 bg-emerald-50 border border-emerald-200 rounded-xl text-center space-y-3">
+                    <i className="fa-solid fa-circle-check text-brandGreen text-3xl"></i>
+                    <h3 className="text-base font-bold text-brandNavy">
+                      {locale === 'AZ' ? 'Müraciətiniz Qeydə Alındı' : locale === 'TR' ? 'Başvurunuz Alındı' : 'Official Inquiry Logged'}
+                    </h3>
+                    <p className="text-xs text-slate-600 max-w-md mx-auto">
+                      {locale === 'AZ'
+                        ? 'Ticarət mütəxəssisimiz 4 iş saatı ərzində sizinlə əlaqə saxlayacaq.'
+                        : 'A trade specialist will respond within 4 business hours.'}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => { setContactSubmitted(false); setContactForm({ fullName: '', organization: '', email: '', inquiryType: 'Buyer Sourcing Inquiry', message: '' }); }}
+                      className="text-xs font-bold text-brandNavy hover:text-brandGreen underline cursor-pointer pt-2 inline-block"
+                    >
+                      {locale === 'AZ' ? 'Yeni Müraciət Göndər' : 'Send Another Message'}
+                    </button>
+                  </div>
+                ) : (
+                  <form
+                    onSubmit={async (e) => {
+                      e.preventDefault();
+                      setContactLoading(true);
+                      try {
+                        const res = await fetch('/api/azexbuy/contacts', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify(contactForm),
+                        });
+                        if (res.ok) {
+                          setContactSubmitted(true);
+                          setContactForm({ fullName: '', organization: '', email: '', inquiryType: 'Buyer Sourcing Inquiry', message: '' });
+                        }
+                      } catch {
+                        setContactSubmitted(true);
+                      } finally {
+                        setContactLoading(false);
+                      }
+                    }}
+                    className="space-y-4"
+                  >
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <input
+                        type="text"
+                        required
+                        value={contactForm.fullName}
+                        onChange={e => setContactForm(f => ({ ...f, fullName: e.target.value }))}
+                        placeholder={locale === 'AZ' ? 'Ad, Soyad və Vəzifə *' : locale === 'TR' ? 'Ad, Soyad ve Unvan *' : 'Full Name & Title *'}
+                        className="h-11 px-3.5 text-xs bg-slate-50/70 border border-slate-200 rounded-lg w-full focus:bg-white focus:border-brandNavy focus:outline-none transition-all"
+                      />
+                      <input
+                        type="text"
+                        required
+                        value={contactForm.organization}
+                        onChange={e => setContactForm(f => ({ ...f, organization: e.target.value }))}
+                        placeholder={locale === 'AZ' ? 'Şirkət / Təşkilat *' : locale === 'TR' ? 'Şirket / Kuruluş *' : 'Organization / Ministry *'}
+                        className="h-11 px-3.5 text-xs bg-slate-50/70 border border-slate-200 rounded-lg w-full focus:bg-white focus:border-brandNavy focus:outline-none transition-all"
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <input
+                        type="email"
+                        required
+                        value={contactForm.email}
+                        onChange={e => setContactForm(f => ({ ...f, email: e.target.value }))}
+                        placeholder={locale === 'AZ' ? 'Rəsmi E-poçt *' : locale === 'TR' ? 'Resmi E-posta *' : 'Official Email *'}
+                        className="h-11 px-3.5 text-xs bg-slate-50/70 border border-slate-200 rounded-lg w-full focus:bg-white focus:border-brandNavy focus:outline-none transition-all"
+                      />
+                      <select
+                        value={contactForm.inquiryType}
+                        onChange={e => setContactForm(f => ({ ...f, inquiryType: e.target.value }))}
+                        className="h-11 px-3 text-xs bg-slate-50/70 border border-slate-200 rounded-lg w-full font-medium text-slate-700 focus:bg-white focus:border-brandNavy focus:outline-none transition-all"
+                      >
+                        <option value="Buyer Sourcing Inquiry">{locale === 'AZ' ? 'Alıcı Sifarişi Sorğusu' : 'Buyer Sourcing Inquiry'}</option>
+                        <option value="Producer Onboarding & Audit">{locale === 'AZ' ? 'İstehsalçı Qeydiyyatı və Audit' : 'Producer Onboarding & Audit'}</option>
+                        <option value="Outsourced Export Department">{locale === 'AZ' ? 'İxrac İdarəetməsi Masası' : 'Outsourced Export Department'}</option>
+                        <option value="Middle Corridor Logistics Quote">{locale === 'AZ' ? 'Orta Dəhliz Logistika Təklifi' : 'Middle Corridor Logistics Quote'}</option>
+                      </select>
+                    </div>
+                    <textarea
+                      rows={4}
+                      required
+                      value={contactForm.message}
+                      onChange={e => setContactForm(f => ({ ...f, message: e.target.value }))}
+                      placeholder={locale === 'AZ' ? 'Məhsul, HS kodu və ya əməkdaşlıq təklifinizi təsvir edin...' : 'Describe your commodity inquiry, target HS code, or partnership proposal...'}
+                      className="p-3.5 text-xs bg-slate-50/70 border border-slate-200 rounded-lg w-full focus:bg-white focus:border-brandNavy focus:outline-none transition-all resize-y"
+                    />
+                    <button
+                      type="submit"
+                      disabled={contactLoading}
+                      className="w-full bg-brandNavy hover:bg-brandNavyDark text-white text-xs font-bold py-3 rounded-lg cursor-pointer disabled:opacity-60 transition-colors shadow-sm"
+                    >
+                      {contactLoading
+                        ? (locale === 'AZ' ? 'Göndərilir...' : 'Sending…')
+                        : (locale === 'AZ' ? 'Müraciəti Göndər →' : locale === 'TR' ? 'Başvuruyu Gönder →' : locale === 'RU' ? 'Отправить запрос →' : 'Dispatch Official Inquiry →')}
+                    </button>
+                  </form>
+                )}
               </div>
             </div>
-          </div>
-
-          <div>
-            {contactSubmitted ? (
-              <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-lg text-center space-y-2">
-                <i className="fa-solid fa-circle-check text-brandGreen text-2xl"></i>
-                <h3 className="text-sm font-bold text-brandNavy">
-                  Official Inquiry Logged with AZEXBUY Trade Desk
-                </h3>
-                <p className="text-xs text-slate-600">
-                  A bilingual trade specialist will respond within 4 business hours.
-                </p>
-                <button
-                  type="button"
-                  onClick={() => { setContactSubmitted(false); setContactForm({ fullName: '', organization: '', email: '', inquiryType: 'Buyer Sourcing Inquiry', message: '' }); }}
-                  className="text-xs font-bold text-brandNavy underline cursor-pointer"
-                >
-                  Send Another Message
-                </button>
+          ) : (
+            <div className="bg-white border border-slate-200 rounded-lg p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div>
+                <h2 className="text-lg font-bold text-slate-900 mb-3">
+                  Contact AZEXBUY Trade Facilitation Authority
+                </h2>
+                <div className="space-y-2.5 text-xs text-slate-600">
+                  <div className="flex items-start gap-3">
+                    <i className="fa-solid fa-location-dot text-slate-400 mt-0.5"></i>
+                    <span>{strings[locale]?.footer?.hqAddress || strings.AZ?.footer?.hqAddress || 'Baku, Azerbaijan'}</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <i className="fa-solid fa-phone text-slate-400 mt-0.5"></i>
+                    <span className="tabular-nums">{contact.phone} {contact.phoneAlt ? `· ${contact.phoneAlt}` : ''}</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <i className="fa-solid fa-envelope text-slate-400 mt-0.5"></i>
+                    <span>{contact.email} {contact.emailAlt ? `· ${contact.emailAlt}` : ''}</span>
+                  </div>
+                </div>
               </div>
-            ) : (
-              <form
-                onSubmit={async (e) => {
-                  e.preventDefault();
-                  setContactLoading(true);
-                  try {
-                    const res = await fetch('/api/azexbuy/contacts', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify(contactForm),
-                    });
-                    if (res.ok) {
-                      setContactSubmitted(true);
-                      setContactForm({ fullName: '', organization: '', email: '', inquiryType: 'Buyer Sourcing Inquiry', message: '' });
-                    }
-                  } catch {
-                    // fail silently — form still shows success to avoid UX disruption
-                    setContactSubmitted(true);
-                  } finally {
-                    setContactLoading(false);
-                  }
-                }}
-                className="space-y-3"
-              >
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <input
-                    type="text"
-                    required
-                    value={contactForm.fullName}
-                    onChange={e => setContactForm(f => ({ ...f, fullName: e.target.value }))}
-                    placeholder="Full Name & Title *"
-                    className="h-10 px-3 text-xs border border-slate-300 rounded w-full"
-                  />
-                  <input
-                    type="text"
-                    required
-                    value={contactForm.organization}
-                    onChange={e => setContactForm(f => ({ ...f, organization: e.target.value }))}
-                    placeholder="Organization / Ministry *"
-                    className="h-10 px-3 text-xs border border-slate-300 rounded w-full"
-                  />
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <input
-                    type="email"
-                    required
-                    value={contactForm.email}
-                    onChange={e => setContactForm(f => ({ ...f, email: e.target.value }))}
-                    placeholder="Official Email *"
-                    className="h-10 px-3 text-xs border border-slate-300 rounded w-full"
-                  />
-                  <select
-                    value={contactForm.inquiryType}
-                    onChange={e => setContactForm(f => ({ ...f, inquiryType: e.target.value }))}
-                    className="h-10 px-3 text-xs border border-slate-300 rounded w-full font-semibold text-slate-700"
+
+              <div>
+                {contactSubmitted ? (
+                  <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-lg text-center space-y-2">
+                    <i className="fa-solid fa-circle-check text-brandGreen text-2xl"></i>
+                    <h3 className="text-sm font-bold text-brandNavy">
+                      Official Inquiry Logged with AZEXBUY Trade Desk
+                    </h3>
+                    <p className="text-xs text-slate-600">
+                      A bilingual trade specialist will respond within 4 business hours.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => { setContactSubmitted(false); setContactForm({ fullName: '', organization: '', email: '', inquiryType: 'Buyer Sourcing Inquiry', message: '' }); }}
+                      className="text-xs font-bold text-brandNavy underline cursor-pointer"
+                    >
+                      Send Another Message
+                    </button>
+                  </div>
+                ) : (
+                  <form
+                    onSubmit={async (e) => {
+                      e.preventDefault();
+                      setContactLoading(true);
+                      try {
+                        const res = await fetch('/api/azexbuy/contacts', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify(contactForm),
+                        });
+                        if (res.ok) {
+                          setContactSubmitted(true);
+                          setContactForm({ fullName: '', organization: '', email: '', inquiryType: 'Buyer Sourcing Inquiry', message: '' });
+                        }
+                      } catch {
+                        setContactSubmitted(true);
+                      } finally {
+                        setContactLoading(false);
+                      }
+                    }}
+                    className="space-y-3"
                   >
-                    <option>Buyer Sourcing Inquiry</option>
-                    <option>Producer Onboarding & Audit</option>
-                    <option>Outsourced Export Department</option>
-                    <option>Middle Corridor Logistics Quote</option>
-                  </select>
-                </div>
-                <textarea
-                  rows={3}
-                  required
-                  value={contactForm.message}
-                  onChange={e => setContactForm(f => ({ ...f, message: e.target.value }))}
-                  placeholder="Describe your commodity inquiry, target HS code, or partnership proposal..."
-                  className="p-3 text-xs border border-slate-300 rounded w-full"
-                />
-                <button
-                  type="submit"
-                  disabled={contactLoading}
-                  className="w-full bg-brandNavy hover:bg-brandNavyDark text-white text-xs font-bold py-2.5 rounded cursor-pointer disabled:opacity-60"
-                >
-                  {contactLoading ? 'Sending…' : 'Dispatch Official Inquiry →'}
-                </button>
-              </form>
-            )}
-          </div>
-        </div>}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <input
+                        type="text"
+                        required
+                        value={contactForm.fullName}
+                        onChange={e => setContactForm(f => ({ ...f, fullName: e.target.value }))}
+                        placeholder="Full Name & Title *"
+                        className="h-10 px-3 text-xs border border-slate-300 rounded w-full"
+                      />
+                      <input
+                        type="text"
+                        required
+                        value={contactForm.organization}
+                        onChange={e => setContactForm(f => ({ ...f, organization: e.target.value }))}
+                        placeholder="Organization / Ministry *"
+                        className="h-10 px-3 text-xs border border-slate-300 rounded w-full"
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <input
+                        type="email"
+                        required
+                        value={contactForm.email}
+                        onChange={e => setContactForm(f => ({ ...f, email: e.target.value }))}
+                        placeholder="Official Email *"
+                        className="h-10 px-3 text-xs border border-slate-300 rounded w-full"
+                      />
+                      <select
+                        value={contactForm.inquiryType}
+                        onChange={e => setContactForm(f => ({ ...f, inquiryType: e.target.value }))}
+                        className="h-10 px-3 text-xs border border-slate-300 rounded w-full font-semibold text-slate-700"
+                      >
+                        <option>Buyer Sourcing Inquiry</option>
+                        <option>Producer Onboarding & Audit</option>
+                        <option>Outsourced Export Department</option>
+                        <option>Middle Corridor Logistics Quote</option>
+                      </select>
+                    </div>
+                    <textarea
+                      rows={3}
+                      required
+                      value={contactForm.message}
+                      onChange={e => setContactForm(f => ({ ...f, message: e.target.value }))}
+                      placeholder="Describe your commodity inquiry, target HS code, or partnership proposal..."
+                      className="p-3 text-xs border border-slate-300 rounded w-full"
+                    />
+                    <button
+                      type="submit"
+                      disabled={contactLoading}
+                      className="w-full bg-brandNavy hover:bg-brandNavyDark text-white text-xs font-bold py-2.5 rounded cursor-pointer disabled:opacity-60"
+                    >
+                      {contactLoading ? 'Sending…' : 'Dispatch Official Inquiry →'}
+                    </button>
+                  </form>
+                )}
+              </div>
+            </div>
+          )
+        )}
       </div>
     </section>
   );
