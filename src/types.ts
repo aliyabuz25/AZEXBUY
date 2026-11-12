@@ -6,6 +6,7 @@ export type ViewMode =
   | 'producers'
   | 'services'
   | 'products'
+  | 'favorites'
   | 'how-it-works'
   | 'about'
   | 'insights'

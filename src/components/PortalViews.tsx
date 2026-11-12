@@ -265,11 +265,11 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
               {shortlistedIds.length > 0 && (
                 <button
                   type="button"
-                  onClick={() => { setCategoryFilter('favorites'); setPage(1); }}
+                  onClick={() => { window.location.hash = '/favorites'; }}
                   className="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2.5 rounded-lg cursor-pointer flex items-center gap-2 shadow-sm transition-colors"
                 >
                   <i className="fa-solid fa-heart text-xs"></i>
-                  <span>{locale === 'TR' ? `Favoriler (${shortlistedIds.length})` : locale === 'AZ' ? `Favorilər (${shortlistedIds.length})` : `Favorites (${shortlistedIds.length})`}</span>
+                  <span>{locale === 'TR' ? `Favoriler Sayfası (${shortlistedIds.length})` : locale === 'AZ' ? `Favorilər Səhifəsi (${shortlistedIds.length})` : `Favorites (${shortlistedIds.length})`}</span>
                 </button>
               )}
               <button

@@ -236,21 +236,35 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </div>
 
-          {/* Favorites shortcut */}
-          {shortlistCount > 0 && (
-            <button
-              type="button"
-              aria-label="Favorites"
-              onClick={() => handleNavClick('products')}
-              className="relative p-2 rounded-full text-rose-500 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
-              title={`${shortlistCount} ${locale === 'TR' ? 'favori ürün' : locale === 'AZ' ? 'favori məhsul' : 'favorite products'}`}
-            >
-              <i className="fa-solid fa-heart text-sm"></i>
+          {/* Favorites page link */}
+          <button
+            type="button"
+            aria-label="Favorites"
+            onClick={() => handleNavClick('favorites')}
+            className={`relative p-2 rounded-full transition-colors cursor-pointer ${
+              activeView === 'favorites'
+                ? 'bg-rose-100 text-rose-600 ring-1 ring-rose-300'
+                : shortlistCount > 0
+                ? 'text-rose-500 hover:text-rose-600 hover:bg-rose-50'
+                : 'text-slate-400 hover:text-rose-500 hover:bg-slate-100'
+            }`}
+            title={
+              shortlistCount > 0
+                ? `${shortlistCount} ${locale === 'TR' ? 'favori ürün' : locale === 'AZ' ? 'favori məhsul' : 'favorite products'}`
+                : locale === 'TR'
+                ? 'Favoriler'
+                : locale === 'AZ'
+                ? 'Favorilər'
+                : 'Favorites'
+            }
+          >
+            <i className={`fa-${shortlistCount > 0 || activeView === 'favorites' ? 'solid' : 'regular'} fa-heart text-sm`}></i>
+            {shortlistCount > 0 && (
               <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-rose-500 text-white text-[9px] font-bold flex items-center justify-center shadow-xs">
                 {shortlistCount}
               </span>
-            </button>
-          )}
+            )}
+          </button>
 
           {/* Search */}
           <button
@@ -348,6 +362,27 @@ export const Navbar: React.FC<NavbarProps> = ({
                 {activeView === item.id && <i className="fa-solid fa-chevron-right text-[10px] opacity-70"></i>}
               </button>
             ))}
+
+            {/* Favorites item in mobile menu */}
+            <button
+              type="button"
+              onClick={() => handleNavClick('favorites')}
+              className={`w-full text-left px-4 py-3 rounded-xl text-sm font-semibold transition-colors cursor-pointer flex items-center justify-between ${
+                activeView === 'favorites'
+                  ? 'bg-rose-500 text-white'
+                  : 'text-slate-700 hover:bg-rose-50/50'
+              }`}
+            >
+              <div className="flex items-center gap-2.5">
+                <i className={`fa-${shortlistCount > 0 || activeView === 'favorites' ? 'solid' : 'regular'} fa-heart ${activeView === 'favorites' ? 'text-white' : 'text-rose-500'}`}></i>
+                <span>{locale === 'TR' ? 'Favorilerim' : locale === 'AZ' ? 'Favorilərim' : locale === 'RU' ? 'Избранное' : locale === 'AR' ? 'المفضلة' : locale === 'ES' ? 'Favoritos' : 'My Favorites'}</span>
+              </div>
+              {shortlistCount > 0 && (
+                <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${activeView === 'favorites' ? 'bg-white text-rose-600' : 'bg-rose-100 text-rose-600'}`}>
+                  {shortlistCount}
+                </span>
+              )}
+            </button>
 
             {/* Divider */}
             <div className="border-t border-slate-100 my-2" />

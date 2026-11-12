@@ -66,6 +66,7 @@ import {
 import { ArticlesView } from './components/ArticlesView';
 import { AboutView } from './components/AboutView';
 import { InsightsView } from './components/InsightsView';
+import { FavoritesView } from './components/FavoritesView';
 import { ServiceApplicationModal } from './components/ServiceApplicationModal';
 
 const SAMPLE_INITIAL_RFQ: RFQSubmission = {
@@ -131,7 +132,7 @@ export default function App() {
     return saved && valid.includes(saved) ? saved : 'AZ';
   });
 
-  const VALID_VIEWS: ViewMode[] = ['home','buyers','producers','services','products','how-it-works','about','insights','contact','ai-desk','articles'];
+  const VALID_VIEWS: ViewMode[] = ['home','buyers','producers','services','products','favorites','how-it-works','about','insights','contact','ai-desk','articles','dossiers'];
 
   const getViewFromHash = (): ViewMode => {
     const hash = window.location.hash.replace('#/', '').replace('#', '') as ViewMode;
@@ -1129,6 +1130,22 @@ export default function App() {
             onRequestProduct={handleOpenProductRFQ}
             onInspectProduct={(p) => setInspectedProduct(p)}
             onOpenMultiRFQ={handleOpenGeneralRFQ}
+          />
+        )}
+
+        {activeView === 'favorites' && (
+          <FavoritesView
+            locale={locale}
+            shortlistedIds={shortlistedIds}
+            onToggleShortlist={handleToggleShortlist}
+            onRequestProduct={handleOpenProductRFQ}
+            onInspectProduct={(p) => setInspectedProduct(p)}
+            onOpenMultiRFQ={handleOpenGeneralRFQ}
+            onNavigate={(v) => setActiveView(v)}
+            onClearAll={() => {
+              setShortlistedIds([]);
+              localStorage.removeItem('azexbuy_shortlist');
+            }}
           />
         )}
 
