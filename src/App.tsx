@@ -32,6 +32,7 @@ function PageTransition({ viewKey, children }: { viewKey: string; children: Reac
   );
 }
 import {
+  CmsService,
   Locale,
   ProducerApplication,
   ProductItem,
@@ -41,6 +42,7 @@ import {
   ViewMode,
   getLocalizedText,
 } from './types';
+import { SERVICES_PILLARS } from './data/translations';
 import { useLocalization, CANONICAL_CATEGORY_LABELS } from './context/LocalizationContext';
 import { Navbar } from './components/Navbar';
 import {
@@ -327,6 +329,39 @@ export default function App() {
   const { strings, heroImage, buyerCardImage, producerCardImage, whyAzImage, products: cmsProducts, services: cmsServicesPillars, buyerSteps: cmsBuyerSteps, producerSteps: cmsProducerSteps, cmsServices, contact, whyAzexbuyCustom, whyAzerbaijanCustom } = useLocalization();
   const t = strings[locale] || strings.AZ || strings.EN;
   const featuredProducts = cmsProducts.filter((p: any) => p.featured);
+
+  const allServicesForModal: CmsService[] = useMemo(() => {
+    const pillars = cmsServicesPillars && cmsServicesPillars.length > 0 ? cmsServicesPillars : SERVICES_PILLARS;
+    const convertedPillars: CmsService[] = pillars.map((p: any, idx: number) => ({
+      id: p.id,
+      createdAt: '2026-01-01',
+      title: p.title,
+      description: p.subtitle,
+      scope: {
+        AZ: (p.items || []).map((it: any) => it.AZ || it),
+        EN: (p.items || []).map((it: any) => it.EN || it),
+        TR: (p.items || []).map((it: any) => it.TR || it),
+        RU: (p.items || []).map((it: any) => it.RU || it),
+      },
+      targetAudience: {
+        AZ: 'Azərbaycan ixracatçıları və beynəlxalq alıcılar',
+        EN: 'Azerbaijani exporters and global buyers',
+        TR: 'Azerbaycan ihracatçıları ve küresel alıcılar',
+        RU: 'Азербайджанские экспортеры и мировые покупатели',
+        AR: 'المصدرون والمنتجون والشركات التجارية',
+        ES: 'Exportadores, productores y empresas comerciales',
+      },
+      iconClass: p.iconClass,
+      colorClass: p.colorClass,
+      serviceType: 'primary',
+      sortOrder: idx + 1,
+      isActive: true,
+    }));
+
+    const pillarIds = new Set(convertedPillars.map(p => p.id));
+    const extraServices = (cmsServices || []).filter((s: CmsService) => !pillarIds.has(s.id));
+    return [...convertedPillars, ...extraServices];
+  }, [cmsServicesPillars, cmsServices]);
 
   // Dynamic WhyAZEXBUY items (from CMS content or localized translations)
   const effectiveWhyAzexbuyItems = useMemo(() => {
@@ -1254,7 +1289,7 @@ export default function App() {
       {serviceAppModalOpen && (
         <ServiceApplicationModal
           locale={locale}
-          services={cmsServices}
+          services={allServicesForModal}
           preselectedServiceId={serviceAppPreselected}
           onClose={() => { setServiceAppModalOpen(false); setServiceAppPreselected(undefined); }}
           onSubmit={() => { setServiceAppModalOpen(false); setServiceAppPreselected(undefined); showToast(locale === 'AZ' ? 'Müraciətiniz göndərildi!' : locale === 'TR' ? 'Başvurunuz gönderildi!' : locale === 'RU' ? 'Заявка отправлена!' : 'Application submitted!'); }}

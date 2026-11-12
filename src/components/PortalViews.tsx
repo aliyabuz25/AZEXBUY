@@ -1414,7 +1414,8 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
   onOpenServiceApp,
   onNavigate,
 }) => {
-  const { strings, buyerSteps: cmsBuyerSteps, producerSteps: cmsProducerSteps, cmsServices, howItWorksBuyersImage, howItWorksSellersImage, buyerHeroImage, producerHeroImage, servicesHeroImage, productsHeroImage, howItWorksHeroImage, contact } = useLocalization();
+  const { strings, services: cmsServicesPillars, buyerSteps: cmsBuyerSteps, producerSteps: cmsProducerSteps, cmsServices, howItWorksBuyersImage, howItWorksSellersImage, buyerHeroImage, producerHeroImage, servicesHeroImage, productsHeroImage, howItWorksHeroImage, contact } = useLocalization();
+  const [selectedPillar, setSelectedPillar] = useState<any | null>(null);
   const [selectedBuyerStep, setSelectedBuyerStep] = useState<number>(1);
   const [selectedProducerStep, setSelectedProducerStep] = useState<number>(1);
   const [contactSubmitted, setContactSubmitted] = useState(false);
@@ -2103,149 +2104,274 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
           </div>
         </div>
 
-        <section className="py-8 bg-slate-50/70">
-          <div className="custom-container space-y-8">
-            {/* Services Grid — light card design */}
-          {cmsServices.length > 0 && (
-            <div className="space-y-6">
-              {/* Primary */}
-              {cmsServices.filter(s => s.serviceType === 'primary').length > 0 && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  {cmsServices.filter(s => s.serviceType === 'primary').map((srv) => {
-                    const scopeItems: string[] = (srv.scope as any)?.[locale] || (srv.scope as any)?.['EN'] || [];
-                    const badgeLabel = locale === 'AZ' ? 'Əsas xidmət' : locale === 'TR' ? 'Ana hizmet' : locale === 'RU' ? 'Основная услуга' : 'Primary service';
-                    const ctaLabel = locale === 'AZ' ? 'Bu xidmət üçün müraciət et' : locale === 'TR' ? 'Bu hizmet için başvur' : locale === 'RU' ? 'Подать заявку' : 'Apply for this service';
-                    const scopeLabel = locale === 'AZ' ? 'Əhatə dairəsi' : locale === 'TR' ? 'Kapsam' : locale === 'RU' ? 'Объём услуг' : 'Scope';
-                    const forWhomLabel = locale === 'AZ' ? 'Kimlər üçün:' : locale === 'TR' ? 'Kimler için:' : locale === 'RU' ? 'Для кого:' : 'For whom:';
-                    return (
-                      <div key={srv.id} className="bg-white border border-[#E5E7EB] rounded-[13px] p-1 shadow-sm h-full">
-                        <div className="border border-[#E5E7EB] rounded-[24px] p-6 flex flex-col h-full">
-                          {/* Scrollable content */}
-                          <div className="flex flex-col gap-5 flex-1">
-                            {/* Title row */}
-                            <div className="flex items-center gap-3.5">
-                              <i className={`${srv.iconClass} text-[#0EA5E9] text-xl shrink-0`}></i>
-                              <h3 className="text-[20px] font-bold text-[#171717] leading-tight">
-                                {getLocalizedText(srv.title, locale)}
-                              </h3>
-                            </div>
-                            {/* Description */}
-                            <p className="text-[18px] text-[#333333] leading-[28px] font-normal">
-                              {getLocalizedText(srv.description, locale)}
-                            </p>
-                            {/* Scope */}
-                            {scopeItems.length > 0 && (
-                              <div>
-                                <p className="text-[18px] font-bold text-[#171717] mb-2">{scopeLabel}</p>
-                                <ul className="space-y-1.5 pl-[22px]">
-                                  {scopeItems.map((item, i) => (
-                                    <li key={i} className="flex items-center gap-2.5 text-[17px] text-[#333333] leading-[29px]">
-                                      <span className="w-2 h-2 rounded-full bg-[#171717] shrink-0"></span>
-                                      {item}
-                                    </li>
-                                  ))}
-                                </ul>
-                              </div>
-                            )}
-                            {/* For whom */}
-                            <p className="text-[18px] text-[#333333]">
-                              <span className="font-bold">{forWhomLabel} </span>
-                              {getLocalizedText(srv.targetAudience, locale)}
-                            </p>
-                            {/* Badge */}
-                            <span className="inline-block self-start bg-[#E5F7EC] text-[#15803D] text-[12px] font-medium px-3 py-[5px] rounded-full">
-                              {badgeLabel}
-                            </span>
-                          </div>
-                          {/* CTA — always at bottom */}
-                          <div className="mt-5">
-                            <button
-                              type="button"
-                              onClick={() => onOpenServiceApp(srv.id)}
-                              className="w-full h-[50px] bg-[#E9E9E9] hover:bg-[#DCDCDC] text-[#171717] text-[18px] font-bold rounded-full transition-colors duration-200 ease-out cursor-pointer flex items-center justify-center"
-                            >
-                              {ctaLabel}
-                            </button>
-                          </div>
+        <section className="py-10 sm:py-14 bg-slate-50/70">
+          <div className="custom-container space-y-10">
+            {/* Header intro */}
+            <div className="max-w-3xl">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brandBlueLight text-brandNavy text-xs font-bold uppercase tracking-wider mb-3">
+                <i className="fa-solid fa-shield-halved text-brandGreen"></i>
+                <span>
+                  {locale === 'AZ'
+                    ? 'Sovereign İxrac İnfrastrukturu'
+                    : locale === 'TR'
+                    ? 'Stratejik İhracat Altyapısı'
+                    : locale === 'RU'
+                    ? 'Суверенная экспортная инфраструктура'
+                    : locale === 'AR'
+                    ? 'البنية التحتية السيادية للتصدير'
+                    : locale === 'ES'
+                    ? 'Infraestructura Soberana de Exportación'
+                    : 'Sovereign Export Infrastructure'}
+                </span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-2.5">
+                {strings[locale]?.services?.heading ||
+                  (locale === 'AZ'
+                    ? 'Beynəlxalq İxrac və Ticarət Xidmətləri'
+                    : locale === 'TR'
+                    ? 'Uluslararası İhracat ve Ticaret Hizmetleri'
+                    : 'International Export & Trade Services')}
+              </h2>
+              <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
+                {strings[locale]?.services?.subheading ||
+                  (locale === 'AZ'
+                    ? 'Azərbaycan məhsullarının qlobal bazarlara çıxışı üçün tam inteqrasiya olunmuş ticarət, hüquq, gömrük və multimodal logistika həlləri.'
+                    : locale === 'TR'
+                    ? 'Azerbaycan ürünlerinin küresel pazarlara erişimi için tam entegre ticaret, hukuk, gümrük ve multimodal lojistik çözümleri.'
+                    : 'Integrated trade, regulatory compliance, customs, and multimodal logistics solutions for Azerbaijani exports.')}
+              </p>
+            </div>
+
+            {/* 4 Core Service Pillars Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+              {(cmsServicesPillars && cmsServicesPillars.length > 0 ? cmsServicesPillars : SERVICES_PILLARS).map((srv: any, index: number) => {
+                const badgeNumber = `0${index + 1}`;
+                const titleText = getLocalizedText(srv.title, locale);
+                const descText = getLocalizedText(srv.subtitle, locale);
+
+                return (
+                  <div
+                    key={srv.id}
+                    className="bg-white border border-slate-200/90 rounded-2xl p-6 sm:p-7 shadow-sm hover:shadow-md hover:border-slate-300 transition-all duration-200 flex flex-col justify-between group"
+                  >
+                    <div>
+                      {/* Top bar with icon and number */}
+                      <div className="flex items-center justify-between mb-5">
+                        <div className={`w-12 h-12 rounded-xl ${srv.colorClass || 'bg-brandNavy'} text-white flex items-center justify-center text-xl shadow-sm shrink-0`}>
+                          <i className={srv.iconClass}></i>
                         </div>
+                        <span className="text-xs font-extrabold tracking-widest text-slate-400 group-hover:text-brandNavy transition-colors font-mono">
+                          {badgeNumber}
+                        </span>
+                      </div>
+
+                      {/* Title */}
+                      <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-2.5 tracking-tight group-hover:text-brandNavy transition-colors">
+                        {titleText}
+                      </h3>
+
+                      {/* Description */}
+                      <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-6 font-normal">
+                        {descText}
+                      </p>
+
+                      {/* Items checklist */}
+                      <div className="pt-4 border-t border-slate-100">
+                        <ul className="space-y-2.5 mb-6">
+                          {srv.items.map((it: any, idx: number) => (
+                            <li key={idx} className="flex items-center gap-2.5 text-xs sm:text-sm text-slate-700">
+                              <span className="w-5 h-5 rounded-full bg-slate-100 group-hover:bg-brandBlueLight flex items-center justify-center shrink-0 text-brandNavy text-[10px] transition-colors">
+                                <i className="fa-solid fa-check"></i>
+                              </span>
+                              <span className="font-medium text-slate-800">{getLocalizedText(it, locale)}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+
+                    {/* Action buttons */}
+                    <div className="pt-4 border-t border-slate-100 flex items-center gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedPillar(srv)}
+                        className="flex-1 inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs sm:text-sm font-semibold transition-colors cursor-pointer"
+                      >
+                        <span>{locale === 'AZ' ? 'Ətraflı' : locale === 'TR' ? 'Detaylı' : locale === 'RU' ? 'Подробнее' : locale === 'AR' ? 'التفاصيل' : locale === 'ES' ? 'Más detalles' : 'Details'}</span>
+                        <i className="fa-solid fa-arrow-right text-[10px]"></i>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => onOpenServiceApp(srv.id)}
+                        className="inline-flex items-center justify-center gap-2 h-10 px-4 sm:px-5 rounded-xl bg-brandNavy hover:bg-brandNavyDark text-white text-xs sm:text-sm font-semibold transition-colors cursor-pointer shadow-sm"
+                      >
+                        <span>{locale === 'AZ' ? 'Müraciət et' : locale === 'TR' ? 'Başvur' : locale === 'RU' ? 'Подать заявку' : locale === 'AR' ? 'تقديم طلب' : locale === 'ES' ? 'Solicitar' : 'Apply'}</span>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Additional Secondary Services from CMS (if available) */}
+            {cmsServices && cmsServices.filter(s => s.serviceType === 'secondary' && !['market-access', 'buyer-sales', 'export-management', 'logistics'].includes(s.id)).length > 0 && (
+              <div className="pt-6">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="h-px flex-1 bg-slate-200"></div>
+                  <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">
+                    {locale === 'AZ' ? 'Əlavə İxtisaslaşdırılmış Xidmətlər' : locale === 'TR' ? 'Ek Uzmanlık Hizmetleri' : locale === 'RU' ? 'Дополнительные услуги' : 'Additional Specialized Services'}
+                  </span>
+                  <div className="h-px flex-1 bg-slate-200"></div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  {cmsServices.filter(s => s.serviceType === 'secondary' && !['market-access', 'buyer-sales', 'export-management', 'logistics'].includes(s.id)).map((srv) => {
+                    const scopeItems: string[] = (srv.scope as any)?.[locale] || (srv.scope as any)?.['EN'] || [];
+                    const ctaLabel = locale === 'AZ' ? 'Müraciət et' : locale === 'TR' ? 'Başvur' : locale === 'RU' ? 'Подать заявку' : 'Apply';
+                    return (
+                      <div key={srv.id} className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+                        <div>
+                          <div className="flex items-center gap-3 mb-3">
+                            <i className={`${srv.iconClass || 'fa-solid fa-briefcase'} text-brandNavy text-lg shrink-0`}></i>
+                            <h4 className="text-base font-bold text-slate-900 leading-tight">
+                              {getLocalizedText(srv.title, locale)}
+                            </h4>
+                          </div>
+                          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-4">
+                            {getLocalizedText(srv.description, locale)}
+                          </p>
+                          {scopeItems.length > 0 && (
+                            <ul className="space-y-1.5 mb-4">
+                              {scopeItems.map((item, i) => (
+                                <li key={i} className="flex items-center gap-2 text-xs text-slate-700">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0"></span>
+                                  {item}
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => onOpenServiceApp(srv.id)}
+                          className="w-full h-9 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold rounded-lg transition-colors cursor-pointer flex items-center justify-center gap-2"
+                        >
+                          <span>{ctaLabel}</span>
+                          <i className="fa-solid fa-arrow-right text-[10px]"></i>
+                        </button>
                       </div>
                     );
                   })}
                 </div>
-              )}
-
-              {/* Secondary */}
-              {cmsServices.filter(s => s.serviceType === 'secondary').length > 0 && (
-                <div>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="h-px flex-1 bg-slate-200"></div>
-                    <span className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">
-                      {locale === 'AZ' ? 'Əlavə xidmətlər' : locale === 'TR' ? 'Ek hizmetler' : locale === 'RU' ? 'Дополнительные услуги' : 'Additional services'}
-                    </span>
-                    <div className="h-px flex-1 bg-slate-200"></div>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    {cmsServices.filter(s => s.serviceType === 'secondary').map((srv) => {
-                      const scopeItems: string[] = (srv.scope as any)?.[locale] || (srv.scope as any)?.['EN'] || [];
-                      const badgeLabel = locale === 'AZ' ? 'Əlavə xidmət' : locale === 'TR' ? 'Ek hizmet' : locale === 'RU' ? 'Доп. услуга' : 'Additional service';
-                      const ctaLabel = locale === 'AZ' ? 'Bu xidmət üçün müraciət et' : locale === 'TR' ? 'Bu hizmet için başvur' : locale === 'RU' ? 'Подать заявку' : 'Apply for this service';
-                      const scopeLabel = locale === 'AZ' ? 'Əhatə dairəsi' : locale === 'TR' ? 'Kapsam' : locale === 'RU' ? 'Объём услуг' : 'Scope';
-                      const forWhomLabel = locale === 'AZ' ? 'Kimlər üçün:' : locale === 'TR' ? 'Kimler için:' : locale === 'RU' ? 'Для кого:' : 'For whom:';
-                      return (
-                        <div key={srv.id} className="bg-white border border-[#E5E7EB] rounded-[13px] p-1 shadow-sm h-full">
-                          <div className="border border-[#E5E7EB] rounded-[24px] p-6 flex flex-col h-full">
-                            <div className="flex flex-col gap-5 flex-1">
-                              <div className="flex items-center gap-3.5">
-                                <i className={`${srv.iconClass} text-[#0EA5E9] text-xl shrink-0`}></i>
-                                <h3 className="text-[20px] font-bold text-[#171717] leading-tight">
-                                  {getLocalizedText(srv.title, locale)}
-                                </h3>
-                              </div>
-                              <p className="text-[18px] text-[#333333] leading-[28px] font-normal">
-                                {getLocalizedText(srv.description, locale)}
-                              </p>
-                              {scopeItems.length > 0 && (
-                                <div>
-                                  <p className="text-[18px] font-bold text-[#171717] mb-2">{scopeLabel}</p>
-                                  <ul className="space-y-1.5 pl-[22px]">
-                                    {scopeItems.map((item, i) => (
-                                      <li key={i} className="flex items-center gap-2.5 text-[17px] text-[#333333] leading-[29px]">
-                                        <span className="w-2 h-2 rounded-full bg-[#171717] shrink-0"></span>
-                                        {item}
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </div>
-                              )}
-                              <p className="text-[18px] text-[#333333]">
-                                <span className="font-bold">{forWhomLabel} </span>
-                                {getLocalizedText(srv.targetAudience, locale)}
-                              </p>
-                              <span className="inline-block self-start bg-slate-100 text-slate-600 text-[12px] font-medium px-3 py-[5px] rounded-full">
-                                {badgeLabel}
-                              </span>
-                            </div>
-                            <div className="mt-5">
-                              <button
-                                type="button"
-                                onClick={() => onOpenServiceApp(srv.id)}
-                                className="w-full h-[50px] bg-[#E9E9E9] hover:bg-[#DCDCDC] text-[#171717] text-[18px] font-bold rounded-full transition-colors duration-200 ease-out cursor-pointer flex items-center justify-center"
-                              >
-                                {ctaLabel}
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
+              </div>
+            )}
           </div>
         </section>
+
+        {/* Selected Pillar Details Modal (for "Ətraflı") */}
+        {selectedPillar && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden border border-slate-200">
+              {/* Modal Header */}
+              <div className="p-6 bg-slate-50 border-b border-slate-200/80 flex items-start justify-between gap-4">
+                <div className="flex items-center gap-3.5">
+                  <div className={`w-12 h-12 rounded-xl ${selectedPillar.colorClass || 'bg-brandNavy'} text-white flex items-center justify-center text-xl shadow-sm shrink-0`}>
+                    <i className={selectedPillar.iconClass}></i>
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-brandNavy">AZEXBUY Sovereign Export Desk</span>
+                    <h2 className="text-xl font-bold text-slate-900">{getLocalizedText(selectedPillar.title, locale)}</h2>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSelectedPillar(null)}
+                  className="text-slate-400 hover:text-slate-700 p-2 rounded-lg hover:bg-slate-200/60 transition-colors cursor-pointer"
+                >
+                  <i className="fa-solid fa-xmark text-lg"></i>
+                </button>
+              </div>
+
+              {/* Modal Body */}
+              <div className="p-6 space-y-6 overflow-y-auto flex-1">
+                <div>
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
+                    {locale === 'AZ' ? 'Strateji İcmal' : locale === 'TR' ? 'Stratejik Genel Bakış' : locale === 'RU' ? 'Обзор' : 'Strategic Overview'}
+                  </h4>
+                  <p className="text-sm text-slate-700 leading-relaxed">
+                    {getLocalizedText(selectedPillar.subtitle, locale)}
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
+                    {locale === 'AZ' ? 'Xidmət Paketi və Əhatə Dairəsi' : locale === 'TR' ? 'Hizmet Paketi ve Kapsamı' : locale === 'RU' ? 'Состав пакета услуг' : 'Service Breakdown'}
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    {selectedPillar.items.map((it: any, idx: number) => (
+                      <div key={idx} className="flex items-center gap-2 p-2.5 rounded-lg bg-slate-50 border border-slate-200/70 text-xs sm:text-sm font-medium text-slate-800">
+                        <i className="fa-solid fa-check text-brandGreen text-xs shrink-0"></i>
+                        <span>{getLocalizedText(it, locale)}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {selectedPillar.deliverables && selectedPillar.deliverables.length > 0 && (
+                  <div>
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
+                      {locale === 'AZ' ? 'Təhvil Verilən Sənədlər və Hesabatlar' : locale === 'TR' ? 'Teslim Edilen Belgeler ve Raporlar' : locale === 'RU' ? 'Предоставляемые документы и отчеты' : 'Deliverables & Reports'}
+                    </h4>
+                    <div className="space-y-2">
+                      {selectedPillar.deliverables.map((deliv: any, idx: number) => (
+                        <div key={idx} className="flex items-start gap-2.5 p-3 rounded-lg bg-emerald-50/60 border border-emerald-100 text-xs sm:text-sm text-emerald-900">
+                          <i className="fa-solid fa-file-shield text-emerald-600 mt-0.5 shrink-0"></i>
+                          <span>{getLocalizedText(deliv, locale)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {selectedPillar.turnaround && (
+                  <div className="flex items-center justify-between p-3.5 bg-slate-50 rounded-xl border border-slate-200/80">
+                    <div className="flex items-center gap-2.5 text-xs sm:text-sm text-slate-700">
+                      <i className="fa-regular fa-clock text-brandNavy text-base"></i>
+                      <span className="font-medium">
+                        {locale === 'AZ' ? 'Standart icra müddəti:' : locale === 'TR' ? 'Standart tamamlama süresi:' : locale === 'RU' ? 'Срок выполнения:' : 'Turnaround:'}
+                      </span>
+                    </div>
+                    <span className="text-xs sm:text-sm font-bold text-brandNavy bg-brandBlueLight px-3 py-1 rounded-full">
+                      {selectedPillar.turnaround}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Modal Footer */}
+              <div className="p-4 sm:p-5 bg-slate-50 border-t border-slate-200/80 flex items-center justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setSelectedPillar(null)}
+                  className="px-4 py-2 text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-800 rounded-lg hover:bg-slate-200/60 transition-colors cursor-pointer"
+                >
+                  {locale === 'AZ' ? 'Bağla' : locale === 'TR' ? 'Kapat' : locale === 'RU' ? 'Закрыть' : 'Close'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const pid = selectedPillar.id;
+                    setSelectedPillar(null);
+                    onOpenServiceApp(pid);
+                  }}
+                  className="px-5 py-2.5 bg-brandNavy hover:bg-brandNavyDark text-white text-xs sm:text-sm font-bold rounded-lg transition-colors cursor-pointer shadow-sm flex items-center gap-2"
+                >
+                  <span>{locale === 'AZ' ? 'Bu Xidmət üçün Müraciət et' : locale === 'TR' ? 'Bu Hizmet İçin Başvur' : locale === 'RU' ? 'Подать заявку' : 'Apply for this Service'}</span>
+                  <i className="fa-solid fa-arrow-right text-xs"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
