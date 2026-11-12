@@ -44,7 +44,7 @@ export interface LocalizedText {
 }
 
 export const getLocalizedText = (
-  textObj: LocalizedText | Record<string, string> | string | undefined | null,
+  textObj: LocalizedText | ServicePillarItem | Record<string, any> | string | undefined | null,
   locale: Locale
 ): string => {
   if (!textObj) return '';
@@ -95,6 +95,7 @@ export interface StepItem {
 }
 
 export interface ServicePillarItem {
+  [key: string]: any;
   EN?: string;
   AZ?: string;
   TR?: string;

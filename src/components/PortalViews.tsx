@@ -65,6 +65,11 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
 
   const categories = [
     { key: 'all', label: locale === 'AZ' ? 'Bütün Kateqoriyalar' : locale === 'TR' ? 'Tüm Kategoriler' : locale === 'RU' ? 'Все категории' : locale === 'AR' ? 'جميع الفئات' : locale === 'ES' ? 'Todas las Categorías' : 'All Commodities' },
+    {
+      key: 'favorites',
+      label: locale === 'AZ' ? 'Favorilər' : locale === 'TR' ? 'Favoriler' : locale === 'RU' ? 'Избранное' : locale === 'AR' ? 'المفضلة' : locale === 'ES' ? 'Favoritos' : 'Favorites',
+      isFavorite: true,
+    },
     { key: 'industrial', label: locale === 'AZ' ? 'Sənaye və Tekstil' : locale === 'TR' ? 'Endüstri ve Tekstil' : locale === 'RU' ? 'Промышленность и текстиль' : locale === 'AR' ? 'الصناعة والمنسوجات' : locale === 'ES' ? 'Industrial y Textiles' : 'Industrial & Textiles' },
     { key: 'agro', label: locale === 'AZ' ? 'Kənd Təsərrüfatı və Təzə Məhsullar' : locale === 'TR' ? 'Tarım ve Taze Ürünler' : locale === 'RU' ? 'Сельское хозяйство' : locale === 'AR' ? 'الزراعة والمنتجات الطازجة' : locale === 'ES' ? 'Agricultura y Productos Frescos' : 'Agriculture & Fresh Produce' },
     { key: 'construction', label: locale === 'AZ' ? 'Tikinti Materialları' : locale === 'TR' ? 'İnşaat Malzemeleri' : locale === 'RU' ? 'Строительные материалы' : locale === 'AR' ? 'مواد البناء' : locale === 'ES' ? 'Materiales de Construcción' : 'Construction Materials' },
@@ -74,17 +79,21 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
   ];
 
   const filtered = cmsProducts.filter((p: any) => {
-    const matchesCat =
-      categoryFilter === 'all' ||
-      p.categoryKey === categoryFilter ||
-      p.categoryId === categoryFilter ||
-      p.categorySlug === categoryFilter ||
-      (categoryFilter === 'industrial' && (p.categoryKey === 'textile' || p.categoryKey === 'metals' || p.categorySlug?.includes('industr'))) ||
-      (categoryFilter === 'agro' && (p.categoryKey === 'agri' || p.categorySlug?.includes('agri') || p.categorySlug?.includes('agro'))) ||
-      (categoryFilter === 'food' && (p.categoryKey === 'food' || p.categorySlug?.includes('food'))) ||
-      (categoryFilter === 'construction' && (p.categoryKey === 'construction' || p.categorySlug?.includes('construct'))) ||
-      (categoryFilter === 'packaging' && (p.categoryKey === 'packaging' || p.categorySlug?.includes('pack'))) ||
-      (categoryFilter === 'chemicals' && (p.categoryKey === 'chemicals' || p.categorySlug?.includes('chem')));
+    if (categoryFilter === 'favorites') {
+      if (!shortlistedIds.includes(p.id)) return false;
+    } else if (categoryFilter !== 'all') {
+      const matchesCat =
+        p.categoryKey === categoryFilter ||
+        p.categoryId === categoryFilter ||
+        p.categorySlug === categoryFilter ||
+        (categoryFilter === 'industrial' && (p.categoryKey === 'textile' || p.categoryKey === 'metals' || p.categorySlug?.includes('industr'))) ||
+        (categoryFilter === 'agro' && (p.categoryKey === 'agri' || p.categorySlug?.includes('agri') || p.categorySlug?.includes('agro'))) ||
+        (categoryFilter === 'food' && (p.categoryKey === 'food' || p.categorySlug?.includes('food'))) ||
+        (categoryFilter === 'construction' && (p.categoryKey === 'construction' || p.categorySlug?.includes('construct'))) ||
+        (categoryFilter === 'packaging' && (p.categoryKey === 'packaging' || p.categorySlug?.includes('pack'))) ||
+        (categoryFilter === 'chemicals' && (p.categoryKey === 'chemicals' || p.categorySlug?.includes('chem')));
+      if (!matchesCat) return false;
+    }
     const matchesIncoterm =
       incotermFilter === 'ALL' ||
       (Array.isArray(p.incoterms) && p.incoterms.includes(incotermFilter));
@@ -94,7 +103,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
       getLocalizedText(p.name, locale).toLowerCase().includes(q) ||
       String(p.hsCode || '').toLowerCase().includes(q) ||
       getLocalizedText(p.originRegion, locale).toLowerCase().includes(q);
-    return matchesCat && matchesIncoterm && matchesSearch;
+    return matchesIncoterm && matchesSearch;
   });
 
   const sortedFiltered = [...filtered].sort((a, b) => {
@@ -256,17 +265,17 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
               {shortlistedIds.length > 0 && (
                 <button
                   type="button"
-                  onClick={onOpenMultiRFQ}
-                  className="bg-brandGreen hover:bg-brandGreenDark text-white text-xs font-bold px-5 py-2.5 rounded cursor-pointer flex items-center gap-2 shadow-sm"
+                  onClick={() => { setCategoryFilter('favorites'); setPage(1); }}
+                  className="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2.5 rounded-lg cursor-pointer flex items-center gap-2 shadow-sm transition-colors"
                 >
-                  <span>Quote Shortlist ({shortlistedIds.length})</span>
-                  <i className="fa-solid fa-arrow-right text-[10px]"></i>
+                  <i className="fa-solid fa-heart text-xs"></i>
+                  <span>{locale === 'TR' ? `Favoriler (${shortlistedIds.length})` : locale === 'AZ' ? `Favorilər (${shortlistedIds.length})` : `Favorites (${shortlistedIds.length})`}</span>
                 </button>
               )}
               <button
                 type="button"
                 onClick={onOpenMultiRFQ}
-                className="bg-brandNavy hover:bg-brandNavyDark text-white text-xs font-semibold px-5 py-2.5 rounded transition-colors cursor-pointer"
+                className="bg-brandNavy hover:bg-brandNavyDark text-white text-xs font-semibold px-5 py-2.5 rounded-lg transition-colors cursor-pointer"
               >
                 {locale === 'AZ' ? 'Ümumi RFQ Aç' : locale === 'TR' ? 'Genel RFQ Aç' : 'Open General RFQ'}
               </button>
@@ -282,20 +291,36 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
         <div className="bg-white border border-slate-200 rounded-lg p-4 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
           {/* Category Segmented Buttons */}
           <div className="flex flex-wrap items-center gap-1.5">
-            {categories.map((cat) => (
-              <button
-                key={cat.key}
-                type="button"
-                onClick={() => setCategoryFilter(cat.key)}
-                className={`px-3 py-1.5 rounded text-xs font-bold transition-colors cursor-pointer whitespace-nowrap ${
-                  categoryFilter === cat.key
-                    ? 'bg-brandNavy text-white'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                }`}
-              >
-                {cat.label}
-              </button>
-            ))}
+            {categories.map((cat: any) => {
+              const isFav = cat.key === 'favorites';
+              const isActive = categoryFilter === cat.key;
+              return (
+                <button
+                  key={cat.key}
+                  type="button"
+                  onClick={() => { setCategoryFilter(cat.key); setPage(1); }}
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all duration-150 cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+                    isActive
+                      ? isFav
+                        ? 'bg-rose-600 text-white shadow-xs'
+                        : 'bg-brandNavy text-white shadow-xs'
+                      : isFav
+                      ? 'bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200/80'
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  }`}
+                >
+                  {isFav && <i className={`fa-solid fa-heart ${isActive ? 'text-white' : 'text-rose-500'} text-[11px]`}></i>}
+                  <span>{cat.label}</span>
+                  {isFav && (
+                    <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold font-mono ${
+                      isActive ? 'bg-white text-rose-600' : 'bg-rose-200/80 text-rose-800'
+                    }`}>
+                      {shortlistedIds.length}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
           </div>
 
           {/* Search & Incoterm Filter & View Switcher */}
@@ -380,11 +405,40 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
 
         {/* Data Container: Table vs Grid */}
         {sortedFiltered.length === 0 ? (
-          <div className="bg-white border border-dashed border-slate-300 rounded-lg p-12 text-center text-slate-500">
-            <i className="fa-solid fa-box-open text-3xl mb-3 text-slate-400"></i>
-            <p className="font-semibold text-slate-700">Məhsul tapılmadı / No products found</p>
-            <p className="text-xs text-slate-400 mt-1">Axtarış filtrini dəyişin və ya daha sonra təkrar yoxlayın.</p>
-          </div>
+          categoryFilter === 'favorites' ? (
+            <div className="bg-white border border-slate-200/90 rounded-2xl p-10 sm:p-14 text-center max-w-md mx-auto my-8 shadow-xs">
+              <div className="w-16 h-16 rounded-full bg-rose-50 text-rose-500 mx-auto flex items-center justify-center text-2xl mb-4 shadow-2xs">
+                <i className="fa-regular fa-heart"></i>
+              </div>
+              <h3 className="text-base font-bold text-slate-800 mb-1.5">
+                {locale === 'TR'
+                  ? 'Henüz favori ürününüz yok'
+                  : locale === 'AZ'
+                  ? 'Hələ favori məhsulunuz yoxdur'
+                  : 'No favorite products yet'}
+              </h3>
+              <p className="text-xs text-slate-500 mb-6 leading-relaxed">
+                {locale === 'TR'
+                  ? 'Beğendiğiniz ürünlerin üzerindeki kalp (❤️) butonuna tıklayarak favorilerinize ekleyebilir ve kolayca takip edebilirsiniz.'
+                  : locale === 'AZ'
+                  ? 'Bəyəndiyiniz məhsulların üzərindəki ürək (❤️) düyməsinə klikləyərək favorilərə əlavə edə bilərsiniz.'
+                  : 'Click the heart icon on any product to save it to your favorites.'}
+              </p>
+              <button
+                type="button"
+                onClick={() => setCategoryFilter('all')}
+                className="px-5 py-2.5 bg-brandNavy hover:bg-brandNavyDark text-white text-xs font-semibold rounded-xl transition-colors cursor-pointer shadow-2xs"
+              >
+                {locale === 'TR' ? 'Tüm Ürünleri İncele →' : locale === 'AZ' ? 'Bütün Məhsulları Göstər →' : 'Browse All Products →'}
+              </button>
+            </div>
+          ) : (
+            <div className="bg-white border border-dashed border-slate-300 rounded-xl p-12 text-center text-slate-500">
+              <i className="fa-solid fa-box-open text-3xl mb-3 text-slate-400"></i>
+              <p className="font-semibold text-slate-700">Məhsul tapılmadı / No products found</p>
+              <p className="text-xs text-slate-400 mt-1">Axtarış filtrini dəyişin və ya daha sonra təkrar yoxlayın.</p>
+            </div>
+          )
         ) : viewMode === 'table' ? (
           /* ── FAST CLEAN ROW-BY-ROW DATAGRID (IMAGELESS) ── */
           <div className="bg-white border border-slate-200 rounded-lg shadow-2xs overflow-hidden">
@@ -496,12 +550,12 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
                             <button
                               type="button"
                               onClick={() => onToggleShortlist(product.id)}
-                              className={`w-7 h-7 rounded flex items-center justify-center transition-colors cursor-pointer ${
-                                isShortlisted ? 'bg-brandGreen text-white' : 'text-slate-400 hover:text-slate-700 hover:bg-slate-100'
+                              className={`w-7 h-7 rounded-full flex items-center justify-center transition-all cursor-pointer ${
+                                isShortlisted ? 'bg-rose-500 text-white shadow-2xs' : 'text-slate-400 hover:text-rose-600 hover:bg-rose-50'
                               }`}
-                              title={isShortlisted ? 'Seçilmişlərdən çıxar' : 'Seçilmişlərə əlavə et'}
+                              title={isShortlisted ? (locale === 'TR' ? 'Favorilerden Çıkar' : 'Favorilərdən çıxar') : (locale === 'TR' ? 'Favorilere Ekle' : 'Favorilərə əlavə et')}
                             >
-                              <i className={`fa-${isShortlisted ? 'solid' : 'regular'} fa-bookmark text-[11px]`}></i>
+                              <i className={`fa-${isShortlisted ? 'solid' : 'regular'} fa-heart text-[11px]`}></i>
                             </button>
                           </div>
                         </td>
@@ -513,89 +567,114 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
             </div>
           </div>
         ) : (
-          /* ── GRID MODE (CARDS) ── */
+          /* ── GRID MODE (SLEEK & CLEAN CARDS) ── */
           <div className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {paginated.map((product) => {
-              const isShortlisted = shortlistedIds.includes(product.id);
-              return (
-                <div
-                  key={product.id}
-                  className="bg-white border border-slate-200 rounded-lg p-4 flex flex-col justify-between hover:shadow-md transition-shadow"
-                >
-                  <div>
-                    <div
-                      onClick={() => onInspectProduct(product)}
-                      className="h-44 rounded overflow-hidden bg-slate-100 mb-3 relative cursor-pointer group"
-                    >
-                      <SafeImage
-                        src={product.image}
-                        alt={getLocalizedText(product.name, locale)}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        fallbackIcon="fa-regular fa-image"
-                        fallbackText={pagLabels.noImage}
-                      />
-                      <div className="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-xs text-slate-700 text-[11px] font-semibold px-2.5 py-1 rounded shadow-xs border border-slate-200/80 pointer-events-none">
-                        {getLocalizedText(product.categoryLabel, locale)}
+                const isShortlisted = shortlistedIds.includes(product.id);
+                return (
+                  <div
+                    key={product.id}
+                    className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden flex flex-col justify-between hover:shadow-lg hover:border-slate-300 hover:-translate-y-0.5 transition-all duration-200 group"
+                  >
+                    <div>
+                      {/* Product Image Container */}
+                      <div
+                        onClick={() => onInspectProduct(product)}
+                        className="h-48 sm:h-52 overflow-hidden bg-slate-50 relative cursor-pointer"
+                      >
+                        <SafeImage
+                          src={product.image}
+                          alt={getLocalizedText(product.name, locale)}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                          fallbackIcon="fa-regular fa-image"
+                          fallbackText={pagLabels.noImage}
+                        />
+
+                        {/* Category Pill */}
+                        <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md text-slate-700 text-[10px] font-semibold px-2.5 py-0.5 rounded-full shadow-2xs border border-white/60 pointer-events-none">
+                          {getLocalizedText(product.categoryLabel, locale)}
+                        </div>
+
+                        {/* Favorite Heart Button */}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onToggleShortlist(product.id);
+                          }}
+                          className={`absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer z-10 shadow-sm ${
+                            isShortlisted
+                              ? 'bg-rose-500 text-white hover:bg-rose-600 scale-105 shadow-rose-200'
+                              : 'bg-white/90 text-slate-500 hover:text-rose-500 hover:bg-white hover:scale-110'
+                          }`}
+                          title={isShortlisted ? (locale === 'TR' ? 'Favorilerden Çıkar' : locale === 'AZ' ? 'Favorilərdən Çıxar' : 'Remove from Favorites') : (locale === 'TR' ? 'Favorilere Ekle' : locale === 'AZ' ? 'Favorilərə Əlavə Et' : 'Add to Favorites')}
+                        >
+                          <i className={`fa-${isShortlisted ? 'solid' : 'regular'} fa-heart text-sm`}></i>
+                        </button>
+
+                        {/* Origin Region Pill on Image */}
+                        <div className="absolute bottom-2.5 left-3 bg-black/45 backdrop-blur-xs text-white text-[10px] font-medium px-2 py-0.5 rounded-full flex items-center gap-1 pointer-events-none">
+                          <i className="fa-solid fa-location-dot text-[9px] text-emerald-400"></i>
+                          <span>{getLocalizedText(product.originRegion, locale) || 'Azərbaycan'}</span>
+                        </div>
                       </div>
+
+                      {/* Content Body */}
+                      <div className="p-4 pb-2">
+                        {/* HS Code & MOQ Row */}
+                        <div className="flex items-center justify-between text-[11px] text-slate-400 font-mono mb-1.5">
+                          <span className="font-semibold text-slate-500">HS {product.hsCode}</span>
+                          {product.minOrderQty && (
+                            <span className="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-sans truncate max-w-[140px]" title={`MOQ: ${product.minOrderQty}`}>
+                              MOQ: {product.minOrderQty}
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Product Title */}
+                        <h3
+                          onClick={() => onInspectProduct(product)}
+                          className="text-sm sm:text-base font-bold text-slate-900 group-hover:text-brandNavy transition-colors line-clamp-1 mb-1 tracking-tight cursor-pointer"
+                          title={getLocalizedText(product.name, locale)}
+                        >
+                          {getLocalizedText(product.name, locale)}
+                        </h3>
+
+                        {/* Description */}
+                        <p
+                          className="text-xs text-slate-500 leading-relaxed mb-3 line-clamp-2 font-normal"
+                          title={getLocalizedText(product.shortDesc, locale)}
+                        >
+                          {getLocalizedText(product.shortDesc, locale)}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Footer Action Row */}
+                    <div className="p-4 pt-2 flex items-center gap-2">
                       <button
                         type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onToggleShortlist(product.id);
-                        }}
-                        className={`absolute top-2.5 right-2.5 w-7 h-7 rounded flex items-center justify-center text-xs transition-colors cursor-pointer z-10 ${
-                          isShortlisted
-                            ? 'bg-brandGreen text-white'
-                            : 'bg-white/90 text-slate-700 hover:bg-white'
-                        }`}
-                        title={isShortlisted ? 'Remove from RFQ Shortlist' : 'Add to RFQ Shortlist'}
+                        onClick={() => onInspectProduct(product)}
+                        className="h-9 px-3 text-xs font-semibold text-slate-700 hover:text-brandNavy bg-slate-100 hover:bg-slate-200/80 rounded-xl transition-colors cursor-pointer shrink-0"
                       >
-                        <i className={`fa-${isShortlisted ? 'solid' : 'regular'} fa-bookmark`}></i>
+                        {locale === 'TR' ? 'Detay' : locale === 'AZ' ? 'Detallar' : 'Specs'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => onRequestProduct(product)}
+                        className="flex-1 h-9 px-4 bg-brandNavy hover:bg-brandNavyDark text-white text-xs font-semibold rounded-xl transition-all duration-150 flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs hover:shadow-xs"
+                      >
+                        <span>{strings[locale]?.featuredProducts?.requestProduct || strings.AZ?.featuredProducts?.requestProduct || (locale === 'TR' ? 'Başvur' : locale === 'AZ' ? 'Müraciət Et' : 'Request RFQ')}</span>
+                        <i className="fa-solid fa-arrow-right text-[10px]"></i>
                       </button>
                     </div>
-
-                    {/* Clean B2B Metadata */}
-                    <div className="flex items-center gap-2 text-[11px] text-slate-500 mb-1">
-                      <span className="font-semibold text-slate-600">HS {product.hsCode}</span>
-                    </div>
-
-                    <h3
-                      onClick={() => onInspectProduct(product)}
-                      className="text-base font-bold text-slate-900 hover:text-brandNavy cursor-pointer mb-1 line-clamp-1"
-                      title={getLocalizedText(product.name, locale)}
-                    >
-                      {getLocalizedText(product.name, locale)}
-                    </h3>
-
-                    <p className="text-xs text-slate-600 leading-relaxed mb-3 line-clamp-2" title={getLocalizedText(product.shortDesc, locale)}>
-                      {getLocalizedText(product.shortDesc, locale)}
-                    </p>
                   </div>
-
-                  <div className="flex items-center gap-2 pt-2 border-t border-slate-100">
-                    <button
-                      type="button"
-                      onClick={() => onInspectProduct(product)}
-                      className="px-3 py-2 text-xs font-bold text-brandNavy bg-slate-100 hover:bg-slate-200 rounded transition-colors cursor-pointer"
-                    >
-                      Specs
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => onRequestProduct(product)}
-                      className="flex-1 bg-brandGreen hover:bg-brandGreenDark text-white text-xs font-bold py-2 px-3 rounded transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
-                    >
-                      <span>{strings[locale]?.featuredProducts?.requestProduct || strings.AZ?.featuredProducts?.requestProduct || 'Request RFQ'}</span>
-                      <i className="fa-solid fa-arrow-right text-[10px]"></i>
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
       {/* Unified Numbered Pagination Bar */}
       {totalPages > 1 && (

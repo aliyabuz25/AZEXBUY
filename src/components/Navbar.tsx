@@ -236,6 +236,22 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </div>
 
+          {/* Favorites shortcut */}
+          {shortlistCount > 0 && (
+            <button
+              type="button"
+              aria-label="Favorites"
+              onClick={() => handleNavClick('products')}
+              className="relative p-2 rounded-full text-rose-500 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+              title={`${shortlistCount} ${locale === 'TR' ? 'favori ürün' : locale === 'AZ' ? 'favori məhsul' : 'favorite products'}`}
+            >
+              <i className="fa-solid fa-heart text-sm"></i>
+              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-rose-500 text-white text-[9px] font-bold flex items-center justify-center shadow-xs">
+                {shortlistCount}
+              </span>
+            </button>
+          )}
+
           {/* Search */}
           <button
             type="button"
