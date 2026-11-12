@@ -22,6 +22,7 @@ import { SafeImage } from './SafeImage';
 
 interface CatalogViewProps {
   locale: Locale;
+  initialCategory?: string;
   shortlistedIds: string[];
   onToggleShortlist: (id: string) => void;
   onRequestProduct: (product: ProductItem) => void;
@@ -31,6 +32,7 @@ interface CatalogViewProps {
 
 export const CatalogView: React.FC<CatalogViewProps> = ({
   locale,
+  initialCategory = 'all',
   shortlistedIds,
   onToggleShortlist,
   onRequestProduct,
@@ -39,7 +41,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
 }) => {
   const { strings, products: cmsProducts, productsHeroImage } = useLocalization();
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('table');
-  const [categoryFilter, setCategoryFilter] = useState<string>('all');
+  const [categoryFilter, setCategoryFilter] = useState<string>(initialCategory || 'all');
   const [incotermFilter, setIncotermFilter] = useState<IncotermCode | 'ALL'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortField, setSortField] = useState<'name' | 'hsCode' | 'category' | 'origin'>('name');
@@ -47,13 +49,21 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(25);
 
+  useEffect(() => {
+    if (initialCategory) {
+      setCategoryFilter(initialCategory);
+      setPage(1);
+    }
+  }, [initialCategory]);
+
   const categories = [
-    { key: 'all', label: locale === 'AZ' ? 'Bütün Kateqoriyalar' : locale === 'RU' ? 'Все категории' : 'All Commodities' },
-    { key: 'agro', label: locale === 'AZ' ? 'Kənd Təsərrüfatı və Qida' : locale === 'RU' ? 'Агропром и продукты' : 'Agriculture & Food' },
-    { key: 'textile', label: locale === 'AZ' ? 'Tekstil və Xalça' : locale === 'RU' ? 'Текстиль и ковры' : 'Textile & Carpets' },
-    { key: 'construction', label: locale === 'AZ' ? 'Tikinti Daşı və Mərmər' : locale === 'RU' ? 'Мрамор и стройматериалы' : 'Construction & Stone' },
-    { key: 'metals', label: locale === 'AZ' ? 'Metallurgiya və Sənaye' : locale === 'RU' ? 'Металлургия и трубы' : 'Metals & Steel' },
-    { key: 'chemicals', label: locale === 'AZ' ? 'Kimya və Polimerlər' : locale === 'RU' ? 'Химия и удобрения' : 'Chemicals & Urea' },
+    { key: 'all', label: locale === 'AZ' ? 'Bütün Kateqoriyalar' : locale === 'TR' ? 'Tüm Kategoriler' : locale === 'RU' ? 'Все категории' : locale === 'AR' ? 'جميع الفئات' : locale === 'ES' ? 'Todas las Categorías' : 'All Commodities' },
+    { key: 'industrial', label: locale === 'AZ' ? 'Sənaye və Tekstil' : locale === 'TR' ? 'Endüstri ve Tekstil' : locale === 'RU' ? 'Промышленность и текстиль' : locale === 'AR' ? 'الصناعة والمنسوجات' : locale === 'ES' ? 'Industrial y Textiles' : 'Industrial & Textiles' },
+    { key: 'agro', label: locale === 'AZ' ? 'Kənd Təsərrüfatı və Təzə Məhsullar' : locale === 'TR' ? 'Tarım ve Taze Ürünler' : locale === 'RU' ? 'Сельское хозяйство' : locale === 'AR' ? 'الزراعة والمنتجات الطازجة' : locale === 'ES' ? 'Agricultura y Productos Frescos' : 'Agriculture & Fresh Produce' },
+    { key: 'construction', label: locale === 'AZ' ? 'Tikinti Materialları' : locale === 'TR' ? 'İnşaat Malzemeleri' : locale === 'RU' ? 'Строительные материалы' : locale === 'AR' ? 'مواد البناء' : locale === 'ES' ? 'Materiales de Construcción' : 'Construction Materials' },
+    { key: 'packaging', label: locale === 'AZ' ? 'Qablaşdırma və Kisələr' : locale === 'TR' ? 'Ambalaj ve Çuvallar' : locale === 'RU' ? 'Упаковка и тара' : locale === 'AR' ? 'التعبئة والتغليف' : locale === 'ES' ? 'Embalaje y Sacos' : 'Packaging & Bulk Bags' },
+    { key: 'chemicals', label: locale === 'AZ' ? 'Kimya və Ekstraktlar' : locale === 'TR' ? 'Kimyasallar ve Ekstraktlar' : locale === 'RU' ? 'Химия и экстракты' : locale === 'AR' ? 'المواد الكيميائية' : locale === 'ES' ? 'Químicos y Extractos' : 'Chemicals & Extracts' },
+    { key: 'food', label: locale === 'AZ' ? 'Qida Məhsulları' : locale === 'TR' ? 'Gıda Ürünleri' : locale === 'RU' ? 'Продукты питания' : locale === 'AR' ? 'المنتجات الغذائية' : locale === 'ES' ? 'Productos Alimenticios' : 'Food Products' },
   ];
 
   const filtered = cmsProducts.filter((p: any) => {
@@ -61,7 +71,13 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
       categoryFilter === 'all' ||
       p.categoryKey === categoryFilter ||
       p.categoryId === categoryFilter ||
-      p.categorySlug === categoryFilter;
+      p.categorySlug === categoryFilter ||
+      (categoryFilter === 'industrial' && (p.categoryKey === 'textile' || p.categoryKey === 'metals' || p.categorySlug?.includes('industr'))) ||
+      (categoryFilter === 'agro' && (p.categoryKey === 'agri' || p.categorySlug?.includes('agri') || p.categorySlug?.includes('agro'))) ||
+      (categoryFilter === 'food' && (p.categoryKey === 'food' || p.categorySlug?.includes('food'))) ||
+      (categoryFilter === 'construction' && (p.categoryKey === 'construction' || p.categorySlug?.includes('construct'))) ||
+      (categoryFilter === 'packaging' && (p.categoryKey === 'packaging' || p.categorySlug?.includes('pack'))) ||
+      (categoryFilter === 'chemicals' && (p.categoryKey === 'chemicals' || p.categorySlug?.includes('chem')));
     const matchesIncoterm =
       incotermFilter === 'ALL' ||
       (Array.isArray(p.incoterms) && p.incoterms.includes(incotermFilter));

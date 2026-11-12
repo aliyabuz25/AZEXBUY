@@ -41,7 +41,7 @@ import {
   ViewMode,
   getLocalizedText,
 } from './types';
-import { useLocalization } from './context/LocalizationContext';
+import { useLocalization, CANONICAL_CATEGORY_LABELS } from './context/LocalizationContext';
 import { Navbar } from './components/Navbar';
 import {
   GlobalSearchModal,
@@ -132,6 +132,7 @@ export default function App() {
   };
 
   const [activeView, setActiveViewState] = useState<ViewMode>(getViewFromHash);
+  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<string>('all');
 
   const setActiveView = (view: ViewMode) => {
     setActiveViewState(view);
@@ -378,35 +379,42 @@ export default function App() {
 
   // ── Category tiles (home "Selected Products" section) ────────────────────
   const CAT_ICONS: Record<string, string> = {
-    agro: 'fa-solid fa-leaf',
-    textile: 'fa-solid fa-scroll',
-    construction: 'fa-solid fa-gem',
-    metals: 'fa-solid fa-industry',
+    industrial: 'fa-solid fa-industry',
+    agro: 'fa-solid fa-seedling',
+    construction: 'fa-solid fa-trowel-bricks',
+    packaging: 'fa-solid fa-box-open',
     chemicals: 'fa-solid fa-flask',
+    food: 'fa-solid fa-bowl-food',
+    metals: 'fa-solid fa-cubes-stacked',
+    textile: 'fa-solid fa-scroll',
   };
-  const CAT_DEFAULT_LABELS: Record<string, Record<string, string>> = {
-    agro:         { AZ: 'Kənd Təsərrüfatı və Qida', EN: 'Agriculture & Food', TR: 'Tarım ve Gıda', RU: 'Агропром и продукты' },
-    textile:      { AZ: 'Tekstil və Xalça',          EN: 'Textile & Carpets',    TR: 'Tekstil ve Kilim',   RU: 'Текстиль и ковры' },
-    construction: { AZ: 'Tikinti Daşı və Mərmər',     EN: 'Construction & Stone', TR: 'İnşaat Taşı ve Mermer', RU: 'Мрамор и стройматериалы' },
-    metals:       { AZ: 'Metallurgiya və Sənaye',     EN: 'Metals & Steel',       TR: 'Metalürji ve Çelik',  RU: 'Металлургия и трубы' },
-    chemicals:    { AZ: 'Kimya və Polimerlər',        EN: 'Chemicals & Urea',     TR: 'Kimyasallar ve Üre',  RU: 'Химия и удобрения' },
-  };
+  const CAT_DEFAULT_LABELS = CANONICAL_CATEGORY_LABELS;
+
   const categoryTiles = useMemo(() => {
     const counts: Record<string, number> = {};
     const labels: Record<string, any> = {};
     cmsProducts.forEach((p: any) => {
       const key = p.categoryKey || 'agro';
       counts[key] = (counts[key] || 0) + 1;
-      if (!labels[key]) labels[key] = p.categoryLabel;
+      if (!labels[key] && p.categoryLabel) labels[key] = p.categoryLabel;
     });
-    return Object.keys(CAT_DEFAULT_LABELS)
-      .filter((key) => counts[key] > 0)
-      .map((key) => ({
-        key,
-        icon: CAT_ICONS[key] || 'fa-solid fa-cube',
-        label: labels[key] || CAT_DEFAULT_LABELS[key],
-        count: counts[key],
-      }));
+
+    // All standard categories that should appear in "Seçilmiş Məhsullar" section
+    const primaryKeys = ['industrial', 'agro', 'construction', 'packaging', 'chemicals', 'food'];
+
+    // Also include any other category key present in cmsProducts
+    const extraKeys = Object.keys(counts).filter((k) => !primaryKeys.includes(k) && counts[k] > 0);
+    const allKeys = [...primaryKeys, ...extraKeys];
+
+    // Sort by product count descending so the categories with the most items are first, while keeping all visible
+    allKeys.sort((a, b) => (counts[b] || 0) - (counts[a] || 0));
+
+    return allKeys.map((key) => ({
+      key,
+      icon: CAT_ICONS[key] || 'fa-solid fa-cube',
+      label: labels[key] || CAT_DEFAULT_LABELS[key] || { EN: key, AZ: key },
+      count: counts[key] || 0,
+    }));
   }, [cmsProducts]);
 
   return (
@@ -887,7 +895,10 @@ export default function App() {
                   </div>
                   <button
                     type="button"
-                    onClick={() => setActiveView('products')}
+                    onClick={() => {
+                      setSelectedCategoryFilter('all');
+                      setActiveView('products');
+                    }}
                     className="text-xs font-bold text-brandNavy hover:text-brandGreen flex items-center gap-1.5 transition-colors cursor-pointer"
                   >
                     <span>{t.featuredProducts.viewAll}</span>
@@ -895,21 +906,24 @@ export default function App() {
                   </button>
                 </div>
 
-                {/* Category tiles — one per category, with item count */}
+                {/* Category tiles — all categories with accurate product counts */}
                 {categoryTiles.length > 0 ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
                     {categoryTiles.map((cat) => (
                       <button
                         key={cat.key}
                         type="button"
-                        onClick={() => setActiveView('products')}
-                        className="border border-gray-200 rounded-lg p-4 flex flex-col items-center justify-between h-32 text-left hover:shadow-md hover:border-brandGreen/40 transition-all cursor-pointer group"
+                        onClick={() => {
+                          setSelectedCategoryFilter(cat.key);
+                          setActiveView('products');
+                        }}
+                        className="border border-gray-200 rounded-lg p-3.5 sm:p-4 flex flex-col items-center justify-between h-32 text-left hover:shadow-md hover:border-brandGreen/40 transition-all cursor-pointer group bg-white"
                       >
                         <div className="w-11 h-11 rounded-full bg-brandGreen/10 text-brandGreen flex items-center justify-center text-lg group-hover:scale-105 transition-transform">
                           <i className={cat.icon}></i>
                         </div>
-                        <div className="mt-2 text-center">
-                          <span className="block text-xs font-bold text-gray-900 leading-tight">{getLocalizedText(cat.label, locale)}</span>
+                        <div className="mt-2 text-center w-full">
+                          <span className="block text-xs font-bold text-gray-900 leading-tight line-clamp-2">{getLocalizedText(cat.label, locale)}</span>
                           <span className="mt-1 inline-block text-[10px] font-semibold text-brandNavy bg-brandNavy/5 border border-brandNavy/10 px-2 py-0.5 rounded-full tabular-nums">
                             {cat.count} {cat.count === 1 ? (locale === 'AZ' ? 'məhsul' : locale === 'TR' ? 'ürün' : locale === 'RU' ? 'товар' : 'item') : (locale === 'AZ' ? 'məhsul' : locale === 'TR' ? 'ürün' : locale === 'RU' ? 'товара' : 'items')}
                           </span>
@@ -1009,6 +1023,7 @@ export default function App() {
         {activeView === 'products' && (
           <CatalogView
             locale={locale}
+            initialCategory={selectedCategoryFilter}
             shortlistedIds={shortlistedIds}
             onToggleShortlist={handleToggleShortlist}
             onRequestProduct={handleOpenProductRFQ}
