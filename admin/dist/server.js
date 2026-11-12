@@ -4344,13 +4344,80 @@ function mapProduct(r) {
     }
   }
   if (!Array.isArray(certificates)) certificates = [];
-  const catSlug = (r.category_slug || r.category_id || "").toLowerCase();
+  const SERVER_CATEGORY_LABELS = {
+    industrial: {
+      AZ: "S\u0259naye v\u0259 Tekstil",
+      EN: "Industrial & Textiles",
+      TR: "End\xFCstri ve Tekstil",
+      RU: "\u041F\u0440\u043E\u043C\u044B\u0448\u043B\u0435\u043D\u043D\u043E\u0441\u0442\u044C \u0438 \u0442\u0435\u043A\u0441\u0442\u0438\u043B\u044C",
+      AR: "\u0627\u0644\u0635\u0646\u0627\u0639\u0629 \u0648\u0627\u0644\u0645\u0646\u0633\u0648\u062C\u0627\u062A",
+      ES: "Industrial y Textiles"
+    },
+    agro: {
+      AZ: "K\u0259nd T\u0259s\u0259rr\xFCfat\u0131 v\u0259 T\u0259z\u0259 M\u0259hsullar",
+      EN: "Agriculture & Fresh Produce",
+      TR: "Tar\u0131m ve Taze \xDCr\xFCnler",
+      RU: "\u0421\u0435\u043B\u044C\u0441\u043A\u043E\u0435 \u0445\u043E\u0437\u044F\u0439\u0441\u0442\u0432\u043E \u0438 \u0441\u0432\u0435\u0436\u0438\u0435 \u043F\u0440\u043E\u0434\u0443\u043A\u0442\u044B",
+      AR: "\u0627\u0644\u0632\u0631\u0627\u0639\u0629 \u0648\u0627\u0644\u0645\u0646\u062A\u062C\u0627\u062A \u0627\u0644\u0637\u0627\u0632\u062C\u0629",
+      ES: "Agricultura y Productos Frescos"
+    },
+    construction: {
+      AZ: "Tikinti Materiallar\u0131",
+      EN: "Construction Materials",
+      TR: "\u0130n\u015Faat Malzemeleri",
+      RU: "\u0421\u0442\u0440\u043E\u0438\u0442\u0435\u043B\u044C\u043D\u044B\u0435 \u043C\u0430\u0442\u0435\u0440\u0438\u0430\u043B\u044B",
+      AR: "\u0645\u0648\u0627\u062F \u0627\u0644\u0628\u0646\u0627\u0621",
+      ES: "Materiales de Construcci\xF3n"
+    },
+    packaging: {
+      AZ: "Qabla\u015Fd\u0131rma v\u0259 Kis\u0259l\u0259r",
+      EN: "Packaging & Bulk Bags",
+      TR: "Ambalaj ve B\xFCy\xFCk Torbalar",
+      RU: "\u0423\u043F\u0430\u043A\u043E\u0432\u043A\u0430 \u0438 \u0431\u0438\u0433-\u0431\u044D\u0433\u0438",
+      AR: "\u0627\u0644\u062A\u0639\u0628\u0626\u0629 \u0648\u0627\u0644\u062A\u063A\u0644\u064A\u0641 \u0648\u0627\u0644\u0623\u0643\u064A\u0627\u0633",
+      ES: "Embalaje y Sacos a Granel"
+    },
+    chemicals: {
+      AZ: "Kimya v\u0259 Ekstraktlar",
+      EN: "Chemicals & Extracts",
+      TR: "Kimyasallar ve Ekstraktlar",
+      RU: "\u0425\u0438\u043C\u0438\u044F \u0438 \u044D\u043A\u0441\u0442\u0440\u0430\u043A\u0442\u044B",
+      AR: "\u0627\u0644\u0645\u0648\u0627\u062F \u0627\u0644\u0643\u064A\u0645\u064A\u0627\u0626\u064A\u0629 \u0648\u0627\u0644\u0645\u0633\u062A\u062E\u0644\u0635\u0627\u062A",
+      ES: "Qu\xEDmicos y Extractos"
+    },
+    food: {
+      AZ: "Qida M\u0259hsullar\u0131",
+      EN: "Food Products",
+      TR: "G\u0131da \xDCr\xFCnleri",
+      RU: "\u041F\u0440\u043E\u0434\u0443\u043A\u0442\u044B \u043F\u0438\u0442\u0430\u043D\u0438\u044F",
+      AR: "\u0627\u0644\u0645\u0646\u062A\u062C\u0627\u062A \u0627\u0644\u063A\u0630\u0627\u0626\u064A\u0629",
+      ES: "Productos Alimenticios"
+    },
+    metals: {
+      AZ: "Metallurgiya v\u0259 S\u0259naye",
+      EN: "Metals & Steel",
+      TR: "Metal\xFCrji ve \xC7elik",
+      RU: "\u041C\u0435\u0442\u0430\u043B\u043B\u0443\u0440\u0433\u0438\u044F \u0438 \u0441\u0442\u0430\u043B\u044C",
+      AR: "\u0627\u0644\u0645\u0639\u0627\u062F\u0646 \u0648\u0627\u0644\u0635\u0644\u0628",
+      ES: "Metales y Acero"
+    },
+    textile: {
+      AZ: "Tekstil v\u0259 Xal\xE7a",
+      EN: "Textile & Carpets",
+      TR: "Tekstil ve Kilim",
+      RU: "\u0422\u0435\u043A\u0441\u0442\u0438\u043B\u044C \u0438 \u043A\u043E\u0432\u0440\u044B",
+      AR: "\u0627\u0644\u0645\u0646\u0633\u0648\u062C\u0627\u062A \u0648\u0627\u0644\u0633\u062C\u0627\u062F",
+      ES: "Textil y Alfombras"
+    }
+  };
+  const catSlug = (r.category_slug || r.category_id || r.category_name || "").toLowerCase();
   let categoryKey = "agro";
-  if (catSlug.includes("agri") || catSlug.includes("food")) categoryKey = "agro";
-  else if (catSlug.includes("text") || catSlug.includes("carpet")) categoryKey = "textile";
-  else if (catSlug.includes("stone") || catSlug.includes("construct") || catSlug.includes("marm")) categoryKey = "construction";
-  else if (catSlug.includes("metal") || catSlug.includes("steel") || catSlug.includes("pipe") || catSlug.includes("pack")) categoryKey = "metals";
-  else if (catSlug.includes("chem") || catSlug.includes("urea") || catSlug.includes("fertil")) categoryKey = "chemicals";
+  if (catSlug.includes("food") || catSlug.includes("qida")) categoryKey = "food";
+  else if (catSlug.includes("agri") || catSlug.includes("agro") || catSlug.includes("k\u0259nd") || catSlug.includes("kend")) categoryKey = "agro";
+  else if (catSlug.includes("stone") || catSlug.includes("construct") || catSlug.includes("marm") || catSlug.includes("tikinti")) categoryKey = "construction";
+  else if (catSlug.includes("pack") || catSlug.includes("bag") || catSlug.includes("qabla\u015F") || catSlug.includes("kise")) categoryKey = "packaging";
+  else if (catSlug.includes("chem") || catSlug.includes("urea") || catSlug.includes("fertil") || catSlug.includes("kimya")) categoryKey = "chemicals";
+  else if (catSlug.includes("industr") || catSlug.includes("s\u0259naye") || catSlug.includes("senaye") || catSlug.includes("text") || catSlug.includes("metal")) categoryKey = "industrial";
   const defaultImg = "https://images.unsplash.com/photo-1542838132-92c53300491e?w=800";
   const imgUrl = images.length > 0 && images[0] ? images[0] : defaultImg;
   const nameLoc = toLocalized(nameParsed, r.slug || "Commodity");
@@ -4358,7 +4425,7 @@ function mapProduct(r) {
   const originLoc = toLocalized(originParsed, "Azerbaijan");
   const packagingLoc = toLocalized(packagingParsed, "Export standard multi-layer packaging");
   const catLabel = r.category_name || (categoryKey === "agro" ? "Agriculture & Food" : categoryKey === "textile" ? "Textile & Carpets" : categoryKey === "construction" ? "Construction & Stone" : categoryKey === "metals" ? "Metals & Steel" : "Chemicals & Urea");
-  const catLabelLoc = toLocalized(catLabel);
+  const catLabelLoc = SERVER_CATEGORY_LABELS[categoryKey] || toLocalized(catLabel);
   const gradeSpecsStr = Object.keys(technicalSpecs).length > 0 ? Object.entries(technicalSpecs).map(([k, v]) => `${k}: ${v}`).join(" | ") : "EU / International Export Grade A";
   const gradeSpecsLoc = toLocalized(gradeSpecsStr);
   return {

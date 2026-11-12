@@ -412,7 +412,7 @@ export default function App() {
     return allKeys.map((key) => ({
       key,
       icon: CAT_ICONS[key] || 'fa-solid fa-cube',
-      label: labels[key] || CAT_DEFAULT_LABELS[key] || { EN: key, AZ: key },
+      label: CANONICAL_CATEGORY_LABELS[key] || labels[key] || { EN: key, AZ: key },
       count: counts[key] || 0,
     }));
   }, [cmsProducts]);

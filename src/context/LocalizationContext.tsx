@@ -261,7 +261,14 @@ function normalizeProductItem(p: any): any {
   
   const canonicalLabel = CANONICAL_CATEGORY_LABELS[categoryKey] || CANONICAL_CATEGORY_LABELS.agro;
   let catLabelLoc: any;
-  if (p.categoryLabel && typeof p.categoryLabel === 'object') {
+  const isDummyEnglish =
+    p.categoryLabel &&
+    typeof p.categoryLabel === 'object' &&
+    p.categoryLabel.AZ &&
+    p.categoryLabel.EN &&
+    p.categoryLabel.AZ === p.categoryLabel.EN;
+
+  if (p.categoryLabel && typeof p.categoryLabel === 'object' && !isDummyEnglish && p.categoryLabel.AZ !== 'Industrial & Textiles') {
     catLabelLoc = {
       AZ: p.categoryLabel.AZ || canonicalLabel.AZ,
       EN: p.categoryLabel.EN || canonicalLabel.EN,

@@ -1479,13 +1479,81 @@ function mapProduct(r: any) {
   }
   if (!Array.isArray(certificates)) certificates = [];
 
-  const catSlug = (r.category_slug || r.category_id || '').toLowerCase();
+  const SERVER_CATEGORY_LABELS: Record<string, Record<string, string>> = {
+    industrial: {
+      AZ: 'Sənaye və Tekstil',
+      EN: 'Industrial & Textiles',
+      TR: 'Endüstri ve Tekstil',
+      RU: 'Промышленность и текстиль',
+      AR: 'الصناعة والمنسوجات',
+      ES: 'Industrial y Textiles',
+    },
+    agro: {
+      AZ: 'Kənd Təsərrüfatı və Təzə Məhsullar',
+      EN: 'Agriculture & Fresh Produce',
+      TR: 'Tarım ve Taze Ürünler',
+      RU: 'Сельское хозяйство и свежие продукты',
+      AR: 'الزراعة والمنتجات الطازجة',
+      ES: 'Agricultura y Productos Frescos',
+    },
+    construction: {
+      AZ: 'Tikinti Materialları',
+      EN: 'Construction Materials',
+      TR: 'İnşaat Malzemeleri',
+      RU: 'Строительные материалы',
+      AR: 'مواد البناء',
+      ES: 'Materiales de Construcción',
+    },
+    packaging: {
+      AZ: 'Qablaşdırma və Kisələr',
+      EN: 'Packaging & Bulk Bags',
+      TR: 'Ambalaj ve Büyük Torbalar',
+      RU: 'Упаковка и биг-бэги',
+      AR: 'التعبئة والتغليف والأكياس',
+      ES: 'Embalaje y Sacos a Granel',
+    },
+    chemicals: {
+      AZ: 'Kimya və Ekstraktlar',
+      EN: 'Chemicals & Extracts',
+      TR: 'Kimyasallar ve Ekstraktlar',
+      RU: 'Химия и экстракты',
+      AR: 'المواد الكيميائية والمستخلصات',
+      ES: 'Químicos y Extractos',
+    },
+    food: {
+      AZ: 'Qida Məhsulları',
+      EN: 'Food Products',
+      TR: 'Gıda Ürünleri',
+      RU: 'Продукты питания',
+      AR: 'المنتجات الغذائية',
+      ES: 'Productos Alimenticios',
+    },
+    metals: {
+      AZ: 'Metallurgiya və Sənaye',
+      EN: 'Metals & Steel',
+      TR: 'Metalürji ve Çelik',
+      RU: 'Металлургия и сталь',
+      AR: 'المعادن والصلب',
+      ES: 'Metales y Acero',
+    },
+    textile: {
+      AZ: 'Tekstil və Xalça',
+      EN: 'Textile & Carpets',
+      TR: 'Tekstil ve Kilim',
+      RU: 'Текстиль и ковры',
+      AR: 'المنسوجات والسجاد',
+      ES: 'Textil y Alfombras',
+    },
+  };
+
+  const catSlug = (r.category_slug || r.category_id || r.category_name || '').toLowerCase();
   let categoryKey = 'agro';
-  if (catSlug.includes('agri') || catSlug.includes('food')) categoryKey = 'agro';
-  else if (catSlug.includes('text') || catSlug.includes('carpet')) categoryKey = 'textile';
-  else if (catSlug.includes('stone') || catSlug.includes('construct') || catSlug.includes('marm')) categoryKey = 'construction';
-  else if (catSlug.includes('metal') || catSlug.includes('steel') || catSlug.includes('pipe') || catSlug.includes('pack')) categoryKey = 'metals';
-  else if (catSlug.includes('chem') || catSlug.includes('urea') || catSlug.includes('fertil')) categoryKey = 'chemicals';
+  if (catSlug.includes('food') || catSlug.includes('qida')) categoryKey = 'food';
+  else if (catSlug.includes('agri') || catSlug.includes('agro') || catSlug.includes('kənd') || catSlug.includes('kend')) categoryKey = 'agro';
+  else if (catSlug.includes('stone') || catSlug.includes('construct') || catSlug.includes('marm') || catSlug.includes('tikinti')) categoryKey = 'construction';
+  else if (catSlug.includes('pack') || catSlug.includes('bag') || catSlug.includes('qablaş') || catSlug.includes('kise')) categoryKey = 'packaging';
+  else if (catSlug.includes('chem') || catSlug.includes('urea') || catSlug.includes('fertil') || catSlug.includes('kimya')) categoryKey = 'chemicals';
+  else if (catSlug.includes('industr') || catSlug.includes('sənaye') || catSlug.includes('senaye') || catSlug.includes('text') || catSlug.includes('metal')) categoryKey = 'industrial';
 
   const defaultImg = 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800';
   const imgUrl = (images.length > 0 && images[0]) ? images[0] : defaultImg;
@@ -1495,7 +1563,7 @@ function mapProduct(r: any) {
   const originLoc = toLocalized(originParsed, 'Azerbaijan');
   const packagingLoc = toLocalized(packagingParsed, 'Export standard multi-layer packaging');
   const catLabel = r.category_name || (categoryKey === 'agro' ? 'Agriculture & Food' : categoryKey === 'textile' ? 'Textile & Carpets' : categoryKey === 'construction' ? 'Construction & Stone' : categoryKey === 'metals' ? 'Metals & Steel' : 'Chemicals & Urea');
-  const catLabelLoc = toLocalized(catLabel);
+  const catLabelLoc = (SERVER_CATEGORY_LABELS[categoryKey] as any) || toLocalized(catLabel);
 
   const gradeSpecsStr = Object.keys(technicalSpecs).length > 0
     ? Object.entries(technicalSpecs).map(([k, v]) => `${k}: ${v}`).join(' | ')
