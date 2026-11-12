@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   IncotermCode,
   Locale,
@@ -47,7 +47,14 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
   const [sortField, setSortField] = useState<'name' | 'hsCode' | 'category' | 'origin'>('name');
   const [sortAsc, setSortAsc] = useState<boolean>(true);
   const [page, setPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(25);
+  const [pageSize, setPageSize] = useState<number>(24);
+  const catalogTopRef = useRef<HTMLDivElement>(null);
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage < 1 || newPage > totalPages || newPage === page) return;
+    setPage(newPage);
+    catalogTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   useEffect(() => {
     if (initialCategory) {
@@ -111,6 +118,104 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
 
   const totalPages = Math.ceil(sortedFiltered.length / pageSize) || 1;
   const paginated = sortedFiltered.slice((page - 1) * pageSize, page * pageSize);
+  const fromItem = sortedFiltered.length === 0 ? 0 : (page - 1) * pageSize + 1;
+  const toItem = Math.min(page * pageSize, sortedFiltered.length);
+
+  const pagLabels = {
+    AZ: {
+      productsFound: 'məhsul tapıldı',
+      showing: 'Göstərilir',
+      items: 'məhsul',
+      itemsShort: 'məhsul',
+      show: 'Səhifədə',
+      all: 'Hamısı',
+      prev: 'Əvvəlki',
+      next: 'Növbəti',
+      page: 'Səhifə',
+    },
+    TR: {
+      productsFound: 'ürün bulundu',
+      showing: 'Gösterilen',
+      items: 'ürün',
+      itemsShort: 'ürün',
+      show: 'Sayfada',
+      all: 'Tümü',
+      prev: 'Önceki',
+      next: 'Sonraki',
+      page: 'Sayfa',
+    },
+    EN: {
+      productsFound: 'products found',
+      showing: 'Showing',
+      items: 'products',
+      itemsShort: 'items',
+      show: 'Per page',
+      all: 'All',
+      prev: 'Previous',
+      next: 'Next',
+      page: 'Page',
+    },
+    RU: {
+      productsFound: 'товаров найдено',
+      showing: 'Показано',
+      items: 'товаров',
+      itemsShort: 'тов.',
+      show: 'На стр.',
+      all: 'Все',
+      prev: 'Назад',
+      next: 'Вперед',
+      page: 'Страница',
+    },
+    AR: {
+      productsFound: 'منتج متاح',
+      showing: 'عرض',
+      items: 'منتج',
+      itemsShort: 'عنصر',
+      show: 'في الصفحة',
+      all: 'الكل',
+      prev: 'السابق',
+      next: 'التالي',
+      page: 'صفحة',
+    },
+    ES: {
+      productsFound: 'productos encontrados',
+      showing: 'Mostrando',
+      items: 'productos',
+      itemsShort: 'items',
+      show: 'Por pág.',
+      all: 'Todos',
+      prev: 'Anterior',
+      next: 'Siguiente',
+      page: 'Página',
+    },
+  }[locale] || {
+    productsFound: 'products found',
+    showing: 'Showing',
+    items: 'products',
+    itemsShort: 'items',
+    show: 'Per page',
+    all: 'All',
+    prev: 'Previous',
+    next: 'Next',
+    page: 'Page',
+  };
+
+  const getPaginationRange = (currentPage: number, total: number): (number | 'ellipsis')[] => {
+    if (total <= 7) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+    const delta = 1;
+    const range: number[] = [];
+    for (let i = Math.max(2, currentPage - delta); i <= Math.min(total - 1, currentPage + delta); i++) {
+      range.push(i);
+    }
+    const result: (number | 'ellipsis')[] = [1];
+    if (range[0] > 2) result.push('ellipsis');
+    range.forEach(p => result.push(p));
+    if (range[range.length - 1] < total - 1) result.push('ellipsis');
+    result.push(total);
+    return result;
+  };
 
   const handleSort = (field: 'name' | 'hsCode' | 'category' | 'origin') => {
     if (sortField === field) {
@@ -240,26 +345,28 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
         </div>
 
         {/* Total stats and pagination bar */}
-        <div className="flex items-center justify-between text-xs text-slate-600 px-1">
-          <div>
-            <span className="font-bold text-slate-900">{sortedFiltered.length}</span> məhsul tapıldı
-            {sortedFiltered.length > pageSize && (
-              <span className="text-slate-400 ml-1">
-                (Səhifə {page} / {totalPages})
+        <div ref={catalogTopRef} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs text-slate-600 px-1 pt-1">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className="font-extrabold text-slate-900 tabular-nums text-sm">{sortedFiltered.length}</span>
+            <span className="font-semibold text-slate-700">{pagLabels.productsFound}</span>
+            {sortedFiltered.length > 0 && (
+              <span className="text-slate-500 font-medium ml-1">
+                ({pagLabels.showing}: <strong className="text-slate-800 font-semibold tabular-nums">{fromItem}–{toItem}</strong>)
               </span>
             )}
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-slate-500 hidden sm:inline">Göstər:</span>
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            <span className="text-slate-500 font-medium">{pagLabels.show}:</span>
             <select
               value={pageSize}
               onChange={e => { setPageSize(Number(e.target.value)); setPage(1); }}
-              className="h-7 px-2 bg-white border border-slate-300 rounded text-xs font-semibold text-slate-700"
+              className="h-8 px-2.5 bg-white border border-slate-300 rounded-md text-xs font-semibold text-slate-700 shadow-2xs focus:outline-none focus:border-[#0f3156] cursor-pointer"
             >
-              <option value="25">25 sətir</option>
-              <option value="50">50 sətir</option>
-              <option value="100">100 sətir</option>
-              <option value="500">Hamısı</option>
+              <option value="12">12 {pagLabels.itemsShort}</option>
+              <option value="24">24 {pagLabels.itemsShort}</option>
+              <option value="48">48 {pagLabels.itemsShort}</option>
+              <option value="96">96 {pagLabels.itemsShort}</option>
+              <option value="1000">{pagLabels.all}</option>
             </select>
           </div>
         </div>
@@ -397,31 +504,6 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
                 </tbody>
               </table>
             </div>
-
-            {/* Pagination Controls */}
-            {totalPages > 1 && (
-              <div className="p-3 border-t border-slate-200 flex items-center justify-between bg-slate-50/70">
-                <button
-                  type="button"
-                  disabled={page <= 1}
-                  onClick={() => setPage(p => Math.max(1, p - 1))}
-                  className="px-3 py-1.5 text-xs font-bold text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-100 disabled:opacity-40 cursor-pointer"
-                >
-                  ← Əvvəlki
-                </button>
-                <div className="text-xs text-slate-600 font-semibold">
-                  Səhifə {page} / {totalPages}
-                </div>
-                <button
-                  type="button"
-                  disabled={page >= totalPages}
-                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                  className="px-3 py-1.5 text-xs font-bold text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-100 disabled:opacity-40 cursor-pointer"
-                >
-                  Növbəti →
-                </button>
-              </div>
-            )}
           </div>
         ) : (
           /* ── GRID MODE (CARDS) ── */
@@ -505,35 +587,109 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
               );
             })}
           </div>
-
-          {/* Grid Pagination Controls */}
-          {totalPages > 1 && (
-            <div className="p-3 bg-white border border-slate-200 rounded-lg flex items-center justify-between">
-              <button
-                type="button"
-                disabled={page <= 1}
-                onClick={() => setPage(p => Math.max(1, p - 1))}
-                className="px-3 py-1.5 text-xs font-bold text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-100 disabled:opacity-40 cursor-pointer"
-              >
-                ← Əvvəlki
-              </button>
-              <div className="text-xs text-slate-600 font-semibold">
-                Səhifə {page} / {totalPages}
-              </div>
-              <button
-                type="button"
-                disabled={page >= totalPages}
-                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                className="px-3 py-1.5 text-xs font-bold text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-100 disabled:opacity-40 cursor-pointer"
-              >
-                Növbəti →
-              </button>
-            </div>
-          )}
         </div>
       )}
-    </div>
-  </section>
+
+      {/* Unified Numbered Pagination Bar */}
+      {totalPages > 1 && (
+        <nav
+          aria-label="Pagination"
+          className="mt-6 bg-white border border-slate-200 rounded-lg p-3 sm:p-4 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xs"
+        >
+          <div className="text-xs text-slate-600 order-2 sm:order-1 text-center sm:text-left">
+            <span>{pagLabels.showing}: </span>
+            <strong className="text-slate-900 font-semibold tabular-nums">{fromItem}–{toItem}</strong>
+            <span> / </span>
+            <strong className="text-slate-900 font-bold tabular-nums">{sortedFiltered.length}</strong>
+            <span> {pagLabels.items}</span>
+            <span className="text-slate-400 ml-1.5 hidden md:inline">
+              ({pagLabels.page} {page} / {totalPages})
+            </span>
+          </div>
+
+          <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap justify-center order-1 sm:order-2">
+            {/* First page button */}
+            {page > 2 && totalPages > 5 && (
+              <button
+                type="button"
+                onClick={() => handlePageChange(1)}
+                className="w-8 h-8 rounded-md text-xs font-bold border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors flex items-center justify-center cursor-pointer"
+                title={`${pagLabels.page} 1`}
+              >
+                <i className="fa-solid fa-angles-left text-[10px]"></i>
+              </button>
+            )}
+
+            {/* Prev button */}
+            <button
+              type="button"
+              disabled={page <= 1}
+              onClick={() => handlePageChange(page - 1)}
+              className="h-8 px-2.5 sm:px-3 text-xs font-bold rounded-md border border-slate-300 bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-35 disabled:hover:bg-white disabled:cursor-not-allowed flex items-center gap-1.5 transition-colors cursor-pointer"
+              aria-label={pagLabels.prev}
+            >
+              <i className="fa-solid fa-chevron-left text-[9px]"></i>
+              <span className="hidden sm:inline">{pagLabels.prev}</span>
+            </button>
+
+            {/* Page numbers */}
+            {getPaginationRange(page, totalPages).map((item, idx) => {
+              if (item === 'ellipsis') {
+                return (
+                  <span
+                    key={`dots-${idx}`}
+                    className="w-7 h-8 flex items-center justify-center text-slate-400 text-xs font-bold select-none"
+                  >
+                    …
+                  </span>
+                );
+              }
+              const isCurrent = item === page;
+              return (
+                <button
+                  key={`page-${item}`}
+                  type="button"
+                  onClick={() => handlePageChange(item)}
+                  className={`min-w-[32px] h-8 px-2 rounded-md text-xs font-bold transition-all cursor-pointer flex items-center justify-center tabular-nums ${
+                    isCurrent
+                      ? 'bg-[#0f3156] text-white shadow-xs'
+                      : 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 hover:border-slate-300'
+                  }`}
+                  aria-current={isCurrent ? 'page' : undefined}
+                >
+                  {item}
+                </button>
+              );
+            })}
+
+            {/* Next button */}
+            <button
+              type="button"
+              disabled={page >= totalPages}
+              onClick={() => handlePageChange(page + 1)}
+              className="h-8 px-2.5 sm:px-3 text-xs font-bold rounded-md border border-slate-300 bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-35 disabled:hover:bg-white disabled:cursor-not-allowed flex items-center gap-1.5 transition-colors cursor-pointer"
+              aria-label={pagLabels.next}
+            >
+              <span className="hidden sm:inline">{pagLabels.next}</span>
+              <i className="fa-solid fa-chevron-right text-[9px]"></i>
+            </button>
+
+            {/* Last page button */}
+            {page < totalPages - 1 && totalPages > 5 && (
+              <button
+                type="button"
+                onClick={() => handlePageChange(totalPages)}
+                className="w-8 h-8 rounded-md text-xs font-bold border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors flex items-center justify-center cursor-pointer"
+                title={`${pagLabels.page} ${totalPages}`}
+              >
+                <i className="fa-solid fa-angles-right text-[10px]"></i>
+              </button>
+            )}
+          </div>
+        </nav>
+      )}
+      </div>
+    </section>
   </div>
   );
 };
