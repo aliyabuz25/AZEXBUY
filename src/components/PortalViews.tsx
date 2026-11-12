@@ -1415,6 +1415,7 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
   onNavigate,
 }) => {
   const { strings, services: cmsServicesPillars, buyerSteps: cmsBuyerSteps, producerSteps: cmsProducerSteps, cmsServices, howItWorksBuyersImage, howItWorksSellersImage, buyerHeroImage, producerHeroImage, servicesHeroImage, productsHeroImage, howItWorksHeroImage, contact } = useLocalization();
+  const [howItWorksTab, setHowItWorksTab] = useState<'buyers' | 'sellers'>('buyers');
   const [selectedBuyerStep, setSelectedBuyerStep] = useState<number>(1);
   const [selectedProducerStep, setSelectedProducerStep] = useState<number>(1);
   const [contactSubmitted, setContactSubmitted] = useState(false);
@@ -1709,190 +1710,238 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
           </div>
         </div>
 
-        <section className="py-8 bg-[#F5F6F7]">
-          <div className="custom-container">
-            {/* Main light panel */}
-            <div className="bg-white border border-[#E5E7EB] rounded-[22px] overflow-hidden shadow-sm">
-              <div className="p-6 sm:p-7">
+        <section className="py-10 sm:py-14 bg-slate-50/70">
+          <div className="custom-container space-y-10">
+            {/* Header intro */}
+            <div className="max-w-3xl">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-2.5">
+                {howTitle}
+              </h2>
+              <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
+                {howSubtitle}
+              </p>
+            </div>
 
-              {/* Top heading */}
-              <div className="text-center mb-6">
-                <h1 className="text-2xl font-bold text-[#171717] mb-2.5">{howTitle}</h1>
-                <p className="text-base font-normal text-[#666]">{howSubtitle}</p>
+            {/* Role Tab Selector (Alıcılar üçün / İstehsalçılar üçün) */}
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200/80 pb-4">
+              <div className="inline-flex p-1 bg-slate-200/60 rounded-xl">
+                <button
+                  type="button"
+                  onClick={() => setHowItWorksTab('buyers')}
+                  className={`px-5 py-2.5 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-2 ${
+                    howItWorksTab === 'buyers'
+                      ? 'bg-white text-brandNavy shadow-sm'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  <i className="fa-solid fa-cart-shopping text-brandNavy"></i>
+                  <span>{buyersLabel}</span>
+                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-mono">
+                    {cmsBuyerSteps.length} {stepsLabel}
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setHowItWorksTab('sellers')}
+                  className={`px-5 py-2.5 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center gap-2 ${
+                    howItWorksTab === 'sellers'
+                      ? 'bg-white text-brandGreenDark shadow-sm'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  <i className="fa-solid fa-industry text-brandGreen"></i>
+                  <span>{sellersLabel}</span>
+                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-mono">
+                    {cmsProducerSteps.length} {stepsLabel}
+                  </span>
+                </button>
               </div>
 
-              {/* Split in two — Buyers (Navy) | Sellers (Green) */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-7">
-
-                {/* ── LEFT: BUYERS ── */}
-                <div className="rounded-[18px] overflow-hidden bg-brandNavy p-6 sm:p-7 flex flex-col gap-5 min-h-[480px]">
-                  <div>
-                    <div className="rounded-[14px] overflow-hidden w-full aspect-[1.81/1] mb-4">
-                      <img src={howItWorksBuyersImage} alt="Buyers" className="w-full h-full object-cover" />
-                    </div>
-                    <p className="text-[20px] font-normal text-white uppercase tracking-wide mb-3">{buyersLabel}</p>
-                    <span className="inline-block bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-[12px] font-medium px-2.5 py-[4px] rounded-full mb-3">
-                      {cmsBuyerSteps.length} {stepsLabel}
-                    </span>
-                    <p className="text-[15px] font-normal text-slate-200 leading-[21px] mb-4">{buyersDesc}</p>
-                  </div>
-
-                  {/* Buyer step accordion */}
-                  <div className="flex-1 bg-white/5 border border-white/10 rounded-[14px] p-4">
-                    {cmsBuyerSteps.map((step, idx) => {
-                      const isOpen = selectedBuyerStep === step.number;
-                      return (
-                        <div key={step.number}>
-                          <button
-                            type="button"
-                            className="w-full text-left py-3 cursor-pointer group"
-                            onClick={() => setSelectedBuyerStep(isOpen ? 0 : step.number)}
-                          >
-                            <div className="flex items-start justify-between gap-3">
-                              <div>
-                                <p className="text-[16px] font-bold text-white leading-snug">
-                                  {String(idx + 1).padStart(2, '0')}. {getLocalizedText(step.title, locale)}
-                                </p>
-                                {!isOpen && (
-                                  <p className="text-[13px] text-slate-300 mt-1.5 leading-relaxed">
-                                    {getLocalizedText(step.description, locale).slice(0, 80)}…
-                                  </p>
-                                )}
-                              </div>
-                              <i className={`fa-solid fa-chevron-${isOpen ? 'up' : 'down'} text-slate-400 text-xs mt-1.5 shrink-0`}></i>
-                            </div>
-                            {isOpen && (
-                              <div className="mt-3 space-y-3">
-                                <p className="text-[13px] text-slate-200 leading-relaxed">
-                                  {getLocalizedText(step.description, locale)}
-                                </p>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                  <div className="bg-emerald-500/15 border border-emerald-400/20 rounded-lg p-3">
-                                    <p className="text-[11px] font-bold text-emerald-300 uppercase tracking-wider mb-1">{azexbuyDoes}</p>
-                                    <p className="text-[13px] text-slate-100">{getLocalizedText(step.detailTitle, locale)}</p>
-                                  </div>
-                                  <div className="bg-white/10 border border-white/15 rounded-lg p-3">
-                                    <p className="text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1">{expectedResult}</p>
-                                    <p className="text-[13px] text-slate-100">{getLocalizedText(step.deliverable, locale)}</p>
-                                  </div>
-                                </div>
-                                {idx < cmsBuyerSteps.length - 1 && (
-                                  <p className="text-[12px] text-slate-400 mt-1">
-                                    {nextStepLabel}: {getLocalizedText(cmsBuyerSteps[idx + 1].title, locale)}
-                                  </p>
-                                )}
-                              </div>
-                            )}
-                          </button>
-                          <div className="border-t border-white/10"></div>
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  {/* Buyer CTA */}
-                  <div className="bg-white text-[#171717] rounded-[14px] p-5 flex flex-col gap-3">
-                    <div>
-                      <h3 className="text-[16px] font-bold mb-1">{ctaBuyerTitle}</h3>
-                      <p className="text-[13px] text-[#555] leading-relaxed">{ctaBuyerDesc}</p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => onNavigate('buyers')}
-                      className="self-start px-5 py-2.5 bg-brandNavy hover:bg-brandNavyDark text-white text-[14px] font-bold rounded-full transition-colors cursor-pointer"
-                    >
-                      {ctaBuyerBtn}
-                    </button>
-                  </div>
-                </div>
-
-                {/* ── RIGHT: SELLERS ── */}
-                <div className="rounded-[18px] overflow-hidden bg-brandGreenDark p-6 sm:p-7 flex flex-col gap-5 min-h-[480px]">
-                  <div>
-                    <div className="rounded-[14px] overflow-hidden w-full aspect-[1.81/1] mb-4">
-                      <img src={howItWorksSellersImage} alt="Sellers" className="w-full h-full object-cover" />
-                    </div>
-                    <p className="text-[20px] font-normal text-white uppercase tracking-wide mb-3">{sellersLabel}</p>
-                    <span className="inline-block bg-white/15 border border-white/20 text-white/90 text-[12px] font-medium px-2.5 py-[4px] rounded-full mb-3">
-                      {cmsProducerSteps.length} {stepsLabel}
-                    </span>
-                    <p className="text-[15px] font-normal text-emerald-50/95 leading-[21px] mb-4">{sellersDesc}</p>
-                  </div>
-
-                  {/* Seller step accordion */}
-                  <div className="flex-1 bg-white/5 border border-white/10 rounded-[14px] p-4">
-                    {cmsProducerSteps.map((step, idx) => {
-                      const isOpen = selectedProducerStep === step.number;
-                      return (
-                        <div key={step.number}>
-                          <button
-                            type="button"
-                            className="w-full text-left py-3 cursor-pointer group"
-                            onClick={() => setSelectedProducerStep(isOpen ? 0 : step.number)}
-                          >
-                            <div className="flex items-start justify-between gap-3">
-                              <div>
-                                <p className="text-[16px] font-bold text-white leading-snug">
-                                  {String(idx + 1).padStart(2, '0')}. {getLocalizedText(step.title, locale)}
-                                </p>
-                                {!isOpen && (
-                                  <p className="text-[13px] text-emerald-100/80 mt-1.5 leading-relaxed">
-                                    {getLocalizedText(step.description, locale).slice(0, 80)}…
-                                  </p>
-                                )}
-                              </div>
-                              <i className={`fa-solid fa-chevron-${isOpen ? 'up' : 'down'} text-emerald-200/70 text-xs mt-1.5 shrink-0`}></i>
-                            </div>
-                            {isOpen && (
-                              <div className="mt-3 space-y-3">
-                                <p className="text-[13px] text-emerald-50 leading-relaxed">
-                                  {getLocalizedText(step.description, locale)}
-                                </p>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                  <div className="bg-white/15 border border-white/15 rounded-lg p-3">
-                                    <p className="text-[11px] font-bold text-emerald-100 uppercase tracking-wider mb-1">{azexbuyDoes}</p>
-                                    <p className="text-[13px] text-white">{getLocalizedText(step.detailTitle, locale)}</p>
-                                  </div>
-                                  <div className="bg-emerald-950/40 border border-emerald-400/20 rounded-lg p-3">
-                                    <p className="text-[11px] font-bold text-emerald-300 uppercase tracking-wider mb-1">{expectedResult}</p>
-                                    <p className="text-[13px] text-emerald-50">{getLocalizedText(step.deliverable, locale)}</p>
-                                  </div>
-                                </div>
-                                {idx < cmsProducerSteps.length - 1 && (
-                                  <p className="text-[12px] text-emerald-200/70 mt-1">
-                                    {nextStepLabel}: {getLocalizedText(cmsProducerSteps[idx + 1].title, locale)}
-                                  </p>
-                                )}
-                              </div>
-                            )}
-                          </button>
-                          <div className="border-t border-white/10"></div>
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  {/* Seller CTA */}
-                  <div className="bg-white text-[#171717] rounded-[14px] p-5 flex flex-col gap-3">
-                    <div>
-                      <h3 className="text-[16px] font-bold mb-1">{ctaSellerTitle}</h3>
-                      <p className="text-[13px] text-[#555] leading-relaxed">{ctaSellerDesc}</p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={onOpenProducer}
-                      className="self-start px-5 py-2.5 bg-brandGreen hover:bg-brandGreenDark text-white text-[14px] font-bold rounded-full transition-colors cursor-pointer"
-                    >
-                      {ctaSellerBtn}
-                    </button>
-                  </div>
-                </div>
-
+              {/* Quick description badge */}
+              <div className="text-xs sm:text-sm text-slate-600 font-medium">
+                {howItWorksTab === 'buyers' ? buyersDesc : sellersDesc}
               </div>
             </div>
+
+            {/* ── BUYERS TAB CONTENT ── */}
+            {howItWorksTab === 'buyers' && (
+              <div className="space-y-8 animate-fade-in">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
+                  {cmsBuyerSteps.map((step, idx) => {
+                    const stepNumber = String(idx + 1).padStart(2, '0');
+                    const titleText = getLocalizedText(step.title, locale);
+                    const descText = getLocalizedText(step.description, locale);
+                    const doesText = getLocalizedText(step.detailTitle, locale);
+                    const resultText = getLocalizedText(step.deliverable, locale);
+
+                    return (
+                      <div
+                        key={step.number}
+                        className="bg-white border border-slate-200/90 rounded-2xl p-6 sm:p-7 shadow-sm hover:shadow-md hover:border-slate-300 transition-all duration-200 flex flex-col justify-between group"
+                      >
+                        <div>
+                          {/* Number & Title */}
+                          <div className="flex items-start gap-3.5 mb-3">
+                            <span className="w-10 h-10 rounded-xl bg-brandBlueLight text-brandNavy font-mono font-bold text-sm flex items-center justify-center shrink-0 shadow-2xs group-hover:bg-brandNavy group-hover:text-white transition-colors">
+                              {stepNumber}
+                            </span>
+                            <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug group-hover:text-brandNavy transition-colors pt-1">
+                              {titleText}
+                            </h3>
+                          </div>
+
+                          {/* Description */}
+                          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-5 font-normal">
+                            {descText}
+                          </p>
+                        </div>
+
+                        {/* Details pills */}
+                        {(doesText || resultText) && (
+                          <div className="pt-4 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                            {doesText && (
+                              <div className="bg-slate-50 border border-slate-200/70 rounded-xl p-3">
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-brandNavy block mb-1">
+                                  {azexbuyDoes}
+                                </span>
+                                <p className="text-xs text-slate-700 font-medium leading-relaxed">
+                                  {doesText}
+                                </p>
+                              </div>
+                            )}
+                            {resultText && (
+                              <div className="bg-emerald-50/60 border border-emerald-200/60 rounded-xl p-3">
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 block mb-1">
+                                  {expectedResult}
+                                </span>
+                                <p className="text-xs text-emerald-950 font-medium leading-relaxed">
+                                  {resultText}
+                                </p>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+
+                  {/* Final slot: Buyer Call-to-action Card */}
+                  <div className="bg-gradient-to-br from-brandNavy to-[#0b2440] text-white rounded-2xl p-6 sm:p-7 shadow-sm flex flex-col justify-between">
+                    <div>
+                      <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-white text-lg mb-4">
+                        <i className="fa-solid fa-paper-plane"></i>
+                      </div>
+                      <h3 className="text-lg sm:text-xl font-bold mb-2 text-white">
+                        {ctaBuyerTitle}
+                      </h3>
+                      <p className="text-xs sm:text-sm text-slate-200/90 leading-relaxed mb-6 font-normal">
+                        {ctaBuyerDesc}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={onOpenRFQ}
+                      className="w-full inline-flex items-center justify-center gap-2 h-11 px-5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs sm:text-sm font-bold transition-colors cursor-pointer shadow-sm"
+                    >
+                      <span>{ctaBuyerBtn}</span>
+                      <i className="fa-solid fa-arrow-right text-[11px]"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ── SELLERS / PRODUCERS TAB CONTENT ── */}
+            {howItWorksTab === 'sellers' && (
+              <div className="space-y-8 animate-fade-in">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
+                  {cmsProducerSteps.map((step, idx) => {
+                    const stepNumber = String(idx + 1).padStart(2, '0');
+                    const titleText = getLocalizedText(step.title, locale);
+                    const descText = getLocalizedText(step.description, locale);
+                    const doesText = getLocalizedText(step.detailTitle, locale);
+                    const resultText = getLocalizedText(step.deliverable, locale);
+
+                    return (
+                      <div
+                        key={step.number}
+                        className="bg-white border border-slate-200/90 rounded-2xl p-6 sm:p-7 shadow-sm hover:shadow-md hover:border-slate-300 transition-all duration-200 flex flex-col justify-between group"
+                      >
+                        <div>
+                          {/* Number & Title */}
+                          <div className="flex items-start gap-3.5 mb-3">
+                            <span className="w-10 h-10 rounded-xl bg-emerald-50 text-brandGreenDark font-mono font-bold text-sm flex items-center justify-center shrink-0 shadow-2xs group-hover:bg-brandGreen group-hover:text-white transition-colors">
+                              {stepNumber}
+                            </span>
+                            <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug group-hover:text-brandGreenDark transition-colors pt-1">
+                              {titleText}
+                            </h3>
+                          </div>
+
+                          {/* Description */}
+                          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-5 font-normal">
+                            {descText}
+                          </p>
+                        </div>
+
+                        {/* Details pills */}
+                        {(doesText || resultText) && (
+                          <div className="pt-4 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                            {doesText && (
+                              <div className="bg-slate-50 border border-slate-200/70 rounded-xl p-3">
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-700 block mb-1">
+                                  {azexbuyDoes}
+                                </span>
+                                <p className="text-xs text-slate-700 font-medium leading-relaxed">
+                                  {doesText}
+                                </p>
+                              </div>
+                            )}
+                            {resultText && (
+                              <div className="bg-emerald-50/60 border border-emerald-200/60 rounded-xl p-3">
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 block mb-1">
+                                  {expectedResult}
+                                </span>
+                                <p className="text-xs text-emerald-950 font-medium leading-relaxed">
+                                  {resultText}
+                                </p>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+
+                  {/* Final slot: Producer Call-to-action Card */}
+                  <div className="bg-gradient-to-br from-brandGreenDark to-[#002C23] text-white rounded-2xl p-6 sm:p-7 shadow-sm flex flex-col justify-between md:col-span-2 lg:col-span-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                      <div className="max-w-xl">
+                        <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-white text-lg mb-3">
+                          <i className="fa-solid fa-industry"></i>
+                        </div>
+                        <h3 className="text-lg sm:text-xl font-bold mb-2 text-white">
+                          {ctaSellerTitle}
+                        </h3>
+                        <p className="text-xs sm:text-sm text-emerald-100/90 leading-relaxed font-normal">
+                          {ctaSellerDesc}
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={onOpenProducer}
+                        className="inline-flex items-center justify-center gap-2 h-11 px-6 rounded-xl bg-white text-brandGreenDark hover:bg-slate-100 text-xs sm:text-sm font-bold transition-colors cursor-pointer shadow-sm shrink-0"
+                      >
+                        <span>{ctaSellerBtn}</span>
+                        <i className="fa-solid fa-arrow-right text-[11px]"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
-        </div>
-      </section>
+        </section>
       </div>
     );
   }
