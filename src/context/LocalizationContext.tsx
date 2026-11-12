@@ -309,7 +309,7 @@ function normalizeProductItem(p: any): any {
     shortDesc: shortDescLoc,
     originRegion: originLoc,
     image: imgUrl,
-    images: images.length > 0 ? images : [imgUrl],
+    images: rawImages.length > 0 ? rawImages : (imgUrl ? [imgUrl] : []),
     minOrderQty: p.minOrderQty || p.moq || '1x 20ft FCL',
     moq: p.minOrderQty || p.moq || '1x 20ft FCL',
     annualCapacity: p.annualCapacity || (specs as any)?.['Annual Capacity'] || (specs as any)?.['Yearly Capacity'] || '10,000 MT',
