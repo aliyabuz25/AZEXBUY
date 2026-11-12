@@ -2108,22 +2108,6 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
           <div className="custom-container space-y-10">
             {/* Header intro */}
             <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brandBlueLight text-brandNavy text-xs font-bold uppercase tracking-wider mb-3">
-                <i className="fa-solid fa-shield-halved text-brandGreen"></i>
-                <span>
-                  {locale === 'AZ'
-                    ? 'Sovereign İxrac İnfrastrukturu'
-                    : locale === 'TR'
-                    ? 'Stratejik İhracat Altyapısı'
-                    : locale === 'RU'
-                    ? 'Суверенная экспортная инфраструктура'
-                    : locale === 'AR'
-                    ? 'البنية التحتية السيادية للتصدير'
-                    : locale === 'ES'
-                    ? 'Infraestructura Soberana de Exportación'
-                    : 'Sovereign Export Infrastructure'}
-                </span>
-              </div>
               <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-2.5">
                 {strings[locale]?.services?.heading ||
                   (locale === 'AZ'
@@ -2146,8 +2130,8 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
               {(cmsServicesPillars && cmsServicesPillars.length > 0 ? cmsServicesPillars : SERVICES_PILLARS).map((srv: any, index: number) => {
                 const badgeNumber = `0${index + 1}`;
-                const titleText = getLocalizedText(srv.title, locale);
-                const descText = getLocalizedText(srv.subtitle, locale);
+                const titleText = getLocalizedText(srv.title || srv.name, locale);
+                const descText = getLocalizedText(srv.subtitle || srv.description, locale);
 
                 return (
                   <div
@@ -2178,14 +2162,18 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
                       {/* Items checklist */}
                       <div className="pt-4 border-t border-slate-100">
                         <ul className="space-y-2.5 mb-6">
-                          {srv.items.map((it: any, idx: number) => (
-                            <li key={idx} className="flex items-center gap-2.5 text-xs sm:text-sm text-slate-700">
-                              <span className="w-5 h-5 rounded-full bg-slate-100 group-hover:bg-brandBlueLight flex items-center justify-center shrink-0 text-brandNavy text-[10px] transition-colors">
-                                <i className="fa-solid fa-check"></i>
-                              </span>
-                              <span className="font-medium text-slate-800">{getLocalizedText(it, locale)}</span>
-                            </li>
-                          ))}
+                          {(srv.items || []).map((it: any, idx: number) => {
+                            const itemText = typeof it === 'string' ? it : getLocalizedText(it, locale);
+                            if (!itemText) return null;
+                            return (
+                              <li key={idx} className="flex items-center gap-2.5 text-xs sm:text-sm text-slate-700">
+                                <span className="w-5 h-5 rounded-full bg-slate-100 group-hover:bg-brandBlueLight flex items-center justify-center shrink-0 text-brandNavy text-[10px] transition-colors">
+                                  <i className="fa-solid fa-check"></i>
+                                </span>
+                                <span className="font-medium text-slate-800">{itemText}</span>
+                              </li>
+                            );
+                          })}
                         </ul>
                       </div>
                     </div>
@@ -2278,8 +2266,8 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
                     <i className={selectedPillar.iconClass}></i>
                   </div>
                   <div>
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-brandNavy">AZEXBUY Sovereign Export Desk</span>
-                    <h2 className="text-xl font-bold text-slate-900">{getLocalizedText(selectedPillar.title, locale)}</h2>
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-brandNavy">AZEXBUY Export Desk</span>
+                    <h2 className="text-xl font-bold text-slate-900">{getLocalizedText(selectedPillar.title || selectedPillar.name, locale)}</h2>
                   </div>
                 </div>
                 <button
@@ -2298,7 +2286,7 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
                     {locale === 'AZ' ? 'Strateji İcmal' : locale === 'TR' ? 'Stratejik Genel Bakış' : locale === 'RU' ? 'Обзор' : 'Strategic Overview'}
                   </h4>
                   <p className="text-sm text-slate-700 leading-relaxed">
-                    {getLocalizedText(selectedPillar.subtitle, locale)}
+                    {getLocalizedText(selectedPillar.subtitle || selectedPillar.description, locale)}
                   </p>
                 </div>
 
@@ -2307,12 +2295,16 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
                     {locale === 'AZ' ? 'Xidmət Paketi və Əhatə Dairəsi' : locale === 'TR' ? 'Hizmet Paketi ve Kapsamı' : locale === 'RU' ? 'Состав пакета услуг' : 'Service Breakdown'}
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    {selectedPillar.items.map((it: any, idx: number) => (
-                      <div key={idx} className="flex items-center gap-2 p-2.5 rounded-lg bg-slate-50 border border-slate-200/70 text-xs sm:text-sm font-medium text-slate-800">
-                        <i className="fa-solid fa-check text-brandGreen text-xs shrink-0"></i>
-                        <span>{getLocalizedText(it, locale)}</span>
-                      </div>
-                    ))}
+                    {(selectedPillar.items || []).map((it: any, idx: number) => {
+                      const itemText = typeof it === 'string' ? it : getLocalizedText(it, locale);
+                      if (!itemText) return null;
+                      return (
+                        <div key={idx} className="flex items-center gap-2 p-2.5 rounded-lg bg-slate-50 border border-slate-200/70 text-xs sm:text-sm font-medium text-slate-800">
+                          <i className="fa-solid fa-check text-brandGreen text-xs shrink-0"></i>
+                          <span>{itemText}</span>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
 

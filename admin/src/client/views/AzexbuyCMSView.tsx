@@ -362,13 +362,20 @@ interface ServicePillarEditorProps {
   saving: boolean;
   saved: boolean;
 }
-const PILLAR_LOCS = ['EN', 'AZ', 'TR', 'RU', 'AR', 'ES'] as const;
+const PILLAR_LOCS = ['AZ', 'EN', 'TR', 'RU', 'AR', 'ES'] as const;
 
 const ServicePillarEditor = React.memo(({ content, onChange, onSaveContent, saving, saved }: ServicePillarEditorProps) => {
   // Seed from the saved content (or defaults) on first mount so the fields start populated
   const [pillars, setPillars] = useState<any[]>(
     content?.services?.length ? content.services : SERVICES_PILLARS
   );
+
+  // Synchronize when content.services updates from backend
+  useEffect(() => {
+    if (Array.isArray(content?.services) && content.services.length > 0) {
+      setPillars(content.services);
+    }
+  }, [content?.services]);
 
   const applyChange = (nextPillars: any[]) => {
     setPillars(nextPillars);
@@ -384,15 +391,16 @@ const ServicePillarEditor = React.memo(({ content, onChange, onSaveContent, savi
     const newPillar = {
       id: newId,
       iconClass: 'fa-solid fa-chart-line',
-      colorClass: 'bg-blue-600',
-      linkColorClass: 'text-blue-600',
+      colorClass: 'bg-brandNavy',
+      linkColorClass: 'text-brandNavy',
       title: { AZ: 'Yeni Xidmət', EN: 'New Service', TR: 'Yeni Hizmet', RU: 'Новая услуга', AR: '', ES: '' },
       subtitle: { AZ: 'Xidmət haqqında qısa izah', EN: 'Brief service description', TR: '', RU: '', AR: '', ES: '' },
       turnaround: '3–5 Days',
       items: [
-        { AZ: 'Maddə 1', EN: 'Item 1', TR: '', RU: '', AR: '', ES: '' },
-        { AZ: 'Maddə 2', EN: 'Item 2', TR: '', RU: '', AR: '', ES: '' },
-      ]
+        { AZ: 'Yeni Başlıq 1', EN: 'Item 1', TR: '', RU: '', AR: '', ES: '' },
+        { AZ: 'Yeni Başlıq 2', EN: 'Item 2', TR: '', RU: '', AR: '', ES: '' },
+      ],
+      deliverables: []
     };
     applyChange([...pillars, newPillar]);
   };
@@ -415,12 +423,41 @@ const ServicePillarEditor = React.memo(({ content, onChange, onSaveContent, savi
     updatePillar(id, (p: any) => ({ ...p, iconClass }));
   };
 
+  const setPillarColor = (id: string, colorClass: string) => {
+    updatePillar(id, (p: any) => ({ ...p, colorClass }));
+  };
+
   const setPillarItemLoc = (id: string, idx: number, loc: string, value: string) => {
     updatePillar(id, (p: any) => {
       const items = [...(p.items || [])];
-      items[idx] = { ...items[idx], [loc]: value };
+      const cur = items[idx];
+      const curObj = typeof cur === 'object' && cur !== null
+        ? { ...cur }
+        : { AZ: String(cur || ''), EN: String(cur || ''), TR: '', RU: '', AR: '', ES: '' };
+      curObj[loc] = value;
+      items[idx] = curObj;
       return { ...p, items };
     });
+  };
+
+  const addItemToPillar = (id: string, afterIdx?: number) => {
+    updatePillar(id, (prev: any) => {
+      const items = [...(prev.items || [])];
+      const newItem = { AZ: '', EN: '', TR: '', RU: '', AR: '', ES: '' };
+      if (typeof afterIdx === 'number') {
+        items.splice(afterIdx + 1, 0, newItem);
+      } else {
+        items.push(newItem);
+      }
+      return { ...prev, items };
+    });
+  };
+
+  const removeItemFromPillar = (id: string, idx: number) => {
+    updatePillar(id, (prev: any) => ({
+      ...prev,
+      items: (prev.items || []).filter((_: any, i: number) => i !== idx)
+    }));
   };
 
   return (
@@ -432,9 +469,9 @@ const ServicePillarEditor = React.memo(({ content, onChange, onSaveContent, savi
         <button
           type="button"
           onClick={addPillar}
-          className="h-7 px-3 flex items-center gap-1.5 text-xs font-bold rounded-sm bg-emerald-600 hover:bg-emerald-700 text-white shadow-2xs transition-colors"
+          className="h-7 px-3 flex items-center gap-1.5 text-xs font-bold rounded-sm bg-emerald-600 hover:bg-emerald-700 text-white shadow-2xs transition-colors cursor-pointer"
         >
-          <Plus className="w-3.5 h-3.5" /> Yeni Servis Kartı Əlavə Et
+          <Plus className="w-3.5 h-3.5" /> Yeni Servis Kartı Əlavə Et (+)
         </button>
       </div>
 
@@ -442,7 +479,7 @@ const ServicePillarEditor = React.memo(({ content, onChange, onSaveContent, savi
         <div key={p.id} className="border border-slate-200/90 rounded-lg p-4 bg-white space-y-3 shadow-2xs">
           <div className="flex items-center justify-between gap-2.5 pb-2 border-b border-slate-100">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded bg-slate-100 flex items-center justify-center text-slate-700 text-base">
+              <div className={`w-8 h-8 rounded ${p.colorClass || 'bg-brandNavy'} flex items-center justify-center text-white text-base shadow-xs`}>
                 <i className={`${p.iconClass || 'fa-solid fa-circle-check'}`}></i>
               </div>
               <div>
@@ -457,20 +494,35 @@ const ServicePillarEditor = React.memo(({ content, onChange, onSaveContent, savi
             <button
               type="button"
               onClick={() => removePillar(p.id)}
-              className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
-              title="Kartı Sil"
+              className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors cursor-pointer"
+              title="Kartı Sil (-)"
             >
               <Trash2 className="w-4 h-4" />
             </button>
           </div>
 
-          {/* İkon və SLA Seçici */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {/* İkon, Rəng və SLA Seçici */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <IconPickerDropdown
               label="Kartın İkonu"
               value={p.iconClass || 'fa-solid fa-circle-check'}
               onChange={(newIcon) => setPillarIcon(p.id, newIcon)}
             />
+            <div>
+              <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Kart Rəngi</label>
+              <select
+                value={p.colorClass || 'bg-brandNavy'}
+                onChange={(e) => setPillarColor(p.id, e.target.value)}
+                className="w-full h-8 text-xs bg-slate-50/70 border border-slate-200 rounded px-2.5 focus:outline-none focus:bg-white focus:border-[#0f3156]"
+              >
+                <option value="bg-brandNavy">Navy (#0f3156)</option>
+                <option value="bg-emerald-600">Emerald</option>
+                <option value="bg-sky-600">Sky</option>
+                <option value="bg-purple-600">Purple</option>
+                <option value="bg-amber-500">Amber</option>
+                <option value="bg-rose-600">Rose</option>
+              </select>
+            </div>
             <div>
               <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Turnaround / SLA</label>
               <input
@@ -482,6 +534,7 @@ const ServicePillarEditor = React.memo(({ content, onChange, onSaveContent, savi
             </div>
           </div>
 
+          {/* Başlıq və Tam İzah (Dillər üzrə) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             {PILLAR_LOCS.map((loc) => (
               <div key={loc} className="flex items-start gap-2">
@@ -498,81 +551,107 @@ const ServicePillarEditor = React.memo(({ content, onChange, onSaveContent, savi
                   <input
                     value={(p.subtitle as PillarLocText)?.[loc] || ''}
                     onChange={(e) => setPillarLoc(p.id, 'subtitle', loc, e.target.value)}
-                    placeholder={`Tam izah (${loc})`}
+                    placeholder={`Açıqlama / İzah (${loc})`}
                     className="w-full h-7 text-[11px] bg-slate-50/70 border border-slate-200 rounded px-2 focus:outline-none focus:bg-white focus:border-[#0f3156]"
                   />
                 </div>
               </div>
             ))}
           </div>
-          {/* Məsələlər (items) — each row lists all 6 locales compactly */}
-          <div>
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[10px] font-bold text-slate-500 uppercase">
-                Məsələlər (6 dil × {p.items?.length || 0})
+
+          {/* Xidmət Alt Başlıqları / Maddələri (+/- İdarəetmə) */}
+          <div className="pt-2 border-t border-slate-100">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+                <i className="fa-solid fa-list-check text-brandNavy text-xs"></i>
+                Kart Daxili Başlıqlar / Maddələr ({p.items?.length || 0} bənd)
               </span>
               <button
                 type="button"
-                onClick={() => {
-                  updatePillar(p.id, (prev: any) => ({
-                    ...prev,
-                    items: [...(prev.items || []), { EN: '', AZ: '', TR: '', RU: '', AR: '', ES: '' }]
-                  }));
-                }}
-                className="h-6 px-2 flex items-center gap-1 text-[10px] font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 rounded transition-colors"
+                onClick={() => addItemToPillar(p.id)}
+                className="h-6 px-2.5 flex items-center gap-1 text-[11px] font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded transition-colors cursor-pointer"
               >
-                <Plus className="w-3 h-3" /> Məsələ Əlavə Et
+                <Plus className="w-3 h-3" /> Başlıq Əlavə Et (+)
               </button>
             </div>
-            <div className="space-y-1.5">
-              {(p.items || []).map((item: PillarItem, idx: number) => (
-                <div key={idx} className="border border-slate-100 rounded-sm p-2 bg-slate-50/50 space-y-1">
-                  <div className="flex items-center justify-between text-[10px] text-slate-400 font-mono">
-                    <span>{idx + 1}. {item.EN || item.AZ || 'Yeni maddə'}</span>
-                    <button
-                      type="button"
-                      title="Sil"
-                      onClick={() => {
-                        updatePillar(p.id, (prev: any) => ({
-                          ...prev,
-                          items: (prev.items || []).filter((_: any, i: number) => i !== idx)
-                        }));
-                      }}
-                      className="p-1 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded"
-                    >
-                      <Trash2 className="w-3 h-3" />
-                    </button>
+
+            <div className="space-y-2">
+              {(p.items || []).map((item: any, idx: number) => {
+                const itemAz = typeof item === 'object' ? item.AZ || '' : String(item || '');
+                const itemEn = typeof item === 'object' ? item.EN || '' : '';
+                return (
+                  <div key={idx} className="border border-slate-200 rounded p-2.5 bg-slate-50/60 space-y-1.5">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-bold text-slate-700 font-mono flex items-center gap-1.5">
+                        <span className="w-5 h-5 rounded bg-white border border-slate-200 flex items-center justify-center text-[10px] text-slate-500 font-bold">
+                          {idx + 1}
+                        </span>
+                        {itemAz || itemEn || `Maddə #${idx + 1}`}
+                      </span>
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          title="Aşağısına yeni başlıq əlavə et (+)"
+                          onClick={() => addItemToPillar(p.id, idx)}
+                          className="h-6 px-2 text-[10px] font-bold text-emerald-700 bg-white hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 rounded flex items-center gap-1 transition-colors cursor-pointer"
+                        >
+                          <Plus className="w-3 h-3" /> Əlavə et
+                        </button>
+                        <button
+                          type="button"
+                          title="Bu başlığı sil (-)"
+                          onClick={() => removeItemFromPillar(p.id, idx)}
+                          className="h-6 w-6 text-slate-400 hover:text-red-600 bg-white hover:bg-red-50 border border-slate-200 hover:border-red-200 rounded flex items-center justify-center transition-colors cursor-pointer"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+                      </div>
+                    </div>
+                    {/* Multilingual inputs for this item */}
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1.5">
+                      {PILLAR_LOCS.map((loc) => (
+                        <div key={loc} className="relative">
+                          <input
+                            value={(item as any)?.[loc] ?? (loc === 'AZ' && typeof item === 'string' ? item : '')}
+                            onChange={(e) => setPillarItemLoc(p.id, idx, loc, e.target.value)}
+                            placeholder={loc}
+                            className="h-7 text-[11px] bg-white border border-slate-200 rounded px-2 pr-7 focus:outline-none focus:border-[#0f3156] w-full"
+                          />
+                          <span className="absolute right-1.5 top-1.5 text-[9px] font-bold text-slate-400 pointer-events-none font-mono">
+                            {loc}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
-                    {PILLAR_LOCS.map((loc) => (
-                      <input
-                        key={loc}
-                        value={(item as any)?.[loc] || ''}
-                        onChange={(e) => setPillarItemLoc(p.id, idx, loc, e.target.value)}
-                        placeholder={loc}
-                        className="h-6 text-[10px] bg-white border border-slate-200 rounded px-1.5 focus:outline-none focus:border-[#0f3156] w-full"
-                      />
-                    ))}
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
+
+            <button
+              type="button"
+              onClick={() => addItemToPillar(p.id)}
+              className="mt-2.5 w-full h-8 flex items-center justify-center gap-1.5 text-xs font-bold bg-white hover:bg-slate-50 text-slate-700 border border-dashed border-slate-300 hover:border-brandNavy rounded-lg transition-colors cursor-pointer"
+            >
+              <Plus className="w-3.5 h-3.5 text-brandGreen" /> Yeni Başlıq / Maddə Əlavə Et (+)
+            </button>
           </div>
         </div>
       ))}
+
       <div className="flex items-center justify-between pt-2">
         <button
           type="button"
           onClick={addPillar}
-          className="h-8 px-3.5 flex items-center gap-1.5 text-xs font-bold rounded-sm bg-slate-100 hover:bg-slate-200 text-slate-800 transition-colors"
+          className="h-8 px-3.5 flex items-center gap-1.5 text-xs font-bold rounded-sm bg-slate-100 hover:bg-slate-200 text-slate-800 transition-colors cursor-pointer"
         >
-          <Plus className="w-3.5 h-3.5" /> Kart Əlavə Et
+          <Plus className="w-3.5 h-3.5" /> Yeni Servis Kartı Əlavə Et (+)
         </button>
         <button
           type="button"
           onClick={() => onSaveContent({ ...content, services: pillars })}
           disabled={saving}
-          className="h-8 px-5 flex items-center gap-2 text-xs font-bold rounded-sm bg-[#0f3156] hover:bg-[#081c33] text-white disabled:opacity-60 shadow-sm"
+          className="h-8 px-5 flex items-center gap-2 text-xs font-bold rounded-sm bg-[#0f3156] hover:bg-[#081c33] text-white disabled:opacity-60 shadow-sm cursor-pointer"
         >
           <Save className="w-3.5 h-3.5" />
           {saving ? 'Saxlanılır...' : 'Xidmət Kartlarını Yadda Saxla'}
