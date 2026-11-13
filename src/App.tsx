@@ -344,6 +344,7 @@ export default function App() {
     producerSteps: cmsProducerSteps,
     cmsServices,
     contact,
+    social,
     whyAzexbuyCustom,
     whyAzerbaijanCustom,
     categoryImages,
@@ -435,6 +436,78 @@ export default function App() {
       detail: ft.detail,
     }));
   }, [whyAzerbaijanCustom, t.whyAzerbaijan, locale]);
+
+  // Social media list for footer and institutional channels
+  const socialList = useMemo(() => {
+    if (!social) return [];
+    const items = [
+      {
+        key: 'linkedin',
+        label: 'LinkedIn',
+        url: social.linkedin,
+        active: social.linkedin_active !== false,
+        icon: <i className="fa-brands fa-linkedin-in text-xs"></i>,
+        hoverBg: 'hover:bg-[#0A66C2]',
+      },
+      {
+        key: 'instagram',
+        label: 'Instagram',
+        url: social.instagram,
+        active: social.instagram_active !== false,
+        icon: <i className="fa-brands fa-instagram text-xs"></i>,
+        hoverBg: 'hover:bg-[#E1306C]',
+      },
+      {
+        key: 'facebook',
+        label: 'Facebook',
+        url: social.facebook,
+        active: social.facebook_active !== false,
+        icon: <i className="fa-brands fa-facebook-f text-xs"></i>,
+        hoverBg: 'hover:bg-[#1877F2]',
+      },
+      {
+        key: 'twitter',
+        label: 'X (Twitter)',
+        url: social.twitter || social.x,
+        active: social.twitter_active !== false,
+        icon: <i className="fa-brands fa-x-twitter text-xs"></i>,
+        hoverBg: 'hover:bg-slate-900',
+      },
+      {
+        key: 'whatsapp',
+        label: 'WhatsApp',
+        url: social.whatsapp,
+        active: social.whatsapp_active !== false,
+        icon: <i className="fa-brands fa-whatsapp text-xs"></i>,
+        hoverBg: 'hover:bg-[#25D366]',
+      },
+      {
+        key: 'telegram',
+        label: 'Telegram',
+        url: social.telegram,
+        active: social.telegram_active !== false,
+        icon: <i className="fa-brands fa-telegram text-xs"></i>,
+        hoverBg: 'hover:bg-[#229ED9]',
+      },
+      {
+        key: 'youtube',
+        label: 'YouTube',
+        url: social.youtube,
+        active: social.youtube_active !== false,
+        icon: <i className="fa-brands fa-youtube text-xs"></i>,
+        hoverBg: 'hover:bg-[#FF0000]',
+      },
+      {
+        key: 'tiktok',
+        label: 'TikTok',
+        url: social.tiktok,
+        active: social.tiktok_active !== false,
+        icon: <i className="fa-brands fa-tiktok text-xs"></i>,
+        hoverBg: 'hover:bg-slate-900',
+      },
+    ];
+    return items.filter(it => it.url && String(it.url).trim().length > 0 && it.active);
+  }, [social]);
 
   // ── Category tiles (home "Selected Products" section) ────────────────────
   const CAT_ICONS: Record<string, string> = {
@@ -809,142 +882,162 @@ export default function App() {
                   </div>
 
                   {/* Right Side Process Timelines */}
-                  <div className="lg:w-3/4 w-full flex flex-col gap-8 overflow-x-auto pb-2">
+                  <div className="lg:w-3/4 w-full flex flex-col gap-6 overflow-x-auto pb-2">
                     {/* Buyers Pipeline (7 steps) */}
-                    <div className="min-w-[640px]">
-                      <span className="text-xs font-extrabold tracking-wide uppercase text-blue-700 block mb-3">
-                        {t.howItWorks.forBuyersLabel}
-                      </span>
-                      <div className="grid grid-cols-7 gap-2 relative">
-                        {cmsBuyerSteps.map((step, idx) => {
-                          const isLast = idx === cmsBuyerSteps.length - 1;
-                          const isSelected =
-                            selectedStepInfo?.track === 'buyer' &&
-                            selectedStepInfo.step.number === step.number;
-                          return (
-                            <button
-                              key={step.number}
-                              type="button"
-                              onClick={() =>
-                                setSelectedStepInfo(
-                                  isSelected ? null : { track: 'buyer', step }
-                                )
-                              }
-                              className={`flex flex-col items-center text-center relative cursor-pointer group ${
-                                !isLast ? 'step-line' : ''
-                              }`}
-                            >
-                              <span
-                                className={`w-7 h-7 rounded-full text-white font-bold text-xs flex items-center justify-center relative z-10 shadow-sm mb-1.5 transition-transform group-hover:scale-110 tabular-nums ${
-                                  isSelected ? 'bg-brandNavy ring-2 ring-blue-300' : 'bg-blue-600'
+                    <div className="min-w-[760px] bg-white border border-slate-200/90 rounded-xl p-4 shadow-2xs">
+                      <div className="flex items-center justify-between mb-3.5 pb-2 border-b border-slate-100">
+                        <span className="text-xs font-extrabold tracking-wide uppercase text-blue-700 flex items-center gap-2">
+                          <i className="fa-solid fa-basket-shopping text-blue-600"></i>
+                          {t.howItWorks.forBuyersLabel}
+                        </span>
+                        <span className="text-[11px] text-slate-400 font-medium">
+                          7 {locale === 'az' ? 'mərhələ' : locale === 'ru' ? 'этапов' : 'steps'}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="flex-1 grid grid-cols-7 gap-2 relative">
+                          {cmsBuyerSteps.map((step, idx) => {
+                            const isLast = idx === cmsBuyerSteps.length - 1;
+                            const isSelected =
+                              selectedStepInfo?.track === 'buyer' &&
+                              selectedStepInfo.step.number === step.number;
+                            return (
+                              <button
+                                key={step.number}
+                                type="button"
+                                onClick={() =>
+                                  setSelectedStepInfo(
+                                    isSelected ? null : { track: 'buyer', step }
+                                  )
+                                }
+                                className={`flex flex-col items-center text-center relative cursor-pointer group ${
+                                  !isLast ? 'step-line' : ''
                                 }`}
                               >
-                                {step.number}
-                              </span>
-                              <span className="text-[10.5px] leading-tight text-gray-700 font-medium group-hover:text-brandNavy">
-                                {getLocalizedText(step.title, locale)}
-                              </span>
-                            </button>
-                          );
-                        })}
+                                <span
+                                  className={`w-7 h-7 rounded-full text-white font-bold text-xs flex items-center justify-center relative z-10 shadow-sm mb-1.5 transition-transform group-hover:scale-110 tabular-nums ${
+                                    isSelected ? 'bg-brandNavy ring-2 ring-blue-300' : 'bg-blue-600'
+                                  }`}
+                                >
+                                  {step.number}
+                                </span>
+                                <span className="text-[10.5px] leading-tight text-gray-700 font-medium group-hover:text-brandNavy">
+                                  {getLocalizedText(step.title, locale)}
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                        {/* Right-end CTA for Buyers */}
+                        <div className="shrink-0 pl-3 border-l border-slate-200 flex items-center">
+                          <button
+                            type="button"
+                            onClick={handleOpenGeneralRFQ}
+                            className="inline-flex items-center gap-2 bg-brandNavy hover:bg-brandNavyDark text-white text-xs font-bold px-3.5 py-2.5 rounded-lg shadow-sm hover:shadow transition-all cursor-pointer group whitespace-nowrap"
+                          >
+                            <i className="fa-solid fa-file-circle-plus text-blue-300 group-hover:scale-110 transition-transform"></i>
+                            <span>Start Buyer RFQ</span>
+                            <i className="fa-solid fa-arrow-right text-[10px] text-blue-300 group-hover:translate-x-0.5 transition-transform"></i>
+                          </button>
+                        </div>
                       </div>
                     </div>
 
                     {/* Producers Pipeline (10 steps) */}
-                    <div className="min-w-[680px]">
-                      <span className="text-xs font-extrabold tracking-wide uppercase text-brandGreen block mb-3">
-                        {t.howItWorks.forProducersLabel}
-                      </span>
-                      <div className="grid grid-cols-10 gap-1.5 relative">
-                        {cmsProducerSteps.map((step, idx) => {
-                          const isLast = idx === cmsProducerSteps.length - 1;
-                          const isSelected =
-                            selectedStepInfo?.track === 'producer' &&
-                            selectedStepInfo.step.number === step.number;
-                          return (
-                            <button
-                              key={step.number}
-                              type="button"
-                              onClick={() =>
-                                setSelectedStepInfo(
-                                  isSelected ? null : { track: 'producer', step }
-                                )
-                              }
-                              className={`flex flex-col items-center text-center relative cursor-pointer group ${
-                                !isLast ? 'step-line' : ''
-                              }`}
-                            >
-                              <span
-                                className={`w-6 h-6 rounded-full text-white font-bold text-[11px] flex items-center justify-center relative z-10 shadow-sm mb-1.5 transition-transform group-hover:scale-110 tabular-nums ${
-                                  isSelected
-                                    ? 'bg-brandNavy ring-2 ring-emerald-300'
-                                    : 'bg-brandGreen'
+                    <div className="min-w-[820px] bg-white border border-slate-200/90 rounded-xl p-4 shadow-2xs">
+                      <div className="flex items-center justify-between mb-3.5 pb-2 border-b border-slate-100">
+                        <span className="text-xs font-extrabold tracking-wide uppercase text-brandGreen flex items-center gap-2">
+                          <i className="fa-solid fa-industry text-brandGreen"></i>
+                          {t.howItWorks.forProducersLabel}
+                        </span>
+                        <span className="text-[11px] text-slate-400 font-medium">
+                          10 {locale === 'az' ? 'mərhələ' : locale === 'ru' ? 'этапов' : 'steps'}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="flex-1 grid grid-cols-10 gap-1.5 relative">
+                          {cmsProducerSteps.map((step, idx) => {
+                            const isLast = idx === cmsProducerSteps.length - 1;
+                            const isSelected =
+                              selectedStepInfo?.track === 'producer' &&
+                              selectedStepInfo.step.number === step.number;
+                            return (
+                              <button
+                                key={step.number}
+                                type="button"
+                                onClick={() =>
+                                  setSelectedStepInfo(
+                                    isSelected ? null : { track: 'producer', step }
+                                  )
+                                }
+                                className={`flex flex-col items-center text-center relative cursor-pointer group ${
+                                  !isLast ? 'step-line' : ''
                                 }`}
                               >
-                                {step.number}
-                              </span>
-                              <span className="text-[9.5px] leading-tight text-gray-700 group-hover:text-brandGreen">
-                                {getLocalizedText(step.title, locale)}
-                              </span>
-                            </button>
-                          );
-                        })}
+                                <span
+                                  className={`w-6 h-6 rounded-full text-white font-bold text-[11px] flex items-center justify-center relative z-10 shadow-sm mb-1.5 transition-transform group-hover:scale-110 tabular-nums ${
+                                    isSelected
+                                      ? 'bg-brandNavy ring-2 ring-emerald-300'
+                                      : 'bg-brandGreen'
+                                  }`}
+                                >
+                                  {step.number}
+                                </span>
+                                <span className="text-[9.5px] leading-tight text-gray-700 group-hover:text-brandGreen">
+                                  {getLocalizedText(step.title, locale)}
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                        {/* Right-end CTA for Producers */}
+                        <div className="shrink-0 pl-3 border-l border-slate-200 flex items-center">
+                          <button
+                            type="button"
+                            onClick={() => setProducerModalOpen(true)}
+                            className="inline-flex items-center gap-2 bg-brandGreen hover:bg-emerald-700 text-white text-xs font-bold px-3.5 py-2.5 rounded-lg shadow-sm hover:shadow transition-all cursor-pointer group whitespace-nowrap"
+                          >
+                            <i className="fa-solid fa-id-card-clip text-emerald-200 group-hover:scale-110 transition-transform"></i>
+                            <span>Register Producer</span>
+                            <i className="fa-solid fa-arrow-right text-[10px] text-emerald-200 group-hover:translate-x-0.5 transition-transform"></i>
+                          </button>
+                        </div>
                       </div>
                     </div>
 
-                    {/* Interactive Step Drawer when user clicks any step circle — CTA only on the last step */}
-                    {selectedStepInfo && (() => {
-                      const isBuyerLast = selectedStepInfo.track === 'buyer'
-                        && selectedStepInfo.step.number === Math.max(...cmsBuyerSteps.map(s => s.number));
-                      const isProducerLast = selectedStepInfo.track === 'producer'
-                        && selectedStepInfo.step.number === Math.max(...cmsProducerSteps.map(s => s.number));
-                      return (
-                      <div className="bg-white border border-slate-200 rounded-lg p-4 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    {/* Interactive Step Drawer when user clicks any step circle */}
+                    {selectedStepInfo && (
+                      <div className="bg-white border border-slate-200 rounded-lg p-4 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 animate-fadeIn">
                         <div>
                           <div className="flex items-center gap-2 text-[11px] font-bold uppercase text-brandNavy mb-0.5">
+                            <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-mono text-[10px]">
+                              #{selectedStepInfo.step.number}
+                            </span>
                             <span>{selectedStepInfo.step.authority}</span>
                             <span>·</span>
-                            <span className="text-brandGreen tabular-nums">
+                            <span className="text-brandGreen tabular-nums font-semibold">
                               SLA: {selectedStepInfo.step.sla}
                             </span>
                           </div>
-                          <h4 className="text-sm font-extrabold text-slate-900">
+                          <h4 className="text-sm font-extrabold text-slate-900 mt-1">
                             {getLocalizedText(selectedStepInfo.step.detailTitle, locale)}
                           </h4>
-                          <p className="text-xs text-slate-600 mt-0.5">
+                          <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
                             {getLocalizedText(selectedStepInfo.step.description, locale)}
                           </p>
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
-                          {isBuyerLast && (
-                            <button
-                              type="button"
-                              onClick={() => setActiveView('buyers')}
-                              className="bg-brandNavy text-white text-xs font-bold px-3.5 py-2 rounded cursor-pointer"
-                            >
-                              Start Buyer RFQ
-                            </button>
-                          )}
-                          {isProducerLast && (
-                            <button
-                              type="button"
-                              onClick={() => setProducerModalOpen(true)}
-                              className="bg-brandNavy text-white text-xs font-bold px-3.5 py-2 rounded cursor-pointer"
-                            >
-                              Register Producer
-                            </button>
-                          )}
                           <button
                             type="button"
                             onClick={() => setSelectedStepInfo(null)}
-                            className="text-slate-400 hover:text-slate-700 p-1.5 cursor-pointer"
+                            className="text-slate-400 hover:text-slate-700 p-1.5 cursor-pointer rounded-full hover:bg-slate-100 transition-colors"
+                            title="Bağla"
                           >
-                            <i className="fa-solid fa-xmark"></i>
+                            <i className="fa-solid fa-xmark text-sm"></i>
                           </button>
                         </div>
                       </div>
-                      );
-                    })()}
+                    )}
                   </div>
                 </div>
               </div>
@@ -1288,37 +1381,86 @@ export default function App() {
               </ul>
             </div>
 
-            {/* Headquarters */}
-            <div>
+            {/* Headquarters & Contacts */}
+            <div className="space-y-2.5">
               <h4 className="text-white font-bold uppercase tracking-wider text-[11px] mb-3">
                 {t.footer.hqTitle}
               </h4>
               <p className="text-slate-400 leading-relaxed mb-2">{t.footer.hqAddress}</p>
-              <p className="text-slate-300 font-semibold tabular-nums">
-                Tel: {contact.phone}
-              </p>
-              <p className="text-slate-300 font-semibold">Email: {contact.email}</p>
+              <div className="space-y-1.5 pt-1 text-slate-300">
+                <p className="font-semibold tabular-nums flex items-center gap-2">
+                  <span className="text-slate-400 font-normal">Tel:</span>
+                  <a
+                    href={`tel:${(contact.phone || '+994 10 509 19 59').replace(/\s+/g, '')}`}
+                    className="hover:text-white hover:underline transition-colors"
+                  >
+                    {contact.phone || '+994 10 509 19 59'}
+                  </a>
+                </p>
+                <p className="font-semibold flex items-center gap-2">
+                  <span className="text-slate-400 font-normal">Email:</span>
+                  <a
+                    href={`mailto:${contact.email || 'info@azexbuy.com'}`}
+                    className="hover:text-white hover:underline transition-colors"
+                  >
+                    {contact.email || 'info@azexbuy.com'}
+                  </a>
+                </p>
+                {(contact.emailAlt || 'support@azexbuy.com') && (
+                  <p className="font-semibold flex items-center gap-2">
+                    <span className="text-slate-400 font-normal">Dəstək:</span>
+                    <a
+                      href={`mailto:${contact.emailAlt || 'support@azexbuy.com'}`}
+                      className="hover:text-white hover:underline transition-colors"
+                    >
+                      {contact.emailAlt || 'support@azexbuy.com'}
+                    </a>
+                  </p>
+                )}
+              </div>
             </div>
           </div>
 
-          <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
+          <div className="pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
             <span>{t.footer.rights}</span>
-            <div className="flex items-center gap-4">
-              <button
-                type="button"
-                onClick={() => setActiveView('insights')}
-                className="hover:text-slate-300 cursor-pointer"
-              >
-                Middle Corridor Transit Data
-              </button>
-              <span>·</span>
-              <button
-                type="button"
-                onClick={() => setActiveView('contact')}
-                className="hover:text-slate-300 cursor-pointer"
-              >
-                {t.footer.contactUs}
-              </button>
+
+            <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+              <div className="flex items-center gap-4">
+                <button
+                  type="button"
+                  onClick={() => setActiveView('insights')}
+                  className="hover:text-slate-300 cursor-pointer transition-colors"
+                >
+                  Middle Corridor Transit Data
+                </button>
+                <span>·</span>
+                <button
+                  type="button"
+                  onClick={() => setActiveView('contact')}
+                  className="hover:text-slate-300 cursor-pointer transition-colors"
+                >
+                  {t.footer.contactUs}
+                </button>
+              </div>
+
+              {/* Social Media Icons (Bottom-Right) */}
+              {socialList.length > 0 && (
+                <div className="flex items-center gap-2 sm:pl-4 sm:border-l sm:border-slate-800">
+                  {socialList.map((item) => (
+                    <a
+                      key={item.key}
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={item.label}
+                      title={item.label}
+                      className={`w-7 h-7 rounded-full bg-slate-800/90 text-slate-300 hover:text-white flex items-center justify-center transition-all duration-200 border border-slate-700/60 hover:border-transparent hover:scale-110 shadow-xs cursor-pointer ${item.hoverBg}`}
+                    >
+                      {item.icon}
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>

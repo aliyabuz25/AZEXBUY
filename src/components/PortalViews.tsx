@@ -1796,23 +1796,23 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
           </div>
         </div>
 
-        <section className="py-8 bg-[#F5F6F7]">
+        <section className="py-10 sm:py-14 bg-[#F8FAFC]">
           <div className="custom-container">
-            {/* Main light panel */}
-            <div className="bg-white border border-[#E5E7EB] rounded-[22px] overflow-hidden shadow-sm">
-              <div className="p-6 sm:p-7">
+            {/* Top heading */}
+            <div className="text-center mb-8 max-w-3xl mx-auto">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#171717] tracking-tight mb-2.5">
+                {howTitle}
+              </h2>
+              <p className="text-sm sm:text-base font-normal text-slate-500 leading-relaxed">
+                {howSubtitle}
+              </p>
+            </div>
 
-              {/* Top heading */}
-              <div className="text-center mb-6">
-                <h1 className="text-2xl font-bold text-[#171717] mb-2.5">{howTitle}</h1>
-                <p className="text-base font-normal text-[#666]">{howSubtitle}</p>
-              </div>
-
-              {/* Split in two — Buyers (Navy) | Sellers (Green) */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-7">
+            {/* Split in two — Buyers (Navy) | Sellers (Green) */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-7 sm:gap-8 items-start">
 
                 {/* ── LEFT: BUYERS ── */}
-                <div className="rounded-[18px] overflow-hidden bg-brandNavy p-6 sm:p-7 flex flex-col gap-5 min-h-[480px]">
+                <div className="rounded-[20px] overflow-hidden bg-brandNavy p-6 sm:p-8 flex flex-col gap-5 min-h-[480px] shadow-sm">
                   <div>
                     <div className="rounded-[14px] overflow-hidden w-full aspect-[1.81/1] mb-4">
                       <img src={howItWorksBuyersImage} alt="Buyers" className="w-full h-full object-cover" />
@@ -1894,7 +1894,7 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
                 </div>
 
                 {/* ── RIGHT: SELLERS ── */}
-                <div className="rounded-[18px] overflow-hidden bg-brandGreenDark p-6 sm:p-7 flex flex-col gap-5 min-h-[480px]">
+                <div className="rounded-[20px] overflow-hidden bg-brandGreenDark p-6 sm:p-8 flex flex-col gap-5 min-h-[480px] shadow-sm">
                   <div>
                     <div className="rounded-[14px] overflow-hidden w-full aspect-[1.81/1] mb-4">
                       <img src={howItWorksSellersImage} alt="Sellers" className="w-full h-full object-cover" />
@@ -1977,12 +1977,10 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
 
               </div>
             </div>
-          </div>
+          </section>
         </div>
-      </section>
-      </div>
-    );
-  }
+      );
+    }
 
 
   // ── PRODUCERS PAGE ────────────────────────────────────────────
@@ -2092,30 +2090,238 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
           </div>
         </div>
 
-        {/* Info blocks */}
-        <div className="custom-container pb-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
-              <div className="flex items-center gap-2 mb-4">
-                <i className="fa-solid fa-ship text-blue-600 text-base"></i>
-                <h3 className="text-[15px] font-bold text-[#171717]">Incoterms® 2020</h3>
+        {/* ── İXRAC BƏLƏDÇİSİ VƏ TİCARƏT STANDARTLARI (4 KART) ── */}
+        <div className="custom-container pb-12">
+          <div className="mb-6">
+            <span className="text-xs font-extrabold uppercase tracking-wider text-brandGreen block mb-1">
+              İxrac Hazırlığı və Beynəlxalq Standartlar
+            </span>
+            <h2 className="text-xl sm:text-2xl font-extrabold text-[#171717] tracking-tight">
+              İstehsalçılar Üçün Ticarət və İxrac Bələdçisi
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-2xl leading-relaxed">
+              Beynəlxalq ticarət əməliyyatlarında satıcı və alıcı arasındakı çatdırılma şərtləri, qiymətləndirmə, keyfiyyət tələbləri və zəruri ixrac sənədləri.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Kart 1. Incoterms® 2020 */}
+            <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
+              <div>
+                <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                      <i className="fa-solid fa-ship text-sm"></i>
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 font-mono">Kart 1</span>
+                      <h3 className="text-[16px] font-bold text-[#171717]">Incoterms® 2020</h3>
+                    </div>
+                  </div>
+                  <span className="text-xs font-semibold px-2.5 py-1 bg-blue-50 text-blue-700 rounded-full border border-blue-100">
+                    Çatdırılma şərtləri
+                  </span>
+                </div>
+
+                <div className="bg-blue-50/50 border border-blue-100/70 rounded-lg p-3 mb-4 text-xs text-slate-700 leading-relaxed">
+                  <strong className="text-slate-900">Qısa izah:</strong> İxrac əməliyyatında satıcının və alıcının çatdırılma, daşınma xərcləri və risklər üzrə öhdəliklərini müəyyən edən beynəlxalq qaydalar.
+                </div>
+
+                <div className="space-y-2 text-xs">
+                  <div className="flex items-start gap-2.5">
+                    <span className="font-bold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded font-mono shrink-0">EXW</span>
+                    <span className="text-slate-600 leading-snug">Satıcı məhsulu öz ərazisində alıcının sərəncamına verir.</span>
+                  </div>
+                  <div className="flex items-start gap-2.5">
+                    <span className="font-bold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded font-mono shrink-0">FCA</span>
+                    <span className="text-slate-600 leading-snug">Satıcı məhsulu razılaşdırılmış daşıyıcıya təhvil verir.</span>
+                  </div>
+                  <div className="flex items-start gap-2.5">
+                    <span className="font-bold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded font-mono shrink-0">FOB</span>
+                    <span className="text-slate-600 leading-snug">Dəniz daşımalarında məhsul gəminin göyərtəsinə yüklənir.</span>
+                  </div>
+                  <div className="flex items-start gap-2.5">
+                    <span className="font-bold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded font-mono shrink-0">CIF</span>
+                    <span className="text-slate-600 leading-snug">Satıcı dəyər, sığorta və fraxt xərclərini ödəyir.</span>
+                  </div>
+                  <div className="flex items-start gap-2.5">
+                    <span className="font-bold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded font-mono shrink-0">DAP</span>
+                    <span className="text-slate-600 leading-snug">Satıcı məhsulu razılaşdırılmış təyinat yerinə çatdırır.</span>
+                  </div>
+                  <div className="flex items-start gap-2.5">
+                    <span className="font-bold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded font-mono shrink-0">DDP</span>
+                    <span className="text-slate-600 leading-snug">Satıcı idxal rəsmiləşdirilməsi və müvafiq idxal rüsumları daxil olmaqla öhdəlikləri üzərinə götürür.</span>
+                  </div>
+                </div>
               </div>
-              <div className="space-y-2">
-                {[['EXW','Fabrikadan — bütün xərclər alıcıdadır'],['FCA','Daşıyıcıya təhvil'],['FOB','Gəminin bortuna — risk gəmidə keçir'],['CIF','Sığorta və nəqliyyat daxil'],['DAP','Göstərilən yerə çatdırılıb'],['DDP','Tam çatdırılmış — bütün xərclər satıcıdadır']].map(([t,d]) => (
-                  <div key={t} className="flex gap-2 text-[13px]"><span className="font-bold text-blue-700 w-10 shrink-0">{t}</span><span className="text-slate-600">{d}</span></div>
-                ))}
+
+              <div className="mt-4 pt-3 border-t border-slate-100 flex items-start gap-2 text-[11.5px] text-slate-500 italic">
+                <i className="fa-solid fa-circle-info text-blue-500 mt-0.5 shrink-0"></i>
+                <span>İstehsalçı müqavilə bağlamazdan əvvəl seçilmiş Incoterms® şərtinə uyğun xərclərini və öhdəliklərini hesablamalıdır.</span>
               </div>
-              <p className="text-[11px] text-slate-400 mt-3 pt-3 border-t border-slate-100">Mənbə: ICC Incoterms® 2020 | Nəşr tarixi: 2019</p>
             </div>
-            <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
-              <div className="flex items-center gap-2 mb-4">
-                <i className="fa-solid fa-certificate text-amber-500 text-base"></i>
-                <h3 className="text-[15px] font-bold text-[#171717]">{locale === 'AZ' ? 'İxrac Sertifikatları' : 'Export Certificates'}</h3>
+
+            {/* Kart 2. İxrac qiyməti və ödəniş şərtləri */}
+            <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
+              <div>
+                <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                      <i className="fa-solid fa-file-invoice-dollar text-sm"></i>
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 font-mono">Kart 2</span>
+                      <h3 className="text-[16px] font-bold text-[#171717]">İxrac qiyməti və ödəniş şərtləri</h3>
+                    </div>
+                  </div>
+                  <span className="text-xs font-semibold px-2.5 py-1 bg-emerald-50 text-emerald-700 rounded-full border border-emerald-100">
+                    Export Pricing & Payment
+                  </span>
+                </div>
+
+                <div className="bg-emerald-50/50 border border-emerald-100/70 rounded-lg p-3 mb-4 text-xs text-slate-700 leading-relaxed">
+                  <strong className="text-slate-900">Qısa izah:</strong> Xarici alıcıya təqdim ediləcək satış qiymətinin formalaşdırılması və ödəniş şərtlərinin razılaşdırılması.
+                </div>
+
+                <div className="space-y-2 text-xs">
+                  <div className="flex items-start gap-2.5">
+                    <span className="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-mono shrink-0">EXW qiyməti</span>
+                    <span className="text-slate-600 leading-snug">Məhsulun satıcının müəssisəsində təhvil verilmə qiyməti.</span>
+                  </div>
+                  <div className="flex items-start gap-2.5">
+                    <span className="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-mono shrink-0">FOB qiyməti</span>
+                    <span className="text-slate-600 leading-snug">Müvafiq dəniz daşınması şərtində gəminin göyərtəsinə qədər olan satıcı xərcləri nəzərə alınmaqla qiymət.</span>
+                  </div>
+                  <div className="flex items-start gap-2.5">
+                    <span className="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-mono shrink-0">CIF qiyməti</span>
+                    <span className="text-slate-600 leading-snug">Məhsulun dəyəri, sığorta və təyinat limanına qədər fraxt xərcləri.</span>
+                  </div>
+                  <div className="flex items-start gap-2.5">
+                    <span className="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-mono shrink-0">T/T</span>
+                    <span className="text-slate-600 leading-snug">Bank köçürməsi (Telegraphic Transfer).</span>
+                  </div>
+                  <div className="flex items-start gap-2.5">
+                    <span className="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-mono shrink-0">L/C</span>
+                    <span className="text-slate-600 leading-snug">Akkreditiv (Letter of Credit).</span>
+                  </div>
+                  <div className="flex items-start gap-2.5">
+                    <span className="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded shrink-0">Avans / Qalıq</span>
+                    <span className="text-slate-600 leading-snug">Tərəflərin razılaşdırdığı ilkin və yekun ödəniş bölgüsü.</span>
+                  </div>
+                </div>
               </div>
-              <div className="space-y-2">
-                {[['AQTA','Fitosanitar və qida təhlükəsizliyi sertifikatı'],['ISO 22000','Qida təhlükəsizliyi idarəetmə sistemi'],['FSSC 22000','Beynəlxalq qida zənciri sertifikatı'],['EUR.1 / CT-1','Mənşə sertifikatı — preferensial gömrük'],['Halal','İslam ölkələri üçün Halal sertifikatı']].map(([t,d]) => (
-                  <div key={t} className="flex gap-2 text-[13px]"><span className="font-bold text-amber-700 w-24 shrink-0">{t}</span><span className="text-slate-600">{d}</span></div>
-                ))}
+
+              <div className="mt-4 pt-3 border-t border-slate-100 flex items-start gap-2 text-[11.5px] text-slate-500 italic">
+                <i className="fa-solid fa-circle-info text-emerald-500 mt-0.5 shrink-0"></i>
+                <span>İxrac qiyməti məhsulun maya dəyəri, qablaşdırma, daşınma və razılaşdırılmış çatdırılma şərtlərinə əsasən hesablanmalıdır.</span>
+              </div>
+            </div>
+
+            {/* Kart 3. Keyfiyyət və sertifikatlar */}
+            <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
+              <div>
+                <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+                      <i className="fa-solid fa-certificate text-sm"></i>
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600 font-mono">Kart 3</span>
+                      <h3 className="text-[16px] font-bold text-[#171717]">Keyfiyyət və sertifikatlar</h3>
+                    </div>
+                  </div>
+                  <span className="text-xs font-semibold px-2.5 py-1 bg-amber-50 text-amber-700 rounded-full border border-amber-100">
+                    Quality & Certificates
+                  </span>
+                </div>
+
+                <div className="bg-amber-50/50 border border-amber-100/70 rounded-lg p-3 mb-4 text-xs text-slate-700 leading-relaxed">
+                  <strong className="text-slate-900">Qısa izah:</strong> İstehsal olunan məhsulun xarici bazarlara çıxarılması zamanı tələb oluna bilən keyfiyyət standartları, sertifikatlar və uyğunluq sənədləri.
+                </div>
+
+                <div className="space-y-2 text-xs">
+                  <div className="flex items-start gap-2.5">
+                    <span className="font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded font-mono shrink-0">ISO 9001</span>
+                    <span className="text-slate-600 leading-snug">Keyfiyyətin idarəetmə sistemi.</span>
+                  </div>
+                  <div className="flex items-start gap-2.5">
+                    <span className="font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded font-mono shrink-0">ISO 22000 / HACCP</span>
+                    <span className="text-slate-600 leading-snug">Qida təhlükəsizliyi üzrə idarəetmə və nəzarət sistemləri.</span>
+                  </div>
+                  <div className="flex items-start gap-2.5">
+                    <span className="font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded font-mono shrink-0">Halal</span>
+                    <span className="text-slate-600 leading-snug">Müvafiq tələblərə uyğunluq sertifikatı.</span>
+                  </div>
+                  <div className="flex items-start gap-2.5">
+                    <span className="font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded font-mono shrink-0">CE</span>
+                    <span className="text-slate-600 leading-snug">Müəyyən məhsul qrupları üçün Avropa İttifaqının uyğunluq nişanlaması.</span>
+                  </div>
+                  <div className="flex items-start gap-2.5">
+                    <span className="font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded shrink-0">Fitosanitar / Baytarlıq</span>
+                    <span className="text-slate-600 leading-snug">Müvafiq bitki və heyvan mənşəli məhsullar üçün tələb oluna bilər.</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-slate-100 flex items-start gap-2 text-[11.5px] text-slate-500 italic">
+                <i className="fa-solid fa-circle-info text-amber-500 mt-0.5 shrink-0"></i>
+                <span>Sertifikat tələbləri məhsulun kateqoriyasına, təyinat ölkəsinə və qüvvədə olan qaydalara görə dəyişir.</span>
+              </div>
+            </div>
+
+            {/* Kart 4. İxrac sənədləri */}
+            <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
+              <div>
+                <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+                      <i className="fa-solid fa-folder-open text-sm"></i>
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-600 font-mono">Kart 4</span>
+                      <h3 className="text-[16px] font-bold text-[#171717]">İxrac sənədləri</h3>
+                    </div>
+                  </div>
+                  <span className="text-xs font-semibold px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-full border border-indigo-100">
+                    Export Documents
+                  </span>
+                </div>
+
+                <div className="bg-indigo-50/50 border border-indigo-100/70 rounded-lg p-3 mb-4 text-xs text-slate-700 leading-relaxed">
+                  <strong className="text-slate-900">Qısa izah:</strong> Xarici alıcıya məhsul satışı, ixrac əməliyyatının sənədləşdirilməsi və yükün beynəlxalq daşınması zamanı istifadə olunan əsas sənədlər.
+                </div>
+
+                <div className="space-y-2 text-xs">
+                  <div className="flex items-start gap-2.5">
+                    <span className="font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded font-mono shrink-0">Commercial Invoice</span>
+                    <span className="text-slate-600 leading-snug">Kommersiya hesab-fakturası.</span>
+                  </div>
+                  <div className="flex items-start gap-2.5">
+                    <span className="font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded font-mono shrink-0">Packing List</span>
+                    <span className="text-slate-600 leading-snug">Məhsulun qablaşdırma siyahısı.</span>
+                  </div>
+                  <div className="flex items-start gap-2.5">
+                    <span className="font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded font-mono shrink-0">Certificate of Origin</span>
+                    <span className="text-slate-600 leading-snug">Məhsulun mənşə sertifikatı.</span>
+                  </div>
+                  <div className="flex items-start gap-2.5">
+                    <span className="font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded font-mono shrink-0">CMR / Bill of Lading / AWB</span>
+                    <span className="text-slate-600 leading-snug">Avtomobil, dəniz və hava nəqliyyatı sənədləri.</span>
+                  </div>
+                  <div className="flex items-start gap-2.5">
+                    <span className="font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded shrink-0">İxrac bəyannaməsi</span>
+                    <span className="text-slate-600 leading-snug">Gömrük ixrac rəsmiləşdirilməsi zamanı istifadə olunan sənəd.</span>
+                  </div>
+                  <div className="flex items-start gap-2.5">
+                    <span className="font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded font-mono shrink-0">Proforma Invoice</span>
+                    <span className="text-slate-600 leading-snug">Satışdan əvvəl kommersiya şərtlərini göstərən ilkin hesab sənədi.</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-slate-100 flex items-start gap-2 text-[11.5px] text-slate-500 italic">
+                <i className="fa-solid fa-circle-check text-indigo-500 mt-0.5 shrink-0"></i>
+                <span>Sənədlərin tam və dəqiq hazırlanması gömrük keçidini və ödənişin alınmasını sürətləndirir.</span>
               </div>
             </div>
           </div>

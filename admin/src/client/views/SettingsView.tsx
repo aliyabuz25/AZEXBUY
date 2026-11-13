@@ -21,7 +21,10 @@ import {
   Terminal,
   Clock,
   ShieldCheck,
-  Compass
+  Compass,
+  Share2,
+  Phone,
+  Mail
 } from 'lucide-react';
 import { SiteConfig, MulterConfig, UiLanguage } from '../types';
 import { COLOR_THEMES, ColorTheme } from '../theme';
@@ -91,6 +94,72 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   const [updateLogs, setUpdateLogs] = useState<string[]>([]);
   const [updateSuccess, setUpdateSuccess] = useState<boolean>(false);
 
+  // Social Media & Contacts State
+  const [socialData, setSocialData] = useState<any>({
+    linkedin: 'https://www.linkedin.com/company/azexbuy',
+    instagram: 'https://www.instagram.com/azexbuy',
+    facebook: 'https://www.facebook.com/azexbuy',
+    twitter: 'https://x.com/azexbuy',
+    whatsapp: 'https://wa.me/994105091959',
+    telegram: 'https://t.me/azexbuy',
+    youtube: 'https://www.youtube.com/@azexbuy',
+    tiktok: '',
+    linkedin_active: true,
+    instagram_active: true,
+    facebook_active: true,
+    twitter_active: true,
+    whatsapp_active: true,
+    telegram_active: true,
+    youtube_active: false,
+    tiktok_active: false,
+  });
+  const [contactData, setContactData] = useState<any>({
+    phone: '+994 10 509 19 59',
+    email: 'info@azexbuy.com',
+    emailAlt: 'support@azexbuy.com',
+  });
+  const [savingSocial, setSavingSocial] = useState(false);
+  const [socialSaved, setSocialSaved] = useState(false);
+
+  const fetchSocialAndContact = async () => {
+    try {
+      const res = await fetch('/api/azexbuy/content');
+      const data = await res.json();
+      if (data?.social) setSocialData((p: any) => ({ ...p, ...data.social }));
+      if (data?.contact) setContactData((p: any) => ({ ...p, ...data.contact }));
+    } catch {}
+  };
+
+  const handleSaveSocial = async () => {
+    setSavingSocial(true);
+    try {
+      const getRes = await fetch('/api/azexbuy/content');
+      const curContent = await getRes.json().catch(() => ({}));
+      const updated = {
+        ...curContent,
+        social: socialData,
+        contact: {
+          ...(curContent.contact || {}),
+          ...contactData,
+        },
+      };
+      await fetch('/api/azexbuy/content', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('octotech_admin_jwt') || ''}`,
+        },
+        body: JSON.stringify(updated),
+      });
+      setSocialSaved(true);
+      setTimeout(() => setSocialSaved(false), 2500);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setSavingSocial(false);
+    }
+  };
+
   const fetchBackupInfo = async () => {
     try {
       const res = await fetch('/api/backup/info');
@@ -116,6 +185,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   useEffect(() => {
     fetchBackupInfo();
     fetchVersion();
+    fetchSocialAndContact();
   }, []);
 
   const handleCheckUpdate = async () => {
@@ -424,6 +494,134 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   )}
                 </div>
               </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Sosial Şəbəkələr və Əlaqə Rekvizitləri (Social) Card */}
+      <div className="bg-white dark:bg-slate-900 p-5 rounded-none border border-slate-300 dark:border-slate-800 space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-none bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 flex items-center justify-center">
+              <Share2 className="w-4 h-4" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
+                <span>Sosial Şəbəkələr və Əlaqə Kanalları (Social)</span>
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Saytın footerində sağ altdakı sosial media ikonlarını və rəsmi əlaqə məlumatlarını idarə edin.
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleSaveSocial}
+            disabled={savingSocial}
+            className="h-8 px-4 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-slate-900 text-white rounded-none text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-60 shrink-0"
+          >
+            {savingSocial ? (
+              <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+            ) : socialSaved ? (
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+            ) : (
+              <Save className="w-3.5 h-3.5" />
+            )}
+            <span>{savingSocial ? 'Yadda Saxlanılır...' : socialSaved ? 'Yadda Saxlanıldı!' : 'Yadda Saxla'}</span>
+          </button>
+        </div>
+
+        {/* Contact Phone & Emails */}
+        <div className="bg-slate-50 dark:bg-slate-800/60 p-3.5 border border-slate-200 dark:border-slate-700 space-y-3">
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+            <Phone className="w-3.5 h-3.5" />
+            <span>Rəsmi İletişim və E-Poçt Rekvizitləri</span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div>
+              <label className="block text-[10px] font-bold uppercase text-slate-500 mb-1 font-mono">İletişim Nömrəsi</label>
+              <input
+                type="text"
+                value={contactData.phone || '+994 10 509 19 59'}
+                onChange={e => setContactData((p: any) => ({ ...p, phone: e.target.value }))}
+                placeholder="+994 10 509 19 59"
+                className="w-full h-8 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 px-2.5 font-mono text-slate-900 dark:text-white"
+              />
+            </div>
+            <div>
+              <label className="block text-[10px] font-bold uppercase text-slate-500 mb-1 font-mono">Əsas E-poçt</label>
+              <input
+                type="email"
+                value={contactData.email || 'info@azexbuy.com'}
+                onChange={e => setContactData((p: any) => ({ ...p, email: e.target.value }))}
+                placeholder="info@azexbuy.com"
+                className="w-full h-8 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 px-2.5 font-mono text-slate-900 dark:text-white"
+              />
+            </div>
+            <div>
+              <label className="block text-[10px] font-bold uppercase text-slate-500 mb-1 font-mono">Dəstək E-poçtu</label>
+              <input
+                type="email"
+                value={contactData.emailAlt || 'support@azexbuy.com'}
+                onChange={e => setContactData((p: any) => ({ ...p, emailAlt: e.target.value }))}
+                placeholder="support@azexbuy.com"
+                className="w-full h-8 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 px-2.5 font-mono text-slate-900 dark:text-white"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Social Platforms Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+          {[
+            { id: 'linkedin', label: 'LinkedIn', placeholder: 'https://www.linkedin.com/company/azexbuy' },
+            { id: 'instagram', label: 'Instagram', placeholder: 'https://www.instagram.com/azexbuy' },
+            { id: 'facebook', label: 'Facebook', placeholder: 'https://www.facebook.com/azexbuy' },
+            { id: 'twitter', label: 'X (Twitter)', placeholder: 'https://x.com/azexbuy' },
+            { id: 'whatsapp', label: 'WhatsApp', placeholder: 'https://wa.me/994105091959' },
+            { id: 'telegram', label: 'Telegram', placeholder: 'https://t.me/azexbuy' },
+            { id: 'youtube', label: 'YouTube', placeholder: 'https://www.youtube.com/@azexbuy' },
+            { id: 'tiktok', label: 'TikTok', placeholder: 'https://www.tiktok.com/@azexbuy' },
+          ].map(p => {
+            const url = socialData[p.id] || '';
+            const isActive = socialData[`${p.id}_active`] !== false;
+            return (
+              <div key={p.id} className="p-3 border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-slate-800 dark:text-slate-200">{p.label}</span>
+                  <label className="flex items-center gap-1.5 cursor-pointer text-[10px] text-slate-500 uppercase font-bold">
+                    <input
+                      type="checkbox"
+                      checked={isActive}
+                      onChange={e => setSocialData((prev: any) => ({ ...prev, [`${p.id}_active`]: e.target.checked }))}
+                      className="rounded text-slate-900 focus:ring-0 cursor-pointer"
+                    />
+                    <span>Aktiv</span>
+                  </label>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <input
+                    type="text"
+                    value={url}
+                    onChange={e => setSocialData((prev: any) => ({ ...prev, [p.id]: e.target.value }))}
+                    placeholder={p.placeholder}
+                    className="flex-1 h-7 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 px-2 font-mono text-slate-900 dark:text-white"
+                  />
+                  {url && (
+                    <a
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="h-7 px-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:text-slate-900 flex items-center justify-center text-xs"
+                      title="Test et"
+                    >
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  )}
+                </div>
+              </div>
             );
           })}
         </div>

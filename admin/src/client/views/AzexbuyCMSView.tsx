@@ -91,6 +91,7 @@ const CMS_PAGES = [
   { key: 'featured_products', label: 'Önə Çıxan Məhsullar',        icon: FileText,       group: 'Əsas Səhifə' },
   { key: 'why_azerbaijan',    label: 'Niyə Azərbaycan',            icon: Map,            group: 'Əsas Səhifə' },
   { key: 'footer',            label: 'Footer & Rekvizitlər',       icon: Info,           group: 'Əsas Səhifə' },
+  { key: 'social',            label: 'Sosial Şəbəkələr (Social)',  icon: Share2,         group: 'Əsas Səhifə' },
 
   // ── Daxili Səhifələr ──
   { key: 'about',             label: 'Haqqımızda',                 icon: Info,           group: 'Daxili Səhifələr' },
@@ -2122,12 +2123,12 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                     <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Telefon (Direct Trade Desk)</label>
                     <input
                       type="text"
-                      value={content.contact?.phone || '+994 (12) 404 85 00'}
+                      value={content.contact?.phone || '+994 10 509 19 59'}
                       onChange={e => {
                         const v = e.target.value;
                         setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phone: v } }));
                       }}
-                      placeholder="+994 (12) 404 85 00"
+                      placeholder="+994 10 509 19 59"
                       className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
                     />
                   </div>
@@ -2150,12 +2151,12 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                     <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Elektron Poçt (Official Dispatch)</label>
                     <input
                       type="text"
-                      value={content.contact?.email || 'desk@azexbuy.az'}
+                      value={content.contact?.email || 'info@azexbuy.com'}
                       onChange={e => {
                         const v = e.target.value;
                         setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), email: v } }));
                       }}
-                      placeholder="desk@azexbuy.az"
+                      placeholder="info@azexbuy.com"
                       className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
                     />
                   </div>
@@ -2164,12 +2165,12 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                     <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Satınalma / Tender Emaili</label>
                     <input
                       type="text"
-                      value={content.contact?.emailAlt || 'procurement@azexbuy.az'}
+                      value={content.contact?.emailAlt || 'support@azexbuy.com'}
                       onChange={e => {
                         const v = e.target.value;
                         setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), emailAlt: v } }));
                       }}
-                      placeholder="procurement@azexbuy.az"
+                      placeholder="support@azexbuy.com"
                       className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
                     />
                   </div>
@@ -2308,12 +2309,12 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                     <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Telefon (Direct Trade Desk)</label>
                     <input
                       type="text"
-                      value={content.contact?.phone || '+994 (12) 404 85 00'}
+                      value={content.contact?.phone || '+994 10 509 19 59'}
                       onChange={e => {
                         const v = e.target.value;
                         setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phone: v } }));
                       }}
-                      placeholder="+994 (12) 404 85 00"
+                      placeholder="+994 10 509 19 59"
                       className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
                     />
                   </div>
@@ -2336,12 +2337,12 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                     <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Elektron Poçt (Official Dispatch)</label>
                     <input
                       type="text"
-                      value={content.contact?.email || 'desk@azexbuy.az'}
+                      value={content.contact?.email || 'info@azexbuy.com'}
                       onChange={e => {
                         const v = e.target.value;
                         setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), email: v } }));
                       }}
-                      placeholder="desk@azexbuy.az"
+                      placeholder="info@azexbuy.com"
                       className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
                     />
                   </div>
@@ -2350,12 +2351,12 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                     <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Satınalma / Tender Emaili</label>
                     <input
                       type="text"
-                      value={content.contact?.emailAlt || 'procurement@azexbuy.az'}
+                      value={content.contact?.emailAlt || 'support@azexbuy.com'}
                       onChange={e => {
                         const v = e.target.value;
                         setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), emailAlt: v } }));
                       }}
-                      placeholder="procurement@azexbuy.az"
+                      placeholder="support@azexbuy.com"
                       className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
                     />
                   </div>
@@ -2667,12 +2668,12 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                     <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Telefon (Direct Trade Desk)</label>
                     <input
                       type="text"
-                      value={content.contact?.phone || '+994 (12) 404 85 00'}
+                      value={content.contact?.phone || '+994 10 509 19 59'}
                       onChange={e => {
                         const v = e.target.value;
                         setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phone: v } }));
                       }}
-                      placeholder="+994 (12) 404 85 00"
+                      placeholder="+994 10 509 19 59"
                       className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
                     />
                   </div>
@@ -2695,12 +2696,12 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                     <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Elektron Poçt (Official Dispatch)</label>
                     <input
                       type="text"
-                      value={content.contact?.email || 'desk@azexbuy.az'}
+                      value={content.contact?.email || 'info@azexbuy.com'}
                       onChange={e => {
                         const v = e.target.value;
                         setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), email: v } }));
                       }}
-                      placeholder="desk@azexbuy.az"
+                      placeholder="info@azexbuy.com"
                       className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
                     />
                   </div>
@@ -2709,12 +2710,12 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                     <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Satınalma / Tender Emaili</label>
                     <input
                       type="text"
-                      value={content.contact?.emailAlt || 'procurement@azexbuy.az'}
+                      value={content.contact?.emailAlt || 'support@azexbuy.com'}
                       onChange={e => {
                         const v = e.target.value;
                         setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), emailAlt: v } }));
                       }}
-                      placeholder="procurement@azexbuy.az"
+                      placeholder="support@azexbuy.com"
                       className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
                     />
                   </div>
@@ -2841,12 +2842,12 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                     <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Telefon (Direct Trade Desk)</label>
                     <input
                       type="text"
-                      value={content.contact?.phone || '+994 (12) 404 85 00'}
+                      value={content.contact?.phone || '+994 10 509 19 59'}
                       onChange={e => {
                         const v = e.target.value;
                         setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phone: v } }));
                       }}
-                      placeholder="+994 (12) 404 85 00"
+                      placeholder="+994 10 509 19 59"
                       className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
                     />
                   </div>
@@ -2869,12 +2870,12 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                     <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Elektron Poçt (Official Dispatch)</label>
                     <input
                       type="text"
-                      value={content.contact?.email || 'desk@azexbuy.az'}
+                      value={content.contact?.email || 'info@azexbuy.com'}
                       onChange={e => {
                         const v = e.target.value;
                         setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), email: v } }));
                       }}
-                      placeholder="desk@azexbuy.az"
+                      placeholder="info@azexbuy.com"
                       className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
                     />
                   </div>
@@ -2883,12 +2884,12 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                     <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Satınalma / Tender Emaili</label>
                     <input
                       type="text"
-                      value={content.contact?.emailAlt || 'procurement@azexbuy.az'}
+                      value={content.contact?.emailAlt || 'support@azexbuy.com'}
                       onChange={e => {
                         const v = e.target.value;
                         setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), emailAlt: v } }));
                       }}
-                      placeholder="procurement@azexbuy.az"
+                      placeholder="support@azexbuy.com"
                       className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
                     />
                   </div>
@@ -3029,12 +3030,12 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                     <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Telefon (Direct Trade Desk)</label>
                     <input
                       type="text"
-                      value={content.contact?.phone || '+994 (12) 404 85 00'}
+                      value={content.contact?.phone || '+994 10 509 19 59'}
                       onChange={e => {
                         const v = e.target.value;
                         setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phone: v } }));
                       }}
-                      placeholder="+994 (12) 404 85 00"
+                      placeholder="+994 10 509 19 59"
                       className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
                     />
                   </div>
@@ -3057,12 +3058,12 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                     <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Elektron Poçt (Official Dispatch)</label>
                     <input
                       type="text"
-                      value={content.contact?.email || 'desk@azexbuy.az'}
+                      value={content.contact?.email || 'info@azexbuy.com'}
                       onChange={e => {
                         const v = e.target.value;
                         setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), email: v } }));
                       }}
-                      placeholder="desk@azexbuy.az"
+                      placeholder="info@azexbuy.com"
                       className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
                     />
                   </div>
@@ -3071,12 +3072,12 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                     <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Satınalma / Tender Emaili</label>
                     <input
                       type="text"
-                      value={content.contact?.emailAlt || 'procurement@azexbuy.az'}
+                      value={content.contact?.emailAlt || 'support@azexbuy.com'}
                       onChange={e => {
                         const v = e.target.value;
                         setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), emailAlt: v } }));
                       }}
-                      placeholder="procurement@azexbuy.az"
+                      placeholder="support@azexbuy.com"
                       className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
                     />
                   </div>
@@ -3388,12 +3389,12 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                     <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Telefon (Direct Trade Desk)</label>
                     <input
                       type="text"
-                      value={content.contact?.phone || '+994 (12) 404 85 00'}
+                      value={content.contact?.phone || '+994 10 509 19 59'}
                       onChange={e => {
                         const v = e.target.value;
                         setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phone: v } }));
                       }}
-                      placeholder="+994 (12) 404 85 00"
+                      placeholder="+994 10 509 19 59"
                       className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
                     />
                   </div>
@@ -3416,12 +3417,12 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                     <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Elektron Poçt (Official Dispatch)</label>
                     <input
                       type="text"
-                      value={content.contact?.email || 'desk@azexbuy.az'}
+                      value={content.contact?.email || 'info@azexbuy.com'}
                       onChange={e => {
                         const v = e.target.value;
                         setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), email: v } }));
                       }}
-                      placeholder="desk@azexbuy.az"
+                      placeholder="info@azexbuy.com"
                       className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
                     />
                   </div>
@@ -3430,12 +3431,12 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                     <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Satınalma / Tender Emaili</label>
                     <input
                       type="text"
-                      value={content.contact?.emailAlt || 'procurement@azexbuy.az'}
+                      value={content.contact?.emailAlt || 'support@azexbuy.com'}
                       onChange={e => {
                         const v = e.target.value;
                         setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), emailAlt: v } }));
                       }}
-                      placeholder="procurement@azexbuy.az"
+                      placeholder="support@azexbuy.com"
                       className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
                     />
                   </div>
@@ -3737,7 +3738,43 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
           {/* ── FOOTER ── */}
           {page === 'footer' && (
             <>
-              <h2 className="text-sm font-bold text-slate-800">Footer</h2>
+              <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+                <div>
+                  <h2 className="text-sm font-bold text-slate-800">Footer & Rekvizitlər</h2>
+                  <p className="text-xs text-slate-500">Saytın alt hissəsindəki rəsmi mətnləri və keçid başlıqlarını idarə edin.</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setPage('social')}
+                  className="px-3 py-1.5 bg-[#0f3156] hover:bg-[#133e6d] text-white rounded text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  <Share2 className="w-3.5 h-3.5" />
+                  <span>Sosial Şəbəkələr (Social)</span>
+                </button>
+              </div>
+
+              {/* Quick Card pointing to Social & Contact */}
+              <div className="bg-blue-50/60 border border-blue-200/80 rounded-lg p-3.5 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-blue-100 text-[#0f3156] flex items-center justify-center shrink-0">
+                    <Share2 className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="text-xs font-bold text-slate-800">Sosial Media İkonları (Footer Sağ Alt)</h3>
+                    <p className="text-[11px] text-slate-500">
+                      LinkedIn, Instagram, WhatsApp, X və digər ikonlar Social bölməsindən tənzimlənir.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setPage('social')}
+                  className="px-2.5 py-1 text-xs font-semibold text-[#0f3156] bg-white border border-blue-200 rounded hover:bg-blue-50 cursor-pointer"
+                >
+                  Tənzimlə →
+                </button>
+              </div>
+
               <MultiLocF label="Açıqlama (Brand mandate)" strKey="footer.description" multi locData={locData} onChange={handleMultiLocChange} />
               <MultiLocF label="HQ Başlığı" strKey="footer.hqTitle" locData={locData} onChange={handleMultiLocChange} />
               <MultiLocF label="HQ Ünvanı" strKey="footer.hqAddress" multi locData={locData} onChange={handleMultiLocChange} />
@@ -3747,6 +3784,334 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
               <SaveBar onSave={() => saveStrings(locData)} saving={saving} saved={saved} />
             </>
           )}
+
+          {/* ── SOCIAL MEDIA MANAGEMENT (SOCIAL) ── */}
+          {page === 'social' && (() => {
+            const currentSocial = content.social || {};
+            const platforms = [
+              {
+                id: 'linkedin',
+                label: 'LinkedIn',
+                sublabel: 'B2B & Korporativ Şirkət Səhifəsi',
+                placeholder: 'https://www.linkedin.com/company/azexbuy',
+                icon: 'fa-brands fa-linkedin-in',
+                color: '#0A66C2',
+              },
+              {
+                id: 'instagram',
+                label: 'Instagram',
+                sublabel: 'Rəsmi Vizual Kanal və Hekayələr',
+                placeholder: 'https://www.instagram.com/azexbuy',
+                icon: 'fa-brands fa-instagram',
+                color: '#E1306C',
+              },
+              {
+                id: 'facebook',
+                label: 'Facebook',
+                sublabel: 'Rəsmi Təşkilati və İxracatçı Səhifəsi',
+                placeholder: 'https://www.facebook.com/azexbuy',
+                icon: 'fa-brands fa-facebook-f',
+                color: '#1877F2',
+              },
+              {
+                id: 'twitter',
+                label: 'X (Twitter)',
+                sublabel: 'Rəsmi Qlobal Elanlar və Xəbərlər',
+                placeholder: 'https://x.com/azexbuy',
+                icon: 'fa-brands fa-x-twitter',
+                color: '#0f172a',
+              },
+              {
+                id: 'whatsapp',
+                label: 'WhatsApp',
+                sublabel: 'Direct Trade Desk & Müştəri Xətti',
+                placeholder: 'https://wa.me/994105091959',
+                icon: 'fa-brands fa-whatsapp',
+                color: '#25D366',
+              },
+              {
+                id: 'telegram',
+                label: 'Telegram',
+                sublabel: 'İxracatçı Şəbəkəsi və Bildirişlər',
+                placeholder: 'https://t.me/azexbuy',
+                icon: 'fa-brands fa-telegram',
+                color: '#229ED9',
+              },
+              {
+                id: 'youtube',
+                label: 'YouTube',
+                sublabel: 'Video Təqdimatlar və Fabrik Baxışları',
+                placeholder: 'https://www.youtube.com/@azexbuy',
+                icon: 'fa-brands fa-youtube',
+                color: '#FF0000',
+              },
+              {
+                id: 'tiktok',
+                label: 'TikTok',
+                sublabel: 'Qısa Video İcmalları və Məhsul Klipləri',
+                placeholder: 'https://www.tiktok.com/@azexbuy',
+                icon: 'fa-brands fa-tiktok',
+                color: '#111827',
+              },
+            ];
+
+            const updateSocialField = (key: string, val: any) => {
+              setContent((prev: any) => ({
+                ...prev,
+                social: {
+                  ...(prev.social || {}),
+                  [key]: val,
+                },
+              }));
+            };
+
+            const updateContactField = (key: string, val: string) => {
+              setContent((prev: any) => ({
+                ...prev,
+                contact: {
+                  ...(prev.contact || {}),
+                  [key]: val,
+                },
+              }));
+            };
+
+            const activeCount = platforms.filter(p => {
+              const url = currentSocial[p.id];
+              const isActive = currentSocial[`${p.id}_active`] !== false;
+              return url && url.trim().length > 0 && isActive;
+            }).length;
+
+            return (
+              <div className="space-y-6">
+                {/* Header */}
+                <div className="bg-white border border-slate-200/90 rounded-lg p-5 shadow-2xs">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-[#0f3156]/10 text-[#0f3156] flex items-center justify-center shrink-0">
+                        <Share2 className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h2 className="text-base font-bold text-slate-900">Sosial Şəbəkələr (Social Media Management)</h2>
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#009775]/10 text-[#009775] font-mono">
+                            {activeCount} Aktiv İkon
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-500 mt-0.5">
+                          Saytın institucional footerində sağ altdakı sosial media ikonlarını və əlaqə kanallarını buradan idarə edin.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setPage('footer')}
+                        className="h-8 px-3 text-xs font-medium border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-sm cursor-pointer flex items-center gap-1.5"
+                      >
+                        <Info className="w-3.5 h-3.5" />
+                        <span>Footer Mətnlərinə Keç</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Section: Əsas İletişim / Əlaqə Rekvizitləri */}
+                <div className="bg-white border border-slate-200/90 rounded-lg p-5 shadow-2xs space-y-4">
+                  <div className="border-b border-slate-100 pb-2.5 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Phone className="w-4 h-4 text-[#0f3156]" />
+                      <div>
+                        <h3 className="text-xs font-bold text-slate-800 uppercase font-mono">
+                          Rəsmi İletişim Nömrəsi və E-Poçt Ünvanları
+                        </h3>
+                        <p className="text-[11px] text-slate-400">Footer sağ hissədə və əlaqə portalında birbaşa göstərilən məlumatlar</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1 font-mono">
+                        İletişim Nömrəsi (Telefon)
+                      </label>
+                      <input
+                        type="text"
+                        value={content.contact?.phone || '+994 10 509 19 59'}
+                        onChange={e => updateContactField('phone', e.target.value)}
+                        placeholder="+994 10 509 19 59"
+                        className="w-full h-9 text-xs bg-slate-50 border border-slate-200 px-3 rounded font-mono font-medium focus:outline-none focus:border-[#0f3156] focus:bg-white"
+                      />
+                      <span className="text-[10px] text-slate-400 mt-1 block">Rəsmi çağrı və WhatsApp desk nömrəsi</span>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1 font-mono">
+                        Əsas E-poçt (info@)
+                      </label>
+                      <input
+                        type="email"
+                        value={content.contact?.email || 'info@azexbuy.com'}
+                        onChange={e => updateContactField('email', e.target.value)}
+                        placeholder="info@azexbuy.com"
+                        className="w-full h-9 text-xs bg-slate-50 border border-slate-200 px-3 rounded font-mono font-medium focus:outline-none focus:border-[#0f3156] focus:bg-white"
+                      />
+                      <span className="text-[10px] text-slate-400 mt-1 block">Ümumi sorğu və ticarət masası</span>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1 font-mono">
+                        Dəstək E-poçtu (support@)
+                      </label>
+                      <input
+                        type="email"
+                        value={content.contact?.emailAlt || 'support@azexbuy.com'}
+                        onChange={e => updateContactField('emailAlt', e.target.value)}
+                        placeholder="support@azexbuy.com"
+                        className="w-full h-9 text-xs bg-slate-50 border border-slate-200 px-3 rounded font-mono font-medium focus:outline-none focus:border-[#0f3156] focus:bg-white"
+                      />
+                      <span className="text-[10px] text-slate-400 mt-1 block">Texniki dəstək və verifikasiya masası</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Section: Platform Linkləri */}
+                <div className="bg-white border border-slate-200/90 rounded-lg p-5 shadow-2xs space-y-4">
+                  <div className="border-b border-slate-100 pb-2.5 flex items-center justify-between">
+                    <div>
+                      <h3 className="text-xs font-bold text-slate-800 uppercase font-mono">
+                        Sosial Şəbəkə Linkləri və Aktivlik
+                      </h3>
+                      <p className="text-[11px] text-slate-400">
+                        Link daxil edilmiş və aktiv qeyd olunmuş kanallar footerin sağ alt küncündə görünəcək.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {platforms.map(p => {
+                      const url = currentSocial[p.id] || '';
+                      const isActive = currentSocial[`${p.id}_active`] !== false;
+                      const hasUrl = url.trim().length > 0;
+
+                      return (
+                        <div
+                          key={p.id}
+                          className={`p-3.5 rounded-lg border transition-all ${
+                            isActive && hasUrl
+                              ? 'bg-white border-slate-200 shadow-2xs'
+                              : 'bg-slate-50/70 border-slate-200/70 opacity-75'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center gap-2.5">
+                              <div
+                                className="w-7 h-7 rounded-full flex items-center justify-center text-white shrink-0 shadow-2xs"
+                                style={{ backgroundColor: p.color }}
+                              >
+                                <i className={`${p.icon} text-xs`}></i>
+                              </div>
+                              <div>
+                                <span className="text-xs font-bold text-slate-800 block">{p.label}</span>
+                                <span className="text-[10px] text-slate-400 block">{p.sublabel}</span>
+                              </div>
+                            </div>
+
+                            <label className="flex items-center gap-1.5 cursor-pointer select-none">
+                              <input
+                                type="checkbox"
+                                checked={isActive}
+                                onChange={e => updateSocialField(`${p.id}_active`, e.target.checked)}
+                                className="rounded text-[#0f3156] focus:ring-0 cursor-pointer"
+                              />
+                              <span className="text-[11px] font-medium text-slate-600">Aktiv</span>
+                            </label>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="text"
+                              value={url}
+                              onChange={e => updateSocialField(p.id, e.target.value)}
+                              placeholder={p.placeholder}
+                              className="flex-1 h-8 text-xs bg-slate-50 border border-slate-200 rounded px-2.5 font-mono focus:outline-none focus:border-[#0f3156] focus:bg-white"
+                            />
+                            {hasUrl && (
+                              <a
+                                href={url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title="Linki yeni tabda aç"
+                                className="h-8 px-2 rounded border border-slate-200 hover:bg-slate-100 text-slate-500 hover:text-slate-800 flex items-center justify-center cursor-pointer transition-colors"
+                              >
+                                <ExternalLink className="w-3.5 h-3.5" />
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Live Footer Preview Simulation */}
+                <div className="bg-[#061526] rounded-lg p-5 border border-slate-800 text-slate-300 space-y-4">
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-800 text-xs">
+                    <div className="flex items-center gap-2 text-emerald-400 font-mono font-semibold">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                      <span>Canlı Ön Baxış (Footer Sağ Alt)</span>
+                    </div>
+                    <span className="text-[10px] text-slate-500">Müştərinin gördüyü Institutional Footer dizaynı</span>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+                    <div className="text-[11px] text-slate-500">
+                      © 2026 AZEXBUY Consortium — All rights reserved.
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                      <span className="text-[11px] text-slate-400">Middle Corridor Transit Data</span>
+                      <span className="text-slate-700">·</span>
+                      <span className="text-[11px] text-slate-400">Bizimlə Əlaqə</span>
+
+                      {/* Preview Social Icons */}
+                      <div className="flex items-center gap-2 pl-4 border-l border-slate-800">
+                        {platforms
+                          .filter(p => {
+                            const url = currentSocial[p.id];
+                            const isActive = currentSocial[`${p.id}_active`] !== false;
+                            return url && url.trim().length > 0 && isActive;
+                          })
+                          .map(p => (
+                            <div
+                              key={p.id}
+                              title={p.label}
+                              className="w-7 h-7 rounded-full bg-slate-800 text-slate-300 hover:text-white flex items-center justify-center border border-slate-700/60 shadow-xs cursor-pointer hover:scale-110 transition-transform"
+                            >
+                              <i className={`${p.icon} text-xs`}></i>
+                            </div>
+                          ))}
+                        {activeCount === 0 && (
+                          <span className="text-[10px] text-slate-600 italic">Heç bir sosial ikon aktiv deyil</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Save Bar */}
+                <SaveBar
+                  onSave={async () => {
+                    setSaving(true);
+                    await apiPost('/api/azexbuy/content', content);
+                    flash();
+                    setSaving(false);
+                  }}
+                  saving={saving}
+                  saved={saved}
+                />
+              </div>
+            );
+          })()}
 
           {/* ── CONTACT & OFFICE DETAILS ── */}
           {page === 'contact' && (
@@ -3778,12 +4143,12 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                     <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Telefon (Direct Trade Desk)</label>
                     <input
                       type="text"
-                      value={content.contact?.phone || '+994 (12) 404 85 00'}
+                      value={content.contact?.phone || '+994 10 509 19 59'}
                       onChange={e => {
                         const v = e.target.value;
                         setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phone: v } }));
                       }}
-                      placeholder="+994 (12) 404 85 00"
+                      placeholder="+994 10 509 19 59"
                       className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
                     />
                   </div>
@@ -3806,12 +4171,12 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                     <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Elektron Poçt (Official Dispatch)</label>
                     <input
                       type="text"
-                      value={content.contact?.email || 'desk@azexbuy.az'}
+                      value={content.contact?.email || 'info@azexbuy.com'}
                       onChange={e => {
                         const v = e.target.value;
                         setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), email: v } }));
                       }}
-                      placeholder="desk@azexbuy.az"
+                      placeholder="info@azexbuy.com"
                       className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
                     />
                   </div>
@@ -3820,12 +4185,12 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                     <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Satınalma / Tender Emaili</label>
                     <input
                       type="text"
-                      value={content.contact?.emailAlt || 'procurement@azexbuy.az'}
+                      value={content.contact?.emailAlt || 'support@azexbuy.com'}
                       onChange={e => {
                         const v = e.target.value;
                         setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), emailAlt: v } }));
                       }}
-                      placeholder="procurement@azexbuy.az"
+                      placeholder="support@azexbuy.com"
                       className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
                     />
                   </div>

@@ -25,7 +25,7 @@ import { CmsService, AboutPageContent, TeamMember } from '../types';
 const OCTO_API_BASE = '';
 const LOC_CACHE_KEY = 'azexbuy_loc_override';
 const CONTENT_CACHE_KEY = 'azexbuy_content_override';
-const CACHE_VERSION = 'v9';
+const CACHE_VERSION = 'v10';
 const CACHE_VERSION_KEY = 'azexbuy_cache_ver';
 
 // Clear stale cache on version mismatch
@@ -93,6 +93,44 @@ export const DEFAULT_CATEGORY_COUNTS: Record<string, number> = {
   food: 3,
 };
 
+export interface SocialLinks {
+  linkedin?: string;
+  instagram?: string;
+  facebook?: string;
+  twitter?: string;
+  x?: string;
+  whatsapp?: string;
+  telegram?: string;
+  youtube?: string;
+  tiktok?: string;
+  linkedin_active?: boolean;
+  instagram_active?: boolean;
+  facebook_active?: boolean;
+  twitter_active?: boolean;
+  whatsapp_active?: boolean;
+  telegram_active?: boolean;
+  youtube_active?: boolean;
+  tiktok_active?: boolean;
+  [key: string]: any;
+}
+
+export const DEFAULT_SOCIAL_LINKS: SocialLinks = {
+  linkedin: 'https://www.linkedin.com/company/azexbuy',
+  instagram: 'https://www.instagram.com/azexbuy',
+  facebook: 'https://www.facebook.com/azexbuy',
+  twitter: 'https://x.com/azexbuy',
+  whatsapp: 'https://wa.me/994105091959',
+  telegram: 'https://t.me/azexbuy',
+  youtube: 'https://www.youtube.com/@azexbuy',
+  linkedin_active: true,
+  instagram_active: true,
+  facebook_active: true,
+  twitter_active: true,
+  whatsapp_active: true,
+  telegram_active: true,
+  youtube_active: false,
+};
+
 type LocalizationContextType = {
   strings: typeof UI_STRINGS_DEFAULT;
   heroImage: string;
@@ -117,6 +155,7 @@ type LocalizationContextType = {
   cmsServices: CmsService[];
   about: AboutPageContent;
   team: TeamMember[];
+  social: SocialLinks;
   contact: {
     phone: string;
     phoneAlt: string;
@@ -149,11 +188,12 @@ const LocalizationContext = createContext<LocalizationContextType>({
   cmsServices: [],
   about: ABOUT_PAGE_DEFAULT,
   team: DEFAULT_TEAM_MEMBERS,
+  social: DEFAULT_SOCIAL_LINKS,
   contact: {
-    phone: '+994 (12) 404 85 00',
+    phone: '+994 10 509 19 59',
     phoneAlt: '+994 (50) 290 45 00',
-    email: 'desk@azexbuy.az',
-    emailAlt: 'procurement@azexbuy.az',
+    email: 'info@azexbuy.com',
+    emailAlt: 'support@azexbuy.com',
     hours: '09:00 – 18:00 (AZT / UTC+4)',
   },
   refresh: () => {},
@@ -457,11 +497,15 @@ function applyContentOverrides(content: any) {
     whyAzexbuyCustom: content?.whyAzexbuy || null,
     whyAzerbaijanCustom: content?.whyAzerbaijan || null,
     about,
+    social: {
+      ...DEFAULT_SOCIAL_LINKS,
+      ...(content?.social || content?.socials || {}),
+    },
     contact: {
-      phone: content?.contact?.phone || '+994 (12) 404 85 00',
+      phone: content?.contact?.phone || '+994 10 509 19 59',
       phoneAlt: content?.contact?.phoneAlt || '+994 (50) 290 45 00',
-      email: content?.contact?.email || 'desk@azexbuy.az',
-      emailAlt: content?.contact?.emailAlt || 'procurement@azexbuy.az',
+      email: content?.contact?.email || 'info@azexbuy.com',
+      emailAlt: content?.contact?.emailAlt || 'support@azexbuy.com',
       hours: content?.contact?.hours || '09:00 – 18:00 (AZT / UTC+4)',
     },
   };
