@@ -2656,280 +2656,453 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
 
   return (
     <section className={activeView === 'contact' ? 'bg-white' : 'bg-slate-50/70'}>
-      {/* Google Maps — full-width, flush to topbar (contact view only) */}
-      {activeView === 'contact' && (
-        <div className="no-print w-full bg-[#e5e5e5]">
-          <iframe
-            title="AZEXBUY Baku Headquarters — Contact Location"
-            src="https://maps.google.com/maps?q=Baku%20Alliance%20Business%20Center%2C%20Heydar%20Aliyev%20Ave%2095%2C%20Baku%20AZ1033%2C%20Azerbaijan&z=15&output=embed"
-            width="100%"
-            height="420"
-            style={{ border: 0, display: 'block', minHeight: 420, filter: 'grayscale(1) contrast(0.95)' }}
-          />
-        </div>
-      )}
-
-      <div className={activeView === 'contact' ? "custom-container py-10 sm:py-14" : "custom-container space-y-8 py-8"}>
-        {/* Strategic KPIs — hidden on contact-only view */}
-        {activeView !== 'contact' && <div className="bg-brandNavy text-white rounded-xl p-6 sm:p-8">
-          
-          <h1 className="text-2xl sm:text-3xl font-extrabold mb-2">
-            {pageTitle}
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-200 max-w-2xl mb-6">
-            {pageDesc}
-          </p>
-
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 pt-4 border-t border-white/15">
-            <div>
-              <span className="text-2xl sm:text-3xl font-extrabold text-white tabular-nums block">
-                250+
-              </span>
-              <span className="text-xs text-slate-300">
-                Vetted Local Producers Across 14 Economic Regions
-              </span>
-            </div>
-            <div>
-              <span className="text-2xl sm:text-3xl font-extrabold text-amber-300 tabular-nums block">
-                1,000+
-              </span>
-              <span className="text-xs text-slate-300">
-                Active International Procurement Officers
-              </span>
-            </div>
-            <div>
-              <span className="text-2xl sm:text-3xl font-extrabold text-emerald-300 tabular-nums block">
-                &lt; 48h
-              </span>
-              <span className="text-xs text-slate-300">
-                Average Verified RFQ Match Response Time
-              </span>
-            </div>
-            <div>
-              <span className="text-2xl sm:text-3xl font-extrabold text-white tabular-nums block">
-                $50M+
-              </span>
-              <span className="text-xs text-slate-300">
-                Facilitated Annual Non-Oil Export Volume Target
-              </span>
-            </div>
-          </div>
-        </div>}
-
-        {/* Middle Corridor Multimodal Routes — hidden on contact-only view */}
-        {activeView !== 'contact' && <div className="bg-white border border-slate-200 rounded-lg p-6">
-          <h2 className="text-lg font-extrabold text-brandNavy mb-1">
-            Trans-Caspian & Middle Corridor Multimodal Freight Corridors
-          </h2>
-          <p className="text-xs text-slate-500 mb-4">
-            Real-time transit lead times from Azerbaijani industrial clusters to global ports.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {CORRIDOR_ROUTES.map((route) => (
-              <div key={route.id} className="border border-slate-200 rounded p-4 space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-extrabold text-brandNavy">
-                    {getLocalizedText(route.name, locale)}
-                  </span>
-                  <span className="text-xs font-bold text-brandGreen bg-emerald-50 px-2 py-0.5 rounded tabular-nums">
-                    {route.transitDays}
-                  </span>
-                </div>
-                <p className="text-xs font-medium text-slate-600">{route.path}</p>
-                <div className="text-[11px] text-slate-500 pt-1">
-                  <strong>Mode:</strong> {route.mode} · <strong>Key Cargo:</strong>{' '}
-                  {route.idealCommodities}
-                </div>
+      {activeView === 'contact' ? (
+        <div className="custom-container py-10 sm:py-14 space-y-12">
+          {/* ── BÖLMƏ 1: İLETİŞİM BİLGİLERİ (SOL) + GOOGLE MAPS (SAĞ) ── */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
+            {/* Sol: İletişim Bilgileri */}
+            <div className="lg:col-span-5 flex flex-col justify-between space-y-6">
+              <div>
+                <span className="text-[11px] font-bold text-brandGreen uppercase tracking-wider block mb-1">
+                  {locale === 'AZ' ? 'Rəsmi Əlaqə & Dəstək' : locale === 'TR' ? 'Resmi İletişim & Destek' : locale === 'RU' ? 'Официальные контакты' : 'Official Inquiry'}
+                </span>
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-brandNavy mb-2">
+                  {locale === 'AZ' ? 'AZEXBUY Ticarət Masası ilə Əlaqə' : locale === 'TR' ? 'AZEXBUY Ticaret Masası ile İletişim' : locale === 'RU' ? 'Свяжитесь с торговым отделом AZEXBUY' : 'Contact AZEXBUY Trade Facilitation Desk'}
+                </h1>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  {locale === 'AZ'
+                    ? 'İxrac, satınalma, gömrük və tərəfdaşlıq sorğularınız üçün birbaşa müraciət edin. Mütəxəssislərimiz 4 iş saatı ərzində cavablandıracaq.'
+                    : locale === 'TR'
+                    ? 'İhracat, satın alma, gümrük ve ortaklık talepleriniz için doğrudan iletişime geçin. Uzmanlarımız 4 iş saati içinde dönüş yapacaktır.'
+                    : locale === 'RU'
+                    ? 'Свяжитесь с нами по вопросам экспорта, закупок, таможни и партнерства. Наши специалисты ответят в течение 4 рабочих часов.'
+                    : 'For bilateral trade delegations, state procurement tenders, customs green-corridor inquiries, or escrow settlement structuring, reach our Baku headquarters directly.'}
+                </p>
               </div>
-            ))}
-          </div>
-        </div>}
 
-        {/* Direct Institutional Correspondence Desk — hidden on insights-only view */}
-        {activeView !== 'insights' && (
-          activeView === 'contact' ? (
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start pt-2">
-              <div className="lg:col-span-5 space-y-6">
-                <div>
-                  <span className="text-[11px] font-bold text-brandGreen uppercase tracking-wider block mb-1">
-                    {locale === 'AZ' ? 'Rəsmi Əlaqə & Dəstək' : locale === 'TR' ? 'Resmi İletişim & Destek' : locale === 'RU' ? 'Официальные контакты' : 'Official Inquiry'}
-                  </span>
-                  <h2 className="text-xl sm:text-2xl font-extrabold text-brandNavy mb-2">
-                    {locale === 'AZ' ? 'AZEXBUY Ticarət Masası ilə Əlaqə' : locale === 'TR' ? 'AZEXBUY Ticaret Masası ile İletişim' : locale === 'RU' ? 'Свяжитесь с торговым отделом AZEXBUY' : 'Contact AZEXBUY Trade Facilitation Desk'}
-                  </h2>
-                  <p className="text-xs text-slate-500 leading-relaxed mb-4">
-                    {locale === 'AZ'
-                      ? 'İxrac, satınalma, gömrük və tərəfdaşlıq sorğularınız üçün birbaşa müraciət edin. Mütəxəssislərimiz 4 iş saatı ərzində cavablandıracaq.'
-                      : locale === 'TR'
-                      ? 'İhracat, satın alma, gümrük ve ortaklık talepleriniz için doğrudan iletişime geçin. Uzmanlarımız 4 iş saati içinde dönüş yapacaktır.'
-                      : 'For bilateral trade delegations, state procurement tenders, customs green-corridor inquiries, or escrow settlement structuring, reach our Baku headquarters directly.'}
-                  </p>
+              {/* Bilgi Kartları */}
+              <div className="space-y-4 text-xs text-slate-700 bg-slate-50/70 p-5 rounded-xl border border-slate-200/80 shadow-2xs">
+                {/* Baş Qərargah */}
+                <div className="flex items-start gap-3.5">
+                  <div className="w-9 h-9 rounded-lg bg-brandNavy/10 text-brandNavy flex items-center justify-center shrink-0 mt-0.5">
+                    <i className="fa-solid fa-location-dot text-sm"></i>
+                  </div>
+                  <div>
+                    <span className="block font-bold text-slate-900 mb-0.5">
+                      {locale === 'AZ' ? 'Baş Qərargah' : locale === 'TR' ? 'Genel Merkez' : locale === 'RU' ? 'Главный офис' : 'Headquarters'}
+                    </span>
+                    <span className="text-slate-600 leading-relaxed block">
+                      {strings[locale]?.footer?.hqAddress || strings.AZ?.footer?.hqAddress || 'Baku Alliance Business Center, Heydar Aliyev Ave 95, Baku AZ1033, Azerbaijan'}
+                    </span>
+                  </div>
                 </div>
 
-                <div className="space-y-3.5 text-xs text-slate-700">
-                  <div className="flex items-start gap-3.5">
-                    <div className="w-8 h-8 rounded-lg bg-brandNavy/5 text-brandNavy flex items-center justify-center shrink-0 mt-0.5">
-                      <i className="fa-solid fa-location-dot text-sm"></i>
-                    </div>
-                    <div>
-                      <span className="block font-bold text-slate-900 mb-0.5">
-                        {locale === 'AZ' ? 'Baş Qərargah' : locale === 'TR' ? 'Genel Merkez' : locale === 'RU' ? 'Главный офис' : 'Headquarters'}
-                      </span>
-                      <span className="text-slate-600 leading-relaxed block">
-                        {strings[locale]?.footer?.hqAddress || strings.AZ?.footer?.hqAddress || 'Baku Alliance Business Center, Heydar Aliyev Ave 95, Baku AZ1033, Azerbaijan'}
-                      </span>
-                    </div>
+                {/* Telefon Xətləri */}
+                <div className="flex items-start gap-3.5">
+                  <div className="w-9 h-9 rounded-lg bg-brandNavy/10 text-brandNavy flex items-center justify-center shrink-0 mt-0.5">
+                    <i className="fa-solid fa-phone text-sm"></i>
                   </div>
-
-                  <div className="flex items-start gap-3.5">
-                    <div className="w-8 h-8 rounded-lg bg-brandNavy/5 text-brandNavy flex items-center justify-center shrink-0 mt-0.5">
-                      <i className="fa-solid fa-phone text-sm"></i>
-                    </div>
-                    <div>
-                      <span className="block font-bold text-slate-900 mb-0.5">
-                        {locale === 'AZ' ? 'Telefon Xətləri' : locale === 'TR' ? 'Telefon Hatları' : locale === 'RU' ? 'Телефоны' : 'Direct Lines'}
-                      </span>
-                      <span className="tabular-nums text-slate-600 block">
-                        {contact.phone} {contact.phoneAlt ? `· ${contact.phoneAlt}` : ''}
-                      </span>
-                    </div>
+                  <div>
+                    <span className="block font-bold text-slate-900 mb-0.5">
+                      {locale === 'AZ' ? 'Telefon Xətləri' : locale === 'TR' ? 'Telefon Hatları' : locale === 'RU' ? 'Телефоны' : 'Direct Lines'}
+                    </span>
+                    <span className="tabular-nums text-slate-600 block font-mono">
+                      {contact.phone} {contact.phoneAlt ? `· ${contact.phoneAlt}` : ''}
+                    </span>
                   </div>
+                </div>
 
-                  <div className="flex items-start gap-3.5">
-                    <div className="w-8 h-8 rounded-lg bg-brandNavy/5 text-brandNavy flex items-center justify-center shrink-0 mt-0.5">
-                      <i className="fa-solid fa-envelope text-sm"></i>
-                    </div>
-                    <div>
-                      <span className="block font-bold text-slate-900 mb-0.5">
-                        {locale === 'AZ' ? 'Rəsmi E-poçt' : locale === 'TR' ? 'Resmi E-posta' : locale === 'RU' ? 'Электронная почта' : 'Official Email'}
-                      </span>
-                      <span className="text-slate-600 block">
-                        {contact.email} {contact.emailAlt ? `· ${contact.emailAlt}` : ''}
-                      </span>
-                    </div>
+                {/* Rəsmi E-poçt */}
+                <div className="flex items-start gap-3.5">
+                  <div className="w-9 h-9 rounded-lg bg-brandNavy/10 text-brandNavy flex items-center justify-center shrink-0 mt-0.5">
+                    <i className="fa-solid fa-envelope text-sm"></i>
                   </div>
+                  <div>
+                    <span className="block font-bold text-slate-900 mb-0.5">
+                      {locale === 'AZ' ? 'Rəsmi E-poçt' : locale === 'TR' ? 'Resmi E-posta' : locale === 'RU' ? 'Электронная почта' : 'Official Email'}
+                    </span>
+                    <span className="text-slate-600 block font-mono">
+                      {contact.email} {contact.emailAlt ? `· ${contact.emailAlt}` : ''}
+                    </span>
+                  </div>
+                </div>
 
-                  <div className="flex items-start gap-3.5">
-                    <div className="w-8 h-8 rounded-lg bg-brandNavy/5 text-brandNavy flex items-center justify-center shrink-0 mt-0.5">
-                      <i className="fa-regular fa-clock text-sm"></i>
-                    </div>
-                    <div>
-                      <span className="block font-bold text-slate-900 mb-0.5">
-                        {locale === 'AZ' ? 'İş Saatları' : locale === 'TR' ? 'Çalışma Saatleri' : locale === 'RU' ? 'Часы работы' : 'Working Hours'}
-                      </span>
-                      <span className="text-slate-600 block">
-                        {contact.hours || '09:00 – 18:00 (AZT / UTC+4)'}
-                      </span>
-                    </div>
+                {/* İş Saatları */}
+                <div className="flex items-start gap-3.5">
+                  <div className="w-9 h-9 rounded-lg bg-brandNavy/10 text-brandNavy flex items-center justify-center shrink-0 mt-0.5">
+                    <i className="fa-regular fa-clock text-sm"></i>
+                  </div>
+                  <div>
+                    <span className="block font-bold text-slate-900 mb-0.5">
+                      {locale === 'AZ' ? 'İş Saatları' : locale === 'TR' ? 'Çalışma Saatleri' : locale === 'RU' ? 'Часы работы' : 'Working Hours'}
+                    </span>
+                    <span className="text-slate-600 block">
+                      {contact.hours || '09:00 – 18:00 (AZT / UTC+4)'}
+                    </span>
                   </div>
                 </div>
               </div>
+            </div>
 
-              {/* Form without card container */}
-              <div className="lg:col-span-7">
-                {contactSubmitted ? (
-                  <div className="p-8 bg-emerald-50 border border-emerald-200 rounded-xl text-center space-y-3">
-                    <i className="fa-solid fa-circle-check text-brandGreen text-3xl"></i>
-                    <h3 className="text-base font-bold text-brandNavy">
-                      {locale === 'AZ' ? 'Müraciətiniz Qeydə Alındı' : locale === 'TR' ? 'Başvurunuz Alındı' : 'Official Inquiry Logged'}
-                    </h3>
-                    <p className="text-xs text-slate-600 max-w-md mx-auto">
-                      {locale === 'AZ'
-                        ? 'Ticarət mütəxəssisimiz 4 iş saatı ərzində sizinlə əlaqə saxlayacaq.'
-                        : 'A trade specialist will respond within 4 business hours.'}
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => { setContactSubmitted(false); setContactForm({ fullName: '', organization: '', email: '', inquiryType: 'Buyer Sourcing Inquiry', message: '' }); }}
-                      className="text-xs font-bold text-brandNavy hover:text-brandGreen underline cursor-pointer pt-2 inline-block"
-                    >
-                      {locale === 'AZ' ? 'Yeni Müraciət Göndər' : 'Send Another Message'}
-                    </button>
-                  </div>
-                ) : (
-                  <form
-                    onSubmit={async (e) => {
-                      e.preventDefault();
-                      setContactLoading(true);
-                      try {
-                        const res = await fetch('/api/azexbuy/contacts', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify(contactForm),
-                        });
-                        if (res.ok) {
-                          setContactSubmitted(true);
-                          setContactForm({ fullName: '', organization: '', email: '', inquiryType: 'Buyer Sourcing Inquiry', message: '' });
-                        }
-                      } catch {
-                        setContactSubmitted(true);
-                      } finally {
-                        setContactLoading(false);
-                      }
-                    }}
-                    className="space-y-4"
+            {/* Sağ: Google Maps */}
+            <div className="lg:col-span-7 flex flex-col">
+              <div className="w-full h-full min-h-[380px] sm:min-h-[420px] rounded-2xl overflow-hidden border border-slate-200/90 shadow-sm relative group bg-[#e5e5e5]">
+                <iframe
+                  title="AZEXBUY Baku Headquarters — Contact Location"
+                  src="https://maps.google.com/maps?q=Baku%20Alliance%20Business%20Center%2C%20Heydar%20Aliyev%20Ave%2095%2C%20Baku%20AZ1033%2C%20Azerbaijan&z=15&output=embed"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0, display: 'block', minHeight: '380px', width: '100%', height: '100%', filter: 'contrast(1.02)' }}
+                />
+                <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-xs border border-slate-200/80 px-3 py-1.5 rounded-lg shadow-xs flex items-center gap-2 pointer-events-none">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span className="text-[11px] font-bold text-slate-800">
+                    {locale === 'TR' ? 'AZEXBUY Bakü Genel Merkez · Haydar Aliyev Cad. 95' : 'AZEXBUY Baku Headquarters · Heydar Aliyev Ave 95'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ── BÖLMƏ 2: FORMU AŞAĞIDAN YERLƏŞDİRİB ── */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xs">
+            <div className="max-w-2xl mb-6">
+              <span className="text-[11px] font-bold text-brandGreen uppercase tracking-wider block mb-1">
+                {locale === 'AZ' ? 'Rəsmi Müraciət Masası' : locale === 'TR' ? 'Resmi Başvuru Formu' : locale === 'RU' ? 'Форма официального запроса' : 'Official Trade Dossier'}
+              </span>
+              <h2 className="text-xl sm:text-2xl font-extrabold text-brandNavy">
+                {locale === 'AZ' ? 'Ticarət və Tərəfdaşlıq Müraciəti Göndərin' : locale === 'TR' ? 'Ticaret ve İş Birliği Talebi Gönderin' : locale === 'RU' ? 'Отправить запрос на торговлю и партнерство' : 'Submit Official Trade & Partnership Inquiry'}
+              </h2>
+              <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                {locale === 'AZ'
+                  ? 'Alıcı sifarişləri, istehsalçı qeydiyyatı və ya ixrac əməliyyatları üzrə tələblərinizi daxil edin. Mütəxəssislərimiz müraciəti dərhal təhlil edəcək.'
+                  : locale === 'TR'
+                  ? 'Alıcı talepleri, üretici kaydı veya ihracat operasyonları üzerine bilgilerinizi iletin. Uzmanlarımız başvurunuzu hızla işleme alacaktır.'
+                  : 'Submit commodity specifications, export onboarding requests, or corridor queries for instant processing.'}
+              </p>
+            </div>
+
+            {contactSubmitted ? (
+              <div className="p-8 bg-emerald-50 border border-emerald-200 rounded-xl text-center space-y-3">
+                <i className="fa-solid fa-circle-check text-brandGreen text-3xl"></i>
+                <h3 className="text-base font-bold text-brandNavy">
+                  {locale === 'AZ' ? 'Müraciətiniz Qeydə Alındı' : locale === 'TR' ? 'Başvurunuz Alındı' : 'Official Inquiry Logged'}
+                </h3>
+                <p className="text-xs text-slate-600 max-w-md mx-auto">
+                  {locale === 'AZ'
+                    ? 'Ticarət mütəxəssisimiz 4 iş saatı ərzində sizinlə əlaqə saxlayacaq.'
+                    : locale === 'TR'
+                    ? 'Ticaret uzmanımız 4 iş saati içinde sizinle iletişime geçecektir.'
+                    : 'A trade specialist will respond within 4 business hours.'}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => { setContactSubmitted(false); setContactForm({ fullName: '', organization: '', email: '', inquiryType: 'Buyer Sourcing Inquiry', message: '' }); }}
+                  className="text-xs font-bold text-brandNavy hover:text-brandGreen underline cursor-pointer pt-2 inline-block"
+                >
+                  {locale === 'AZ' ? 'Yeni Müraciət Göndər' : locale === 'TR' ? 'Yeni Başvuru Gönder' : 'Send Another Message'}
+                </button>
+              </div>
+            ) : (
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  setContactLoading(true);
+                  try {
+                    const res = await fetch('/api/azexbuy/contacts', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify(contactForm),
+                    });
+                    if (res.ok) {
+                      setContactSubmitted(true);
+                      setContactForm({ fullName: '', organization: '', email: '', inquiryType: 'Buyer Sourcing Inquiry', message: '' });
+                    }
+                  } catch {
+                    setContactSubmitted(true);
+                  } finally {
+                    setContactLoading(false);
+                  }
+                }}
+                className="space-y-4"
+              >
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <input
+                    type="text"
+                    required
+                    value={contactForm.fullName}
+                    onChange={e => setContactForm(f => ({ ...f, fullName: e.target.value }))}
+                    placeholder={locale === 'AZ' ? 'Ad, Soyad və Vəzifə *' : locale === 'TR' ? 'Ad, Soyad ve Unvan *' : 'Full Name & Title *'}
+                    className="h-11 px-3.5 text-xs bg-slate-50/70 border border-slate-200 rounded-lg w-full focus:bg-white focus:border-brandNavy focus:outline-none transition-all"
+                  />
+                  <input
+                    type="text"
+                    required
+                    value={contactForm.organization}
+                    onChange={e => setContactForm(f => ({ ...f, organization: e.target.value }))}
+                    placeholder={locale === 'AZ' ? 'Şirkət / Təşkilat *' : locale === 'TR' ? 'Şirket / Kuruluş *' : 'Organization / Ministry *'}
+                    className="h-11 px-3.5 text-xs bg-slate-50/70 border border-slate-200 rounded-lg w-full focus:bg-white focus:border-brandNavy focus:outline-none transition-all"
+                  />
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <input
+                    type="email"
+                    required
+                    value={contactForm.email}
+                    onChange={e => setContactForm(f => ({ ...f, email: e.target.value }))}
+                    placeholder={locale === 'AZ' ? 'Rəsmi E-poçt *' : locale === 'TR' ? 'Resmi E-posta *' : 'Official Email *'}
+                    className="h-11 px-3.5 text-xs bg-slate-50/70 border border-slate-200 rounded-lg w-full focus:bg-white focus:border-brandNavy focus:outline-none transition-all"
+                  />
+                  <select
+                    value={contactForm.inquiryType}
+                    onChange={e => setContactForm(f => ({ ...f, inquiryType: e.target.value }))}
+                    className="h-11 px-3 text-xs bg-slate-50/70 border border-slate-200 rounded-lg w-full font-medium text-slate-700 focus:bg-white focus:border-brandNavy focus:outline-none transition-all cursor-pointer"
                   >
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <input
-                        type="text"
-                        required
-                        value={contactForm.fullName}
-                        onChange={e => setContactForm(f => ({ ...f, fullName: e.target.value }))}
-                        placeholder={locale === 'AZ' ? 'Ad, Soyad və Vəzifə *' : locale === 'TR' ? 'Ad, Soyad ve Unvan *' : 'Full Name & Title *'}
-                        className="h-11 px-3.5 text-xs bg-slate-50/70 border border-slate-200 rounded-lg w-full focus:bg-white focus:border-brandNavy focus:outline-none transition-all"
-                      />
-                      <input
-                        type="text"
-                        required
-                        value={contactForm.organization}
-                        onChange={e => setContactForm(f => ({ ...f, organization: e.target.value }))}
-                        placeholder={locale === 'AZ' ? 'Şirkət / Təşkilat *' : locale === 'TR' ? 'Şirket / Kuruluş *' : 'Organization / Ministry *'}
-                        className="h-11 px-3.5 text-xs bg-slate-50/70 border border-slate-200 rounded-lg w-full focus:bg-white focus:border-brandNavy focus:outline-none transition-all"
-                      />
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <input
-                        type="email"
-                        required
-                        value={contactForm.email}
-                        onChange={e => setContactForm(f => ({ ...f, email: e.target.value }))}
-                        placeholder={locale === 'AZ' ? 'Rəsmi E-poçt *' : locale === 'TR' ? 'Resmi E-posta *' : 'Official Email *'}
-                        className="h-11 px-3.5 text-xs bg-slate-50/70 border border-slate-200 rounded-lg w-full focus:bg-white focus:border-brandNavy focus:outline-none transition-all"
-                      />
-                      <select
-                        value={contactForm.inquiryType}
-                        onChange={e => setContactForm(f => ({ ...f, inquiryType: e.target.value }))}
-                        className="h-11 px-3 text-xs bg-slate-50/70 border border-slate-200 rounded-lg w-full font-medium text-slate-700 focus:bg-white focus:border-brandNavy focus:outline-none transition-all"
-                      >
-                        <option value="Buyer Sourcing Inquiry">{locale === 'AZ' ? 'Alıcı Sifarişi Sorğusu' : 'Buyer Sourcing Inquiry'}</option>
-                        <option value="Producer Onboarding & Audit">{locale === 'AZ' ? 'İstehsalçı Qeydiyyatı və Audit' : 'Producer Onboarding & Audit'}</option>
-                        <option value="Outsourced Export Department">{locale === 'AZ' ? 'İxrac İdarəetməsi Masası' : 'Outsourced Export Department'}</option>
-                        <option value="Middle Corridor Logistics Quote">{locale === 'AZ' ? 'Orta Dəhliz Logistika Təklifi' : 'Middle Corridor Logistics Quote'}</option>
-                      </select>
-                    </div>
-                    <textarea
-                      rows={4}
-                      required
-                      value={contactForm.message}
-                      onChange={e => setContactForm(f => ({ ...f, message: e.target.value }))}
-                      placeholder={locale === 'AZ' ? 'Məhsul, HS kodu və ya əməkdaşlıq təklifinizi təsvir edin...' : 'Describe your commodity inquiry, target HS code, or partnership proposal...'}
-                      className="p-3.5 text-xs bg-slate-50/70 border border-slate-200 rounded-lg w-full focus:bg-white focus:border-brandNavy focus:outline-none transition-all resize-y"
-                    />
-                    <button
-                      type="submit"
-                      disabled={contactLoading}
-                      className="w-full bg-brandNavy hover:bg-brandNavyDark text-white text-xs font-bold py-3 rounded-lg cursor-pointer disabled:opacity-60 transition-colors shadow-sm"
-                    >
-                      {contactLoading
-                        ? (locale === 'AZ' ? 'Göndərilir...' : 'Sending…')
-                        : (locale === 'AZ' ? 'Müraciəti Göndər →' : locale === 'TR' ? 'Başvuruyu Gönder →' : locale === 'RU' ? 'Отправить запрос →' : 'Dispatch Official Inquiry →')}
-                    </button>
-                  </form>
-                )}
+                    <option value="Buyer Sourcing Inquiry">{locale === 'AZ' ? 'Alıcı Sifarişi Sorğusu' : locale === 'TR' ? 'Alıcı Tedarik Talebi' : 'Buyer Sourcing Inquiry'}</option>
+                    <option value="Producer Onboarding & Audit">{locale === 'AZ' ? 'İstehsalçı Qeydiyyatı və Audit' : locale === 'TR' ? 'Üretici Kaydı ve Denetim' : 'Producer Onboarding & Audit'}</option>
+                    <option value="Outsourced Export Department">{locale === 'AZ' ? 'İxrac İdarəetməsi Masası' : locale === 'TR' ? 'Dış Kaynak İhracat Departmanı' : 'Outsourced Export Department'}</option>
+                    <option value="Middle Corridor Logistics Quote">{locale === 'AZ' ? 'Orta Dəhliz Logistika Təklifi' : locale === 'TR' ? 'Orta Koridor Lojistik Teklifi' : 'Middle Corridor Logistics Quote'}</option>
+                  </select>
+                </div>
+                <textarea
+                  rows={4}
+                  required
+                  value={contactForm.message}
+                  onChange={e => setContactForm(f => ({ ...f, message: e.target.value }))}
+                  placeholder={locale === 'AZ' ? 'Məhsul, HS kodu və ya əməkdaşlıq təklifinizi təsvir edin...' : locale === 'TR' ? 'Ürün, GTİP / HS kodu veya iş birliği talebinizi açıklayın...' : 'Describe your commodity inquiry, target HS code, or partnership proposal...'}
+                  className="p-3.5 text-xs bg-slate-50/70 border border-slate-200 rounded-lg w-full focus:bg-white focus:border-brandNavy focus:outline-none transition-all resize-y"
+                />
+                <button
+                  type="submit"
+                  disabled={contactLoading}
+                  className="w-full bg-brandNavy hover:bg-brandNavyDark text-white text-xs font-bold py-3 rounded-lg cursor-pointer disabled:opacity-60 transition-colors shadow-sm"
+                >
+                  {contactLoading
+                    ? (locale === 'AZ' ? 'Göndərilir...' : locale === 'TR' ? 'Gönderiliyor...' : 'Sending…')
+                    : (locale === 'AZ' ? 'Müraciəti Göndər →' : locale === 'TR' ? 'Başvuruyu Gönder →' : locale === 'RU' ? 'Отправить запрос →' : 'Dispatch Official Inquiry →')}
+                </button>
+              </form>
+            )}
+          </div>
+
+          {/* ── BÖLMƏ 3: AZƏRBAYCANDAN ÇIXIŞ HARİTASI VƏ LOJİSTİK DƏHLİZLƏR ── */}
+          <div className="space-y-6 pt-4 border-t border-slate-200">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+              <div>
+                <span className="text-[11px] font-bold text-brandGreen uppercase tracking-wider block mb-1">
+                  {locale === 'AZ' ? 'Qlobal Tranzit & İxrac Şəbəkəsi' : locale === 'TR' ? 'Küresel Transit ve İhracat Çıkışları' : 'Strategic Export Corridors'}
+                </span>
+                <h2 className="text-xl sm:text-2xl font-extrabold text-brandNavy">
+                  {locale === 'AZ' ? 'Azərbaycanın Beynəlxalq İxrac və Çıxış Dəhlizləri Xəritəsi' : locale === 'TR' ? 'Azerbaycan Uluslararası İhracat ve Çıkış Koridorları Haritası' : 'Azerbaijan Strategic Export Corridors & Global Gateway Map'}
+                </h2>
+                <p className="text-xs text-slate-500 mt-1 max-w-3xl leading-relaxed">
+                  {locale === 'AZ'
+                    ? 'Bakı Beynəlxalq Dəniz Ticarət Limanı (Ələt), Bakı-Tbilisi-Qars (BTQ) dəmir yolu, Şimal-Cənub və Şərq-Qərb Orta Dəhlizi vasitəsilə Avropa, Asiya və Körfəz bazarlarına ən sürətli çıxış marşrutları.'
+                    : locale === 'TR'
+                    ? "Bakü Uluslararası Deniz Ticaret Limanı (Alat), Bakü-Tiflis-Kars (BTK) demiryolu ve multimodal lojistik hatları üzerinden Avrupa, Asya ve Körfez pazarlarına en hızlı çıkış rotaları."
+                    : 'Direct strategic transit exit routes connecting Azerbaijani industrial and agro clusters to European, Mediterranean, Central Asian, and Gulf markets.'}
+                </p>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <span className="text-[11px] font-bold bg-blue-50 text-blue-700 px-3 py-1 rounded-full border border-blue-100 font-mono">
+                  {CORRIDOR_ROUTES.length} Multimodal Çıxış Xətti
+                </span>
               </div>
             </div>
-          ) : (
-            <div className="bg-white border border-slate-200 rounded-lg p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+            {/* Visual Schematic Export Corridors Map */}
+            <div className="bg-[#0B1E33] text-white rounded-2xl p-6 sm:p-8 overflow-hidden relative shadow-md border border-slate-800">
+              {/* Background Map Grid Pattern */}
+              <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#60a5fa 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
+              
+              <div className="relative z-10 space-y-6">
+                <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-white/10">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-400/30 flex items-center justify-center shrink-0">
+                      <i className="fa-solid fa-route text-base"></i>
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 font-mono">
+                        {locale === 'TR' ? 'Ana Çıkış ve Lojistik Kavşağı (Central Hub)' : 'Çıxış Qovşağı (Central Hub)'}
+                      </span>
+                      <h4 className="text-base font-bold text-white">Bakı (Ələt Limanı) · Heydər Əliyev Hava Limanı (GYD)</h4>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-slate-300">
+                    <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> 24/7 Gömrük Yaşıl Dəhlizi</span>
+                  </div>
+                </div>
+
+                {/* 4 Directional Exit Corridors Visual Schematic */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {/* Koridor 1: Qərb / Orta Dəhliz */}
+                  <div className="bg-white/5 border border-white/10 hover:border-emerald-400/40 rounded-xl p-4 transition-all hover:bg-white/10 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[10px] font-bold uppercase text-emerald-300 font-mono flex items-center gap-1.5">
+                          <i className="fa-solid fa-train"></i> Qərb (TİTR / BTQ)
+                        </span>
+                        <span className="text-[10px] font-bold bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-400/30">
+                          11–14 Gün
+                        </span>
+                      </div>
+                      <h5 className="text-xs font-bold text-white mb-1.5">Bakı ➔ Gürcüstan ➔ Türkiyə ➔ Avropa</h5>
+                      <p className="text-[11px] text-slate-300 leading-snug">
+                        Bakı-Tbilisi-Qars dəmir yolu, Poti/Batumi və Mersin limanları üzərindən Avropa və Aralıq dənizinə çıxış.
+                      </p>
+                    </div>
+                    <div className="mt-3 pt-2 border-t border-white/10 text-[10px] text-slate-400">
+                      <strong>Rejim:</strong> Dəmir Yolu + Ro-Ro
+                    </div>
+                  </div>
+
+                  {/* Koridor 2: Trans-Xəzər Şərq */}
+                  <div className="bg-white/5 border border-white/10 hover:border-blue-400/40 rounded-xl p-4 transition-all hover:bg-white/10 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[10px] font-bold uppercase text-blue-300 font-mono flex items-center gap-1.5">
+                          <i className="fa-solid fa-ship"></i> Trans-Xəzər Şərq
+                        </span>
+                        <span className="text-[10px] font-bold bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full border border-blue-400/30">
+                          4–7 Gün
+                        </span>
+                      </div>
+                      <h5 className="text-xs font-bold text-white mb-1.5">Ələt ➔ Aktau / Türkmənbaşı ➔ Mərkəzi Asiya</h5>
+                      <p className="text-[11px] text-slate-300 leading-snug">
+                        Xəzər dənizi bərə xətti ilə Qazaxıstan, Özbəkistan, Türkmənistan və Çin sərhədinə birbaşa daşıma.
+                      </p>
+                    </div>
+                    <div className="mt-3 pt-2 border-t border-white/10 text-[10px] text-slate-400">
+                      <strong>Rejim:</strong> Ro-Ro Bərə + Dəmir Yolu / TIR
+                    </div>
+                  </div>
+
+                  {/* Koridor 3: Şimal & Cənub */}
+                  <div className="bg-white/5 border border-white/10 hover:border-amber-400/40 rounded-xl p-4 transition-all hover:bg-white/10 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[10px] font-bold uppercase text-amber-300 font-mono flex items-center gap-1.5">
+                          <i className="fa-solid fa-truck-fast"></i> Şimal-Cənub (INSTC)
+                        </span>
+                        <span className="text-[10px] font-bold bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full border border-amber-400/30">
+                          3–8 Gün
+                        </span>
+                      </div>
+                      <h5 className="text-xs font-bold text-white mb-1.5">Bakı ➔ Şimal & Cənub Beynəlxalq Xətləri</h5>
+                      <p className="text-[11px] text-slate-300 leading-snug">
+                        Rusiya və Şərqi Avropaya şimal avtomobil/dəmir yolu; Astara üzərindən Fars Körfəzi və Hindistan çıxışı.
+                      </p>
+                    </div>
+                    <div className="mt-3 pt-2 border-t border-white/10 text-[10px] text-slate-400">
+                      <strong>Rejim:</strong> TIR + Multimodal Dəmir Yolu
+                    </div>
+                  </div>
+
+                  {/* Koridor 4: Qlobal Hava Karqo */}
+                  <div className="bg-white/5 border border-white/10 hover:border-purple-400/40 rounded-xl p-4 transition-all hover:bg-white/10 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[10px] font-bold uppercase text-purple-300 font-mono flex items-center gap-1.5">
+                          <i className="fa-solid fa-plane-departure"></i> Hava Karqo Hub (GYD)
+                        </span>
+                        <span className="text-[10px] font-bold bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full border border-purple-400/30">
+                          1–2 Gün
+                        </span>
+                      </div>
+                      <h5 className="text-xs font-bold text-white mb-1.5">GYD Bakı ➔ Dubay, Frankfurt, Şanxay, London</h5>
+                      <p className="text-[11px] text-slate-300 leading-snug">
+                        Silk Way qlobal hava karqo mərkəzi ilə 40-dan çox qlobal paytaxt və ticarət mərkəzinə ekspress çatdırılma.
+                      </p>
+                    </div>
+                    <div className="mt-3 pt-2 border-t border-white/10 text-[10px] text-slate-400">
+                      <strong>Rejim:</strong> Birbaşa Geniş Gövdəli Karqo
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Detailed Corridor Cards (CORRIDOR_ROUTES) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {CORRIDOR_ROUTES.map((route) => (
+                <div key={route.id} className="border border-slate-200 bg-white rounded-xl p-5 space-y-2 hover:shadow-sm transition-shadow">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-extrabold text-brandNavy flex items-center gap-2">
+                      <i className="fa-solid fa-compass text-brandGreen"></i>
+                      {getLocalizedText(route.name, locale)}
+                    </span>
+                    <span className="text-xs font-bold text-brandGreen bg-emerald-50 px-2.5 py-0.5 rounded-full tabular-nums border border-emerald-100">
+                      {route.transitDays}
+                    </span>
+                  </div>
+                  <p className="text-xs font-medium text-slate-700 bg-slate-50 p-2.5 rounded-lg border border-slate-100 font-mono">
+                    {route.path}
+                  </p>
+                  <div className="text-[11.5px] text-slate-500 pt-1 flex flex-wrap items-center justify-between gap-2">
+                    <span><strong>Nəqliyyat Rejimi:</strong> {route.mode}</span>
+                    <span className="text-slate-600"><strong>Əsas Əmtəələr:</strong> {route.idealCommodities}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="custom-container space-y-8 py-8">
+          {/* Strategic KPIs */}
+          <div className="bg-brandNavy text-white rounded-xl p-6 sm:p-8">
+            <h1 className="text-2xl sm:text-3xl font-extrabold mb-2">{pageTitle}</h1>
+            <p className="text-xs sm:text-sm text-slate-200 max-w-2xl mb-6">{pageDesc}</p>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 pt-4 border-t border-white/15">
+              <div>
+                <span className="text-2xl sm:text-3xl font-extrabold text-white tabular-nums block">250+</span>
+                <span className="text-xs text-slate-300">Vetted Local Producers Across 14 Economic Regions</span>
+              </div>
+              <div>
+                <span className="text-2xl sm:text-3xl font-extrabold text-amber-300 tabular-nums block">1,000+</span>
+                <span className="text-xs text-slate-300">Active International Procurement Officers</span>
+              </div>
+              <div>
+                <span className="text-2xl sm:text-3xl font-extrabold text-emerald-300 tabular-nums block">&lt; 48h</span>
+                <span className="text-xs text-slate-300">Average Verified RFQ Match Response Time</span>
+              </div>
+              <div>
+                <span className="text-2xl sm:text-3xl font-extrabold text-white tabular-nums block">$50M+</span>
+                <span className="text-xs text-slate-300">Facilitated Annual Non-Oil Export Volume Target</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Middle Corridor Multimodal Routes */}
+          <div className="bg-white border border-slate-200 rounded-lg p-6">
+            <h2 className="text-lg font-extrabold text-brandNavy mb-1">
+              Trans-Caspian & Middle Corridor Multimodal Freight Corridors
+            </h2>
+            <p className="text-xs text-slate-500 mb-4">
+              Real-time transit lead times from Azerbaijani industrial clusters to global ports.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {CORRIDOR_ROUTES.map((route) => (
+                <div key={route.id} className="border border-slate-200 rounded p-4 space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-extrabold text-brandNavy">
+                      {getLocalizedText(route.name, locale)}
+                    </span>
+                    <span className="text-xs font-bold text-brandGreen bg-emerald-50 px-2 py-0.5 rounded tabular-nums">
+                      {route.transitDays}
+                    </span>
+                  </div>
+                  <p className="text-xs font-medium text-slate-600">{route.path}</p>
+                  <div className="text-[11px] text-slate-500 pt-1">
+                    <strong>Mode:</strong> {route.mode} · <strong>Key Cargo:</strong> {route.idealCommodities}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Correspondence Desk */}
+          <div className="bg-white border border-slate-200 rounded-lg p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div>
                 <h2 className="text-lg font-bold text-slate-900 mb-3">
                   Contact AZEXBUY Trade Facilitation Authority
@@ -3048,9 +3221,8 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
                 )}
               </div>
             </div>
-          )
+          </div>
         )}
-      </div>
-    </section>
-  );
-};
+      </section>
+    );
+  };
