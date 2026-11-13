@@ -2578,58 +2578,6 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
                 );
               })}
             </div>
-
-            {/* Additional Secondary Services from CMS (if available) */}
-            {cmsServices && cmsServices.filter(s => s.serviceType === 'secondary' && !['market-access', 'buyer-sales', 'export-management', 'logistics', 'outsourced-export-dept', 'international-exhibitions'].includes(s.id)).length > 0 && (
-              <div className="pt-6">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="h-px flex-1 bg-slate-200"></div>
-                  <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">
-                    {locale === 'AZ' ? 'Əlavə İxtisaslaşdırılmış Xidmətlər' : locale === 'TR' ? 'Ek Uzmanlık Hizmetleri' : locale === 'RU' ? 'Дополнительные услуги' : 'Additional Specialized Services'}
-                  </span>
-                  <div className="h-px flex-1 bg-slate-200"></div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  {cmsServices.filter(s => s.serviceType === 'secondary' && !['market-access', 'buyer-sales', 'export-management', 'logistics', 'outsourced-export-dept', 'international-exhibitions'].includes(s.id)).map((srv) => {
-                    const scopeItems: string[] = (srv.scope as any)?.[locale] || (srv.scope as any)?.['EN'] || [];
-                    const ctaLabel = locale === 'AZ' ? 'Müraciət et' : locale === 'TR' ? 'Başvur' : locale === 'RU' ? 'Подать заявку' : 'Apply';
-                    return (
-                      <div key={srv.id} className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
-                        <div>
-                          <div className="flex items-center gap-3 mb-3">
-                            <i className={`${srv.iconClass || 'fa-solid fa-briefcase'} text-brandNavy text-lg shrink-0`}></i>
-                            <h4 className="text-base font-bold text-slate-900 leading-tight">
-                              {getLocalizedText(srv.title, locale)}
-                            </h4>
-                          </div>
-                          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-4">
-                            {getLocalizedText(srv.description, locale)}
-                          </p>
-                          {scopeItems.length > 0 && (
-                            <ul className="space-y-1.5 mb-4">
-                              {scopeItems.map((item, i) => (
-                                <li key={i} className="flex items-center gap-2 text-xs text-slate-700">
-                                  <span className="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0"></span>
-                                  {item}
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => onOpenServiceApp(srv.id)}
-                          className="w-full h-9 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold rounded-lg transition-colors cursor-pointer flex items-center justify-center gap-2"
-                        >
-                          <span>{ctaLabel}</span>
-                          <i className="fa-solid fa-arrow-right text-[10px]"></i>
-                        </button>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
           </div>
         </section>
       </div>
