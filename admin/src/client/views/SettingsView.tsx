@@ -94,24 +94,20 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   const [updateLogs, setUpdateLogs] = useState<string[]>([]);
   const [updateSuccess, setUpdateSuccess] = useState<boolean>(false);
 
-  // Social Media & Contacts State
+  // Social Media & Contacts State (strictly: X, Facebook, Instagram, LinkedIn, WhatsApp)
   const [socialData, setSocialData] = useState<any>({
-    linkedin: 'https://www.linkedin.com/company/azexbuy',
-    instagram: 'https://www.instagram.com/azexbuy',
-    facebook: 'https://www.facebook.com/azexbuy',
+    x: 'https://x.com/azexbuy',
     twitter: 'https://x.com/azexbuy',
+    facebook: 'https://www.facebook.com/azexbuy',
+    instagram: 'https://www.instagram.com/azexbuy',
+    linkedin: 'https://www.linkedin.com/company/azexbuy',
     whatsapp: 'https://wa.me/994105091959',
-    telegram: 'https://t.me/azexbuy',
-    youtube: 'https://www.youtube.com/@azexbuy',
-    tiktok: '',
-    linkedin_active: true,
-    instagram_active: true,
-    facebook_active: true,
+    x_active: true,
     twitter_active: true,
+    facebook_active: true,
+    instagram_active: true,
+    linkedin_active: true,
     whatsapp_active: true,
-    telegram_active: true,
-    youtube_active: false,
-    tiktok_active: false,
   });
   const [contactData, setContactData] = useState<any>({
     phone: '+994 10 509 19 59',
@@ -573,20 +569,17 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
           </div>
         </div>
 
-        {/* Social Platforms Grid */}
+        {/* Social Platforms Grid (strictly: X, Facebook, Instagram, LinkedIn, WhatsApp) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
           {[
-            { id: 'linkedin', label: 'LinkedIn', placeholder: 'https://www.linkedin.com/company/azexbuy' },
-            { id: 'instagram', label: 'Instagram', placeholder: 'https://www.instagram.com/azexbuy' },
+            { id: 'x', label: 'X', placeholder: 'https://x.com/azexbuy' },
             { id: 'facebook', label: 'Facebook', placeholder: 'https://www.facebook.com/azexbuy' },
-            { id: 'twitter', label: 'X (Twitter)', placeholder: 'https://x.com/azexbuy' },
+            { id: 'instagram', label: 'Instagram', placeholder: 'https://www.instagram.com/azexbuy' },
+            { id: 'linkedin', label: 'LinkedIn', placeholder: 'https://www.linkedin.com/company/azexbuy' },
             { id: 'whatsapp', label: 'WhatsApp', placeholder: 'https://wa.me/994105091959' },
-            { id: 'telegram', label: 'Telegram', placeholder: 'https://t.me/azexbuy' },
-            { id: 'youtube', label: 'YouTube', placeholder: 'https://www.youtube.com/@azexbuy' },
-            { id: 'tiktok', label: 'TikTok', placeholder: 'https://www.tiktok.com/@azexbuy' },
           ].map(p => {
-            const url = socialData[p.id] || '';
-            const isActive = socialData[`${p.id}_active`] !== false;
+            const url = (p.id === 'x' ? (socialData.x || socialData.twitter) : socialData[p.id]) || '';
+            const isActive = (p.id === 'x' ? (socialData.x_active !== false && socialData.twitter_active !== false) : socialData[`${p.id}_active`] !== false);
             return (
               <div key={p.id} className="p-3 border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 space-y-1.5">
                 <div className="flex items-center justify-between">
@@ -595,7 +588,14 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                     <input
                       type="checkbox"
                       checked={isActive}
-                      onChange={e => setSocialData((prev: any) => ({ ...prev, [`${p.id}_active`]: e.target.checked }))}
+                      onChange={e => {
+                        const val = e.target.checked;
+                        setSocialData((prev: any) => {
+                          const updated = { ...prev, [`${p.id}_active`]: val };
+                          if (p.id === 'x') updated.twitter_active = val;
+                          return updated;
+                        });
+                      }}
                       className="rounded text-slate-900 focus:ring-0 cursor-pointer"
                     />
                     <span>Aktiv</span>
@@ -605,7 +605,14 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   <input
                     type="text"
                     value={url}
-                    onChange={e => setSocialData((prev: any) => ({ ...prev, [p.id]: e.target.value }))}
+                    onChange={e => {
+                      const val = e.target.value;
+                      setSocialData((prev: any) => {
+                        const updated = { ...prev, [p.id]: val };
+                        if (p.id === 'x') updated.twitter = val;
+                        return updated;
+                      });
+                    }}
                     placeholder={p.placeholder}
                     className="flex-1 h-7 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 px-2 font-mono text-slate-900 dark:text-white"
                   />

@@ -437,76 +437,65 @@ export default function App() {
     }));
   }, [whyAzerbaijanCustom, t.whyAzerbaijan, locale]);
 
-  // Social media list for footer and institutional channels
+  // Social media list for footer - strictly: X, Facebook, Instagram, LinkedIn, WhatsApp
   const socialList = useMemo(() => {
     if (!social) return [];
+
+    const isXActive = social.x_active !== false && social.twitter_active !== false;
+    const isFbActive = social.facebook_active !== false;
+    const isInstaActive = social.instagram_active !== false;
+    const isLiActive = social.linkedin_active !== false;
+    const isWaActive = social.whatsapp_active !== false;
+
     const items = [
       {
-        key: 'linkedin',
-        label: 'LinkedIn',
-        url: social.linkedin,
-        active: social.linkedin_active !== false,
-        icon: <i className="fa-brands fa-linkedin-in text-xs"></i>,
-        hoverBg: 'hover:bg-[#0A66C2]',
-      },
-      {
-        key: 'instagram',
-        label: 'Instagram',
-        url: social.instagram,
-        active: social.instagram_active !== false,
-        icon: <i className="fa-brands fa-instagram text-xs"></i>,
-        hoverBg: 'hover:bg-[#E1306C]',
+        key: 'x',
+        label: 'X',
+        url: social.x || social.twitter || '',
+        active: isXActive,
+        icon: (
+          <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+          </svg>
+        ),
+        hoverBg: 'hover:bg-black',
       },
       {
         key: 'facebook',
         label: 'Facebook',
-        url: social.facebook,
-        active: social.facebook_active !== false,
+        url: social.facebook || '',
+        active: isFbActive,
         icon: <i className="fa-brands fa-facebook-f text-xs"></i>,
         hoverBg: 'hover:bg-[#1877F2]',
       },
       {
-        key: 'twitter',
-        label: 'X (Twitter)',
-        url: social.twitter || social.x,
-        active: social.twitter_active !== false,
-        icon: <i className="fa-brands fa-x-twitter text-xs"></i>,
-        hoverBg: 'hover:bg-slate-900',
+        key: 'instagram',
+        label: 'Instagram',
+        url: social.instagram || '',
+        active: isInstaActive,
+        icon: <i className="fa-brands fa-instagram text-xs"></i>,
+        hoverBg: 'hover:bg-[#E1306C]',
+      },
+      {
+        key: 'linkedin',
+        label: 'LinkedIn',
+        url: social.linkedin || '',
+        active: isLiActive,
+        icon: <i className="fa-brands fa-linkedin-in text-xs"></i>,
+        hoverBg: 'hover:bg-[#0A66C2]',
       },
       {
         key: 'whatsapp',
         label: 'WhatsApp',
-        url: social.whatsapp,
-        active: social.whatsapp_active !== false,
+        url: social.whatsapp || '',
+        active: isWaActive,
         icon: <i className="fa-brands fa-whatsapp text-xs"></i>,
         hoverBg: 'hover:bg-[#25D366]',
       },
-      {
-        key: 'telegram',
-        label: 'Telegram',
-        url: social.telegram,
-        active: social.telegram_active !== false,
-        icon: <i className="fa-brands fa-telegram text-xs"></i>,
-        hoverBg: 'hover:bg-[#229ED9]',
-      },
-      {
-        key: 'youtube',
-        label: 'YouTube',
-        url: social.youtube,
-        active: social.youtube_active !== false,
-        icon: <i className="fa-brands fa-youtube text-xs"></i>,
-        hoverBg: 'hover:bg-[#FF0000]',
-      },
-      {
-        key: 'tiktok',
-        label: 'TikTok',
-        url: social.tiktok,
-        active: social.tiktok_active !== false,
-        icon: <i className="fa-brands fa-tiktok text-xs"></i>,
-        hoverBg: 'hover:bg-slate-900',
-      },
     ];
-    return items.filter(it => it.url && String(it.url).trim().length > 0 && it.active);
+
+    // Only render items that are actively enabled in admin AND have a valid URL
+    return items.filter(it => it.active && it.url && String(it.url).trim().length > 0);
   }, [social]);
 
   // ── Category tiles (home "Selected Products" section) ────────────────────

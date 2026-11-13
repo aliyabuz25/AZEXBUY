@@ -25,7 +25,7 @@ import { CmsService, AboutPageContent, TeamMember } from '../types';
 const OCTO_API_BASE = '';
 const LOC_CACHE_KEY = 'azexbuy_loc_override';
 const CONTENT_CACHE_KEY = 'azexbuy_content_override';
-const CACHE_VERSION = 'v10';
+const CACHE_VERSION = 'v11';
 const CACHE_VERSION_KEY = 'azexbuy_cache_ver';
 
 // Clear stale cache on version mismatch
@@ -94,41 +94,34 @@ export const DEFAULT_CATEGORY_COUNTS: Record<string, number> = {
 };
 
 export interface SocialLinks {
-  linkedin?: string;
-  instagram?: string;
-  facebook?: string;
-  twitter?: string;
   x?: string;
+  twitter?: string;
+  facebook?: string;
+  instagram?: string;
+  linkedin?: string;
   whatsapp?: string;
-  telegram?: string;
-  youtube?: string;
-  tiktok?: string;
-  linkedin_active?: boolean;
-  instagram_active?: boolean;
-  facebook_active?: boolean;
+  x_active?: boolean;
   twitter_active?: boolean;
+  facebook_active?: boolean;
+  instagram_active?: boolean;
+  linkedin_active?: boolean;
   whatsapp_active?: boolean;
-  telegram_active?: boolean;
-  youtube_active?: boolean;
-  tiktok_active?: boolean;
   [key: string]: any;
 }
 
 export const DEFAULT_SOCIAL_LINKS: SocialLinks = {
-  linkedin: 'https://www.linkedin.com/company/azexbuy',
-  instagram: 'https://www.instagram.com/azexbuy',
-  facebook: 'https://www.facebook.com/azexbuy',
+  x: 'https://x.com/azexbuy',
   twitter: 'https://x.com/azexbuy',
+  facebook: 'https://www.facebook.com/azexbuy',
+  instagram: 'https://www.instagram.com/azexbuy',
+  linkedin: 'https://www.linkedin.com/company/azexbuy',
   whatsapp: 'https://wa.me/994105091959',
-  telegram: 'https://t.me/azexbuy',
-  youtube: 'https://www.youtube.com/@azexbuy',
-  linkedin_active: true,
-  instagram_active: true,
-  facebook_active: true,
+  x_active: true,
   twitter_active: true,
+  facebook_active: true,
+  instagram_active: true,
+  linkedin_active: true,
   whatsapp_active: true,
-  telegram_active: true,
-  youtube_active: false,
 };
 
 type LocalizationContextType = {

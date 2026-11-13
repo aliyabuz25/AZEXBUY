@@ -3790,20 +3790,12 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
             const currentSocial = content.social || {};
             const platforms = [
               {
-                id: 'linkedin',
-                label: 'LinkedIn',
-                sublabel: 'B2B & Korporativ Şirkət Səhifəsi',
-                placeholder: 'https://www.linkedin.com/company/azexbuy',
-                icon: 'fa-brands fa-linkedin-in',
-                color: '#0A66C2',
-              },
-              {
-                id: 'instagram',
-                label: 'Instagram',
-                sublabel: 'Rəsmi Vizual Kanal və Hekayələr',
-                placeholder: 'https://www.instagram.com/azexbuy',
-                icon: 'fa-brands fa-instagram',
-                color: '#E1306C',
+                id: 'x',
+                label: 'X',
+                sublabel: 'Rəsmi Qlobal Elanlar və Xəbərlər',
+                placeholder: 'https://x.com/azexbuy',
+                isSvg: true,
+                color: '#000000',
               },
               {
                 id: 'facebook',
@@ -3814,12 +3806,20 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                 color: '#1877F2',
               },
               {
-                id: 'twitter',
-                label: 'X (Twitter)',
-                sublabel: 'Rəsmi Qlobal Elanlar və Xəbərlər',
-                placeholder: 'https://x.com/azexbuy',
-                icon: 'fa-brands fa-x-twitter',
-                color: '#0f172a',
+                id: 'instagram',
+                label: 'Instagram',
+                sublabel: 'Rəsmi Vizual Kanal və Hekayələr',
+                placeholder: 'https://www.instagram.com/azexbuy',
+                icon: 'fa-brands fa-instagram',
+                color: '#E1306C',
+              },
+              {
+                id: 'linkedin',
+                label: 'LinkedIn',
+                sublabel: 'B2B & Korporativ Şirkət Səhifəsi',
+                placeholder: 'https://www.linkedin.com/company/azexbuy',
+                icon: 'fa-brands fa-linkedin-in',
+                color: '#0A66C2',
               },
               {
                 id: 'whatsapp',
@@ -3829,40 +3829,20 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                 icon: 'fa-brands fa-whatsapp',
                 color: '#25D366',
               },
-              {
-                id: 'telegram',
-                label: 'Telegram',
-                sublabel: 'İxracatçı Şəbəkəsi və Bildirişlər',
-                placeholder: 'https://t.me/azexbuy',
-                icon: 'fa-brands fa-telegram',
-                color: '#229ED9',
-              },
-              {
-                id: 'youtube',
-                label: 'YouTube',
-                sublabel: 'Video Təqdimatlar və Fabrik Baxışları',
-                placeholder: 'https://www.youtube.com/@azexbuy',
-                icon: 'fa-brands fa-youtube',
-                color: '#FF0000',
-              },
-              {
-                id: 'tiktok',
-                label: 'TikTok',
-                sublabel: 'Qısa Video İcmalları və Məhsul Klipləri',
-                placeholder: 'https://www.tiktok.com/@azexbuy',
-                icon: 'fa-brands fa-tiktok',
-                color: '#111827',
-              },
             ];
 
             const updateSocialField = (key: string, val: any) => {
-              setContent((prev: any) => ({
-                ...prev,
-                social: {
-                  ...(prev.social || {}),
-                  [key]: val,
-                },
-              }));
+              setContent((prev: any) => {
+                const nextSocial = { ...(prev.social || {}), [key]: val };
+                if (key === 'x') nextSocial.twitter = val;
+                if (key === 'twitter') nextSocial.x = val;
+                if (key === 'x_active') nextSocial.twitter_active = val;
+                if (key === 'twitter_active') nextSocial.x_active = val;
+                return {
+                  ...prev,
+                  social: nextSocial,
+                };
+              });
             };
 
             const updateContactField = (key: string, val: string) => {
@@ -3989,8 +3969,8 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {platforms.map(p => {
-                      const url = currentSocial[p.id] || '';
-                      const isActive = currentSocial[`${p.id}_active`] !== false;
+                      const url = (p.id === 'x' ? (currentSocial.x || currentSocial.twitter) : currentSocial[p.id]) || '';
+                      const isActive = (p.id === 'x' ? (currentSocial.x_active !== false && currentSocial.twitter_active !== false) : currentSocial[`${p.id}_active`] !== false);
                       const hasUrl = url.trim().length > 0;
 
                       return (
@@ -4008,7 +3988,13 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                                 className="w-7 h-7 rounded-full flex items-center justify-center text-white shrink-0 shadow-2xs"
                                 style={{ backgroundColor: p.color }}
                               >
-                                <i className={`${p.icon} text-xs`}></i>
+                                {p.isSvg ? (
+                                  <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                                  </svg>
+                                ) : (
+                                  <i className={`${p.icon} text-xs`}></i>
+                                )}
                               </div>
                               <div>
                                 <span className="text-xs font-bold text-slate-800 block">{p.label}</span>
