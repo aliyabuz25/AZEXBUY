@@ -2580,7 +2580,7 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
             </div>
 
             {/* Additional Secondary Services from CMS (if available) */}
-            {cmsServices && cmsServices.filter(s => s.serviceType === 'secondary' && !['market-access', 'buyer-sales', 'export-management', 'logistics'].includes(s.id)).length > 0 && (
+            {cmsServices && cmsServices.filter(s => s.serviceType === 'secondary' && !['market-access', 'buyer-sales', 'export-management', 'logistics', 'outsourced-export-dept', 'international-exhibitions'].includes(s.id)).length > 0 && (
               <div className="pt-6">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="h-px flex-1 bg-slate-200"></div>
@@ -2590,7 +2590,7 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
                   <div className="h-px flex-1 bg-slate-200"></div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  {cmsServices.filter(s => s.serviceType === 'secondary' && !['market-access', 'buyer-sales', 'export-management', 'logistics'].includes(s.id)).map((srv) => {
+                  {cmsServices.filter(s => s.serviceType === 'secondary' && !['market-access', 'buyer-sales', 'export-management', 'logistics', 'outsourced-export-dept', 'international-exhibitions'].includes(s.id)).map((srv) => {
                     const scopeItems: string[] = (srv.scope as any)?.[locale] || (srv.scope as any)?.['EN'] || [];
                     const ctaLabel = locale === 'AZ' ? 'Müraciət et' : locale === 'TR' ? 'Başvur' : locale === 'RU' ? 'Подать заявку' : 'Apply';
                     return (
