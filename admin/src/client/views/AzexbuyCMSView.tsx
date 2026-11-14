@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { UiLanguage } from '../types';
 import { flattenStrings } from '../utils/flattenStrings';
-import { UI_STRINGS, ABOUT_PAGE_DEFAULT, SERVICES_PILLARS } from '../../../../src/data/translations';
+import { UI_STRINGS, ABOUT_PAGE_DEFAULT, SERVICES_PILLARS, BUYER_STEPS, PRODUCER_STEPS } from '../../../../src/data/translations';
 import { SEED_SERVICES } from '../../seed';
 
 interface AzexbuyCMSViewProps { uiLang: UiLanguage; }
@@ -2089,135 +2089,7 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                 </div>
               )}
 
-              <SaveBar onSave={() => saveStrings(locData)} saving={saving} saved={saved} />
-            </>
-          )}
-
-          {/* ── CONTACT & OFFICE DETAILS ── */}
-          {page === 'contact' && (
-            <>
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded bg-[#0f3156]/10 text-[#0f3156] flex items-center justify-center shrink-0">
-                    <Phone className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h2 className="text-sm font-bold text-slate-900">Əlaqə, Ofis və Rekvizit Məlumatları</h2>
-                    <p className="text-xs text-slate-500">Saytın footer, əlaqə bölmələri və rəsmi ünvan məlumatlarını bütün 6 dildə tənzimləyin.</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Section 1: Rəsmi Əlaqə Kanalları */}
-              <div className="bg-white border border-slate-200/90 rounded-lg p-4 space-y-4 shadow-2xs">
-                <div className="border-b border-slate-100 pb-2 flex items-center gap-2">
-                  <Building2 className="w-4 h-4 text-[#0f3156]" />
-                  <div>
-                    <h3 className="text-xs font-bold text-slate-800 uppercase font-mono">1. Rəsmi Əlaqə Kanalları & Qaynar Xətlər</h3>
-                    <p className="text-[11px] text-slate-400">Footer və Əlaqə Masasında görünən telefon və poçt ünvanları</p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Telefon (Direct Trade Desk)</label>
-                    <input
-                      type="text"
-                      value={content.contact?.phone || '+994 10 509 19 59'}
-                      onChange={e => {
-                        const v = e.target.value;
-                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phone: v } }));
-                      }}
-                      placeholder="+994 10 509 19 59"
-                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">İkinci Telefon / Qaynar Xətt</label>
-                    <input
-                      type="text"
-                      value={content.contact?.phoneAlt || '+994 (50) 290 45 00'}
-                      onChange={e => {
-                        const v = e.target.value;
-                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phoneAlt: v } }));
-                      }}
-                      placeholder="+994 (50) 290 45 00"
-                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Elektron Poçt (Official Dispatch)</label>
-                    <input
-                      type="text"
-                      value={content.contact?.email || 'info@azexbuy.com'}
-                      onChange={e => {
-                        const v = e.target.value;
-                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), email: v } }));
-                      }}
-                      placeholder="info@azexbuy.com"
-                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Satınalma / Tender Emaili</label>
-                    <input
-                      type="text"
-                      value={content.contact?.emailAlt || 'support@azexbuy.com'}
-                      onChange={e => {
-                        const v = e.target.value;
-                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), emailAlt: v } }));
-                      }}
-                      placeholder="support@azexbuy.com"
-                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
-                    />
-                  </div>
-
-                  <div className="sm:col-span-2">
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">İş Qrafiki & Saatları</label>
-                    <input
-                      type="text"
-                      value={content.contact?.hours || '09:00 – 18:00 (AZT / UTC+4) · B.e – Cümə'}
-                      onChange={e => {
-                        const v = e.target.value;
-                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), hours: v } }));
-                      }}
-                      placeholder="09:00 – 18:00 (AZT / UTC+4)"
-                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156]"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Section 2: Baş Qərargah və Hüquqi Məlumatlar (6 Dillərdə) */}
-              <div className="space-y-3">
-                <div className="bg-slate-100 p-2.5 rounded text-xs font-bold text-slate-700">
-                  2. Baş Qərargah Ünvanı və Çoxdilli Rekvizitlər (6 Dildə)
-                </div>
-
-                <MultiLocF label="Qərargah Bölmə Başlığı" strKey="footer.hqTitle" locData={locData} onChange={handleMultiLocChange} />
-                <MultiLocF label="Tam Ünvan (Baku Alliance Business Center...)" strKey="footer.hqAddress" multi locData={locData} onChange={handleMultiLocChange} />
-                <MultiLocF label="Şirkət Mandatı / Qısa Təsvir" strKey="footer.description" multi locData={locData} onChange={handleMultiLocChange} />
-                <MultiLocF label="Müəllif Hüquqları (Copyright)" strKey="footer.rights" multi locData={locData} onChange={handleMultiLocChange} />
-                <MultiLocF label='"Sürətli Keçidlər" Bölmə Başlığı' strKey="footer.quickLinks" locData={locData} onChange={handleMultiLocChange} />
-                <MultiLocF label='"Tənzimləmə və Uyğunluq" Başlığı' strKey="footer.complianceTitle" locData={locData} onChange={handleMultiLocChange} />
-              </div>
-
-              <SaveBar
-                onSave={async () => {
-                  setSaving(true);
-                  await Promise.all([
-                    apiPost('/api/azexbuy/localization', locData),
-                    apiPost('/api/azexbuy/content', content),
-                  ]);
-                  flash();
-                  setSaving(false);
-                }}
-                saving={saving}
-                saved={saved}
-              />
+              <SaveBar onSave={async () => { await saveStrings(locData); await saveContent(content); }} saving={saving} saved={saved} />
             </>
           )}
 
@@ -2275,135 +2147,7 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                   <F key={item.k} label={item.label} k={`nav.${item.k}`} value={str(`nav.${item.k}`)} onChange={handleStrChange} />
                 ))}
               </div>
-              <SaveBar onSave={() => saveStrings(locData)} saving={saving} saved={saved} />
-            </>
-          )}
-
-          {/* ── CONTACT & OFFICE DETAILS ── */}
-          {page === 'contact' && (
-            <>
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded bg-[#0f3156]/10 text-[#0f3156] flex items-center justify-center shrink-0">
-                    <Phone className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h2 className="text-sm font-bold text-slate-900">Əlaqə, Ofis və Rekvizit Məlumatları</h2>
-                    <p className="text-xs text-slate-500">Saytın footer, əlaqə bölmələri və rəsmi ünvan məlumatlarını bütün 6 dildə tənzimləyin.</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Section 1: Rəsmi Əlaqə Kanalları */}
-              <div className="bg-white border border-slate-200/90 rounded-lg p-4 space-y-4 shadow-2xs">
-                <div className="border-b border-slate-100 pb-2 flex items-center gap-2">
-                  <Building2 className="w-4 h-4 text-[#0f3156]" />
-                  <div>
-                    <h3 className="text-xs font-bold text-slate-800 uppercase font-mono">1. Rəsmi Əlaqə Kanalları & Qaynar Xətlər</h3>
-                    <p className="text-[11px] text-slate-400">Footer və Əlaqə Masasında görünən telefon və poçt ünvanları</p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Telefon (Direct Trade Desk)</label>
-                    <input
-                      type="text"
-                      value={content.contact?.phone || '+994 10 509 19 59'}
-                      onChange={e => {
-                        const v = e.target.value;
-                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phone: v } }));
-                      }}
-                      placeholder="+994 10 509 19 59"
-                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">İkinci Telefon / Qaynar Xətt</label>
-                    <input
-                      type="text"
-                      value={content.contact?.phoneAlt || '+994 (50) 290 45 00'}
-                      onChange={e => {
-                        const v = e.target.value;
-                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phoneAlt: v } }));
-                      }}
-                      placeholder="+994 (50) 290 45 00"
-                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Elektron Poçt (Official Dispatch)</label>
-                    <input
-                      type="text"
-                      value={content.contact?.email || 'info@azexbuy.com'}
-                      onChange={e => {
-                        const v = e.target.value;
-                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), email: v } }));
-                      }}
-                      placeholder="info@azexbuy.com"
-                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Satınalma / Tender Emaili</label>
-                    <input
-                      type="text"
-                      value={content.contact?.emailAlt || 'support@azexbuy.com'}
-                      onChange={e => {
-                        const v = e.target.value;
-                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), emailAlt: v } }));
-                      }}
-                      placeholder="support@azexbuy.com"
-                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
-                    />
-                  </div>
-
-                  <div className="sm:col-span-2">
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">İş Qrafiki & Saatları</label>
-                    <input
-                      type="text"
-                      value={content.contact?.hours || '09:00 – 18:00 (AZT / UTC+4) · B.e – Cümə'}
-                      onChange={e => {
-                        const v = e.target.value;
-                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), hours: v } }));
-                      }}
-                      placeholder="09:00 – 18:00 (AZT / UTC+4)"
-                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156]"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Section 2: Baş Qərargah və Hüquqi Məlumatlar (6 Dillərdə) */}
-              <div className="space-y-3">
-                <div className="bg-slate-100 p-2.5 rounded text-xs font-bold text-slate-700">
-                  2. Baş Qərargah Ünvanı və Çoxdilli Rekvizitlər (6 Dildə)
-                </div>
-
-                <MultiLocF label="Qərargah Bölmə Başlığı" strKey="footer.hqTitle" locData={locData} onChange={handleMultiLocChange} />
-                <MultiLocF label="Tam Ünvan (Baku Alliance Business Center...)" strKey="footer.hqAddress" multi locData={locData} onChange={handleMultiLocChange} />
-                <MultiLocF label="Şirkət Mandatı / Qısa Təsvir" strKey="footer.description" multi locData={locData} onChange={handleMultiLocChange} />
-                <MultiLocF label="Müəllif Hüquqları (Copyright)" strKey="footer.rights" multi locData={locData} onChange={handleMultiLocChange} />
-                <MultiLocF label='"Sürətli Keçidlər" Bölmə Başlığı' strKey="footer.quickLinks" locData={locData} onChange={handleMultiLocChange} />
-                <MultiLocF label='"Tənzimləmə və Uyğunluq" Başlığı' strKey="footer.complianceTitle" locData={locData} onChange={handleMultiLocChange} />
-              </div>
-
-              <SaveBar
-                onSave={async () => {
-                  setSaving(true);
-                  await Promise.all([
-                    apiPost('/api/azexbuy/localization', locData),
-                    apiPost('/api/azexbuy/content', content),
-                  ]);
-                  flash();
-                  setSaving(false);
-                }}
-                saving={saving}
-                saved={saved}
-              />
+              <SaveBar onSave={async () => { await saveStrings(locData); await saveContent(content); }} saving={saving} saved={saved} />
             </>
           )}
 
@@ -2638,134 +2382,6 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
             );
           })()}
 
-          {/* ── CONTACT & OFFICE DETAILS ── */}
-          {page === 'contact' && (
-            <>
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded bg-[#0f3156]/10 text-[#0f3156] flex items-center justify-center shrink-0">
-                    <Phone className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h2 className="text-sm font-bold text-slate-900">Əlaqə, Ofis və Rekvizit Məlumatları</h2>
-                    <p className="text-xs text-slate-500">Saytın footer, əlaqə bölmələri və rəsmi ünvan məlumatlarını bütün 6 dildə tənzimləyin.</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Section 1: Rəsmi Əlaqə Kanalları */}
-              <div className="bg-white border border-slate-200/90 rounded-lg p-4 space-y-4 shadow-2xs">
-                <div className="border-b border-slate-100 pb-2 flex items-center gap-2">
-                  <Building2 className="w-4 h-4 text-[#0f3156]" />
-                  <div>
-                    <h3 className="text-xs font-bold text-slate-800 uppercase font-mono">1. Rəsmi Əlaqə Kanalları & Qaynar Xətlər</h3>
-                    <p className="text-[11px] text-slate-400">Footer və Əlaqə Masasında görünən telefon və poçt ünvanları</p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Telefon (Direct Trade Desk)</label>
-                    <input
-                      type="text"
-                      value={content.contact?.phone || '+994 10 509 19 59'}
-                      onChange={e => {
-                        const v = e.target.value;
-                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phone: v } }));
-                      }}
-                      placeholder="+994 10 509 19 59"
-                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">İkinci Telefon / Qaynar Xətt</label>
-                    <input
-                      type="text"
-                      value={content.contact?.phoneAlt || '+994 (50) 290 45 00'}
-                      onChange={e => {
-                        const v = e.target.value;
-                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phoneAlt: v } }));
-                      }}
-                      placeholder="+994 (50) 290 45 00"
-                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Elektron Poçt (Official Dispatch)</label>
-                    <input
-                      type="text"
-                      value={content.contact?.email || 'info@azexbuy.com'}
-                      onChange={e => {
-                        const v = e.target.value;
-                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), email: v } }));
-                      }}
-                      placeholder="info@azexbuy.com"
-                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Satınalma / Tender Emaili</label>
-                    <input
-                      type="text"
-                      value={content.contact?.emailAlt || 'support@azexbuy.com'}
-                      onChange={e => {
-                        const v = e.target.value;
-                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), emailAlt: v } }));
-                      }}
-                      placeholder="support@azexbuy.com"
-                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
-                    />
-                  </div>
-
-                  <div className="sm:col-span-2">
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">İş Qrafiki & Saatları</label>
-                    <input
-                      type="text"
-                      value={content.contact?.hours || '09:00 – 18:00 (AZT / UTC+4) · B.e – Cümə'}
-                      onChange={e => {
-                        const v = e.target.value;
-                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), hours: v } }));
-                      }}
-                      placeholder="09:00 – 18:00 (AZT / UTC+4)"
-                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156]"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Section 2: Baş Qərargah və Hüquqi Məlumatlar (6 Dillərdə) */}
-              <div className="space-y-3">
-                <div className="bg-slate-100 p-2.5 rounded text-xs font-bold text-slate-700">
-                  2. Baş Qərargah Ünvanı və Çoxdilli Rekvizitlər (6 Dildə)
-                </div>
-
-                <MultiLocF label="Qərargah Bölmə Başlığı" strKey="footer.hqTitle" locData={locData} onChange={handleMultiLocChange} />
-                <MultiLocF label="Tam Ünvan (Baku Alliance Business Center...)" strKey="footer.hqAddress" multi locData={locData} onChange={handleMultiLocChange} />
-                <MultiLocF label="Şirkət Mandatı / Qısa Təsvir" strKey="footer.description" multi locData={locData} onChange={handleMultiLocChange} />
-                <MultiLocF label="Müəllif Hüquqları (Copyright)" strKey="footer.rights" multi locData={locData} onChange={handleMultiLocChange} />
-                <MultiLocF label='"Sürətli Keçidlər" Bölmə Başlığı' strKey="footer.quickLinks" locData={locData} onChange={handleMultiLocChange} />
-                <MultiLocF label='"Tənzimləmə və Uyğunluq" Başlığı' strKey="footer.complianceTitle" locData={locData} onChange={handleMultiLocChange} />
-              </div>
-
-              <SaveBar
-                onSave={async () => {
-                  setSaving(true);
-                  await Promise.all([
-                    apiPost('/api/azexbuy/localization', locData),
-                    apiPost('/api/azexbuy/content', content),
-                  ]);
-                  flash();
-                  setSaving(false);
-                }}
-                saving={saving}
-                saved={saved}
-              />
-            </>
-          )}
-
           {/* ── AUDIENCE ── */}
           {page === 'audience' && (
             <>
@@ -2808,135 +2424,7 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                   <MultiLocF label="Buton Mətni" strKey="bilateral.producersBtn" locData={locData} onChange={handleMultiLocChange} />
                 </div>
               </div>
-              <SaveBar onSave={() => saveStrings(locData)} saving={saving} saved={saved} />
-            </>
-          )}
-
-          {/* ── CONTACT & OFFICE DETAILS ── */}
-          {page === 'contact' && (
-            <>
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded bg-[#0f3156]/10 text-[#0f3156] flex items-center justify-center shrink-0">
-                    <Phone className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h2 className="text-sm font-bold text-slate-900">Əlaqə, Ofis və Rekvizit Məlumatları</h2>
-                    <p className="text-xs text-slate-500">Saytın footer, əlaqə bölmələri və rəsmi ünvan məlumatlarını bütün 6 dildə tənzimləyin.</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Section 1: Rəsmi Əlaqə Kanalları */}
-              <div className="bg-white border border-slate-200/90 rounded-lg p-4 space-y-4 shadow-2xs">
-                <div className="border-b border-slate-100 pb-2 flex items-center gap-2">
-                  <Building2 className="w-4 h-4 text-[#0f3156]" />
-                  <div>
-                    <h3 className="text-xs font-bold text-slate-800 uppercase font-mono">1. Rəsmi Əlaqə Kanalları & Qaynar Xətlər</h3>
-                    <p className="text-[11px] text-slate-400">Footer və Əlaqə Masasında görünən telefon və poçt ünvanları</p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Telefon (Direct Trade Desk)</label>
-                    <input
-                      type="text"
-                      value={content.contact?.phone || '+994 10 509 19 59'}
-                      onChange={e => {
-                        const v = e.target.value;
-                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phone: v } }));
-                      }}
-                      placeholder="+994 10 509 19 59"
-                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">İkinci Telefon / Qaynar Xətt</label>
-                    <input
-                      type="text"
-                      value={content.contact?.phoneAlt || '+994 (50) 290 45 00'}
-                      onChange={e => {
-                        const v = e.target.value;
-                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phoneAlt: v } }));
-                      }}
-                      placeholder="+994 (50) 290 45 00"
-                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Elektron Poçt (Official Dispatch)</label>
-                    <input
-                      type="text"
-                      value={content.contact?.email || 'info@azexbuy.com'}
-                      onChange={e => {
-                        const v = e.target.value;
-                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), email: v } }));
-                      }}
-                      placeholder="info@azexbuy.com"
-                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Satınalma / Tender Emaili</label>
-                    <input
-                      type="text"
-                      value={content.contact?.emailAlt || 'support@azexbuy.com'}
-                      onChange={e => {
-                        const v = e.target.value;
-                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), emailAlt: v } }));
-                      }}
-                      placeholder="support@azexbuy.com"
-                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
-                    />
-                  </div>
-
-                  <div className="sm:col-span-2">
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">İş Qrafiki & Saatları</label>
-                    <input
-                      type="text"
-                      value={content.contact?.hours || '09:00 – 18:00 (AZT / UTC+4) · B.e – Cümə'}
-                      onChange={e => {
-                        const v = e.target.value;
-                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), hours: v } }));
-                      }}
-                      placeholder="09:00 – 18:00 (AZT / UTC+4)"
-                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156]"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Section 2: Baş Qərargah və Hüquqi Məlumatlar (6 Dillərdə) */}
-              <div className="space-y-3">
-                <div className="bg-slate-100 p-2.5 rounded text-xs font-bold text-slate-700">
-                  2. Baş Qərargah Ünvanı və Çoxdilli Rekvizitlər (6 Dildə)
-                </div>
-
-                <MultiLocF label="Qərargah Bölmə Başlığı" strKey="footer.hqTitle" locData={locData} onChange={handleMultiLocChange} />
-                <MultiLocF label="Tam Ünvan (Baku Alliance Business Center...)" strKey="footer.hqAddress" multi locData={locData} onChange={handleMultiLocChange} />
-                <MultiLocF label="Şirkət Mandatı / Qısa Təsvir" strKey="footer.description" multi locData={locData} onChange={handleMultiLocChange} />
-                <MultiLocF label="Müəllif Hüquqları (Copyright)" strKey="footer.rights" multi locData={locData} onChange={handleMultiLocChange} />
-                <MultiLocF label='"Sürətli Keçidlər" Bölmə Başlığı' strKey="footer.quickLinks" locData={locData} onChange={handleMultiLocChange} />
-                <MultiLocF label='"Tənzimləmə və Uyğunluq" Başlığı' strKey="footer.complianceTitle" locData={locData} onChange={handleMultiLocChange} />
-              </div>
-
-              <SaveBar
-                onSave={async () => {
-                  setSaving(true);
-                  await Promise.all([
-                    apiPost('/api/azexbuy/localization', locData),
-                    apiPost('/api/azexbuy/content', content),
-                  ]);
-                  flash();
-                  setSaving(false);
-                }}
-                saving={saving}
-                saved={saved}
-              />
+              <SaveBar onSave={async () => { await saveStrings(locData); await saveContent(content); }} saving={saving} saved={saved} />
             </>
           )}
 
@@ -2961,7 +2449,7 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
               <MultiLocF label="Etiket/Badge" strKey="services.outsourcedBadge" locData={locData} onChange={handleMultiLocChange} />
               <MultiLocF label="Açıqlama" strKey="services.outsourcedDesc" multi locData={locData} onChange={handleMultiLocChange} />
               <MultiLocF label="CTA Mətni" strKey="services.outsourcedCta" locData={locData} onChange={handleMultiLocChange} />
-              <div className="bg-slate-100 px-3 py-2 text-[10px] font-bold text-slate-500 uppercase rounded mt-2">Ana Sayfa Servis Kartları (4)</div>
+              <div className="bg-slate-100 px-3 py-2 text-[10px] font-bold text-slate-500 uppercase rounded mt-2">Əsas Servis Kartları (Pillars)</div>
               <ServicePillarEditor
                 content={content}
                 onChange={(next) => setContent(next)}
@@ -2994,134 +2482,6 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                 content={content}
                 onChange={(next) => setContent(next)}
                 onSaveContent={saveContent}
-                saving={saving}
-                saved={saved}
-              />
-            </>
-          )}
-
-          {/* ── CONTACT & OFFICE DETAILS ── */}
-          {page === 'contact' && (
-            <>
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded bg-[#0f3156]/10 text-[#0f3156] flex items-center justify-center shrink-0">
-                    <Phone className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h2 className="text-sm font-bold text-slate-900">Əlaqə, Ofis və Rekvizit Məlumatları</h2>
-                    <p className="text-xs text-slate-500">Saytın footer, əlaqə bölmələri və rəsmi ünvan məlumatlarını bütün 6 dildə tənzimləyin.</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Section 1: Rəsmi Əlaqə Kanalları */}
-              <div className="bg-white border border-slate-200/90 rounded-lg p-4 space-y-4 shadow-2xs">
-                <div className="border-b border-slate-100 pb-2 flex items-center gap-2">
-                  <Building2 className="w-4 h-4 text-[#0f3156]" />
-                  <div>
-                    <h3 className="text-xs font-bold text-slate-800 uppercase font-mono">1. Rəsmi Əlaqə Kanalları & Qaynar Xətlər</h3>
-                    <p className="text-[11px] text-slate-400">Footer və Əlaqə Masasında görünən telefon və poçt ünvanları</p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Telefon (Direct Trade Desk)</label>
-                    <input
-                      type="text"
-                      value={content.contact?.phone || '+994 10 509 19 59'}
-                      onChange={e => {
-                        const v = e.target.value;
-                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phone: v } }));
-                      }}
-                      placeholder="+994 10 509 19 59"
-                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">İkinci Telefon / Qaynar Xətt</label>
-                    <input
-                      type="text"
-                      value={content.contact?.phoneAlt || '+994 (50) 290 45 00'}
-                      onChange={e => {
-                        const v = e.target.value;
-                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phoneAlt: v } }));
-                      }}
-                      placeholder="+994 (50) 290 45 00"
-                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Elektron Poçt (Official Dispatch)</label>
-                    <input
-                      type="text"
-                      value={content.contact?.email || 'info@azexbuy.com'}
-                      onChange={e => {
-                        const v = e.target.value;
-                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), email: v } }));
-                      }}
-                      placeholder="info@azexbuy.com"
-                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Satınalma / Tender Emaili</label>
-                    <input
-                      type="text"
-                      value={content.contact?.emailAlt || 'support@azexbuy.com'}
-                      onChange={e => {
-                        const v = e.target.value;
-                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), emailAlt: v } }));
-                      }}
-                      placeholder="support@azexbuy.com"
-                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
-                    />
-                  </div>
-
-                  <div className="sm:col-span-2">
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">İş Qrafiki & Saatları</label>
-                    <input
-                      type="text"
-                      value={content.contact?.hours || '09:00 – 18:00 (AZT / UTC+4) · B.e – Cümə'}
-                      onChange={e => {
-                        const v = e.target.value;
-                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), hours: v } }));
-                      }}
-                      placeholder="09:00 – 18:00 (AZT / UTC+4)"
-                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156]"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Section 2: Baş Qərargah və Hüquqi Məlumatlar (6 Dillərdə) */}
-              <div className="space-y-3">
-                <div className="bg-slate-100 p-2.5 rounded text-xs font-bold text-slate-700">
-                  2. Baş Qərargah Ünvanı və Çoxdilli Rekvizitlər (6 Dildə)
-                </div>
-
-                <MultiLocF label="Qərargah Bölmə Başlığı" strKey="footer.hqTitle" locData={locData} onChange={handleMultiLocChange} />
-                <MultiLocF label="Tam Ünvan (Baku Alliance Business Center...)" strKey="footer.hqAddress" multi locData={locData} onChange={handleMultiLocChange} />
-                <MultiLocF label="Şirkət Mandatı / Qısa Təsvir" strKey="footer.description" multi locData={locData} onChange={handleMultiLocChange} />
-                <MultiLocF label="Müəllif Hüquqları (Copyright)" strKey="footer.rights" multi locData={locData} onChange={handleMultiLocChange} />
-                <MultiLocF label='"Sürətli Keçidlər" Bölmə Başlığı' strKey="footer.quickLinks" locData={locData} onChange={handleMultiLocChange} />
-                <MultiLocF label='"Tənzimləmə və Uyğunluq" Başlığı' strKey="footer.complianceTitle" locData={locData} onChange={handleMultiLocChange} />
-              </div>
-
-              <SaveBar
-                onSave={async () => {
-                  setSaving(true);
-                  await Promise.all([
-                    apiPost('/api/azexbuy/localization', locData),
-                    apiPost('/api/azexbuy/content', content),
-                  ]);
-                  flash();
-                  setSaving(false);
-                }}
                 saving={saving}
                 saved={saved}
               />
@@ -3329,161 +2689,6 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                 </div>
               </div>
               <SaveBar onSave={async () => { await saveContent(content); await saveStrings(locData); }} saving={saving} saved={saved} />
-            </>
-          )}
-
-          {/* ── SERVICE APPLICATION MODAL & OPTIONS (+/-) ── */}
-          {page === 'service_modal' && (
-            <>
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded bg-[#0f3156]/10 text-[#0f3156] flex items-center justify-center shrink-0">
-                    <Briefcase className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h2 className="text-sm font-bold text-slate-900">Xidmət Müraciəti Modalı və Seçimləri</h2>
-                    <p className="text-xs text-slate-500">
-                      Pop-up müraciət pəncərəsindəki bütün xidmətləri (+/-) artırıb-azaldın, ikonlarını seçin və mətnləri tənzimləyin.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <ServiceModalEditor
-                content={content}
-                onChange={(next) => setContent(next)}
-                onSaveContent={saveContent}
-                saving={saving}
-                saved={saved}
-              />
-            </>
-          )}
-
-          {/* ── CONTACT & OFFICE DETAILS ── */}
-          {page === 'contact' && (
-            <>
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded bg-[#0f3156]/10 text-[#0f3156] flex items-center justify-center shrink-0">
-                    <Phone className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h2 className="text-sm font-bold text-slate-900">Əlaqə, Ofis və Rekvizit Məlumatları</h2>
-                    <p className="text-xs text-slate-500">Saytın footer, əlaqə bölmələri və rəsmi ünvan məlumatlarını bütün 6 dildə tənzimləyin.</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Section 1: Rəsmi Əlaqə Kanalları */}
-              <div className="bg-white border border-slate-200/90 rounded-lg p-4 space-y-4 shadow-2xs">
-                <div className="border-b border-slate-100 pb-2 flex items-center gap-2">
-                  <Building2 className="w-4 h-4 text-[#0f3156]" />
-                  <div>
-                    <h3 className="text-xs font-bold text-slate-800 uppercase font-mono">1. Rəsmi Əlaqə Kanalları & Qaynar Xətlər</h3>
-                    <p className="text-[11px] text-slate-400">Footer və Əlaqə Masasında görünən telefon və poçt ünvanları</p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Telefon (Direct Trade Desk)</label>
-                    <input
-                      type="text"
-                      value={content.contact?.phone || '+994 10 509 19 59'}
-                      onChange={e => {
-                        const v = e.target.value;
-                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phone: v } }));
-                      }}
-                      placeholder="+994 10 509 19 59"
-                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">İkinci Telefon / Qaynar Xətt</label>
-                    <input
-                      type="text"
-                      value={content.contact?.phoneAlt || '+994 (50) 290 45 00'}
-                      onChange={e => {
-                        const v = e.target.value;
-                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), phoneAlt: v } }));
-                      }}
-                      placeholder="+994 (50) 290 45 00"
-                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Əsas Elektron Poçt (Official Dispatch)</label>
-                    <input
-                      type="text"
-                      value={content.contact?.email || 'info@azexbuy.com'}
-                      onChange={e => {
-                        const v = e.target.value;
-                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), email: v } }));
-                      }}
-                      placeholder="info@azexbuy.com"
-                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Satınalma / Tender Emaili</label>
-                    <input
-                      type="text"
-                      value={content.contact?.emailAlt || 'support@azexbuy.com'}
-                      onChange={e => {
-                        const v = e.target.value;
-                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), emailAlt: v } }));
-                      }}
-                      placeholder="support@azexbuy.com"
-                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
-                    />
-                  </div>
-
-                  <div className="sm:col-span-2">
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">İş Qrafiki & Saatları</label>
-                    <input
-                      type="text"
-                      value={content.contact?.hours || '09:00 – 18:00 (AZT / UTC+4) · B.e – Cümə'}
-                      onChange={e => {
-                        const v = e.target.value;
-                        setContent((p: any) => ({ ...p, contact: { ...(p.contact || {}), hours: v } }));
-                      }}
-                      placeholder="09:00 – 18:00 (AZT / UTC+4)"
-                      className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156]"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Section 2: Baş Qərargah və Hüquqi Məlumatlar (6 Dillərdə) */}
-              <div className="space-y-3">
-                <div className="bg-slate-100 p-2.5 rounded text-xs font-bold text-slate-700">
-                  2. Baş Qərargah Ünvanı və Çoxdilli Rekvizitlər (6 Dildə)
-                </div>
-
-                <MultiLocF label="Qərargah Bölmə Başlığı" strKey="footer.hqTitle" locData={locData} onChange={handleMultiLocChange} />
-                <MultiLocF label="Tam Ünvan (Baku Alliance Business Center...)" strKey="footer.hqAddress" multi locData={locData} onChange={handleMultiLocChange} />
-                <MultiLocF label="Şirkət Mandatı / Qısa Təsvir" strKey="footer.description" multi locData={locData} onChange={handleMultiLocChange} />
-                <MultiLocF label="Müəllif Hüquqları (Copyright)" strKey="footer.rights" multi locData={locData} onChange={handleMultiLocChange} />
-                <MultiLocF label='"Sürətli Keçidlər" Bölmə Başlığı' strKey="footer.quickLinks" locData={locData} onChange={handleMultiLocChange} />
-                <MultiLocF label='"Tənzimləmə və Uyğunluq" Başlığı' strKey="footer.complianceTitle" locData={locData} onChange={handleMultiLocChange} />
-              </div>
-
-              <SaveBar
-                onSave={async () => {
-                  setSaving(true);
-                  await Promise.all([
-                    apiPost('/api/azexbuy/localization', locData),
-                    apiPost('/api/azexbuy/content', content),
-                  ]);
-                  flash();
-                  setSaving(false);
-                }}
-                saving={saving}
-                saved={saved}
-              />
             </>
           )}
 
@@ -3781,7 +2986,7 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
               <MultiLocF label='"Sürətli Keçidlər" Başlığı' strKey="footer.quickLinks" locData={locData} onChange={handleMultiLocChange} />
               <MultiLocF label='"Uyğunluq" Başlığı' strKey="footer.complianceTitle" locData={locData} onChange={handleMultiLocChange} />
               <MultiLocF label="Copyright Mətni" strKey="footer.rights" multi locData={locData} onChange={handleMultiLocChange} />
-              <SaveBar onSave={() => saveStrings(locData)} saving={saving} saved={saved} />
+              <SaveBar onSave={async () => { await saveStrings(locData); await saveContent(content); }} saving={saving} saved={saved} />
             </>
           )}
 
@@ -4331,7 +3536,29 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                 </button>
               </div>
               {(content.buyer_steps || []).length === 0 && (
-                <div className="bg-amber-50 border border-amber-200 px-4 py-3 text-xs text-amber-700 rounded">Hələ override yoxdur — default addımlar göstərilir.</div>
+                <div className="bg-amber-50 border border-amber-200 px-4 py-3 text-xs text-amber-700 rounded space-y-2">
+                  <p>Hələ xüsusi addım qeydə alınmayıb — saytda standart 7 addım göstərilir.</p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const seeded = BUYER_STEPS.map((s: any) => ({
+                        number: s.number,
+                        sla: s.sla || '',
+                        authority: s.authority || '',
+                        title: { ...s.title },
+                        detailTitle: { ...s.detailTitle },
+                        description: { ...s.description },
+                        deliverable: s.deliverable ? { ...s.deliverable } : { AZ: '', EN: '', TR: '', RU: '', AR: '', ES: '' }
+                      }));
+                      const updated = { ...content, buyer_steps: seeded };
+                      setContent(updated);
+                      saveContent(updated);
+                    }}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#0f3156] hover:bg-[#081c33] text-white text-xs font-bold rounded cursor-pointer transition-colors shadow-xs"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" /> Standart 7 Addımı Yüklə və Redaktə Et
+                  </button>
+                </div>
               )}
               {(content.buyer_steps || []).map((step: any, idx: number) => (
                 <div key={idx} className="bg-white border border-slate-200 rounded overflow-hidden">
@@ -4411,7 +3638,29 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                 </button>
               </div>
               {(content.producer_steps || []).length === 0 && (
-                <div className="bg-amber-50 border border-amber-200 px-4 py-3 text-xs text-amber-700 rounded">Hələ override yoxdur — default mərhələlər göstərilir.</div>
+                <div className="bg-amber-50 border border-amber-200 px-4 py-3 text-xs text-amber-700 rounded space-y-2">
+                  <p>Hələ xüsusi mərhələ qeydə alınmayıb — saytda standart 7 mərhələ göstərilir.</p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const seeded = PRODUCER_STEPS.map((s: any) => ({
+                        number: s.number,
+                        sla: s.sla || '',
+                        authority: s.authority || '',
+                        title: { ...s.title },
+                        detailTitle: { ...s.detailTitle },
+                        description: { ...s.description },
+                        deliverable: s.deliverable ? { ...s.deliverable } : { AZ: '', EN: '', TR: '', RU: '', AR: '', ES: '' }
+                      }));
+                      const updated = { ...content, producer_steps: seeded };
+                      setContent(updated);
+                      saveContent(updated);
+                    }}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded cursor-pointer transition-colors shadow-xs"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" /> Standart 7 Mərhələni Yüklə və Redaktə Et
+                  </button>
+                </div>
               )}
               {(content.producer_steps || []).map((step: any, idx: number) => (
                 <div key={idx} className="bg-white border border-slate-200 rounded overflow-hidden">

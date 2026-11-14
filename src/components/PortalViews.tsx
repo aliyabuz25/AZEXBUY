@@ -2767,7 +2767,21 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
   return (
     <section className={activeView === 'contact' ? 'bg-white' : 'bg-slate-50/70'}>
       {activeView === 'contact' ? (
-        <div className="custom-container py-10 sm:py-14 space-y-12">
+        <div className="custom-container py-8 sm:py-12 space-y-10">
+          {/* Breadcrumb */}
+          <div className="flex items-center gap-2 text-xs text-slate-500">
+            <button
+              type="button"
+              onClick={() => onNavigate?.('home')}
+              className="hover:text-brandNavy transition-colors flex items-center gap-1 cursor-pointer font-medium"
+            >
+              <span>←</span>
+              <span>{locale === 'AZ' ? 'Ana Səhifə' : locale === 'TR' ? 'Ana Sayfa' : locale === 'RU' ? 'Главная' : 'Home'}</span>
+            </button>
+            <span className="text-slate-300">/</span>
+            <span className="text-slate-700 font-semibold">{locale === 'AZ' ? 'Əlaqə' : locale === 'TR' ? 'İletişim' : locale === 'RU' ? 'Контакты' : 'Contact'}</span>
+          </div>
+
           {/* ── BÖLMƏ 1: İLETİŞİM BİLGİLERİ (SOL) + GOOGLE MAPS (SAĞ) ── */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
             {/* Sol: İletişim Bilgileri */}
@@ -2987,6 +3001,170 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
                 </button>
               </form>
             )}
+          </div>
+
+          {/* ── BÖLMƏ 3: AZƏRBAYCANDAN ÇIXIŞ HARİTASI VƏ LOJİSTİK DƏHLİZLƏR ── */}
+          <div className="space-y-6 pt-4 border-t border-slate-200">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+              <div>
+                <span className="text-[11px] font-bold text-brandGreen uppercase tracking-wider block mb-1">
+                  {locale === 'AZ' ? 'Qlobal Tranzit & İxrac Şəbəkəsi' : locale === 'TR' ? 'Küresel Transit ve İhracat Çıkışları' : locale === 'RU' ? 'Глобальная сеть транзита и экспорта' : 'Strategic Export Corridors'}
+                </span>
+                <h2 className="text-xl sm:text-2xl font-extrabold text-brandNavy">
+                  {locale === 'AZ' ? 'Azərbaycanın Beynəlxalq İxrac və Çıxış Dəhlizləri Xəritəsi' : locale === 'TR' ? 'Azerbaycan Uluslararası İhracat ve Çıkış Koridorları Haritası' : locale === 'RU' ? 'Карта международных экспортных коридоров Азербайджана' : 'Azerbaijan Strategic Export Corridors & Global Gateway Map'}
+                </h2>
+                <p className="text-xs text-slate-500 mt-1 max-w-3xl leading-relaxed">
+                  {locale === 'AZ'
+                    ? 'Bakı Beynəlxalq Dəniz Ticarət Limanı (Ələt), Bakı-Tbilisi-Qars (BTQ) dəmir yolu, Şimal-Cənub və Şərq-Qərb Orta Dəhlizi vasitəsilə Avropa, Asiya və Körfəz bazarlarına ən sürətli çıxış marşrutları.'
+                    : locale === 'TR'
+                    ? "Bakü Uluslararası Deniz Ticaret Limanı (Alat), Bakü-Tiflis-Kars (BTK) demiryolu ve multimodal lojistik hatları üzerinden Avrupa, Asya ve Körfez pazarlarına en hızlı çıkış rotaları."
+                    : locale === 'RU'
+                    ? 'Быстрые экспортные маршруты в Европу, Азию и страны Залива через Бакинский международный порт (Алят), ж/д БТК и транспортные коридоры Север-Юг и Восток-Запад.'
+                    : 'Direct strategic transit exit routes connecting Azerbaijani industrial and agro clusters to European, Mediterranean, Central Asian, and Gulf markets.'}
+                </p>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <span className="text-[11px] font-bold bg-blue-50 text-blue-700 px-3 py-1 rounded-full border border-blue-100 font-mono">
+                  {CORRIDOR_ROUTES.length} Multimodal Çıxış Xətti
+                </span>
+              </div>
+            </div>
+
+            {/* Visual Schematic Export Corridors Map */}
+            <div className="bg-[#0B1E33] text-white rounded-2xl p-6 sm:p-8 overflow-hidden relative shadow-md border border-slate-800">
+              {/* Background Map Grid Pattern */}
+              <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#60a5fa 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
+              
+              <div className="relative z-10 space-y-6">
+                <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-white/10">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-400/30 flex items-center justify-center shrink-0">
+                      <i className="fa-solid fa-route text-base"></i>
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 font-mono">
+                        {locale === 'TR' ? 'Ana Çıkış ve Lojistik Kavşağı (Central Hub)' : locale === 'RU' ? 'Главный логистический хаб (Central Hub)' : 'Çıxış Qovşağı (Central Hub)'}
+                      </span>
+                      <h4 className="text-base font-bold text-white">Bakı (Ələt Limanı) · Heydər Əliyev Hava Limanı (GYD)</h4>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-slate-300">
+                    <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> 24/7 Gömrük Yaşıl Dəhlizi</span>
+                  </div>
+                </div>
+
+                {/* 4 Directional Exit Corridors Visual Schematic */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {/* Koridor 1: Qərb / Orta Dəhliz */}
+                  <div className="bg-white/5 border border-white/10 hover:border-emerald-400/40 rounded-xl p-4 transition-all hover:bg-white/10 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[10px] font-bold uppercase text-emerald-300 font-mono flex items-center gap-1.5">
+                          <i className="fa-solid fa-train"></i> Qərb (TİTR / BTQ)
+                        </span>
+                        <span className="text-[10px] font-bold bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-400/30">
+                          11–14 Gün
+                        </span>
+                      </div>
+                      <h5 className="text-xs font-bold text-white mb-1.5">Bakı ➔ Gürcüstan ➔ Türkiyə ➔ Avropa</h5>
+                      <p className="text-[11px] text-slate-300 leading-snug">
+                        Bakı-Tbilisi-Qars dəmir yolu, Poti/Batumi və Mersin limanları üzərindən Avropa və Aralıq dənizinə çıxış.
+                      </p>
+                    </div>
+                    <div className="mt-3 pt-2 border-t border-white/10 text-[10px] text-slate-400">
+                      <strong>Rejim:</strong> Dəmir Yolu + Ro-Ro
+                    </div>
+                  </div>
+
+                  {/* Koridor 2: Trans-Xəzər Şərq */}
+                  <div className="bg-white/5 border border-white/10 hover:border-cyan-400/40 rounded-xl p-4 transition-all hover:bg-white/10 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[10px] font-bold uppercase text-cyan-300 font-mono flex items-center gap-1.5">
+                          <i className="fa-solid fa-ship"></i> Trans-Xəzər Şərq
+                        </span>
+                        <span className="text-[10px] font-bold bg-cyan-500/20 text-cyan-300 px-2 py-0.5 rounded-full border border-cyan-400/30">
+                          4–7 Gün
+                        </span>
+                      </div>
+                      <h5 className="text-xs font-bold text-white mb-1.5">Ələt ➔ Aktau / Türkmənbaşı ➔ Mərkəzi Asiya</h5>
+                      <p className="text-[11px] text-slate-300 leading-snug">
+                        Xəzər dənizi bərə xətti ilə Qazaxıstan, Özbəkistan, Türkmənistan və Çin sərhədinə birbaşa daşıma.
+                      </p>
+                    </div>
+                    <div className="mt-3 pt-2 border-t border-white/10 text-[10px] text-slate-400">
+                      <strong>Rejim:</strong> Ro-Ro Bərə + Dəmir Yolu / TIR
+                    </div>
+                  </div>
+
+                  {/* Koridor 3: Şimal & Cənub */}
+                  <div className="bg-white/5 border border-white/10 hover:border-amber-400/40 rounded-xl p-4 transition-all hover:bg-white/10 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[10px] font-bold uppercase text-amber-300 font-mono flex items-center gap-1.5">
+                          <i className="fa-solid fa-truck-fast"></i> Şimal-Cənub (INSTC)
+                        </span>
+                        <span className="text-[10px] font-bold bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full border border-amber-400/30">
+                          3–8 Gün
+                        </span>
+                      </div>
+                      <h5 className="text-xs font-bold text-white mb-1.5">Bakı ➔ Şimal & Cənub Beynəlxalq Xətləri</h5>
+                      <p className="text-[11px] text-slate-300 leading-snug">
+                        Rusiya və Şərqi Avropaya şimal avtomobil/dəmir yolu; Astara üzərindən Fars Körfəzi və Hindistan çıxışı.
+                      </p>
+                    </div>
+                    <div className="mt-3 pt-2 border-t border-white/10 text-[10px] text-slate-400">
+                      <strong>Rejim:</strong> TIR + Multimodal Dəmir Yolu
+                    </div>
+                  </div>
+
+                  {/* Koridor 4: Qlobal Hava Karqo */}
+                  <div className="bg-white/5 border border-white/10 hover:border-purple-400/40 rounded-xl p-4 transition-all hover:bg-white/10 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[10px] font-bold uppercase text-purple-300 font-mono flex items-center gap-1.5">
+                          <i className="fa-solid fa-plane-departure"></i> Hava Karqo Hub (GYD)
+                        </span>
+                        <span className="text-[10px] font-bold bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full border border-purple-400/30">
+                          1–2 Gün
+                        </span>
+                      </div>
+                      <h5 className="text-xs font-bold text-white mb-1.5">GYD Bakı ➔ Dubay, Frankfurt, Şanxay, London</h5>
+                      <p className="text-[11px] text-slate-300 leading-snug">
+                        Silk Way qlobal hava karqo mərkəzi ilə 40-dan çox qlobal paytaxt və ticarət mərkəzinə ekspress çatdırılma.
+                      </p>
+                    </div>
+                    <div className="mt-3 pt-2 border-t border-white/10 text-[10px] text-slate-400">
+                      <strong>Rejim:</strong> Birbaşa Geniş Gövdəli Karqo
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Detailed Corridor Cards (CORRIDOR_ROUTES) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {CORRIDOR_ROUTES.map((route) => (
+                <div key={route.id} className="border border-slate-200 bg-white rounded-xl p-5 space-y-2 hover:shadow-sm transition-shadow">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-extrabold text-brandNavy flex items-center gap-2">
+                      <i className="fa-solid fa-compass text-brandGreen"></i>
+                      {getLocalizedText(route.name, locale)}
+                    </span>
+                    <span className="text-xs font-bold text-brandGreen bg-emerald-50 px-2.5 py-0.5 rounded-full tabular-nums border border-emerald-100">
+                      {route.transitDays}
+                    </span>
+                  </div>
+                  <p className="text-xs font-medium text-slate-700 bg-slate-50 p-2.5 rounded-lg border border-slate-100 font-mono">
+                    {route.path}
+                  </p>
+                  <div className="text-[11.5px] text-slate-500 pt-1 flex flex-wrap items-center justify-between gap-2">
+                    <span><strong>Nəqliyyat Rejimi:</strong> {route.mode}</span>
+                    <span className="text-slate-600"><strong>Əsas Əmtəələr:</strong> {route.idealCommodities}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       ) : (
