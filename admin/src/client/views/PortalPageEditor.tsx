@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, memo } from 'react';
 import {
   Save, Upload, Plus, Trash2, ChevronDown, ChevronRight,
   ArrowUp, ArrowDown, RefreshCw, CheckCircle, ExternalLink,
@@ -14,6 +14,8 @@ import {
 
 const LOCALES = ['AZ', 'EN', 'TR', 'RU', 'AR', 'ES'] as const;
 type LocaleCode = typeof LOCALES[number];
+
+const LangContext = React.createContext<LocaleCode | 'ALL'>('AZ');
 
 const COLOR_OPTIONS = [
   { value: 'blue', label: 'Mavi (Blue)', pill: 'bg-blue-100 text-blue-800 border-blue-300' },
@@ -38,6 +40,128 @@ const ICON_OPTIONS = [
   { value: 'fa-solid fa-globe', label: 'Qlobal Ticarət (fa-solid fa-globe)' },
   { value: 'fa-solid fa-boxes-stacked', label: 'Qablaşdırma (fa-solid fa-boxes-stacked)' },
 ];
+
+interface LocFieldProps {
+  label: string;
+  value?: any;
+  onValueChange: (val: Record<string, string>) => void;
+  multi?: boolean;
+  rows?: number;
+  placeholder?: string;
+}
+
+const LocField: React.FC<LocFieldProps> = memo(({
+  label,
+  value,
+  onValueChange,
+  multi = false,
+  rows = 2,
+  placeholder = '',
+}) => {
+  const selectedLang = useContext(LangContext);
+  const [forceShowAll, setForceShowAll] = useState(false);
+  const valMap: Record<string, string> =
+    typeof value === 'object' && value !== null ? value : { AZ: String(value || '') };
+
+  const handleChange = (locale: string, text: string) => {
+    onValueChange({ ...valMap, [locale]: text });
+  };
+
+  const isAll = selectedLang === 'ALL' || forceShowAll;
+
+  return (
+    <div className="bg-white border border-slate-200/90 rounded-md p-3 space-y-2 shadow-2xs">
+      <div className="flex items-center justify-between pb-1 border-b border-slate-100">
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold text-slate-800">{label}</span>
+          <div className="flex items-center gap-1">
+            {LOCALES.map(l => (
+              <span
+                key={l}
+                className={`text-[9px] px-1 py-0.2 rounded font-mono ${
+                  valMap[l]?.trim()
+                    ? 'bg-emerald-50 text-emerald-700 font-semibold'
+                    : 'bg-slate-100 text-slate-400'
+                }`}
+                title={`${l}: ${valMap[l] ? 'Doldurulub' : 'Boş'}`}
+              >
+                {l}
+              </span>
+            ))}
+          </div>
+        </div>
+        {selectedLang !== 'ALL' && (
+          <button
+            type="button"
+            onClick={() => setForceShowAll(prev => !prev)}
+            className="text-[10px] text-slate-500 hover:text-[#0f3156] font-medium flex items-center gap-1 cursor-pointer"
+          >
+            <Globe className="w-3 h-3" />
+            {forceShowAll ? 'Tək Dilə Qayıt' : 'Bütün Dilləri Göstər'}
+          </button>
+        )}
+      </div>
+
+      {isAll ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 pt-1">
+          {LOCALES.map(loc => (
+            <div key={loc} className="space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold text-slate-500 font-mono">{loc}</span>
+                <span className="text-[9px] text-slate-400 font-mono">{(valMap[loc] || '').length}c</span>
+              </div>
+              {multi ? (
+                <textarea
+                  value={valMap[loc] || ''}
+                  onChange={e => handleChange(loc, e.target.value)}
+                  rows={rows}
+                  placeholder={`${loc} dilində daxil edin...`}
+                  className="w-full text-xs bg-slate-50/70 border border-slate-200 rounded px-2.5 py-1.5 focus:outline-none focus:bg-white focus:border-[#0f3156] resize-none"
+                />
+              ) : (
+                <input
+                  value={valMap[loc] || ''}
+                  onChange={e => handleChange(loc, e.target.value)}
+                  placeholder={`${loc} dilində...`}
+                  className="w-full h-8 text-xs bg-slate-50/70 border border-slate-200 rounded px-2.5 focus:outline-none focus:bg-white focus:border-[#0f3156]"
+                />
+              )}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="pt-1">
+          <div className="flex items-start gap-2.5">
+            <div className="w-10 h-8 rounded bg-[#0f3156]/10 border border-[#0f3156]/20 text-[#0f3156] font-bold text-xs font-mono flex items-center justify-center shrink-0 mt-0.5">
+              {selectedLang}
+            </div>
+            <div className="flex-1 min-w-0">
+              {multi ? (
+                <textarea
+                  value={valMap[selectedLang] || ''}
+                  onChange={e => handleChange(selectedLang, e.target.value)}
+                  rows={rows}
+                  placeholder={placeholder || `${selectedLang} dilində daxil edin...`}
+                  className="w-full text-xs bg-slate-50/70 border border-slate-200 rounded px-3 py-1.5 focus:outline-none focus:bg-white focus:border-[#0f3156] resize-none"
+                />
+              ) : (
+                <input
+                  value={valMap[selectedLang] || ''}
+                  onChange={e => handleChange(selectedLang, e.target.value)}
+                  placeholder={placeholder || `${selectedLang} dilində daxil edin...`}
+                  className="w-full h-8 text-xs bg-slate-50/70 border border-slate-200 rounded px-3 focus:outline-none focus:bg-white focus:border-[#0f3156]"
+                />
+              )}
+            </div>
+            <span className="text-[10px] text-slate-400 font-mono self-center shrink-0 min-w-[28px] text-right">
+              {(valMap[selectedLang] || '').length}c
+            </span>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+});
 
 export interface PortalPageEditorProps {
   type: 'buyers' | 'producers';
@@ -117,126 +241,6 @@ export const PortalPageEditor: React.FC<PortalPageEditorProps> = ({
     onChange({ ...pageData, bottomCta: fn({ ...cur }) });
   };
 
-  // ── Localized Field Component ──
-  const LocField = ({
-    label,
-    value,
-    onValueChange,
-    multi = false,
-    rows = 2,
-    placeholder = '',
-  }: {
-    label: string;
-    value?: any;
-    onValueChange: (val: Record<string, string>) => void;
-    multi?: boolean;
-    rows?: number;
-    placeholder?: string;
-  }) => {
-    const [forceShowAll, setForceShowAll] = useState(false);
-    const valMap: Record<string, string> =
-      typeof value === 'object' && value !== null ? value : { AZ: String(value || '') };
-
-    const handleChange = (locale: string, text: string) => {
-      onValueChange({ ...valMap, [locale]: text });
-    };
-
-    const isAll = selectedLang === 'ALL' || forceShowAll;
-
-    return (
-      <div className="bg-white border border-slate-200/90 rounded-md p-3 space-y-2 shadow-2xs">
-        <div className="flex items-center justify-between pb-1 border-b border-slate-100">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-slate-800">{label}</span>
-            <div className="flex items-center gap-1">
-              {LOCALES.map(l => (
-                <span
-                  key={l}
-                  className={`text-[9px] px-1 py-0.2 rounded font-mono ${
-                    valMap[l]?.trim()
-                      ? 'bg-emerald-50 text-emerald-700 font-semibold'
-                      : 'bg-slate-100 text-slate-400'
-                  }`}
-                  title={`${l}: ${valMap[l] ? 'Doldurulub' : 'Boş'}`}
-                >
-                  {l}
-                </span>
-              ))}
-            </div>
-          </div>
-          {selectedLang !== 'ALL' && (
-            <button
-              type="button"
-              onClick={() => setForceShowAll(prev => !prev)}
-              className="text-[10px] text-slate-500 hover:text-[#0f3156] font-medium flex items-center gap-1 cursor-pointer"
-            >
-              <Globe className="w-3 h-3" />
-              {forceShowAll ? 'Tək Dilə Qayıt' : 'Bütün Dilləri Göstər'}
-            </button>
-          )}
-        </div>
-
-        {isAll ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 pt-1">
-            {LOCALES.map(loc => (
-              <div key={loc} className="space-y-1">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold text-slate-500 font-mono">{loc}</span>
-                  <span className="text-[9px] text-slate-400 font-mono">{(valMap[loc] || '').length}c</span>
-                </div>
-                {multi ? (
-                  <textarea
-                    value={valMap[loc] || ''}
-                    onChange={e => handleChange(loc, e.target.value)}
-                    rows={rows}
-                    placeholder={`${loc} dilində daxil edin...`}
-                    className="w-full text-xs bg-slate-50/70 border border-slate-200 rounded px-2.5 py-1.5 focus:outline-none focus:bg-white focus:border-[#0f3156] resize-none"
-                  />
-                ) : (
-                  <input
-                    value={valMap[loc] || ''}
-                    onChange={e => handleChange(loc, e.target.value)}
-                    placeholder={`${loc} dilində...`}
-                    className="w-full h-8 text-xs bg-slate-50/70 border border-slate-200 rounded px-2.5 focus:outline-none focus:bg-white focus:border-[#0f3156]"
-                  />
-                )}
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="pt-1">
-            <div className="flex items-start gap-2.5">
-              <div className="w-10 h-8 rounded bg-[#0f3156]/10 border border-[#0f3156]/20 text-[#0f3156] font-bold text-xs font-mono flex items-center justify-center shrink-0 mt-0.5">
-                {selectedLang}
-              </div>
-              <div className="flex-1 min-w-0">
-                {multi ? (
-                  <textarea
-                    value={valMap[selectedLang] || ''}
-                    onChange={e => handleChange(selectedLang, e.target.value)}
-                    rows={rows}
-                    placeholder={placeholder || `${selectedLang} dilində daxil edin...`}
-                    className="w-full text-xs bg-slate-50/70 border border-slate-200 rounded px-3 py-1.5 focus:outline-none focus:bg-white focus:border-[#0f3156] resize-none"
-                  />
-                ) : (
-                  <input
-                    value={valMap[selectedLang] || ''}
-                    onChange={e => handleChange(selectedLang, e.target.value)}
-                    placeholder={placeholder || `${selectedLang} dilində daxil edin...`}
-                    className="w-full h-8 text-xs bg-slate-50/70 border border-slate-200 rounded px-3 focus:outline-none focus:bg-white focus:border-[#0f3156]"
-                  />
-                )}
-              </div>
-              <span className="text-[10px] text-slate-400 font-mono self-center shrink-0 min-w-[28px] text-right">
-                {(valMap[selectedLang] || '').length}c
-              </span>
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  };
-
   const livePortalUrl = type === 'buyers' ? '/#/buyers' : '/#/producers';
   const heroData = pageData.hero || defaultData.hero || { title: {}, desc: {} };
   const stepsList = pageData.steps || defaultData.steps || [];
@@ -250,7 +254,8 @@ export const PortalPageEditor: React.FC<PortalPageEditorProps> = ({
   const bottomSecondaryBtn = type === 'buyers' ? ctaData.ctaCatalog : ctaData.ctaServices;
 
   return (
-    <div className="space-y-4">
+    <LangContext.Provider value={selectedLang}>
+      <div className="space-y-4">
       {/* Top Header Card */}
       <div className="bg-white border border-slate-200 rounded-lg p-4 sm:p-5 shadow-xs">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -1365,5 +1370,6 @@ export const PortalPageEditor: React.FC<PortalPageEditorProps> = ({
         </button>
       </div>
     </div>
+  </LangContext.Provider>
   );
 };
