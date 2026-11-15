@@ -86,7 +86,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ records = [], medi
   const [loading, setLoading] = useState(true);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
-  const token = () => localStorage.getItem('octotech_admin_jwt') || '';
+  const token = () => localStorage.getItem('octotech_admin_jwt') || sessionStorage.getItem('octotech_admin_jwt') || '';
 
   const load = async () => {
     setLoading(true);

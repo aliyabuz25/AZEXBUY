@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Database, Download, Palette, Compass } from 'lucide-react';
+import { Search, Database, Download, Palette, Compass, RefreshCw } from 'lucide-react';
 import { 
   UiLanguage, 
   TabItem, 
@@ -111,6 +111,34 @@ export const App: React.FC = () => {
   // Setup onboarding modal state
   const [wizardOpen, setWizardOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [topBarDownloading, setTopBarDownloading] = useState(false);
+
+  const handleTopBarBackup = async () => {
+    try {
+      setTopBarDownloading(true);
+      showToast('SQLite tam backup hazırlanır...');
+      const curToken = localStorage.getItem(JWT_STORAGE_KEY) || token || '';
+      const res = await fetch(`/api/backup/download?token=${encodeURIComponent(curToken)}`, {
+        headers: { 'Authorization': `Bearer ${curToken}` }
+      });
+      if (!res.ok) throw new Error('Backup endirilə bilmədi (Status: ' + res.status + ')');
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const dateStr = new Date().toISOString().slice(0, 10);
+      a.download = `azexbuy_full_backup_${dateStr}.sqlite`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+      showToast('✓ SQLite tam backup endirildi!');
+    } catch (e: any) {
+      showToast('Backup xətası: ' + e.message);
+    } finally {
+      setTopBarDownloading(false);
+    }
+  };
 
   // Admin user
   const [adminUser, setAdminUser] = useState<{ fullName: string; email: string; role?: string }>({
@@ -731,15 +759,20 @@ export const App: React.FC = () => {
               />
             </button>
 
-            <a
-              href="/api/backup/download"
-              download
-              className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1 rounded-none border border-slate-300 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+            <button
+              type="button"
+              onClick={handleTopBarBackup}
+              disabled={topBarDownloading}
+              className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1 rounded-none border border-slate-300 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer disabled:opacity-50"
               title="Bütün saytın tam SQLite backupını endir"
             >
-              <Database className="w-3.5 h-3.5 text-slate-700 dark:text-slate-300" />
-              <span className="hidden sm:inline">Backup</span>
-            </a>
+              {topBarDownloading ? (
+                <RefreshCw className="w-3.5 h-3.5 text-blue-600 animate-spin" />
+              ) : (
+                <Database className="w-3.5 h-3.5 text-slate-700 dark:text-slate-300" />
+              )}
+              <span className="hidden sm:inline">{topBarDownloading ? 'Yüklənir...' : 'Backup'}</span>
+            </button>
 
             <button
               onClick={() => setCmdOpen(true)}

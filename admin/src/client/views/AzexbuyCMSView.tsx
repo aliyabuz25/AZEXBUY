@@ -5,7 +5,7 @@ import {
   Star, Footprints, Layers, LayoutTemplate, Menu as MenuIcon,
   Anchor, HelpCircle, Info, Map, Users, FileText, Pencil, Mail, ExternalLink, UserPlus,
   Search, Phone, Copy, RotateCcw, BarChart3, Target, Workflow, ShieldCheck, Globe2, TrendingUp, Building2, ArrowRight,
-  MapPin, Share2, Briefcase,
+  MapPin, Share2, Briefcase, Download, UploadCloud, Database,
 } from 'lucide-react';
 import { UiLanguage } from '../types';
 import { flattenStrings } from '../utils/flattenStrings';
@@ -18,52 +18,64 @@ const OCTO = '';
 const LOCALES = ['EN', 'AZ', 'TR', 'RU', 'AR', 'ES'] as const;
 type Loc = typeof LOCALES[number];
 
-const getToken = () => localStorage.getItem('octotech_admin_jwt') || '';
+const getToken = () => localStorage.getItem('octotech_admin_jwt') || sessionStorage.getItem('octotech_admin_jwt') || '';
 
 async function apiGet(path: string) {
   try {
+    const t = getToken();
     const r = await fetch(`${OCTO}${path}`, {
-      headers: { 'Authorization': `Bearer ${getToken()}` },
+      headers: {
+        ...(t ? { 'Authorization': `Bearer ${t}` } : {}),
+      },
     });
     return r.ok ? r.json() : null;
   } catch { return null; }
 }
 
-async function apiPost(path: string, body: any): Promise<{ ok: boolean; data: any }> {
+async function apiPost(path: string, body: any): Promise<{ ok: boolean; data: any; status?: number; error?: string }> {
   try {
+    const t = getToken();
     const r = await fetch(`${OCTO}${path}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${getToken()}`,
+        ...(t ? { 'Authorization': `Bearer ${t}` } : {}),
       },
       body: JSON.stringify(body),
     });
     const data = await r.json().catch(() => null);
-    return { ok: r.ok, data };
-  } catch { return { ok: false, data: null }; }
+    return { ok: r.ok, data, status: r.status, error: data?.error || (r.ok ? undefined : `HTTP ${r.status}`) };
+  } catch (err: any) {
+    return { ok: false, data: null, error: err?.message || 'Bağlantı xətası' };
+  }
 }
 
-async function apiPatch(path: string, body: any): Promise<{ ok: boolean; data: any }> {
+async function apiPatch(path: string, body: any): Promise<{ ok: boolean; data: any; status?: number; error?: string }> {
   try {
+    const t = getToken();
     const r = await fetch(`${OCTO}${path}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${getToken()}`,
+        ...(t ? { 'Authorization': `Bearer ${t}` } : {}),
       },
       body: JSON.stringify(body),
     });
     const data = await r.json().catch(() => null);
-    return { ok: r.ok, data };
-  } catch { return { ok: false, data: null }; }
+    return { ok: r.ok, data, status: r.status, error: data?.error || (r.ok ? undefined : `HTTP ${r.status}`) };
+  } catch (err: any) {
+    return { ok: false, data: null, error: err?.message || 'Bağlantı xətası' };
+  }
 }
 
 async function apiDelete(path: string): Promise<boolean> {
   try {
+    const t = getToken();
     const r = await fetch(`${OCTO}${path}`, {
       method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${getToken()}` },
+      headers: {
+        ...(t ? { 'Authorization': `Bearer ${t}` } : {}),
+      },
     });
     return r.ok;
   } catch { return false; }
@@ -1641,6 +1653,69 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
   const fileRef = useRef<HTMLInputElement>(null);
   const [pendingKey, setPendingKey] = useState<string | null>(null);
 
+  // Quick SQLite Backup & Restore state
+  const [quickDownloading, setQuickDownloading] = useState(false);
+  const [quickRestoring, setQuickRestoring] = useState(false);
+  const backupInputRef = useRef<HTMLInputElement>(null);
+
+  const handleQuickBackup = async () => {
+    try {
+      setQuickDownloading(true);
+      const token = getToken();
+      const res = await fetch(`/api/backup/download?token=${encodeURIComponent(token)}`, {
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error('Backup faylı endirilə bilmədi (Status: ' + res.status + ')');
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const dateStr = new Date().toISOString().slice(0, 10);
+      a.download = `azexbuy_full_backup_${dateStr}.sqlite`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (e: any) {
+      alert('Yedəkləmə endirilərkən xəta: ' + e.message);
+    } finally {
+      setQuickDownloading(false);
+    }
+  };
+
+  const handleQuickRestore = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!confirm(`"${file.name}" SQLite backup faylından sistem tam bərpa edilsin?\n\n• Bütün AZEXBUY sayt məlumatları və məzmunu bu faylla yenilənəcək.\n• Əməliyyatdan əvvəl avtomatik təhlükəsizlik nüsxəsi saxlanılacaq.\n\nDavam etmək istəyirsiniz?`)) {
+      if (backupInputRef.current) backupInputRef.current.value = '';
+      return;
+    }
+    try {
+      setQuickRestoring(true);
+      const fd = new FormData();
+      fd.append('backupFile', file);
+      fd.append('backup', file);
+      const token = getToken();
+      const res = await fetch('/api/backup/restore', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: fd,
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert(`✓ Sistem SQLite backupdan uğurla bərpa edildi!\n(${data.data?.totalRestoredTables || 0} cədvəl, ${data.data?.totalRestoredRows || 0} sətir yeniləndi)`);
+        window.location.reload();
+      } else {
+        alert('Bərpa xətası: ' + (data.error || 'Naməlum xəta'));
+      }
+    } catch (e: any) {
+      alert('Bərpa xətası: ' + e.message);
+    } finally {
+      setQuickRestoring(false);
+      if (backupInputRef.current) backupInputRef.current.value = '';
+    }
+  };
+
   const loadTeam = useCallback(async () => {
     setTeamLoading(true);
     const tm = await apiGet('/api/azexbuy/team?fresh=1');
@@ -1674,15 +1749,32 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
   const saveStrings = useCallback(async (data: Record<string, Record<string, string>>) => {
     setSaving(true);
     const result = await apiPost('/api/azexbuy/localization', data);
-    if (result.ok) { flash(); } else { alert('Saxlama xətası. Zəhmət olmasa yenidən cəhd edin.'); }
+    if (result.ok) {
+      flash();
+    } else {
+      const msg = result.status === 401
+        ? 'Sessiyanın vaxtı bitmişdir. Zəhmət olmasa yenidən daxil olun.'
+        : (result.error ? `Saxlama xətası: ${result.error}` : 'Saxlama xətası. Zəhmət olmasa yenidən cəhd edin.');
+      alert(msg);
+    }
     setSaving(false);
   }, []);
 
   const saveContent = useCallback(async (data: any) => {
     setSaving(true);
     setContent(data);
-    const result = await apiPost('/api/azexbuy/content', data);
-    if (result.ok) { flash(); } else { alert('Saxlama xətası. Zəhmət olmasa yenidən cəhd edin.'); }
+    // Strip products array before sending: products live in azexbuy_products table
+    const payload = { ...data };
+    delete payload.products;
+    const result = await apiPost('/api/azexbuy/content', payload);
+    if (result.ok) {
+      flash();
+    } else {
+      const msg = result.status === 401
+        ? 'Sessiyanın vaxtı bitmişdir. Zəhmət olmasa yenidən daxil olun.'
+        : (result.error ? `Saxlama xətası: ${result.error}` : 'Saxlama xətası. Zəhmət olmasa yenidən cəhd edin.');
+      alert(msg);
+    }
     setSaving(false);
   }, []);
 
@@ -1715,7 +1807,10 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
       loadTeam();
       flash();
     } else {
-      alert('Saxlama xətası baş verdi.');
+      const msg = res.status === 401
+        ? 'Sessiyanın vaxtı bitmişdir. Zəhmət olmasa yenidən daxil olun.'
+        : (res.error ? `Saxlama xətası: ${res.error}` : 'Saxlama xətası baş verdi.');
+      alert(msg);
     }
   };
 
@@ -1727,7 +1822,10 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
       loadTeam();
       flash();
     } else {
-      alert('Yeniləmə xətası baş verdi.');
+      const msg = res.status === 401
+        ? 'Sessiyanın vaxtı bitmişdir. Zəhmət olmasa yenidən daxil olun.'
+        : (res.error ? `Yeniləmə xətası: ${res.error}` : 'Yeniləmə xətası baş verdi.');
+      alert(msg);
     }
   };
 
@@ -1837,9 +1935,46 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
           <h1 className="text-sm font-bold text-slate-900">AZEXBUY — Tam Məzmun İdarəetməsi</h1>
           <p className="text-[10px] text-slate-400 mt-0.5">Sitenin başdan sona bütün mətnləri, görsəlləri, məhsulları düzənleyin</p>
         </div>
-        <button onClick={load} className="h-7 px-3 flex items-center gap-1.5 text-xs border border-slate-200 hover:bg-slate-100 text-slate-600 rounded-sm cursor-pointer shrink-0">
-          <RefreshCw className="w-3 h-3" /> <span className="hidden sm:inline">Yenilə</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <input
+            ref={backupInputRef}
+            type="file"
+            accept=".sqlite,.db"
+            onChange={handleQuickRestore}
+            className="hidden"
+          />
+          <button
+            type="button"
+            onClick={handleQuickBackup}
+            disabled={quickDownloading}
+            className="h-7 px-2.5 flex items-center gap-1.5 text-xs bg-slate-900 hover:bg-slate-800 text-white rounded-sm cursor-pointer disabled:opacity-50 transition-colors"
+            title="Bütün saytın tam SQLite nüsxəsini (.sqlite) dərhal kompüterinizə endirin"
+          >
+            {quickDownloading ? (
+              <RefreshCw className="w-3 h-3 animate-spin" />
+            ) : (
+              <Download className="w-3 h-3" />
+            )}
+            <span className="hidden sm:inline">{quickDownloading ? 'Hazırlanır...' : 'SQLite Yedək'}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => backupInputRef.current?.click()}
+            disabled={quickRestoring}
+            className="h-7 px-2.5 flex items-center gap-1.5 text-xs border border-slate-300 hover:bg-slate-100 text-slate-700 rounded-sm cursor-pointer disabled:opacity-50 transition-colors"
+            title="Kompüterinizdən .sqlite backup faylı seçərək saytı bərpa edin"
+          >
+            {quickRestoring ? (
+              <RefreshCw className="w-3 h-3 animate-spin" />
+            ) : (
+              <UploadCloud className="w-3 h-3 text-slate-500" />
+            )}
+            <span className="hidden sm:inline">{quickRestoring ? 'Bərpa...' : 'Yedəyi Yüklə'}</span>
+          </button>
+          <button onClick={load} className="h-7 px-3 flex items-center gap-1.5 text-xs border border-slate-200 hover:bg-slate-100 text-slate-600 rounded-sm cursor-pointer shrink-0">
+            <RefreshCw className="w-3 h-3" /> <span className="hidden sm:inline">Yenilə</span>
+          </button>
+        </div>
       </div>
 
       <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
@@ -3292,10 +3427,7 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                 {/* Save Bar */}
                 <SaveBar
                   onSave={async () => {
-                    setSaving(true);
-                    await apiPost('/api/azexbuy/content', content);
-                    flash();
-                    setSaving(false);
+                    await saveContent(content);
                   }}
                   saving={saving}
                   saved={saved}
@@ -3418,13 +3550,8 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
 
               <SaveBar
                 onSave={async () => {
-                  setSaving(true);
-                  await Promise.all([
-                    apiPost('/api/azexbuy/localization', locData),
-                    apiPost('/api/azexbuy/content', content),
-                  ]);
-                  flash();
-                  setSaving(false);
+                  await saveStrings(locData);
+                  await saveContent(content);
                 }}
                 saving={saving}
                 saved={saved}

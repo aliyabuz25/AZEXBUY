@@ -85,6 +85,8 @@ const ALL_STATUS_OPTIONS = [
 ];
 const STATUS_OPTIONS_CONTACT = ['New', 'In Progress', 'Responded', 'Closed'];
 
+const getAzToken = () => localStorage.getItem('octotech_admin_jwt') || sessionStorage.getItem('octotech_admin_jwt') || '';
+
 export const AzexbuyView: React.FC<AzexbuyViewProps> = ({ uiLang }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'rfqs' | 'producers' | 'contacts'>('overview');
   const [rfqs, setRfqs] = useState<RFQ[]>([]);
@@ -99,7 +101,7 @@ export const AzexbuyView: React.FC<AzexbuyViewProps> = ({ uiLang }) => {
   const fetchAll = useCallback(async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('octotech_admin_jwt') || '';
+      const token = getAzToken();
       const headers: Record<string, string> = token ? { Authorization: `Bearer ${token}` } : {};
       const [rfqRes, prodRes, statsRes, cntRes] = await Promise.all([
         fetch('/api/azexbuy/rfqs', { headers }),
@@ -121,7 +123,7 @@ export const AzexbuyView: React.FC<AzexbuyViewProps> = ({ uiLang }) => {
   useEffect(() => { fetchAll(); }, [fetchAll]);
 
   const authHeaders = (): Record<string, string> => {
-    const token = localStorage.getItem('octotech_admin_jwt') || '';
+    const token = getAzToken();
     return token ? { Authorization: `Bearer ${token}` } : {};
   };
 
@@ -464,7 +466,7 @@ export const AzexbuyView: React.FC<AzexbuyViewProps> = ({ uiLang }) => {
                           onBlur={async e => {
                             const val = e.target.value;
                             if (val === (r.assignedTo || '')) return;
-                            const token = localStorage.getItem('octotech_admin_jwt') || '';
+                            const token = getAzToken();
                             await fetch(`/api/azexbuy/rfqs/${r.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) }, body: JSON.stringify({ assignedTo: val }) });
                             setRfqs(prev => prev.map(x => x.id === r.id ? { ...x, assignedTo: val } : x));
                           }}
@@ -480,7 +482,7 @@ export const AzexbuyView: React.FC<AzexbuyViewProps> = ({ uiLang }) => {
                           onBlur={async e => {
                             const val = e.target.value;
                             if (val === (r.internalNotes || '')) return;
-                            const token = localStorage.getItem('octotech_admin_jwt') || '';
+                            const token = getAzToken();
                             await fetch(`/api/azexbuy/rfqs/${r.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) }, body: JSON.stringify({ internalNotes: val }) });
                             setRfqs(prev => prev.map(x => x.id === r.id ? { ...x, internalNotes: val } : x));
                           }}
@@ -608,7 +610,7 @@ export const AzexbuyView: React.FC<AzexbuyViewProps> = ({ uiLang }) => {
                           onBlur={async e => {
                             const val = e.target.value;
                             if (val === (p.assignedTo || '')) return;
-                            const token = localStorage.getItem('octotech_admin_jwt') || '';
+                            const token = getAzToken();
                             await fetch(`/api/azexbuy/producers/${p.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) }, body: JSON.stringify({ assignedTo: val }) });
                             setProducers(prev => prev.map(x => x.id === p.id ? { ...x, assignedTo: val } : x));
                           }}
@@ -624,7 +626,7 @@ export const AzexbuyView: React.FC<AzexbuyViewProps> = ({ uiLang }) => {
                           onBlur={async e => {
                             const val = e.target.value;
                             if (val === (p.internalNotes || '')) return;
-                            const token = localStorage.getItem('octotech_admin_jwt') || '';
+                            const token = getAzToken();
                             await fetch(`/api/azexbuy/producers/${p.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) }, body: JSON.stringify({ internalNotes: val }) });
                             setProducers(prev => prev.map(x => x.id === p.id ? { ...x, internalNotes: val } : x));
                           }}

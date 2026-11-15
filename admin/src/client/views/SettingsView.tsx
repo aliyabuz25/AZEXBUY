@@ -41,6 +41,8 @@ interface SettingsViewProps {
   onSelectTheme: (themeId: string) => void;
 }
 
+const getAdminToken = () => localStorage.getItem('octotech_admin_jwt') || sessionStorage.getItem('octotech_admin_jwt') || '';
+
 export const SettingsView: React.FC<SettingsViewProps> = ({
   siteConfig,
   multerConfig,
@@ -73,8 +75,12 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     totalRecords: number;
     fileSizeBytes: number;
     lastGenerated: string | null;
+    tableBreakdown?: Array<{ name: string; rows: number; label?: string; db?: string }>;
+    safetyBackupsCount?: number;
   } | null>(null);
   const [restoring, setRestoring] = useState(false);
+  const [downloadingBackup, setDownloadingBackup] = useState(false);
+  const [showTableModal, setShowTableModal] = useState(false);
   const [restoreMsg, setRestoreMsg] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -143,7 +149,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('octotech_admin_jwt') || ''}`,
+          'Authorization': `Bearer ${getAdminToken()}`,
         },
         body: JSON.stringify(updated),
       });
@@ -233,7 +239,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     try {
       const res = await fetch('/api/system/update/apply', {
         method: 'POST',
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('octotech_admin_jwt') || ''}` },
+        headers: { 'Authorization': `Bearer ${getAdminToken()}` },
       });
       const data = await res.json();
       if (data.success) {
@@ -285,11 +291,40 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     setTimeout(() => setMulterSuccess(false), 2000);
   };
 
+  const handleDownloadBackup = async () => {
+    try {
+      setDownloadingBackup(true);
+      const token = getAdminToken();
+      const res = await fetch(`/api/backup/download?token=${encodeURIComponent(token)}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => null);
+        throw new Error(errJson?.error || `Backup endirilə bilmədi (Status: ${res.status})`);
+      }
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const dateStr = new Date().toISOString().slice(0, 10);
+      a.download = `azexbuy_full_backup_${dateStr}.sqlite`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+      fetchBackupInfo();
+    } catch (err: any) {
+      alert('Yedəkləmə endirilərkən xəta: ' + err.message);
+    } finally {
+      setDownloadingBackup(false);
+    }
+  };
+
   const handleRestoreFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!confirm(`"${file.name}" faylından məlumat bazası tam bərpa edilsin? Mövcud məlumatlar əvəzlənəcək.`)) {
+    if (!confirm(`"${file.name}" SQLite backup faylından sistem tam bərpa edilsin?\n\n• Bütün AZEXBUY cədvəlləri və məzmunu bu faylla yenilənəcək.\n• Əməliyyatdan əvvəl avtomatik təhlükəsizlik nüsxəsi saxlanılacaq.\n\nDavam etmək istəyirsiniz?`)) {
       if (fileInputRef.current) fileInputRef.current.value = '';
       return;
     }
@@ -298,16 +333,23 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     setRestoreMsg(null);
 
     const formData = new FormData();
+    formData.append('backupFile', file);
     formData.append('backup', file);
 
     try {
+      const token = getAdminToken();
       const res = await fetch('/api/backup/restore', {
         method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
         body: formData
       });
       const data = await res.json();
       if (data.success) {
-        setRestoreMsg(`Bərpa edildi: ${data.data.restoredTables?.length || 9} cədvəl yeniləndi.`);
+        const count = data.data?.totalRestoredTables || data.data?.restoredTables?.length || 0;
+        const rows = data.data?.totalRestoredRows || 0;
+        setRestoreMsg(`✓ Sistem uğurla bərpa edildi: ${count} cədvəl, ${rows} sətir yeniləndi.`);
         fetchBackupInfo();
       } else {
         setRestoreMsg('Bərpa xətası: ' + (data.error || 'Naməlum xəta'));
@@ -833,14 +875,20 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               <span>{restoring ? 'Bərpa olunur...' : 'Bərpa Et'}</span>
             </button>
 
-            <a
-              href="/api/backup/download"
-              download
-              className="h-8 px-3 rounded-none bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-slate-900 text-white text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 transition-colors"
+            <button
+              type="button"
+              onClick={handleDownloadBackup}
+              disabled={downloadingBackup}
+              className="h-8 px-3 rounded-none bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-slate-900 text-white text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+              title="Bütün AZEXBUY və admin bazasını tam .sqlite formatında endir"
             >
-              <Download className="w-3.5 h-3.5" />
-              <span>Backup Endir (.sqlite)</span>
-            </a>
+              {downloadingBackup ? (
+                <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                <Download className="w-3.5 h-3.5" />
+              )}
+              <span>{downloadingBackup ? 'Hazırlanır...' : 'Backup Endir (.sqlite)'}</span>
+            </button>
           </div>
         </div>
 
@@ -848,35 +896,103 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 font-mono">
           <div className="p-2.5 rounded-none bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
             <span className="block text-[9.5px] uppercase text-slate-400">Format</span>
-            <span className="text-xs font-bold text-slate-800 dark:text-slate-200">.sqlite</span>
+            <span className="text-xs font-bold text-slate-800 dark:text-slate-200">SQLite 3 Full</span>
           </div>
 
-          <div className="p-2.5 rounded-none bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-            <span className="block text-[9.5px] uppercase text-slate-400">Cədvəllər</span>
+          <button
+            type="button"
+            onClick={() => setShowTableModal(true)}
+            className="p-2.5 text-left rounded-none bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-750 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer group"
+            title="Cədvəllərin siyahısını və sətir saylarını gör"
+          >
+            <div className="flex items-center justify-between">
+              <span className="block text-[9.5px] uppercase text-slate-400">Cədvəllər</span>
+              <span className="text-[9px] text-blue-500 font-sans group-hover:underline">Bax</span>
+            </div>
             <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
               {backupInfo?.tablesCount ? `${backupInfo.tablesCount} Cədvəl` : '— Cədvəl'}
             </span>
-          </div>
+          </button>
 
           <div className="p-2.5 rounded-none bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-            <span className="block text-[9.5px] uppercase text-slate-400">Sətirlər</span>
+            <span className="block text-[9.5px] uppercase text-slate-400">Ümumi Sətirlər</span>
             <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
               {backupInfo?.totalRecords ? `${backupInfo.totalRecords} sətir` : 'Aktiv'}
             </span>
           </div>
 
           <div className="p-2.5 rounded-none bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-            <span className="block text-[9.5px] uppercase text-slate-400">Həcm</span>
+            <span className="block text-[9.5px] uppercase text-slate-400">Baza Həcmi</span>
             <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
-              {backupInfo?.fileSizeBytes ? `${(backupInfo.fileSizeBytes / 1024).toFixed(1)} KB` : '57.3 KB'}
+              {backupInfo?.fileSizeBytes ? `${(backupInfo.fileSizeBytes / 1024).toFixed(1)} KB` : '420 KB'}
             </span>
           </div>
         </div>
 
         {restoreMsg && (
-          <div className="p-2.5 rounded-none bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-200 flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 shrink-0 text-slate-600 dark:text-slate-400" />
-            <span>{restoreMsg}</span>
+          <div className="p-3 rounded-none bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-800 text-xs text-emerald-800 dark:text-emerald-200 flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+              <span>{restoreMsg}</span>
+            </div>
+            <button
+              onClick={() => window.location.reload()}
+              className="text-[11px] underline font-semibold text-emerald-700 dark:text-emerald-300 hover:text-emerald-900 cursor-pointer"
+            >
+              Səhifəni Yenilə
+            </button>
+          </div>
+        )}
+
+        {/* Modal: Table Breakdown */}
+        {showTableModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+            <div className="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 max-w-lg w-full max-h-[80vh] flex flex-col shadow-2xl">
+              <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800">
+                <div className="flex items-center gap-2">
+                  <Database className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                  <h4 className="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">
+                    SQLite Bazası: Cədvəllər və Sətirlər
+                  </h4>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowTableModal(false)}
+                  className="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-white text-sm font-bold"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="p-4 overflow-y-auto space-y-2 flex-1">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
+                  Backup faylına daxil edilən və bərpa edilən bütün SQLite cədvəlləri və cari qeydlər:
+                </p>
+                <div className="divide-y divide-slate-100 dark:divide-slate-800 border border-slate-200 dark:border-slate-800">
+                  {(backupInfo?.tableBreakdown || []).map((t, i) => (
+                    <div key={i} className="flex items-center justify-between p-2.5 text-xs hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                      <div>
+                        <span className="font-mono font-bold text-slate-800 dark:text-slate-200">{t.name}</span>
+                        {t.label && <span className="text-[11px] text-slate-400 ml-2">({t.label})</span>}
+                      </div>
+                      <span className="font-mono bg-slate-100 dark:bg-slate-800 px-2 py-0.5 font-bold text-slate-700 dark:text-slate-300">
+                        {t.rows} sətir
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="p-3 bg-slate-50 dark:bg-slate-800/60 border-t border-slate-200 dark:border-slate-800 flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => setShowTableModal(false)}
+                  className="px-4 py-1.5 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-slate-900 text-white text-xs font-semibold"
+                >
+                  Bağla
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>

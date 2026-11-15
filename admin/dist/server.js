@@ -263,392 +263,780 @@ var Database = class {
 import fs2 from "node:fs";
 import path2 from "node:path";
 import { fileURLToPath as fileURLToPath2 } from "node:url";
-import { DatabaseSync } from "node:sqlite";
 import BetterSqlite3 from "better-sqlite3";
 var __filename2 = fileURLToPath2(import.meta.url);
 var __dirname2 = path2.dirname(__filename2);
-var BACKUP_DIR = path2.join(__dirname2, "..", "data");
-var BACKUP_SQLITE_PATH = path2.join(BACKUP_DIR, "octotech_full_backup.sqlite");
+var ROOT_DIR = path2.resolve(__dirname2, "..");
+var DATA_DIR = path2.join(ROOT_DIR, "data");
+var BACKUPS_DIR = path2.join(DATA_DIR, "backups");
+var BACKUP_SQLITE_PATH = path2.join(DATA_DIR, "azexbuy_full_backup.sqlite");
 var SqliteBackupManager = class {
   /**
+   * Helper to ensure directories exist
+   */
+  static ensureDirs() {
+    if (!fs2.existsSync(DATA_DIR)) fs2.mkdirSync(DATA_DIR, { recursive: true });
+    if (!fs2.existsSync(BACKUPS_DIR)) fs2.mkdirSync(BACKUPS_DIR, { recursive: true });
+  }
+  /**
    * Exports full application state into a real SQLite binary database file (.sqlite)
+   * Includes 100% of data: azexbuy.db (CMS, catalog, blog, services, team, contacts, rfqs),
+   * octo.db (admin users, settings, logs), and store.json (site/seo/translations/media).
    */
   static exportToSqlite(targetPath) {
+    this.ensureDirs();
     const filePath = targetPath || BACKUP_SQLITE_PATH;
-    if (!fs2.existsSync(path2.dirname(filePath))) {
-      fs2.mkdirSync(path2.dirname(filePath), { recursive: true });
-    }
     if (fs2.existsSync(filePath)) {
       try {
         fs2.unlinkSync(filePath);
-      } catch {
+      } catch (e) {
+        console.warn("[SqliteBackup] Could not unlink existing backup file:", e);
       }
     }
-    const state = Database.getFullState();
-    const db = new DatabaseSync(filePath);
-    db.exec(`
+    const outDb = new BetterSqlite3(filePath);
+    outDb.pragma("journal_mode = OFF");
+    outDb.pragma("synchronous = OFF");
+    let totalTablesCount = 0;
+    let totalRowsCount = 0;
+    outDb.exec(`
       CREATE TABLE IF NOT EXISTS system_metadata (
         key TEXT PRIMARY KEY,
         value TEXT
       );
-
-      CREATE TABLE IF NOT EXISTS site_config (
-        id INTEGER PRIMARY KEY CHECK (id = 1),
-        name TEXT,
-        domain TEXT,
-        type TEXT,
-        endpoint TEXT
-      );
-
-      CREATE TABLE IF NOT EXISTS seo_config (
-        id INTEGER PRIMARY KEY CHECK (id = 1),
-        title TEXT,
-        description TEXT,
-        canonical TEXT,
-        keywords TEXT,
-        robots_index INTEGER,
-        robots_follow INTEGER,
-        og_title TEXT,
-        og_description TEXT,
-        og_image TEXT,
-        sitemap_url TEXT,
-        last_updated TEXT
-      );
-
-      CREATE TABLE IF NOT EXISTS translations (
-        key TEXT PRIMARY KEY,
-        module TEXT,
-        type TEXT,
-        az TEXT,
-        tr TEXT,
-        ru TEXT,
-        en TEXT
-      );
-
-      CREATE TABLE IF NOT EXISTS content_records (
-        id TEXT PRIMARY KEY,
-        title TEXT,
-        source TEXT,
-        author TEXT,
-        date TEXT,
-        status TEXT
-      );
-
-      CREATE TABLE IF NOT EXISTS media_items (
-        id TEXT PRIMARY KEY,
-        filename TEXT,
-        original_name TEXT,
-        mime_type TEXT,
-        size INTEGER,
-        url TEXT,
-        created_at TEXT
-      );
-
-      CREATE TABLE IF NOT EXISTS upload_config (
-        id INTEGER PRIMARY KEY CHECK (id = 1),
-        max_file_size_mb INTEGER,
-        allowed_mime_types TEXT,
-        upload_dir TEXT
-      );
-
-      CREATE TABLE IF NOT EXISTS admin_user (
-        id INTEGER PRIMARY KEY CHECK (id = 1),
-        full_name TEXT,
-        email TEXT,
-        role TEXT,
-        password TEXT
-      );
-
-      CREATE TABLE IF NOT EXISTS system_setup (
-        id INTEGER PRIMARY KEY CHECK (id = 1),
-        completed INTEGER,
-        industry TEXT,
-        setup_date TEXT
-      );
     `);
-    const insertMeta = db.prepare("INSERT INTO system_metadata (key, value) VALUES (?, ?)");
-    insertMeta.run("engine", "Octotech LL. Admin Core");
-    insertMeta.run("version", "2.4.0");
+    const insertMeta = outDb.prepare("INSERT OR REPLACE INTO system_metadata (key, value) VALUES (?, ?)");
+    insertMeta.run("app", "AZEXBUY Enterprise Platform");
+    insertMeta.run("engine", "AZEXBUY Universal SQLite 3 Core");
+    insertMeta.run("version", "2.4.3");
     insertMeta.run("exported_at", (/* @__PURE__ */ new Date()).toISOString());
-    insertMeta.run("format", "SQLite 3 Standalone Full Backup");
-    if (state.site) {
-      const stmt = db.prepare(`
-        INSERT INTO site_config (id, name, domain, type, endpoint) 
-        VALUES (1, ?, ?, ?, ?)
-      `);
-      stmt.run(state.site.name || "", state.site.domain || "", state.site.type || "", state.site.endpoint || "");
+    insertMeta.run("format", "SQLite 3 Standalone Full System Backup");
+    totalTablesCount++;
+    const azDbPath = path2.join(DATA_DIR, "azexbuy.db");
+    if (fs2.existsSync(azDbPath)) {
+      let azDb = null;
+      try {
+        azDb = new BetterSqlite3(azDbPath, { readonly: true });
+        try {
+          azDb.pragma("wal_checkpoint(PASSIVE)");
+        } catch {
+        }
+        const azTables = azDb.prepare(
+          "SELECT name, sql FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
+        ).all();
+        for (const tbl of azTables) {
+          if (!tbl.sql) continue;
+          outDb.exec(tbl.sql);
+          totalTablesCount++;
+          const rows = azDb.prepare(`SELECT * FROM "${tbl.name}"`).all();
+          if (rows.length > 0) {
+            const cols = Object.keys(rows[0]);
+            const colList = cols.map((c) => `"${c}"`).join(", ");
+            const placeholders = cols.map(() => "?").join(", ");
+            const insertStmt = outDb.prepare(`INSERT INTO "${tbl.name}" (${colList}) VALUES (${placeholders})`);
+            const insertMany = outDb.transaction((records) => {
+              for (const r of records) {
+                insertStmt.run(cols.map((c) => r[c]));
+              }
+            });
+            insertMany(rows);
+            totalRowsCount += rows.length;
+          }
+        }
+        const azIndexes = azDb.prepare(
+          "SELECT sql FROM sqlite_master WHERE type='index' AND name NOT LIKE 'sqlite_%' AND sql IS NOT NULL"
+        ).all();
+        for (const idx of azIndexes) {
+          try {
+            outDb.exec(idx.sql);
+          } catch {
+          }
+        }
+      } catch (err) {
+        console.error("[SqliteBackup] Error copying azexbuy.db tables:", err);
+      } finally {
+        if (azDb) azDb.close();
+      }
     }
-    if (state.seo) {
-      const stmt = db.prepare(`
-        INSERT INTO seo_config (
-          id, title, description, canonical, keywords,
-          robots_index, robots_follow, og_title, og_description, og_image,
-          sitemap_url, last_updated
-        ) VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `);
-      stmt.run(
-        state.seo.title || "",
-        state.seo.description || "",
-        state.seo.canonical || "",
-        state.seo.keywords || "",
-        state.seo.robotsIndex ? 1 : 0,
-        state.seo.robotsFollow ? 1 : 0,
-        state.seo.ogTitle || "",
-        state.seo.ogDescription || "",
-        state.seo.ogImage || "",
-        state.seo.sitemapUrl || "",
-        state.seo.lastUpdated || (/* @__PURE__ */ new Date()).toISOString()
-      );
+    const octoDbPath = path2.join(DATA_DIR, "octo.db");
+    if (fs2.existsSync(octoDbPath)) {
+      let octoDb = null;
+      try {
+        octoDb = new BetterSqlite3(octoDbPath, { readonly: true });
+        try {
+          octoDb.pragma("wal_checkpoint(PASSIVE)");
+        } catch {
+        }
+        const octoTables = octoDb.prepare(
+          "SELECT name, sql FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
+        ).all();
+        for (const tbl of octoTables) {
+          if (!tbl.sql) continue;
+          const existing = outDb.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name=?").get(tbl.name);
+          if (existing) continue;
+          outDb.exec(tbl.sql);
+          totalTablesCount++;
+          const rows = octoDb.prepare(`SELECT * FROM "${tbl.name}"`).all();
+          if (rows.length > 0) {
+            const cols = Object.keys(rows[0]);
+            const colList = cols.map((c) => `"${c}"`).join(", ");
+            const placeholders = cols.map(() => "?").join(", ");
+            const insertStmt = outDb.prepare(`INSERT INTO "${tbl.name}" (${colList}) VALUES (${placeholders})`);
+            const insertMany = outDb.transaction((records) => {
+              for (const r of records) {
+                insertStmt.run(cols.map((c) => r[c]));
+              }
+            });
+            insertMany(rows);
+            totalRowsCount += rows.length;
+          }
+        }
+      } catch (err) {
+        console.error("[SqliteBackup] Error copying octo.db tables:", err);
+      } finally {
+        if (octoDb) octoDb.close();
+      }
     }
-    if (Array.isArray(state.translations)) {
-      const stmt = db.prepare(`
-        INSERT INTO translations (key, module, type, az, tr, ru, en)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-      `);
-      for (const item of state.translations) {
-        stmt.run(
-          item.key,
-          item.module || "common",
-          item.type || "text",
-          item.az || "",
-          item.tr || "",
-          item.ru || "",
-          item.en || ""
+    try {
+      const state = Database.getFullState();
+      outDb.exec(`
+        CREATE TABLE IF NOT EXISTS site_config (
+          id INTEGER PRIMARY KEY CHECK (id = 1),
+          name TEXT,
+          domain TEXT,
+          type TEXT,
+          endpoint TEXT
         );
+
+        CREATE TABLE IF NOT EXISTS seo_config (
+          id INTEGER PRIMARY KEY CHECK (id = 1),
+          title TEXT,
+          description TEXT,
+          canonical TEXT,
+          keywords TEXT,
+          robots_index INTEGER,
+          robots_follow INTEGER,
+          og_title TEXT,
+          og_description TEXT,
+          og_image TEXT,
+          sitemap_url TEXT,
+          last_updated TEXT
+        );
+
+        CREATE TABLE IF NOT EXISTS translations (
+          key TEXT PRIMARY KEY,
+          module TEXT,
+          type TEXT,
+          az TEXT,
+          tr TEXT,
+          ru TEXT,
+          en TEXT
+        );
+
+        CREATE TABLE IF NOT EXISTS content_records (
+          id TEXT PRIMARY KEY,
+          title TEXT,
+          source TEXT,
+          author TEXT,
+          date TEXT,
+          status TEXT
+        );
+
+        CREATE TABLE IF NOT EXISTS media_items (
+          id TEXT PRIMARY KEY,
+          filename TEXT,
+          original_name TEXT,
+          mime_type TEXT,
+          size INTEGER,
+          url TEXT,
+          created_at TEXT
+        );
+
+        CREATE TABLE IF NOT EXISTS upload_config (
+          id INTEGER PRIMARY KEY CHECK (id = 1),
+          max_file_size_mb INTEGER,
+          allowed_mime_types TEXT,
+          upload_dir TEXT
+        );
+
+        CREATE TABLE IF NOT EXISTS system_setup (
+          id INTEGER PRIMARY KEY CHECK (id = 1),
+          completed INTEGER,
+          industry TEXT,
+          setup_date TEXT
+        );
+      `);
+      totalTablesCount += 7;
+      if (state.site) {
+        outDb.prepare("INSERT OR REPLACE INTO site_config (id, name, domain, type, endpoint) VALUES (1, ?, ?, ?, ?)").run(state.site.name || "", state.site.domain || "", state.site.type || "", state.site.endpoint || "");
+        totalRowsCount++;
       }
-    }
-    if (Array.isArray(state.records)) {
-      const stmt = db.prepare(`
-        INSERT INTO content_records (id, title, source, author, date, status)
-        VALUES (?, ?, ?, ?, ?, ?)
-      `);
-      for (const rec of state.records) {
-        stmt.run(rec.id, rec.title, rec.source || "", rec.author || "", rec.date || "", rec.status || "published");
+      if (state.seo) {
+        outDb.prepare(`
+          INSERT OR REPLACE INTO seo_config (
+            id, title, description, canonical, keywords,
+            robots_index, robots_follow, og_title, og_description, og_image,
+            sitemap_url, last_updated
+          ) VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `).run(
+          state.seo.title || "",
+          state.seo.description || "",
+          state.seo.canonical || "",
+          state.seo.keywords || "",
+          state.seo.robotsIndex ? 1 : 0,
+          state.seo.robotsFollow ? 1 : 0,
+          state.seo.ogTitle || "",
+          state.seo.ogDescription || "",
+          state.seo.ogImage || "",
+          state.seo.sitemapUrl || "",
+          state.seo.lastUpdated || (/* @__PURE__ */ new Date()).toISOString()
+        );
+        totalRowsCount++;
       }
-    }
-    if (Array.isArray(state.media)) {
-      const stmt = db.prepare(`
-        INSERT INTO media_items (id, filename, original_name, mime_type, size, url, created_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-      `);
-      for (const m of state.media) {
-        stmt.run(m.id, m.filename, m.originalName || m.filename, m.mimeType || "", m.size || 0, m.url || "", m.createdAt || "");
+      if (Array.isArray(state.translations) && state.translations.length > 0) {
+        const trIns = outDb.prepare("INSERT OR REPLACE INTO translations (key, module, type, az, tr, ru, en) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        const trBatch = outDb.transaction((items) => {
+          for (const item of items) {
+            trIns.run(item.key, item.module || "common", item.type || "text", item.az || "", item.tr || "", item.ru || "", item.en || "");
+          }
+        });
+        trBatch(state.translations);
+        totalRowsCount += state.translations.length;
       }
+      if (Array.isArray(state.records) && state.records.length > 0) {
+        const recIns = outDb.prepare("INSERT OR REPLACE INTO content_records (id, title, source, author, date, status) VALUES (?, ?, ?, ?, ?, ?)");
+        const recBatch = outDb.transaction((items) => {
+          for (const r of items) recIns.run(r.id, r.title, r.source || "", r.author || "", r.date || "", r.status || "published");
+        });
+        recBatch(state.records);
+        totalRowsCount += state.records.length;
+      }
+      if (Array.isArray(state.media) && state.media.length > 0) {
+        const mIns = outDb.prepare("INSERT OR REPLACE INTO media_items (id, filename, original_name, mime_type, size, url, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        const mBatch = outDb.transaction((items) => {
+          for (const m of items) mIns.run(m.id, m.filename, m.originalName || m.filename, m.mimeType || "", m.size || 0, m.url || "", m.createdAt || "");
+        });
+        mBatch(state.media);
+        totalRowsCount += state.media.length;
+      }
+      if (state.uploadConfig) {
+        outDb.prepare("INSERT OR REPLACE INTO upload_config (id, max_file_size_mb, allowed_mime_types, upload_dir) VALUES (1, ?, ?, ?)").run(state.uploadConfig.maxFileSizeMB || 15, state.uploadConfig.allowedMimeTypes || "", state.uploadConfig.uploadDir || "uploads");
+        totalRowsCount++;
+      }
+      if (state.setup) {
+        outDb.prepare("INSERT OR REPLACE INTO system_setup (id, completed, industry, setup_date) VALUES (1, ?, ?, ?)").run(state.setup.completed ? 1 : 0, state.setup.industry || "", state.setup.setupDate || "");
+        totalRowsCount++;
+      }
+    } catch (err) {
+      console.error("[SqliteBackup] Error writing store.json state to backup:", err);
     }
-    if (state.uploadConfig) {
-      const stmt = db.prepare(`
-        INSERT INTO upload_config (id, max_file_size_mb, allowed_mime_types, upload_dir)
-        VALUES (1, ?, ?, ?)
-      `);
-      stmt.run(
-        state.uploadConfig.maxFileSizeMB || 15,
-        state.uploadConfig.allowedMimeTypes || "",
-        state.uploadConfig.uploadDir || "uploads"
-      );
-    }
-    if (state.admin) {
-      const stmt = db.prepare(`
-        INSERT INTO admin_user (id, full_name, email, role, password)
-        VALUES (1, ?, ?, ?, ?)
-      `);
-      stmt.run(state.admin.fullName || "", state.admin.email || "", state.admin.role || "", state.admin.password || "");
-    }
-    if (state.setup) {
-      const stmt = db.prepare(`
-        INSERT INTO system_setup (id, completed, industry, setup_date)
-        VALUES (1, ?, ?, ?)
-      `);
-      stmt.run(state.setup.completed ? 1 : 0, state.setup.industry || "", state.setup.setupDate || "");
-    }
-    db.close();
+    insertMeta.run("tables_count", String(totalTablesCount));
+    insertMeta.run("total_records", String(totalRowsCount));
+    outDb.close();
     return filePath;
   }
   /**
-   * Restores state from an uploaded or existing SQLite database file (.sqlite)
+   * Creates automated pre-restore safety backups of current databases
    */
-  static restoreFromSqlite(sqliteFilePath) {
+  static createSafetyBackup() {
+    this.ensureDirs();
+    const ts = (/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-");
+    const safetyAzPath = path2.join(BACKUPS_DIR, `safety_azexbuy_${ts}.db`);
+    const safetyOctoPath = path2.join(BACKUPS_DIR, `safety_octo_${ts}.db`);
+    const safetyStorePath = path2.join(BACKUPS_DIR, `safety_store_${ts}.json`);
+    try {
+      const azDbPath = path2.join(DATA_DIR, "azexbuy.db");
+      if (fs2.existsSync(azDbPath)) fs2.copyFileSync(azDbPath, safetyAzPath);
+      const octoDbPath = path2.join(DATA_DIR, "octo.db");
+      if (fs2.existsSync(octoDbPath)) fs2.copyFileSync(octoDbPath, safetyOctoPath);
+      const storePath = path2.join(DATA_DIR, "store.json");
+      if (fs2.existsSync(storePath)) fs2.copyFileSync(storePath, safetyStorePath);
+      const allFiles = fs2.readdirSync(BACKUPS_DIR).filter((f) => f.startsWith("safety_")).map((f) => ({ name: f, path: path2.join(BACKUPS_DIR, f), time: fs2.statSync(path2.join(BACKUPS_DIR, f)).mtimeMs })).sort((a, b) => b.time - a.time);
+      if (allFiles.length > 30) {
+        for (const old of allFiles.slice(30)) {
+          try {
+            fs2.unlinkSync(old.path);
+          } catch {
+          }
+        }
+      }
+    } catch (e) {
+      console.warn("[SqliteBackup] Safety backup warning:", e);
+    }
+    return `safety_azexbuy_${ts}.db`;
+  }
+  /**
+   * Restores state from an uploaded or existing SQLite database file (.sqlite / .db)
+   * Safely restores azexbuy.db, octo.db, and store.json with transactional integrity
+   */
+  static restoreFromSqlite(sqliteFilePath, activeDbs) {
     if (!fs2.existsSync(sqliteFilePath)) {
       throw new Error("SQLite backup fayl\u0131 tap\u0131lmad\u0131");
     }
-    const db = new DatabaseSync(sqliteFilePath);
-    let site = Database.getSiteConfig();
+    let backupDb;
     try {
-      const siteRow = db.prepare("SELECT * FROM site_config WHERE id = 1").get();
-      if (siteRow) {
-        site = {
-          name: siteRow.name,
-          domain: siteRow.domain,
-          type: siteRow.type,
-          endpoint: siteRow.endpoint
-        };
+      backupDb = new BetterSqlite3(sqliteFilePath, { readonly: true });
+    } catch (e) {
+      throw new Error("Se\xE7ilmi\u015F fayl etibarl\u0131 SQLite bazas\u0131 deyil: " + e.message);
+    }
+    let backupTables = [];
+    try {
+      backupTables = backupDb.prepare(
+        "SELECT name, sql FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
+      ).all();
+    } catch (e) {
+      backupDb.close();
+      throw new Error("SQLite c\u0259dv\u0259ll\u0259ri oxunark\u0259n x\u0259ta: " + e.message);
+    }
+    if (backupTables.length === 0) {
+      backupDb.close();
+      throw new Error("Etibars\u0131z SQLite backup fayl\u0131: Faylda he\xE7 bir c\u0259dv\u0259l tap\u0131lmad\u0131.");
+    }
+    const safetyFile = this.createSafetyBackup();
+    const restoredTables = [];
+    let totalRestoredRows = 0;
+    let backupTimestamp = (/* @__PURE__ */ new Date()).toISOString();
+    try {
+      const metaRow = backupDb.prepare("SELECT value FROM system_metadata WHERE key='exported_at'").get();
+      if (metaRow?.value) backupTimestamp = metaRow.value;
+    } catch {
+    }
+    let azDb = activeDbs?.azexbuyDb;
+    let localAzDb = false;
+    if (!azDb) {
+      azDb = new BetterSqlite3(path2.join(DATA_DIR, "azexbuy.db"));
+      localAzDb = true;
+    }
+    let mainDb2 = activeDbs?.mainDb;
+    let localMainDb = false;
+    if (!mainDb2) {
+      mainDb2 = new BetterSqlite3(path2.join(DATA_DIR, "octo.db"));
+      localMainDb = true;
+    }
+    const azexbuyTableNames = [
+      "azexbuy_kv",
+      "azexbuy_categories",
+      "azexbuy_products",
+      "azexbuy_articles",
+      "azexbuy_services",
+      "azexbuy_service_applications",
+      "azexbuy_team_members",
+      "azexbuy_contacts",
+      "azexbuy_rfqs",
+      "azexbuy_producers",
+      // legacy aliases if backup came from earlier schema
+      "products",
+      "categories",
+      "articles",
+      "services",
+      "service_applications",
+      "rfqs",
+      "producers"
+    ];
+    const octoTableNames = [
+      "admin_users",
+      "smtp_settings",
+      "ai_settings",
+      "email_logs"
+    ];
+    const storeJsonTableNames = [
+      "site_config",
+      "seo_config",
+      "translations",
+      "content_records",
+      "media_items",
+      "upload_config",
+      "admin_user",
+      "system_setup"
+    ];
+    try {
+      azDb.pragma("foreign_keys = OFF");
+      mainDb2.pragma("foreign_keys = OFF");
+      const tableOrder = [
+        "azexbuy_kv",
+        "azexbuy_categories",
+        "azexbuy_products",
+        "azexbuy_services",
+        "azexbuy_articles",
+        "azexbuy_team_members",
+        "azexbuy_contacts",
+        "azexbuy_rfqs",
+        "azexbuy_producers",
+        "azexbuy_service_applications"
+      ];
+      const sortedBackupTables = [...backupTables].sort((a, b) => {
+        const idxA = tableOrder.indexOf(a.name);
+        const idxB = tableOrder.indexOf(b.name);
+        if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+        if (idxA !== -1) return -1;
+        if (idxB !== -1) return 1;
+        return a.name.localeCompare(b.name);
+      });
+      for (const t of sortedBackupTables) {
+        const tName = t.name;
+        const isAzexbuy = tName.startsWith("azexbuy_") || azexbuyTableNames.includes(tName);
+        if (!isAzexbuy) continue;
+        let targetName = tName;
+        if (tName === "products") targetName = "azexbuy_products";
+        else if (tName === "categories") targetName = "azexbuy_categories";
+        else if (tName === "articles") targetName = "azexbuy_articles";
+        else if (tName === "services") targetName = "azexbuy_services";
+        else if (tName === "service_applications") targetName = "azexbuy_service_applications";
+        else if (tName === "rfqs") targetName = "azexbuy_rfqs";
+        else if (tName === "producers") targetName = "azexbuy_producers";
+        const exists = azDb.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name=?").get(targetName);
+        if (!exists && t.sql) {
+          const createSql = tName === targetName ? t.sql : t.sql.replace(new RegExp(`\\b${tName}\\b`, "g"), targetName);
+          azDb.exec(createSql);
+        }
+        const rows = backupDb.prepare(`SELECT * FROM "${tName}"`).all();
+        const targetCols = azDb.prepare(`PRAGMA table_info("${targetName}")`).all().map((c) => c.name);
+        const restoreAzBatch = azDb.transaction(() => {
+          azDb.prepare(`DELETE FROM "${targetName}"`).run();
+          if (rows.length > 0) {
+            const rowCols = Object.keys(rows[0]);
+            const commonCols = rowCols.filter((c) => targetCols.includes(c));
+            if (commonCols.length > 0) {
+              const colList = commonCols.map((c) => `"${c}"`).join(", ");
+              const qList = commonCols.map(() => "?").join(", ");
+              const ins = azDb.prepare(`INSERT INTO "${targetName}" (${colList}) VALUES (${qList})`);
+              for (const r of rows) {
+                ins.run(commonCols.map((c) => r[c]));
+              }
+            }
+          }
+        });
+        restoreAzBatch();
+        restoredTables.push({ name: targetName, rows: rows.length, label: "AZEXBUY Baza", db: "azexbuy.db" });
+        totalRestoredRows += rows.length;
       }
-    } catch (e) {
-      console.warn("site_config table read error:", e);
-    }
-    let seo = Database.getSeo();
-    try {
-      const seoRow = db.prepare("SELECT * FROM seo_config WHERE id = 1").get();
-      if (seoRow) {
-        seo = {
-          title: seoRow.title,
-          description: seoRow.description,
-          canonical: seoRow.canonical,
-          keywords: seoRow.keywords,
-          robotsIndex: Boolean(seoRow.robots_index),
-          robotsFollow: Boolean(seoRow.robots_follow),
-          ogTitle: seoRow.og_title,
-          ogDescription: seoRow.og_description,
-          ogImage: seoRow.og_image,
-          sitemapUrl: seoRow.sitemap_url,
-          lastUpdated: seoRow.last_updated || (/* @__PURE__ */ new Date()).toISOString()
-        };
+      for (const t of backupTables) {
+        const tName = t.name;
+        if (!octoTableNames.includes(tName)) continue;
+        const exists = mainDb2.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name=?").get(tName);
+        if (!exists && t.sql) mainDb2.exec(t.sql);
+        const rows = backupDb.prepare(`SELECT * FROM "${tName}"`).all();
+        const targetCols = mainDb2.prepare(`PRAGMA table_info("${tName}")`).all().map((c) => c.name);
+        const restoreOctoBatch = mainDb2.transaction(() => {
+          if (tName === "admin_users") {
+            if (rows.length > 0) {
+              mainDb2.prepare("DELETE FROM admin_users").run();
+            }
+          } else {
+            mainDb2.prepare(`DELETE FROM "${tName}"`).run();
+          }
+          if (rows.length > 0) {
+            const rowCols = Object.keys(rows[0]);
+            const commonCols = rowCols.filter((c) => targetCols.includes(c));
+            if (commonCols.length > 0) {
+              const colList = commonCols.map((c) => `"${c}"`).join(", ");
+              const qList = commonCols.map(() => "?").join(", ");
+              const ins = mainDb2.prepare(`INSERT INTO "${tName}" (${colList}) VALUES (${qList})`);
+              for (const r of rows) {
+                ins.run(commonCols.map((c) => r[c]));
+              }
+            }
+          }
+        });
+        restoreOctoBatch();
+        restoredTables.push({ name: tName, rows: rows.length, label: "\u0130nzibat\xE7\u0131 & Sistem", db: "octo.db" });
+        totalRestoredRows += rows.length;
       }
-    } catch (e) {
-      console.warn("seo_config table read error:", e);
-    }
-    let translations = [];
-    try {
-      const rows = db.prepare("SELECT * FROM translations").all();
-      translations = rows.map((r) => ({
-        key: r.key,
-        module: r.module,
-        type: r.type,
-        az: r.az,
-        tr: r.tr,
-        ru: r.ru,
-        en: r.en
-      }));
-    } catch (e) {
-      console.warn("translations table read error:", e);
-      translations = Database.getTranslations();
-    }
-    let records = [];
-    try {
-      const rows = db.prepare("SELECT * FROM content_records").all();
-      records = rows.map((r) => ({
-        id: r.id,
-        title: r.title,
-        source: r.source,
-        author: r.author,
-        date: r.date,
-        status: r.status
-      }));
-    } catch (e) {
-      console.warn("content_records table read error:", e);
-      records = Database.getRecords();
-    }
-    let media = [];
-    try {
-      const rows = db.prepare("SELECT * FROM media_items").all();
-      media = rows.map((r) => ({
-        id: r.id,
-        filename: r.filename,
-        originalName: r.original_name,
-        mimeType: r.mime_type,
-        size: r.size,
-        url: r.url,
-        createdAt: r.created_at
-      }));
-    } catch (e) {
-      console.warn("media_items table read error:", e);
-      media = Database.getMedia();
-    }
-    let uploadConfig = Database.getUploadConfig();
-    try {
-      const row = db.prepare("SELECT * FROM upload_config WHERE id = 1").get();
-      if (row) {
-        uploadConfig = {
-          maxFileSizeMB: row.max_file_size_mb,
-          allowedMimeTypes: row.allowed_mime_types,
-          uploadDir: row.upload_dir
-        };
+      const hasStoreJsonTables = backupTables.some((t) => storeJsonTableNames.includes(t.name));
+      if (hasStoreJsonTables) {
+        try {
+          const currentFullState = Database.getFullState();
+          let site = currentFullState.site;
+          try {
+            const row = backupDb.prepare("SELECT * FROM site_config WHERE id = 1").get();
+            if (row) site = { name: row.name, domain: row.domain, type: row.type, endpoint: row.endpoint };
+          } catch {
+          }
+          let seo = currentFullState.seo;
+          try {
+            const row = backupDb.prepare("SELECT * FROM seo_config WHERE id = 1").get();
+            if (row) {
+              seo = {
+                title: row.title,
+                description: row.description,
+                canonical: row.canonical,
+                keywords: row.keywords,
+                robotsIndex: Boolean(row.robots_index),
+                robotsFollow: Boolean(row.robots_follow),
+                ogTitle: row.og_title,
+                ogDescription: row.og_description,
+                ogImage: row.og_image,
+                sitemapUrl: row.sitemap_url,
+                lastUpdated: row.last_updated || (/* @__PURE__ */ new Date()).toISOString()
+              };
+            }
+          } catch {
+          }
+          let translations = currentFullState.translations || [];
+          try {
+            const rows = backupDb.prepare("SELECT * FROM translations").all();
+            if (rows.length > 0) {
+              translations = rows.map((r) => ({
+                key: r.key,
+                module: r.module,
+                type: r.type,
+                az: r.az,
+                tr: r.tr,
+                ru: r.ru,
+                en: r.en
+              }));
+            }
+          } catch {
+          }
+          let records = currentFullState.records || [];
+          try {
+            const rows = backupDb.prepare("SELECT * FROM content_records").all();
+            if (rows.length > 0) {
+              records = rows.map((r) => ({
+                id: r.id,
+                title: r.title,
+                source: r.source,
+                author: r.author,
+                date: r.date,
+                status: r.status
+              }));
+            }
+          } catch {
+          }
+          let media = currentFullState.media || [];
+          try {
+            const rows = backupDb.prepare("SELECT * FROM media_items").all();
+            if (rows.length > 0) {
+              media = rows.map((r) => ({
+                id: r.id,
+                filename: r.filename,
+                originalName: r.original_name,
+                mimeType: r.mime_type,
+                size: r.size,
+                url: r.url,
+                createdAt: r.created_at
+              }));
+            }
+          } catch {
+          }
+          let uploadConfig = currentFullState.uploadConfig;
+          try {
+            const row = backupDb.prepare("SELECT * FROM upload_config WHERE id = 1").get();
+            if (row) {
+              uploadConfig = {
+                maxFileSizeMB: row.max_file_size_mb,
+                allowedMimeTypes: row.allowed_mime_types,
+                uploadDir: row.upload_dir
+              };
+            }
+          } catch {
+          }
+          let setup = currentFullState.setup;
+          try {
+            const row = backupDb.prepare("SELECT * FROM system_setup WHERE id = 1").get();
+            if (row) {
+              setup = {
+                completed: Boolean(row.completed),
+                industry: row.industry,
+                setupDate: row.setup_date
+              };
+            }
+          } catch {
+          }
+          const restoredState = {
+            site,
+            seo,
+            translations,
+            records,
+            media,
+            uploadConfig,
+            admin: currentFullState.admin,
+            setup
+          };
+          Database.restoreFullState(restoredState);
+          restoredTables.push({ name: "store.json", rows: translations.length + records.length + media.length, label: "Sistem Parametrl\u0259ri", db: "store.json" });
+        } catch (err) {
+          console.warn("[SqliteBackup] store.json restore warning:", err);
+        }
       }
-    } catch (e) {
-      console.warn("upload_config table read error:", e);
-    }
-    let admin = Database.getAdmin();
-    try {
-      const row = db.prepare("SELECT * FROM admin_user WHERE id = 1").get();
-      if (row) {
-        admin = {
-          fullName: row.full_name,
-          email: row.email,
-          role: row.role,
-          password: row.password
-        };
+      try {
+        azDb.pragma("foreign_keys = ON");
+      } catch {
       }
-    } catch (e) {
-      console.warn("admin_user table read error:", e);
-    }
-    let setup = Database.getSetup();
-    try {
-      const row = db.prepare("SELECT * FROM system_setup WHERE id = 1").get();
-      if (row) {
-        setup = {
-          completed: Boolean(row.completed),
-          industry: row.industry,
-          setupDate: row.setup_date
-        };
+      try {
+        mainDb2.pragma("foreign_keys = ON");
+      } catch {
       }
-    } catch (e) {
-      console.warn("system_setup table read error:", e);
+      try {
+        azDb.pragma("wal_checkpoint(TRUNCATE)");
+      } catch {
+      }
+      try {
+        mainDb2.pragma("wal_checkpoint(TRUNCATE)");
+      } catch {
+      }
+      if (activeDbs?.azRedis) {
+        try {
+          activeDbs.azRedis.flushdb().catch(() => {
+          });
+        } catch {
+        }
+      }
+      if (activeDbs?.azDel) {
+        const keys = [
+          "azexbuy:localization",
+          "azexbuy:content",
+          "azexbuy:categories",
+          "azexbuy:products",
+          "azexbuy:services",
+          "azexbuy:team",
+          "azexbuy:stats"
+        ];
+        for (const k of keys) {
+          try {
+            activeDbs.azDel(k).catch(() => {
+            });
+          } catch {
+          }
+        }
+      }
+    } finally {
+      backupDb.close();
+      if (localAzDb && azDb) azDb.close();
+      if (localMainDb && mainDb2) mainDb2.close();
     }
-    db.close();
-    const restoredState = {
-      site,
-      seo,
-      translations,
-      records,
-      media,
-      uploadConfig,
-      admin,
-      setup
+    return {
+      success: true,
+      message: `M\u0259lumat bazas\u0131 SQLite n\xFCsx\u0259sind\u0259n tam v\u0259 u\u011Furla b\u0259rpa edildi (${restoredTables.length} c\u0259dv\u0259l, ${totalRestoredRows} s\u0259tir).`,
+      totalRestoredTables: restoredTables.length,
+      totalRestoredRows,
+      restoredTables,
+      safetyBackupFile: safetyFile,
+      backupTimestamp
     };
-    Database.restoreFullState(restoredState);
-    return restoredState;
   }
   /**
-   * Returns SQLite backup statistics
+   * Returns rich SQLite backup and database statistics
    */
   static getBackupInfo() {
-    const state = Database.getFullState();
+    this.ensureDirs();
     let fileSizeBytes = 0;
     let lastGenerated = null;
     if (fs2.existsSync(BACKUP_SQLITE_PATH)) {
-      const stat = fs2.statSync(BACKUP_SQLITE_PATH);
-      fileSizeBytes = stat.size;
-      lastGenerated = stat.mtime.toISOString();
-    }
-    const totalRecords = 1 + // site
-    1 + // seo
-    (state.translations?.length || 0) + (state.records?.length || 0) + (state.media?.length || 0) + 1 + // uploadConfig
-    1 + // admin
-    1;
-    let tablesCount = 9;
-    try {
-      const dataDir2 = BACKUP_DIR;
-      let count = 0;
-      for (const dbFile of ["octo.db", "azexbuy.db"]) {
-        const dbPath = path2.join(dataDir2, dbFile);
-        if (fs2.existsSync(dbPath)) {
-          const db = new BetterSqlite3(dbPath, { readonly: true });
-          const rows = db.prepare("SELECT COUNT(*) as c FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").get();
-          count += rows?.c || 0;
-          db.close();
-        }
+      try {
+        const stat = fs2.statSync(BACKUP_SQLITE_PATH);
+        fileSizeBytes = stat.size;
+        lastGenerated = stat.mtime.toISOString();
+      } catch {
       }
-      if (count > 0) tablesCount = count;
+    }
+    const tableBreakdown = [];
+    let totalRecords = 0;
+    const azDbPath = path2.join(DATA_DIR, "azexbuy.db");
+    if (fs2.existsSync(azDbPath)) {
+      try {
+        const azDb = new BetterSqlite3(azDbPath, { readonly: true });
+        const tables = azDb.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").all();
+        for (const t of tables) {
+          try {
+            const count = azDb.prepare(`SELECT COUNT(*) as c FROM "${t.name}"`).get()?.c || 0;
+            totalRecords += count;
+            tableBreakdown.push({
+              name: t.name,
+              rows: count,
+              label: this.getTableFriendlyLabel(t.name),
+              db: "azexbuy.db"
+            });
+          } catch {
+          }
+        }
+        azDb.close();
+      } catch {
+      }
+    }
+    const octoDbPath = path2.join(DATA_DIR, "octo.db");
+    if (fs2.existsSync(octoDbPath)) {
+      try {
+        const octoDb = new BetterSqlite3(octoDbPath, { readonly: true });
+        const tables = octoDb.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").all();
+        for (const t of tables) {
+          try {
+            const count = octoDb.prepare(`SELECT COUNT(*) as c FROM "${t.name}"`).get()?.c || 0;
+            totalRecords += count;
+            tableBreakdown.push({
+              name: t.name,
+              rows: count,
+              label: this.getTableFriendlyLabel(t.name),
+              db: "octo.db"
+            });
+          } catch {
+          }
+        }
+        octoDb.close();
+      } catch {
+      }
+    }
+    try {
+      const state = Database.getFullState();
+      const storeRows = 1 + // site
+      1 + // seo
+      (state.translations?.length || 0) + (state.records?.length || 0) + (state.media?.length || 0) + 1 + // uploadConfig
+      1 + // admin
+      1;
+      totalRecords += storeRows;
+      tableBreakdown.push({
+        name: "store.json",
+        rows: storeRows,
+        label: "Sistem Parametrl\u0259ri & T\u0259rc\xFCm\u0259l\u0259r",
+        db: "store.json"
+      });
+    } catch {
+    }
+    let safetyBackupsCount = 0;
+    if (fs2.existsSync(BACKUPS_DIR)) {
+      try {
+        safetyBackupsCount = fs2.readdirSync(BACKUPS_DIR).filter((f) => f.startsWith("safety_")).length;
+      } catch {
+      }
+    }
+    let liveDbSizeBytes = 0;
+    try {
+      if (fs2.existsSync(azDbPath)) liveDbSizeBytes += fs2.statSync(azDbPath).size;
+      if (fs2.existsSync(octoDbPath)) liveDbSizeBytes += fs2.statSync(octoDbPath).size;
+      const storePath = path2.join(DATA_DIR, "store.json");
+      if (fs2.existsSync(storePath)) liveDbSizeBytes += fs2.statSync(storePath).size;
     } catch {
     }
     return {
-      engine: "SQLite 3 (node:sqlite)",
-      version: "2.4.0",
-      format: ".sqlite (Binary Relational Database)",
-      tablesCount,
+      engine: "SQLite 3 (BetterSqlite3 Enterprise)",
+      version: "2.4.3",
+      format: ".sqlite / .db (Full Relational Database)",
+      tablesCount: tableBreakdown.length,
       totalRecords,
-      fileSizeBytes,
-      lastGenerated
+      fileSizeBytes: fileSizeBytes || liveDbSizeBytes,
+      lastGenerated,
+      tableBreakdown,
+      safetyBackupsCount
     };
+  }
+  static getTableFriendlyLabel(name) {
+    const map = {
+      azexbuy_kv: "CMS & M\u0259zmun D\u0259y\u0259rl\u0259ri",
+      azexbuy_products: "M\u0259hsul Kataloqu",
+      azexbuy_categories: "M\u0259hsul Kateqoriyalar\u0131",
+      azexbuy_articles: "Bloq & M\u0259qal\u0259l\u0259r",
+      azexbuy_services: "\u0130xrac Xidm\u0259tl\u0259ri",
+      azexbuy_service_applications: "Xidm\u0259t M\xFCraci\u0259tl\u0259ri",
+      azexbuy_team_members: "Komanda \xDCzvl\u0259ri",
+      azexbuy_contacts: "\u018Flaq\u0259 M\xFCraci\u0259tl\u0259ri",
+      azexbuy_rfqs: "Al\u0131c\u0131 RFQ Sor\u011Fular\u0131",
+      azexbuy_producers: "\u0130stehsal\xE7\u0131 Qeydiyyatlar\u0131",
+      admin_users: "\u0130nzibat\xE7\u0131 \u0130stifad\u0259\xE7il\u0259ri",
+      smtp_settings: "SMTP Po\xE7t Parametrl\u0259ri",
+      ai_settings: "AI / LLM Parametrl\u0259ri",
+      email_logs: "E-po\xE7t G\xF6nd\u0259ri\u015F Tarix\xE7\u0259si",
+      active_session: "Aktiv \u0130nzibat\xE7\u0131 Sessiyas\u0131"
+    };
+    return map[name] || name;
   }
 };
 
@@ -2992,11 +3380,12 @@ import nodemailer from "nodemailer";
 var BCRYPT_ROUNDS = 10;
 var __filename3 = fileURLToPath3(import.meta.url);
 var __dirname3 = path3.dirname(__filename3);
-var ROOT_DIR = path3.join(__dirname3, "..");
+var ROOT_DIR2 = path3.join(__dirname3, "..");
 var app = express();
 var PORT = process.env.PORT || 4200;
 app.use(cors({ origin: "*" }));
-app.use(express.json());
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use((_req, res, next) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("X-Frame-Options", "SAMEORIGIN");
@@ -3072,19 +3461,19 @@ app.use((req, res, next) => {
   });
   next();
 });
-var clientDist = path3.join(ROOT_DIR, "dist", "client");
-var azexbuyDist = path3.join(ROOT_DIR, "dist", "azexbuy");
+var clientDist = path3.join(ROOT_DIR2, "dist", "client");
+var azexbuyDist = path3.join(ROOT_DIR2, "dist", "azexbuy");
 if (fs3.existsSync(clientDist)) {
   app.use("/octo-admin", express.static(clientDist));
 }
 if (fs3.existsSync(azexbuyDist)) {
   app.use(express.static(azexbuyDist));
 }
-app.use("/uploads", express.static(path3.join(ROOT_DIR, "uploads")));
+app.use("/uploads", express.static(path3.join(ROOT_DIR2, "uploads")));
 var storage = multer.diskStorage({
   destination: (_req, _file, cb) => {
     const config = Database.getUploadConfig();
-    const dest = path3.isAbsolute(config.uploadDir) ? config.uploadDir : path3.join(ROOT_DIR, config.uploadDir);
+    const dest = path3.isAbsolute(config.uploadDir) ? config.uploadDir : path3.join(ROOT_DIR2, config.uploadDir);
     if (!fs3.existsSync(dest)) {
       fs3.mkdirSync(dest, { recursive: true });
     }
@@ -3127,14 +3516,19 @@ var uploadMiddleware = (req, res, next) => {
   });
 };
 var requireAuth = (req, res, next) => {
+  let token;
   const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    token = authHeader.split(" ")[1];
+  } else if (typeof req.query.token === "string") {
+    token = req.query.token;
+  }
+  if (!token) {
     return res.status(401).json({
       success: false,
       error: "\u0130caz\u0259siz giri\u015F: Etibarl\u0131 JWT token t\u0259l\u0259b olunur (401 Unauthorized)"
     });
   }
-  const token = authHeader.split(" ")[1];
   const verification = verifyJwt(token);
   if (!verification.valid || !verification.payload) {
     return res.status(401).json({
@@ -3476,7 +3870,7 @@ app.delete("/api/media/:id", requireAuth, (req, res) => {
     return res.status(404).json({ success: false, error: "Fayl tap\u0131lmad\u0131" });
   }
   const config = Database.getUploadConfig();
-  const filePath = path3.join(ROOT_DIR, config.uploadDir, removed.filename);
+  const filePath = path3.join(ROOT_DIR2, config.uploadDir, removed.filename);
   if (fs3.existsSync(filePath)) {
     try {
       fs3.unlinkSync(filePath);
@@ -3567,11 +3961,14 @@ app.get("/api/backup/info", (_req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 });
-app.get("/api/backup/download", (_req, res) => {
+app.get("/api/backup/download", requireAuth, (_req, res) => {
   try {
     const filePath = SqliteBackupManager.exportToSqlite();
     const dateStr = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
-    const filename = `octotech_site_backup_${dateStr}.sqlite`;
+    const timeStr = (/* @__PURE__ */ new Date()).toISOString().slice(11, 19).replace(/:/g, "-");
+    const filename = `azexbuy_full_backup_${dateStr}_${timeStr}.sqlite`;
+    res.setHeader("Content-Type", "application/vnd.sqlite3");
+    res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
     res.download(filePath, filename, (err) => {
       if (err) {
         console.error("Error sending sqlite backup download:", err);
@@ -3581,34 +3978,80 @@ app.get("/api/backup/download", (_req, res) => {
     res.status(500).json({ success: false, error: "Backup yarad\u0131lark\u0259n x\u0259ta ba\u015F verdi: " + err.message });
   }
 });
-var tempUploadDir = path3.join(ROOT_DIR, "uploads", "temp");
+app.post("/api/backup/export", requireAuth, (_req, res) => {
+  try {
+    const filePath = SqliteBackupManager.exportToSqlite();
+    const stat = fs3.statSync(filePath);
+    const dateStr = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
+    const timeStr = (/* @__PURE__ */ new Date()).toISOString().slice(11, 19).replace(/:/g, "-");
+    const filename = `azexbuy_full_backup_${dateStr}_${timeStr}.sqlite`;
+    res.json({
+      success: true,
+      message: "Tam SQLite backup fayl\u0131 u\u011Furla yarad\u0131ld\u0131",
+      filename,
+      sizeBytes: stat.size,
+      exportedAt: (/* @__PURE__ */ new Date()).toISOString(),
+      downloadUrl: "/api/backup/download"
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: "Backup export x\u0259tas\u0131: " + err.message });
+  }
+});
+var tempUploadDir = path3.join(ROOT_DIR2, "uploads", "temp");
 if (!fs3.existsSync(tempUploadDir)) {
   fs3.mkdirSync(tempUploadDir, { recursive: true });
 }
-var backupUpload = multer({ dest: tempUploadDir });
-app.post("/api/backup/restore", requireAuth, backupUpload.single("backupFile"), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ success: false, error: ".sqlite backup fayl\u0131 se\xE7ilm\u0259yib" });
-  }
-  try {
-    const restored = SqliteBackupManager.restoreFromSqlite(req.file.path);
-    try {
-      if (fs3.existsSync(req.file.path)) fs3.unlinkSync(req.file.path);
-    } catch {
+var backupUpload = multer({
+  dest: tempUploadDir,
+  limits: { fileSize: 150 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    const ext = path3.extname(file.originalname).toLowerCase();
+    if ([".sqlite", ".db", ".sqlite3"].includes(ext) || ext === "") {
+      cb(null, true);
+    } else {
+      cb(new Error("Yaln\u0131z .sqlite v\u0259 ya .db backup fayllar\u0131 q\u0259bul edilir."));
     }
-    res.json({
-      success: true,
-      message: "Sayt SQLite backupdan u\u011Furla b\u0259rpa edildi!",
-      data: restored
-    });
-  } catch (err) {
-    try {
-      if (req.file?.path && fs3.existsSync(req.file.path)) fs3.unlinkSync(req.file.path);
-    } catch {
-    }
-    res.status(500).json({ success: false, error: "B\u0259rpa x\u0259tas\u0131: " + err.message });
   }
 });
+app.post(
+  "/api/backup/restore",
+  requireAuth,
+  backupUpload.fields([
+    { name: "backupFile", maxCount: 1 },
+    { name: "backup", maxCount: 1 },
+    { name: "file", maxCount: 1 }
+  ]),
+  async (req, res) => {
+    const files = req.files;
+    const uploadedFile = req.file || files?.backupFile?.[0] || files?.backup?.[0] || files?.file?.[0];
+    if (!uploadedFile) {
+      return res.status(400).json({ success: false, error: ".sqlite backup fayl\u0131 se\xE7ilm\u0259yib" });
+    }
+    try {
+      const restored = SqliteBackupManager.restoreFromSqlite(uploadedFile.path, {
+        azexbuyDb,
+        mainDb,
+        azRedis,
+        azDel
+      });
+      try {
+        if (fs3.existsSync(uploadedFile.path)) fs3.unlinkSync(uploadedFile.path);
+      } catch {
+      }
+      res.json({
+        success: true,
+        message: "M\u0259lumat bazas\u0131 SQLite backup-dan tam v\u0259 u\u011Furla b\u0259rpa edildi!",
+        data: restored
+      });
+    } catch (err) {
+      try {
+        if (uploadedFile?.path && fs3.existsSync(uploadedFile.path)) fs3.unlinkSync(uploadedFile.path);
+      } catch {
+      }
+      res.status(500).json({ success: false, error: "B\u0259rpa x\u0259tas\u0131: " + err.message });
+    }
+  }
+);
 var GITHUB_REPO = "aliyabuz25/OctoUniversalController";
 var GITHUB_REPO_URL = `https://github.com/${GITHUB_REPO}.git`;
 async function fetchGithubChangelogAndVersion() {
@@ -3705,7 +4148,7 @@ app.post("/api/system/update/apply", requireAuth, async (_req, res) => {
     logs.push(`[2/5] SQLite tam sistem n\xFCsx\u0259si t\u0259hl\xFCk\u0259sizlik arxivin\u0259 qeyd edildi (${path3.basename(backupPath)}).`);
     logs.push("[3/5] M\u0259rk\u0259zi serverd\u0259n \u0259n son r\u0259smi versiya paketl\u0259ri g\u0259tirilir...");
     const { latestVersion } = await fetchGithubChangelogAndVersion();
-    const pkgPath = path3.join(ROOT_DIR, "package.json");
+    const pkgPath = path3.join(ROOT_DIR2, "package.json");
     if (fs3.existsSync(pkgPath)) {
       try {
         const pkg = JSON.parse(fs3.readFileSync(pkgPath, "utf-8"));
@@ -3737,7 +4180,7 @@ app.post("/api/system/update/apply", requireAuth, async (_req, res) => {
 var ADMINER_PORT = 3001;
 var adminerProcess = null;
 function startAdminer() {
-  const adminerDir = path3.join(ROOT_DIR, "adminer");
+  const adminerDir = path3.join(ROOT_DIR2, "adminer");
   if (!fs3.existsSync(adminerDir)) return;
   try {
     SqliteBackupManager.exportToSqlite();
@@ -3819,7 +4262,7 @@ app.use("/adminer", (req, res) => {
   });
   req.pipe(proxyReq);
 });
-var dataDir = path3.join(ROOT_DIR, "data");
+var dataDir = path3.join(ROOT_DIR2, "data");
 if (!fs3.existsSync(dataDir)) fs3.mkdirSync(dataDir, { recursive: true });
 var mainDb = new BetterSqlite32(path3.join(dataDir, "octo.db"));
 mainDb.pragma("journal_mode = WAL");
@@ -4902,10 +5345,15 @@ app.get("/api/azexbuy/localization", async (req, res) => {
   res.json(result);
 });
 app.post("/api/azexbuy/localization", requireAuth, async (req, res) => {
-  const data = req.body;
-  azexbuyDb.prepare("INSERT OR REPLACE INTO azexbuy_kv (key, value, updated_at) VALUES ('localization', ?, ?)").run(JSON.stringify(data), (/* @__PURE__ */ new Date()).toISOString());
-  await azDel("azexbuy:localization");
-  res.json({ success: true });
+  try {
+    const data = req.body;
+    azexbuyDb.prepare("INSERT OR REPLACE INTO azexbuy_kv (key, value, updated_at) VALUES ('localization', ?, ?)").run(JSON.stringify(data), (/* @__PURE__ */ new Date()).toISOString());
+    await azDel("azexbuy:localization");
+    res.json({ success: true });
+  } catch (err) {
+    console.error("[Localization Save Error]:", err);
+    res.status(500).json({ success: false, error: err?.message || "Database write error" });
+  }
 });
 var APPLICATION_STATUSES = ["New", "Under Review", "Awaiting Info", "Searching", "Offer Preparing", "Sent to Client", "Completed", "Closed"];
 app.get("/api/azexbuy/stats", async (_req, res) => {
@@ -5003,7 +5451,7 @@ app.delete("/api/azexbuy/contacts/:id", requireAuth, (req, res) => {
   azexbuyDb.prepare("DELETE FROM azexbuy_contacts WHERE id = ?").run(req.params.id);
   res.json({ success: true });
 });
-var azexbuyUploadDir = path3.join(ROOT_DIR, "uploads", "azexbuy");
+var azexbuyUploadDir = path3.join(ROOT_DIR2, "uploads", "azexbuy");
 if (!fs3.existsSync(azexbuyUploadDir)) fs3.mkdirSync(azexbuyUploadDir, { recursive: true });
 var azexbuyStorage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, azexbuyUploadDir),
@@ -5045,10 +5493,18 @@ app.get("/api/azexbuy/content", async (req, res) => {
   res.json(result);
 });
 app.post("/api/azexbuy/content", requireAuth, async (req, res) => {
-  const data = req.body;
-  azexbuyDb.prepare("INSERT OR REPLACE INTO azexbuy_kv (key, value, updated_at) VALUES ('content', ?, ?)").run(JSON.stringify(data), (/* @__PURE__ */ new Date()).toISOString());
-  await azDel("azexbuy:content");
-  res.json({ success: true });
+  try {
+    const data = req.body;
+    if (data && data.products) {
+      delete data.products;
+    }
+    azexbuyDb.prepare("INSERT OR REPLACE INTO azexbuy_kv (key, value, updated_at) VALUES ('content', ?, ?)").run(JSON.stringify(data), (/* @__PURE__ */ new Date()).toISOString());
+    await azDel("azexbuy:content");
+    res.json({ success: true });
+  } catch (err) {
+    console.error("[Content Save Error]:", err);
+    res.status(500).json({ success: false, error: err?.message || "Database write error" });
+  }
 });
 app.get("/api/azexbuy/images", requireAuth, (_req, res) => {
   if (!fs3.existsSync(azexbuyUploadDir)) return res.json([]);
@@ -5118,14 +5574,15 @@ app.get("/api/azexbuy/services", async (_req, res) => {
 });
 app.post("/api/azexbuy/services", requireAuth, async (req, res) => {
   const d = req.body;
-  if (!d.id || !d.title) return res.status(400).json({ error: "Missing required fields" });
+  if (!d.title) return res.status(400).json({ error: "Missing title" });
+  const id = d.id || "srv-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 6);
   const now = (/* @__PURE__ */ new Date()).toISOString();
   azexbuyDb.prepare(`
     INSERT OR REPLACE INTO azexbuy_services
     (id, created_at, updated_at, title, description, scope, target_audience, icon_class, color_class, service_type, is_active, sort_order, category, is_approved, rfq_slug, image_url)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
-    d.id,
+    id,
     d.createdAt || now,
     now,
     typeof d.title === "string" ? d.title : JSON.stringify(d.title || {}),
@@ -5143,7 +5600,7 @@ app.post("/api/azexbuy/services", requireAuth, async (req, res) => {
     d.imageUrl || ""
   );
   await azDel("azexbuy:services");
-  res.json({ success: true, id: d.id });
+  res.json({ success: true, id });
 });
 app.patch("/api/azexbuy/services/:id", requireAuth, async (req, res) => {
   const d = req.body;
@@ -5302,12 +5759,13 @@ app.get("/api/azexbuy/team", async (req, res) => {
 app.post("/api/azexbuy/team", requireAuth, async (req, res) => {
   try {
     const d = req.body;
-    if (!d.id || !d.name) return res.status(400).json({ error: "Missing id or name" });
+    if (!d.name) return res.status(400).json({ error: "Missing name" });
+    const id = d.id || "tm-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 6);
     const now = (/* @__PURE__ */ new Date()).toISOString();
     azexbuyDb.prepare(`INSERT OR REPLACE INTO azexbuy_team_members
       (id,created_at,updated_at,name,role,bio,photo,email,linkedin,sort_order,is_active)
       VALUES (?,?,?,?,?,?,?,?,?,?,?)`).run(
-      d.id,
+      id,
       d.createdAt || now,
       now,
       d.name,
@@ -5320,7 +5778,7 @@ app.post("/api/azexbuy/team", requireAuth, async (req, res) => {
       d.isActive !== false ? 1 : 0
     );
     await azDel("azexbuy:team");
-    res.json({ success: true, id: d.id });
+    res.json({ success: true, id });
   } catch (e) {
     res.status(500).json({ error: e.message });
   }

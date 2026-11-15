@@ -9,7 +9,8 @@ const app = express();
 const PORT = process.env.PORT || 3500;
 
 app.use(cors({ origin: '*' }));
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // ─── SQLite Setup ────────────────────────────────────────────────
 const db = new Database(path.join(__dirname, 'azexbuy.db'));
@@ -827,6 +828,9 @@ app.post("/api/azexbuy/content", (req, res) => {
   try {
     if (!adminDbRw) return res.status(503).json({ error: 'DB unavailable' });
     const data = req.body;
+    if (data && data.products) {
+      delete data.products; // products live in azexbuy_products table
+    }
     adminDbRw.prepare("INSERT OR REPLACE INTO azexbuy_kv (key, value, updated_at) VALUES ('content', ?, ?)")
       .run(JSON.stringify(data), new Date().toISOString());
     res.json({ success: true });

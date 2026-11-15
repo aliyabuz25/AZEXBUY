@@ -880,7 +880,7 @@ export default function App() {
                           {t.howItWorks.forBuyersLabel}
                         </span>
                         <span className="text-[11px] text-slate-400 font-medium">
-                          7 {locale === 'az' ? 'mərhələ' : locale === 'ru' ? 'этапов' : 'steps'}
+                          7 {locale === 'AZ' ? 'mərhələ' : locale === 'TR' ? 'aşama' : locale === 'RU' ? 'этапов' : locale === 'AR' ? 'مراحل' : locale === 'ES' ? 'pasos' : 'steps'}
                         </span>
                       </div>
                       <div className="flex items-center gap-3">
@@ -940,7 +940,7 @@ export default function App() {
                           {t.howItWorks.forProducersLabel}
                         </span>
                         <span className="text-[11px] text-slate-400 font-medium">
-                          10 {locale === 'az' ? 'mərhələ' : locale === 'ru' ? 'этапов' : 'steps'}
+                          10 {locale === 'AZ' ? 'mərhələ' : locale === 'TR' ? 'aşama' : locale === 'RU' ? 'этапов' : locale === 'AR' ? 'مراحل' : locale === 'ES' ? 'pasos' : 'steps'}
                         </span>
                       </div>
                       <div className="flex items-center gap-3">

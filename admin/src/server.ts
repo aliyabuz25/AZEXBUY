@@ -24,7 +24,8 @@ const app = express();
 const PORT = process.env.PORT || 4200;
 
 app.use(cors({ origin: '*' }));
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // ── Security Headers ──────────────────────────────────────────────────────────
 app.use((_req, res, next) => {
@@ -178,15 +179,21 @@ const uploadMiddleware = (req: Request, res: Response, next: any) => {
 // Authentication & 10-Minute JWT Session Engine (Non-Bypassable)
 // ========================================================
 const requireAuth = (req: Request, res: Response, next: any) => {
+  let token: string | undefined;
   const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    token = authHeader.split(' ')[1];
+  } else if (typeof req.query.token === 'string') {
+    token = req.query.token;
+  }
+
+  if (!token) {
     return res.status(401).json({
       success: false,
       error: 'İcazəsiz giriş: Etibarlı JWT token tələb olunur (401 Unauthorized)'
     });
   }
 
-  const token = authHeader.split(' ')[1];
   const verification = verifyJwt(token);
 
   if (!verification.valid || !verification.payload) {
@@ -721,11 +728,16 @@ app.get('/api/backup/info', (_req: Request, res: Response) => {
   }
 });
 
-app.get('/api/backup/download', (_req: Request, res: Response) => {
+app.get('/api/backup/download', requireAuth, (_req: Request, res: Response) => {
   try {
     const filePath = SqliteBackupManager.exportToSqlite();
     const dateStr = new Date().toISOString().slice(0, 10);
-    const filename = `octotech_site_backup_${dateStr}.sqlite`;
+    const timeStr = new Date().toISOString().slice(11, 19).replace(/:/g, '-');
+    const filename = `azexbuy_full_backup_${dateStr}_${timeStr}.sqlite`;
+
+    res.setHeader('Content-Type', 'application/vnd.sqlite3');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+
     res.download(filePath, filename, (err) => {
       if (err) {
         console.error('Error sending sqlite backup download:', err);
@@ -736,33 +748,89 @@ app.get('/api/backup/download', (_req: Request, res: Response) => {
   }
 });
 
+app.post('/api/backup/export', requireAuth, (_req: Request, res: Response) => {
+  try {
+    const filePath = SqliteBackupManager.exportToSqlite();
+    const stat = fs.statSync(filePath);
+    const dateStr = new Date().toISOString().slice(0, 10);
+    const timeStr = new Date().toISOString().slice(11, 19).replace(/:/g, '-');
+    const filename = `azexbuy_full_backup_${dateStr}_${timeStr}.sqlite`;
+
+    res.json({
+      success: true,
+      message: 'Tam SQLite backup faylı uğurla yaradıldı',
+      filename,
+      sizeBytes: stat.size,
+      exportedAt: new Date().toISOString(),
+      downloadUrl: '/api/backup/download'
+    });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: 'Backup export xətası: ' + err.message });
+  }
+});
+
 const tempUploadDir = path.join(ROOT_DIR, 'uploads', 'temp');
 if (!fs.existsSync(tempUploadDir)) {
   fs.mkdirSync(tempUploadDir, { recursive: true });
 }
-const backupUpload = multer({ dest: tempUploadDir });
-
-app.post('/api/backup/restore', requireAuth, backupUpload.single('backupFile'), (req: Request, res: Response) => {
-  if (!req.file) {
-    return res.status(400).json({ success: false, error: '.sqlite backup faylı seçilməyib' });
-  }
-  try {
-    const restored = SqliteBackupManager.restoreFromSqlite(req.file.path);
-    try {
-      if (fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
-    } catch {}
-    res.json({
-      success: true,
-      message: 'Sayt SQLite backupdan uğurla bərpa edildi!',
-      data: restored
-    });
-  } catch (err: any) {
-    try {
-      if (req.file?.path && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
-    } catch {}
-    res.status(500).json({ success: false, error: 'Bərpa xətası: ' + err.message });
+const backupUpload = multer({
+  dest: tempUploadDir,
+  limits: { fileSize: 150 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (['.sqlite', '.db', '.sqlite3'].includes(ext) || ext === '') {
+      cb(null, true);
+    } else {
+      cb(new Error('Yalnız .sqlite və ya .db backup faylları qəbul edilir.'));
+    }
   }
 });
+
+app.post(
+  '/api/backup/restore',
+  requireAuth,
+  backupUpload.fields([
+    { name: 'backupFile', maxCount: 1 },
+    { name: 'backup', maxCount: 1 },
+    { name: 'file', maxCount: 1 }
+  ]),
+  async (req: Request, res: Response) => {
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] } | undefined;
+    const uploadedFile =
+      req.file ||
+      files?.backupFile?.[0] ||
+      files?.backup?.[0] ||
+      files?.file?.[0];
+
+    if (!uploadedFile) {
+      return res.status(400).json({ success: false, error: '.sqlite backup faylı seçilməyib' });
+    }
+
+    try {
+      const restored = SqliteBackupManager.restoreFromSqlite(uploadedFile.path, {
+        azexbuyDb,
+        mainDb,
+        azRedis,
+        azDel
+      });
+
+      try {
+        if (fs.existsSync(uploadedFile.path)) fs.unlinkSync(uploadedFile.path);
+      } catch {}
+
+      res.json({
+        success: true,
+        message: 'Məlumat bazası SQLite backup-dan tam və uğurla bərpa edildi!',
+        data: restored
+      });
+    } catch (err: any) {
+      try {
+        if (uploadedFile?.path && fs.existsSync(uploadedFile.path)) fs.unlinkSync(uploadedFile.path);
+      } catch {}
+      res.status(500).json({ success: false, error: 'Bərpa xətası: ' + err.message });
+    }
+  }
+);
 
 // 10. Software Version & Safe GitHub Update Engine
 const GITHUB_REPO = 'aliyabuz25/OctoUniversalController';
@@ -2028,11 +2096,16 @@ app.get('/api/azexbuy/localization', async (req: Request, res: Response) => {
 });
 
 app.post('/api/azexbuy/localization', requireAuth, async (req: Request, res: Response) => {
-  const data = req.body;
-  azexbuyDb.prepare("INSERT OR REPLACE INTO azexbuy_kv (key, value, updated_at) VALUES ('localization', ?, ?)")
-    .run(JSON.stringify(data), new Date().toISOString());
-  await azDel('azexbuy:localization');
-  res.json({ success: true });
+  try {
+    const data = req.body;
+    azexbuyDb.prepare("INSERT OR REPLACE INTO azexbuy_kv (key, value, updated_at) VALUES ('localization', ?, ?)")
+      .run(JSON.stringify(data), new Date().toISOString());
+    await azDel('azexbuy:localization');
+    res.json({ success: true });
+  } catch (err: any) {
+    console.error('[Localization Save Error]:', err);
+    res.status(500).json({ success: false, error: err?.message || 'Database write error' });
+  }
 });
 
 // Shared status enum for RFQ and Producer (spec §16)
@@ -2185,11 +2258,19 @@ app.get('/api/azexbuy/content', async (req: Request, res: Response) => {
 });
 
 app.post('/api/azexbuy/content', requireAuth, async (req: Request, res: Response) => {
-  const data = req.body;
-  azexbuyDb.prepare("INSERT OR REPLACE INTO azexbuy_kv (key, value, updated_at) VALUES ('content', ?, ?)")
-    .run(JSON.stringify(data), new Date().toISOString());
-  await azDel('azexbuy:content');
-  res.json({ success: true });
+  try {
+    const data = req.body;
+    if (data && data.products) {
+      delete data.products; // products live in azexbuy_products table, prevent bloat in azexbuy_kv
+    }
+    azexbuyDb.prepare("INSERT OR REPLACE INTO azexbuy_kv (key, value, updated_at) VALUES ('content', ?, ?)")
+      .run(JSON.stringify(data), new Date().toISOString());
+    await azDel('azexbuy:content');
+    res.json({ success: true });
+  } catch (err: any) {
+    console.error('[Content Save Error]:', err);
+    res.status(500).json({ success: false, error: err?.message || 'Database write error' });
+  }
 });
 
 // List uploaded azexbuy images
@@ -2252,14 +2333,15 @@ app.get('/api/azexbuy/services', async (_req: Request, res: Response) => {
 
 app.post('/api/azexbuy/services', requireAuth, async (req: Request, res: Response) => {
   const d = req.body;
-  if (!d.id || !d.title) return res.status(400).json({ error: 'Missing required fields' });
+  if (!d.title) return res.status(400).json({ error: 'Missing title' });
+  const id = d.id || ('srv-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6));
   const now = new Date().toISOString();
   azexbuyDb.prepare(`
     INSERT OR REPLACE INTO azexbuy_services
     (id, created_at, updated_at, title, description, scope, target_audience, icon_class, color_class, service_type, is_active, sort_order, category, is_approved, rfq_slug, image_url)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
-    d.id,
+    id,
     d.createdAt || now,
     now,
     typeof d.title === 'string' ? d.title : JSON.stringify(d.title || {}),
@@ -2277,7 +2359,7 @@ app.post('/api/azexbuy/services', requireAuth, async (req: Request, res: Respons
     d.imageUrl || ''
   );
   await azDel('azexbuy:services');
-  res.json({ success: true, id: d.id });
+  res.json({ success: true, id });
 });
 
 app.patch('/api/azexbuy/services/:id', requireAuth, async (req: Request, res: Response) => {
@@ -2426,19 +2508,20 @@ app.get('/api/azexbuy/team', async (req: Request, res: Response) => {
 app.post('/api/azexbuy/team', requireAuth, async (req: Request, res: Response) => {
   try {
     const d = req.body;
-    if (!d.id || !d.name) return res.status(400).json({ error: 'Missing id or name' });
+    if (!d.name) return res.status(400).json({ error: 'Missing name' });
+    const id = d.id || ('tm-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6));
     const now = new Date().toISOString();
     azexbuyDb.prepare(`INSERT OR REPLACE INTO azexbuy_team_members
       (id,created_at,updated_at,name,role,bio,photo,email,linkedin,sort_order,is_active)
       VALUES (?,?,?,?,?,?,?,?,?,?,?)`)
-      .run(d.id, d.createdAt || now, now,
+      .run(id, d.createdAt || now, now,
         d.name,
         typeof d.role === 'string' ? d.role : JSON.stringify(d.role || {}),
         typeof d.bio === 'string' ? d.bio : JSON.stringify(d.bio || {}),
         d.photo || '', d.email || '', d.linkedin || '',
         d.sortOrder ?? 0, d.isActive !== false ? 1 : 0);
     await azDel('azexbuy:team');
-    res.json({ success: true, id: d.id });
+    res.json({ success: true, id });
   } catch (e: any) { res.status(500).json({ error: e.message }); }
 });
 

@@ -44,7 +44,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = () => {
 
   const flash = (msg: string) => { setSuccessMsg(msg); setTimeout(() => setSuccessMsg(''), 2500); };
 
-  const token = () => localStorage.getItem('octotech_admin_jwt') || '';
+  const token = () => localStorage.getItem('octotech_admin_jwt') || sessionStorage.getItem('octotech_admin_jwt') || '';
   const authH = () => ({ Authorization: `Bearer ${token()}`, 'Content-Type': 'application/json' });
 
   const load = useCallback(async () => {

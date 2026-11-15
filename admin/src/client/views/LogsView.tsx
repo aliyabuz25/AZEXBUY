@@ -79,7 +79,7 @@ export const LogsView: React.FC<LogsViewProps> = () => {
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const token = () => localStorage.getItem('octotech_admin_jwt') || '';
+  const token = () => localStorage.getItem('octotech_admin_jwt') || sessionStorage.getItem('octotech_admin_jwt') || '';
   const authH = () => ({ Authorization: `Bearer ${token()}` });
 
   const load = useCallback(async (t?: TabKey) => {

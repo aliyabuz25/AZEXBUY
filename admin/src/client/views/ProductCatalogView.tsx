@@ -8,7 +8,7 @@ import { UiLanguage, toText } from '../types';
 
 interface ProductCatalogViewProps { uiLang: UiLanguage; }
 
-const token = () => localStorage.getItem('octotech_admin_jwt') || '';
+const token = () => localStorage.getItem('octotech_admin_jwt') || sessionStorage.getItem('octotech_admin_jwt') || '';
 
 const authFetch = (url: string, opts: RequestInit = {}) =>
   fetch(url, { ...opts, headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token()}`, ...(opts.headers || {}) } });
