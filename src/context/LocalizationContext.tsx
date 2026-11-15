@@ -18,8 +18,10 @@ import {
   HOW_IT_WORKS_HERO_IMAGE as HOW_IT_WORKS_HERO_DEFAULT,
   ABOUT_PAGE_DEFAULT,
   DEFAULT_TEAM_MEMBERS,
+  DEFAULT_BUYERS_PAGE,
+  DEFAULT_PRODUCERS_PAGE,
 } from '../data/translations';
-import { CmsService, AboutPageContent, TeamMember } from '../types';
+import { CmsService, AboutPageContent, TeamMember, PortalPageContent } from '../types';
 
 // Same origin — both frontend and API run on the same port
 const OCTO_API_BASE = '';
@@ -147,6 +149,8 @@ type LocalizationContextType = {
   whyAzerbaijanCustom?: any;
   cmsServices: CmsService[];
   about: AboutPageContent;
+  buyersPage: PortalPageContent;
+  producersPage: PortalPageContent;
   team: TeamMember[];
   social: SocialLinks;
   contact: {
@@ -180,6 +184,8 @@ const LocalizationContext = createContext<LocalizationContextType>({
   producerSteps: PRODUCER_STEPS_DEFAULT,
   cmsServices: [],
   about: ABOUT_PAGE_DEFAULT,
+  buyersPage: DEFAULT_BUYERS_PAGE,
+  producersPage: DEFAULT_PRODUCERS_PAGE,
   team: DEFAULT_TEAM_MEMBERS,
   social: DEFAULT_SOCIAL_LINKS,
   contact: {
@@ -441,9 +447,35 @@ export function mergeServicePillarsWithDefaults(services: any[]): typeof SERVICE
   return [...merged, ...extraPillars];
 }
 
+export function mergePortalPage(saved: any, fallback: PortalPageContent): PortalPageContent {
+  if (!saved || typeof saved !== 'object') return fallback;
+  return {
+    hero: { ...fallback.hero, ...(saved.hero || {}) },
+    stepsTitle: saved.stepsTitle || saved.stepsSection?.title || fallback.stepsTitle,
+    clientLabel: saved.clientLabel || saved.stepsSection?.clientLabel || fallback.clientLabel,
+    azexbuyLabel: saved.azexbuyLabel || saved.stepsSection?.azexbuyLabel || fallback.azexbuyLabel,
+    resultLabel: saved.resultLabel || saved.stepsSection?.resultLabel || fallback.resultLabel,
+    nextLabel: saved.nextLabel || saved.stepsSection?.nextLabel || fallback.nextLabel,
+    steps: Array.isArray(saved.steps) && saved.steps.length > 0
+      ? saved.steps
+      : (Array.isArray(saved.stepsSection?.steps) && saved.stepsSection.steps.length > 0 ? saved.stepsSection.steps : fallback.steps),
+    guideBadge: saved.guideBadge || saved.guideSection?.badge || fallback.guideBadge,
+    guideTitle: saved.guideTitle || saved.guideSection?.title || fallback.guideTitle,
+    guideDesc: saved.guideDesc || saved.guideSection?.desc || fallback.guideDesc,
+    guideCards: Array.isArray(saved.guideCards) && saved.guideCards.length > 0
+      ? saved.guideCards
+      : (Array.isArray(saved.guideSection?.cards) && saved.guideSection.cards.length > 0 ? saved.guideSection.cards : fallback.guideCards),
+    bottomCta: { ...fallback.bottomCta, ...(saved.bottomCta || {}) },
+  };
+}
+
 function applyContentOverrides(content: any) {
   const images = content?.images || {};
   const about = content?.about ? { ...ABOUT_PAGE_DEFAULT, ...content.about } : { ...ABOUT_PAGE_DEFAULT };
+  const buyersPage = mergePortalPage(content?.buyers_page, DEFAULT_BUYERS_PAGE);
+  const producersPage = mergePortalPage(content?.producers_page, DEFAULT_PRODUCERS_PAGE);
+  if (images['BUYER_HERO_IMAGE'] && buyersPage.hero) buyersPage.hero.image = images['BUYER_HERO_IMAGE'];
+  if (images['PRODUCER_HERO_IMAGE'] && producersPage.hero) producersPage.hero.image = images['PRODUCER_HERO_IMAGE'];
   
   // Link customizable image keys to about sections
   if (images['ABOUT_WHO_WE_ARE_IMAGE'] && about.whoWeAre) about.whoWeAre.image = images['ABOUT_WHO_WE_ARE_IMAGE'];
@@ -490,6 +522,8 @@ function applyContentOverrides(content: any) {
     whyAzexbuyCustom: content?.whyAzexbuy || null,
     whyAzerbaijanCustom: content?.whyAzerbaijan || null,
     about,
+    buyersPage,
+    producersPage,
     social: {
       ...DEFAULT_SOCIAL_LINKS,
       ...(content?.social || content?.socials || {}),

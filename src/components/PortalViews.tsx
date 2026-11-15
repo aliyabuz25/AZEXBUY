@@ -16,6 +16,8 @@ import {
   PRODUCTS_CATALOG,
   SERVICES_PILLARS,
   UI_STRINGS as UI_STRINGS_STATIC,
+  DEFAULT_BUYERS_PAGE,
+  DEFAULT_PRODUCERS_PAGE,
 } from '../data/translations';
 import { useLocalization } from '../context/LocalizationContext';
 import { SafeImage } from './SafeImage';
@@ -1485,6 +1487,89 @@ interface SubpagePortalProps {
   onNavigate: (v: ViewMode) => void;
 }
 
+const GUIDE_COLOR_MAP: Record<string, { bg: string; text: string; border: string; lightBg: string; pillBg: string; pillText: string; pillBorder: string; infoText: string }> = {
+  blue: {
+    bg: 'bg-blue-50',
+    text: 'text-blue-600',
+    border: 'border-blue-100',
+    lightBg: 'bg-blue-50/50',
+    pillBg: 'bg-blue-50',
+    pillText: 'text-blue-700',
+    pillBorder: 'border-blue-100',
+    infoText: 'text-blue-500',
+  },
+  emerald: {
+    bg: 'bg-emerald-50',
+    text: 'text-emerald-600',
+    border: 'border-emerald-100',
+    lightBg: 'bg-emerald-50/50',
+    pillBg: 'bg-emerald-50',
+    pillText: 'text-emerald-700',
+    pillBorder: 'border-emerald-100',
+    infoText: 'text-emerald-500',
+  },
+  amber: {
+    bg: 'bg-amber-50',
+    text: 'text-amber-600',
+    border: 'border-amber-100',
+    lightBg: 'bg-amber-50/50',
+    pillBg: 'bg-amber-50',
+    pillText: 'text-amber-700',
+    pillBorder: 'border-amber-100',
+    infoText: 'text-amber-500',
+  },
+  indigo: {
+    bg: 'bg-indigo-50',
+    text: 'text-indigo-600',
+    border: 'border-indigo-100',
+    lightBg: 'bg-indigo-50/50',
+    pillBg: 'bg-indigo-50',
+    pillText: 'text-indigo-700',
+    pillBorder: 'border-indigo-100',
+    infoText: 'text-indigo-500',
+  },
+  purple: {
+    bg: 'bg-purple-50',
+    text: 'text-purple-600',
+    border: 'border-purple-100',
+    lightBg: 'bg-purple-50/50',
+    pillBg: 'bg-purple-50',
+    pillText: 'text-purple-700',
+    pillBorder: 'border-purple-100',
+    infoText: 'text-purple-500',
+  },
+  teal: {
+    bg: 'bg-teal-50',
+    text: 'text-teal-600',
+    border: 'border-teal-100',
+    lightBg: 'bg-teal-50/50',
+    pillBg: 'bg-teal-50',
+    pillText: 'text-teal-700',
+    pillBorder: 'border-teal-100',
+    infoText: 'text-teal-500',
+  },
+  rose: {
+    bg: 'bg-rose-50',
+    text: 'text-rose-600',
+    border: 'border-rose-100',
+    lightBg: 'bg-rose-50/50',
+    pillBg: 'bg-rose-50',
+    pillText: 'text-rose-700',
+    pillBorder: 'border-rose-100',
+    infoText: 'text-rose-500',
+  },
+  slate: {
+    bg: 'bg-slate-100',
+    text: 'text-slate-700',
+    border: 'border-slate-200',
+    lightBg: 'bg-slate-50',
+    pillBg: 'bg-slate-100',
+    pillText: 'text-slate-800',
+    pillBorder: 'border-slate-200',
+    infoText: 'text-slate-500',
+  },
+};
+
 export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
   activeView,
   locale,
@@ -1493,7 +1578,23 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
   onOpenServiceApp,
   onNavigate,
 }) => {
-  const { strings, services: cmsServicesPillars, buyerSteps: cmsBuyerSteps, producerSteps: cmsProducerSteps, cmsServices, howItWorksBuyersImage, howItWorksSellersImage, buyerHeroImage, producerHeroImage, servicesHeroImage, productsHeroImage, howItWorksHeroImage, contact } = useLocalization();
+  const {
+    strings,
+    services: cmsServicesPillars,
+    buyerSteps: cmsBuyerSteps,
+    producerSteps: cmsProducerSteps,
+    cmsServices,
+    howItWorksBuyersImage,
+    howItWorksSellersImage,
+    buyerHeroImage,
+    producerHeroImage,
+    servicesHeroImage,
+    productsHeroImage,
+    howItWorksHeroImage,
+    contact,
+    buyersPage,
+    producersPage,
+  } = useLocalization();
   const [selectedBuyerStep, setSelectedBuyerStep] = useState<number>(1);
   const [selectedProducerStep, setSelectedProducerStep] = useState<number>(1);
   const [expandedServiceItems, setExpandedServiceItems] = useState<Record<string, boolean>>({});
@@ -1516,40 +1617,37 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
 
   // ── BUYERS PAGE ────────────────────────────────────────────────
   if (activeView === 'buyers') {
-    const BUYER_STEPS_AZ = [
-      { num:'01', title:'Azərbaycanda uyğun tədarükçüləri axtarırıq', desc:'Axtardığınız məhsula görə Azərbaycanda uyğun istehsalçı və tədarükçüləri araşdırırıq.', azexbuy:'Məhsulun xüsusiyyətlərinə, istehsal imkânlarına və istənilən həcmə uyğun potensial tərəfləri müəyyən edirik.', client:'Məhsulun adı, texniki xüsusiyyətlər, istənilən miqdar, hədəf liman/ölkə', result:'Potensial tədarükçülərin ilkin siyahısı', next:'Tədarükçüləri ön yoxlamadan keçiririk' },
-      { num:'02', title:'Tədarükçüləri ön yoxlamadan keçiririk', desc:'Potensial tədarükçülərin şirkət məlumatlarını, fəaliyyət istiqamətlərini, məhsul çeşidlərini araşdırırıq.', azexbuy:'İstehsal imkânları, mövcud sertifikatlar və əməkdaşlıq imkânları ön qiymətləndirmədən keçirilir.', client:'Xüsusi keyfiyyət tələbləri (varsa)', result:'Əməkdaşlıq və uyğunluq üzrə tədarükçülərin qısaldılmış siyahısı', next:'Qiymət və kommersiya təkliflərini toplayırıq' },
-      { num:'03', title:'Qiymət və kommersiya təkliflərini toplayırıq', desc:'Uyğun tədarükçülərdən qiymət, mövcud miqdar, istehsal müddəti, qablaşdırma və çatdırılma şərtləri barədə kommersiya təklifləri alırıq.', azexbuy:'Mümkün olduqda bir neçə tədarükçüdən (hədəf: 3–4 tədarükçü) təklif toplayırıq.', client:'Çatdırılma şərtləri üzrə prioritetlər (Incoterms®)', result:'Müqayisə üçün kommersiya təklifləri toplusu', next:'Təklifləri müqayisəli şəkildə təqdim edirik' },
-      { num:'04', title:'Təklifləri müqayisəli şəkildə təqdim edirik', desc:'Toplanmış təklifləri qiymət, keyfiyyət göstəriciləri, tədarük imkânları və kommersiya şərtləri üzrə müqayisə edərək sizə təqdim edirik.', azexbuy:'Alternativləri qiymətləndirib ehtiyaclarınıza uyğun seçim etməyinizə yardım edirik.', client:'Təkliflər üzrə rəy və prioritetlər', result:'Sizin üçün ən uyğun tədarükçünün seçilməsi', next:'Sifarişi koordinasiya edirik' },
-      { num:'05', title:'Sifarişi koordinasiya edirik', desc:'Seçdiyiniz tədarükçü ilə növbəti kommersiya danışıqları, sifariş təfərrüatları, müqavilə şərtləri və ödəniş razılaşmalarının aparılmasına dəstək veririk.', azexbuy:'Tərəflər arasında məlumat mübadiləsini və sifariş prosesinin koordinasiyasını təmin edirik.', client:'Sifariş təsdiqi, ödəniş şərtləri üzrə razılaşma', result:'Sifariş təsdiqlənir, istehsal/hazırlıq başlayır', next:'İxrac, gömrük və çatdırılma mərhələlərinə dəstək veririk' },
-      { num:'06', title:'İxrac, gömrük və çatdırılma mərhələlərinə dəstək veririk', desc:'Sifarişin ixraca hazırlanmasından məhsulun göndərilməsinə qədər sənədləşdirmə, sertifikasiya, gömrük prosedurları və beynəlxalq logistika proseslərinin koordinasiyasına dəstək veririk.', azexbuy:'Məhsulun razılaşdırılmış çatdırılma şərtlərinə uyğun şəkildə alıcıya çatdırılması prosesini koordinasiya edirik.', client:'Çatdırılma ünvanı, gömrük məlumatları', result:'Məhsul alıcıya çatdırılır', next:'Rəsmi RFQ qeydiyyatı' },
-      { num:'07', title:'Rəsmi RFQ qeydiyyatı', desc:'Seçim və logistika təsdiqləndikdən sonra sorğunuz rəsmiləşdirilir və Rəsmi RFQ Dosyeniz qeydiyyatdan keçir.', azexbuy:'Yekun RFQ sənədini hazırlayır və Rəsmi RFQ Dosye Nömrəsi ilə qeydiyyatdan keçirir.', client:'Əksik sənəd və təsdiqlər (varsa)', result:'Qeydiyyatdan keçmiş Rəsmi RFQ Dosye Nömrəsi', next:null },
-    ];
+    const bPage = buyersPage || DEFAULT_BUYERS_PAGE;
+    const heroTitle = getLocalizedText(bPage.hero?.title, locale);
+    const heroDesc = getLocalizedText(bPage.hero?.desc, locale);
+    const ctaRFQ = getLocalizedText(bPage.hero?.ctaRFQ, locale);
+    const ctaCatalog = getLocalizedText(bPage.hero?.ctaCatalog, locale);
+    const heroImg = bPage.hero?.image || buyerHeroImage;
 
-    const clientLabel = locale === 'AZ' ? 'Alıcı nə təqdim etməlidir?' : locale === 'TR' ? 'Alıcı ne sunmalıdır?' : locale === 'RU' ? 'Что предоставляет покупатель?' : 'What does the buyer provide?';
-    const azexbuyLabel = locale === 'AZ' ? 'AZEXBUY nə edir?' : locale === 'TR' ? 'AZEXBUY ne yapar?' : locale === 'RU' ? 'Что делает AZEXBUY?' : 'What AZEXBUY does';
-    const resultLabel = locale === 'AZ' ? 'Gözlənilən nəticə' : locale === 'TR' ? 'Beklenen sonuç' : locale === 'RU' ? 'Ожидаемый результат' : 'Expected result';
-    const nextLabel = locale === 'AZ' ? 'Növbəti mərhələ' : locale === 'TR' ? 'Sonraki adım' : locale === 'RU' ? 'Следующий этап' : 'Next step';
-    const stepsTitle = locale === 'AZ' ? '7 mərhələli alıcı prosesi' : locale === 'TR' ? '7 adımlı alıcı süreci' : locale === 'RU' ? '7-этапный процесс покупателя' : '7-Step Buyer Process';
-    const infoTitle = locale === 'AZ' ? 'Faydalı məlumatlar' : locale === 'TR' ? 'Faydalı bilgiler' : locale === 'RU' ? 'Полезная информация' : 'Useful Information';
-    const ctaRFQ = locale === 'AZ' ? 'Alıcı sorğusu göndər' : locale === 'TR' ? 'Alıcı sorgusu gönder' : locale === 'RU' ? 'Отправить запрос' : 'Send Buyer Inquiry';
-    const ctaCatalog = locale === 'AZ' ? 'Məhsul kataloquna bax' : locale === 'TR' ? 'Ürün kataloğuna bak' : locale === 'RU' ? 'Смотреть каталог' : 'View Product Catalog';
-    const heroTitle = locale === 'AZ' ? 'Azərbaycandan tədarük edin' : locale === 'TR' ? 'Azerbaycan’dan tedarik edin' : locale === 'RU' ? 'Закупки из Азербайджана' : 'Source from Azerbaijan';
-    const heroDesc = locale === 'AZ'
-      ? 'Tələbinizi bildirin; uyğun tədarükçüləri arayaq, təklifləri toplayıb müqayisə üçün təqdim edək və ixrac prosesini koordinasiya edək.'
-      : locale === 'TR'
-      ? 'İhtiyacınızı bildirin; uygun tedarikçileri arayalım, teklifleri toplayıp karşılaştırma için sunalım ve ihracat sürecini koordine edelim.'
-      : locale === 'RU'
-      ? 'Сообщите о потребности; найдём поставщиков, соберём предложения и скоординируем экспортный процесс.'
-      : 'Share your needs; we will find suitable suppliers, collect offers for comparison, and coordinate the export process.';
+    const stepsTitle = getLocalizedText(bPage.stepsTitle, locale);
+    const clientLabel = getLocalizedText(bPage.clientLabel, locale);
+    const azexbuyLabel = getLocalizedText(bPage.azexbuyLabel, locale);
+    const resultLabel = getLocalizedText(bPage.resultLabel, locale);
+    const nextLabel = getLocalizedText(bPage.nextLabel, locale);
+    const stepsList = (Array.isArray(bPage.steps) && bPage.steps.length > 0) ? bPage.steps : DEFAULT_BUYERS_PAGE.steps;
+
+    const guideBadge = getLocalizedText(bPage.guideBadge, locale);
+    const guideTitle = getLocalizedText(bPage.guideTitle, locale);
+    const guideDesc = getLocalizedText(bPage.guideDesc, locale);
+    const guideCards = (Array.isArray(bPage.guideCards) && bPage.guideCards.length > 0) ? bPage.guideCards : DEFAULT_BUYERS_PAGE.guideCards;
+
+    const bottomCtaTitle = getLocalizedText(bPage.bottomCta?.title, locale);
+    const bottomCtaDesc = getLocalizedText(bPage.bottomCta?.desc, locale);
+    const bottomCtaRFQ = getLocalizedText(bPage.bottomCta?.ctaRFQ || bPage.hero?.ctaRFQ, locale);
+    const bottomCtaCatalog = getLocalizedText(bPage.bottomCta?.ctaCatalog || bPage.hero?.ctaCatalog, locale);
 
     return (
       <div className="bg-[#F8FAFC] min-h-screen">
-        {/* Hero — full-width image, flush to topbar (admin-editable BUYER_HERO_IMAGE) */}
+        {/* Hero */}
         <div className="relative w-full overflow-hidden bg-[#0b2440]">
           <img
-            src={buyerHeroImage}
-            alt="AZEXBUY Baku headquarters"
+            src={heroImg}
+            alt="AZEXBUY Sourcing"
             className="w-full h-[420px] object-cover object-center"
             referrerPolicy="no-referrer"
           />
@@ -1582,34 +1680,46 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
         <div className="custom-container py-10">
           <h2 className="text-lg font-bold text-[#171717] mb-6">{stepsTitle}</h2>
           <div className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden">
-            {BUYER_STEPS_AZ.map((step, idx) => {
+            {stepsList.map((step: any, idx: number) => {
               const isOpen = selectedBuyerStep === idx + 1;
+              const sNum = step.num || String(idx + 1).padStart(2, '0');
+              const sTitle = getLocalizedText(step.title, locale);
+              const sDesc = getLocalizedText(step.desc, locale);
+              const sAzexbuy = getLocalizedText(step.azexbuy, locale);
+              const sClient = getLocalizedText(step.client, locale);
+              const sResult = getLocalizedText(step.result, locale);
+              const sNext = step.next ? getLocalizedText(step.next, locale) : null;
+
               return (
-                <div key={step.num} className="border-b border-[#F0F0F0] last:border-0">
+                <div key={sNum || idx} className="border-b border-[#F0F0F0] last:border-0">
                   <button type="button" className="w-full text-left px-5 py-4 flex items-start gap-4 cursor-pointer hover:bg-slate-50 transition-colors" onClick={() => setSelectedBuyerStep(isOpen ? 0 : idx + 1)}>
-                    <span className="text-[13px] font-bold text-slate-400 mt-0.5 w-7 shrink-0">{step.num}</span>
+                    <span className="text-[13px] font-bold text-slate-400 mt-0.5 w-7 shrink-0">{sNum}</span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[15px] font-semibold text-[#171717]">{step.title}</p>
-                      {!isOpen && <p className="text-[13px] text-slate-500 mt-0.5 leading-relaxed">{step.desc.slice(0, 90)}…</p>}
+                      <p className="text-[15px] font-semibold text-[#171717]">{sTitle}</p>
+                      {!isOpen && sDesc && <p className="text-[13px] text-slate-500 mt-0.5 leading-relaxed">{sDesc.slice(0, 90)}…</p>}
                     </div>
                     <i className={`fa-solid fa-chevron-down text-slate-400 text-xs mt-1 shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}></i>
                   </button>
                   {isOpen && (
                     <div className="px-5 pb-5 space-y-3">
-                      <p className="text-[14px] text-slate-600 leading-relaxed ml-11">{step.desc}</p>
+                      {sDesc && <p className="text-[14px] text-slate-600 leading-relaxed ml-11">{sDesc}</p>}
                       <div className="ml-11 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div className="bg-[#EFF6FF] rounded-lg p-3.5">
-                          <p className="text-[11px] font-bold text-[#1D4ED8] uppercase tracking-wider mb-1.5">{azexbuyLabel}</p>
-                          <p className="text-[13px] text-[#334]">{step.azexbuy}</p>
-                        </div>
-                        <div className="bg-slate-50 rounded-lg p-3.5">
-                          <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">{clientLabel}</p>
-                          <p className="text-[13px] text-slate-700">{step.client}</p>
-                        </div>
+                        {sAzexbuy && (
+                          <div className="bg-[#EFF6FF] rounded-lg p-3.5">
+                            <p className="text-[11px] font-bold text-[#1D4ED8] uppercase tracking-wider mb-1.5">{azexbuyLabel}</p>
+                            <p className="text-[13px] text-[#334]">{sAzexbuy}</p>
+                          </div>
+                        )}
+                        {sClient && (
+                          <div className="bg-slate-50 rounded-lg p-3.5">
+                            <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">{clientLabel}</p>
+                            <p className="text-[13px] text-slate-700">{sClient}</p>
+                          </div>
+                        )}
                       </div>
                       <div className="ml-11 space-y-1">
-                        <p className="text-[13px] text-slate-700"><span className="font-semibold">{resultLabel}:</span> {step.result}</p>
-                        {step.next && <p className="text-[12px] text-slate-500"><span className="font-medium">{nextLabel}:</span> {step.next}</p>}
+                        {sResult && <p className="text-[13px] text-slate-700"><span className="font-semibold">{resultLabel}:</span> {sResult}</p>}
+                        {sNext && <p className="text-[12px] text-slate-500"><span className="font-medium">{nextLabel}:</span> {sNext}</p>}
                       </div>
                     </div>
                   )}
@@ -1622,251 +1732,85 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
         {/* Buyer International Trade & Sourcing Guide */}
         <div className="custom-container pb-12">
           <div className="mb-6">
-            <span className="text-xs font-extrabold uppercase tracking-wider text-brandGreen block mb-1">
-              {locale === 'AZ' ? 'Tədarük Qaydaları və Beynəlxalq Standartlar' : locale === 'TR' ? 'Tedarik Kuralları ve Uluslararası Standartlar' : locale === 'RU' ? 'Правила закупок и международные стандарты' : 'Sourcing Rules & Global Standards'}
-            </span>
+            {guideBadge && (
+              <span className="text-xs font-extrabold uppercase tracking-wider text-brandGreen block mb-1">
+                {guideBadge}
+              </span>
+            )}
             <h2 className="text-xl sm:text-2xl font-extrabold text-[#171717] tracking-tight">
-              {locale === 'AZ' ? 'Alıcılar Üçün Ticarət və İdxal Bələdçisi' : locale === 'TR' ? 'Alıcılar İçin Ticaret ve İthalat Rehberi' : locale === 'RU' ? 'Руководство по закупкам и импорту для покупателей' : 'Buyer Sourcing & Import Guide'}
+              {guideTitle}
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-2xl leading-relaxed">
-              {locale === 'AZ'
-                ? 'Azərbaycandan məhsul tədarük edərkən çatdırılma şərtləri, ödəniş mexanizmləri, keyfiyyət təminatı və tələb olunan idxal sənədləri.'
-                : locale === 'TR'
-                ? 'Azerbaycan\'dan ürün tedarik ederken teslimat şartları, ödeme mekanizmaları, kalite güvencesi ve zorunlu ithalat evrakları.'
-                : locale === 'RU'
-                ? 'Условия поставки, механизмы оплаты, гарантии качества и импортная документация при закупках из Азербайджана.'
-                : 'Key Incoterms rules, secure payment structures, compliance certificates, and required import documentation when sourcing from Azerbaijan.'}
-            </p>
+            {guideDesc && (
+              <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-2xl leading-relaxed">
+                {guideDesc}
+              </p>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Kart 1. Incoterms® 2020 */}
-            <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
-              <div>
-                <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-                      <i className="fa-solid fa-ship text-sm"></i>
+            {guideCards.map((card: any, cIdx: number) => {
+              const cardColorKey = card.color || (cIdx === 0 ? 'blue' : cIdx === 1 ? 'emerald' : cIdx === 2 ? 'amber' : 'indigo');
+              const theme = GUIDE_COLOR_MAP[cardColorKey] || GUIDE_COLOR_MAP.blue;
+              const iconClass = card.icon || (cIdx === 0 ? 'fa-solid fa-ship' : cIdx === 1 ? 'fa-solid fa-file-invoice-dollar' : cIdx === 2 ? 'fa-solid fa-certificate' : 'fa-solid fa-folder-open');
+              const cardBadge = getLocalizedText(card.badge, locale) || `Kart ${cIdx + 1}`;
+              const cardTitle = getLocalizedText(card.title, locale);
+              const cardTag = getLocalizedText(card.tag, locale);
+              const cardOverview = getLocalizedText(card.overview, locale);
+              const cardNote = getLocalizedText(card.note, locale);
+              const cardItems = card.items || [];
+
+              return (
+                <div key={cIdx} className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
+                  <div>
+                    <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-9 h-9 rounded-lg ${theme.bg} ${theme.text} flex items-center justify-center shrink-0`}>
+                          <i className={`${iconClass} text-sm`}></i>
+                        </div>
+                        <div>
+                          <span className={`text-[10px] font-bold uppercase tracking-wider ${theme.text} font-mono`}>{cardBadge}</span>
+                          <h3 className="text-[16px] font-bold text-[#171717]">{cardTitle}</h3>
+                        </div>
+                      </div>
+                      {cardTag && (
+                        <span className={`text-xs font-semibold px-2.5 py-1 ${theme.pillBg} ${theme.pillText} rounded-full border ${theme.pillBorder}`}>
+                          {cardTag}
+                        </span>
+                      )}
                     </div>
-                    <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 font-mono">Kart 1</span>
-                      <h3 className="text-[16px] font-bold text-[#171717]">Incoterms® 2020</h3>
-                    </div>
-                  </div>
-                  <span className="text-xs font-semibold px-2.5 py-1 bg-blue-50 text-blue-700 rounded-full border border-blue-100">
-                    {locale === 'AZ' ? 'Çatdırılma şərtləri' : locale === 'TR' ? 'Teslimat Şartları' : locale === 'RU' ? 'Условия поставки' : 'Delivery Terms'}
-                  </span>
-                </div>
 
-                <div className="bg-blue-50/50 border border-blue-100/70 rounded-lg p-3 mb-4 text-xs text-slate-700 leading-relaxed">
-                  <strong className="text-slate-900">{locale === 'AZ' ? 'Qısa izah:' : locale === 'TR' ? 'Kısa Açıklama:' : 'Overview:'}</strong>{' '}
-                  {locale === 'AZ'
-                    ? 'İdxal və tədarük əməliyyatında satıcının və alıcının çatdırılma, daşınma xərcləri və risklər üzrə öhdəliklərini müəyyən edən beynəlxalq qaydalar.'
-                    : locale === 'TR'
-                    ? 'İthalat ve tedarik operasyonlarında alıcı ve satıcının navlun maliyeti, sigorta ve risk paylaşımını belirleyen uluslararası kurallar.'
-                    : 'International rules defining the responsibilities of buyers and sellers regarding delivery, freight costs, and risk transfer.'}
-                </div>
+                    {cardOverview && (
+                      <div className={`${theme.lightBg} border ${theme.border}/70 rounded-lg p-3 mb-4 text-xs text-slate-700 leading-relaxed`}>
+                        <strong className="text-slate-900">{locale === 'AZ' ? 'Qısa izah:' : locale === 'TR' ? 'Kısa Açıklama:' : 'Overview:'}</strong>{' '}
+                        {cardOverview}
+                      </div>
+                    )}
 
-                <div className="space-y-2 text-xs">
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded font-mono shrink-0">EXW</span>
-                    <span className="text-slate-600 leading-snug">Satıcı məhsulu öz ərazisində alıcının sərəncamına verir (bütün daşıma alıcıdadır).</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded font-mono shrink-0">FCA</span>
-                    <span className="text-slate-600 leading-snug">Satıcı məhsulu razılaşdırılmış daşıyıcıya və ya logistika terminalına təhvil verir.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded font-mono shrink-0">FOB</span>
-                    <span className="text-slate-600 leading-snug">Dəniz daşımalarında məhsul gəminin göyərtəsinə yüklənir; risk bortu keçdikdə ötürülür.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded font-mono shrink-0">CIF</span>
-                    <span className="text-slate-600 leading-snug">Satıcı məhsulun dəyərini, dəniz sığortasını və təyinat limanına qədər fraxtı ödəyir.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded font-mono shrink-0">DAP</span>
-                    <span className="text-slate-600 leading-snug">Satıcı məhsulu razılaşdırılmış təyinat yerinə (alıcının anbarı/terminalı) çatdırır.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded font-mono shrink-0">DDP</span>
-                    <span className="text-slate-600 leading-snug">Satıcı idxal rəsmiləşdirilməsi və müvafiq idxal rüsumları daxil olmaqla bütün öhdəlikləri daşıyır.</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-4 pt-3 border-t border-slate-100 flex items-start gap-2 text-[11.5px] text-slate-500 italic">
-                <i className="fa-solid fa-circle-info text-blue-500 mt-0.5 shrink-0"></i>
-                <span>Alıcı müqavilə bağlamazdan əvvəl seçilmiş Incoterms® şərtinə uyğun gömrük və daşıma xərclərini hesablamalıdır.</span>
-              </div>
-            </div>
-
-            {/* Kart 2. İxrac qiyməti və ödəniş şərtləri */}
-            <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
-              <div>
-                <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-                      <i className="fa-solid fa-file-invoice-dollar text-sm"></i>
-                    </div>
-                    <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 font-mono">Kart 2</span>
-                      <h3 className="text-[16px] font-bold text-[#171717]">İxrac qiyməti və ödəniş şərtləri</h3>
+                    <div className="space-y-2 text-xs">
+                      {cardItems.map((item: any, itIdx: number) => {
+                        const itLabel = getLocalizedText(item.label, locale);
+                        const itDesc = getLocalizedText(item.desc, locale);
+                        return (
+                          <div key={itIdx} className="flex items-start gap-2.5">
+                            <span className={`font-bold ${theme.pillText} ${theme.pillBg} px-1.5 py-0.5 rounded font-mono shrink-0`}>
+                              {itLabel}
+                            </span>
+                            <span className="text-slate-600 leading-snug">{itDesc}</span>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
-                  <span className="text-xs font-semibold px-2.5 py-1 bg-emerald-50 text-emerald-700 rounded-full border border-emerald-100">
-                    Export Pricing & Payment
-                  </span>
-                </div>
 
-                <div className="bg-emerald-50/50 border border-emerald-100/70 rounded-lg p-3 mb-4 text-xs text-slate-700 leading-relaxed">
-                  <strong className="text-slate-900">{locale === 'AZ' ? 'Qısa izah:' : locale === 'TR' ? 'Kısa Açıklama:' : 'Overview:'}</strong>{' '}
-                  Xarici alıcıya təqdim ediləcək satış qiymətinin formalaşdırılması və ödəniş şərtlərinin razılaşdırılması.
-                </div>
-
-                <div className="space-y-2 text-xs">
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-mono shrink-0">EXW qiyməti</span>
-                    <span className="text-slate-600 leading-snug">Məhsulun satıcının müəssisəsində təhvil verilmə qiyməti.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-mono shrink-0">FOB qiyməti</span>
-                    <span className="text-slate-600 leading-snug">Müvafiq dəniz daşınması şərtində gəminin göyərtəsinə qədər olan satıcı xərcləri nəzərə alınmaqla qiymət.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-mono shrink-0">CIF qiyməti</span>
-                    <span className="text-slate-600 leading-snug">Məhsulun dəyəri, sığorta və təyinat limanına qədər fraxt xərcləri.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-mono shrink-0">T/T</span>
-                    <span className="text-slate-600 leading-snug">Bank köçürməsi (Telegraphic Transfer).</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-mono shrink-0">L/C</span>
-                    <span className="text-slate-600 leading-snug">Akkreditiv (Letter of Credit — bank zəmanəti ilə risklərin sığortalanması).</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded shrink-0">Avans / Qalıq ödəniş</span>
-                    <span className="text-slate-600 leading-snug">Tərəflərin razılaşdırdığı ilkin və yekun ödəniş bölgüsü.</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-4 pt-3 border-t border-slate-100 flex items-start gap-2 text-[11.5px] text-slate-500 italic">
-                <i className="fa-solid fa-circle-info text-emerald-500 mt-0.5 shrink-0"></i>
-                <span>İxrac qiyməti məhsulun maya dəyəri, qablaşdırma, daşınma və razılaşdırılmış çatdırılma şərtlərinə əsasən hesablanmalıdır.</span>
-              </div>
-            </div>
-
-            {/* Kart 3. Keyfiyyət və sertifikatlar */}
-            <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
-              <div>
-                <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
-                      <i className="fa-solid fa-certificate text-sm"></i>
+                  {cardNote && (
+                    <div className="mt-4 pt-3 border-t border-slate-100 flex items-start gap-2 text-[11.5px] text-slate-500 italic">
+                      <i className={`fa-solid fa-circle-info ${theme.infoText} mt-0.5 shrink-0`}></i>
+                      <span>{cardNote}</span>
                     </div>
-                    <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600 font-mono">Kart 3</span>
-                      <h3 className="text-[16px] font-bold text-[#171717]">Keyfiyyət və sertifikatlar</h3>
-                    </div>
-                  </div>
-                  <span className="text-xs font-semibold px-2.5 py-1 bg-amber-50 text-amber-700 rounded-full border border-amber-100">
-                    Quality & Certificates
-                  </span>
+                  )}
                 </div>
-
-                <div className="bg-amber-50/50 border border-amber-100/70 rounded-lg p-3 mb-4 text-xs text-slate-700 leading-relaxed">
-                  <strong className="text-slate-900">{locale === 'AZ' ? 'Qısa izah:' : locale === 'TR' ? 'Kısa Açıklama:' : 'Overview:'}</strong>{' '}
-                  İstehsal olunan məhsulun xarici bazarlara çıxarılması zamanı tələb oluna bilən keyfiyyət standartları, sertifikatlar və uyğunluq sənədləri.
-                </div>
-
-                <div className="space-y-2 text-xs">
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded font-mono shrink-0">ISO 9001</span>
-                    <span className="text-slate-600 leading-snug">Keyfiyyətin idarəetmə sistemi.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded font-mono shrink-0">ISO 22000 / HACCP</span>
-                    <span className="text-slate-600 leading-snug">Qida təhlükəsizliyi üzrə idarəetmə və nəzarət sistemləri.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded font-mono shrink-0">Halal</span>
-                    <span className="text-slate-600 leading-snug">Müvafiq tələblərə uyğunluq sertifikatı.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded font-mono shrink-0">CE</span>
-                    <span className="text-slate-600 leading-snug">Müəyyən məhsul qrupları üçün Avropa İttifaqının uyğunluq nişanlaması.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded shrink-0">Fitosanitar / Baytarlıq</span>
-                    <span className="text-slate-600 leading-snug">Müvafiq bitki və heyvan mənşəli məhsullar üçün tələb oluna bilər.</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-4 pt-3 border-t border-slate-100 flex items-start gap-2 text-[11.5px] text-slate-500 italic">
-                <i className="fa-solid fa-circle-info text-amber-500 mt-0.5 shrink-0"></i>
-                <span>Sertifikat tələbləri məhsulun kateqoriyasına, təyinat ölkəsinə və qüvvədə olan qaydalara görə dəyişir.</span>
-              </div>
-            </div>
-
-            {/* Kart 4. İxrac sənədləri */}
-            <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
-              <div>
-                <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
-                      <i className="fa-solid fa-folder-open text-sm"></i>
-                    </div>
-                    <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-600 font-mono">Kart 4</span>
-                      <h3 className="text-[16px] font-bold text-[#171717]">İxrac sənədləri</h3>
-                    </div>
-                  </div>
-                  <span className="text-xs font-semibold px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-full border border-indigo-100">
-                    Export Documents
-                  </span>
-                </div>
-
-                <div className="bg-indigo-50/50 border border-indigo-100/70 rounded-lg p-3 mb-4 text-xs text-slate-700 leading-relaxed">
-                  <strong className="text-slate-900">{locale === 'AZ' ? 'Qısa izah:' : locale === 'TR' ? 'Kısa Açıklama:' : 'Overview:'}</strong>{' '}
-                  Xarici alıcıya məhsul satışı, ixrac əməliyyatının sənədləşdirilməsi və yükün beynəlxalq daşınması zamanı istifadə olunan əsas sənədlər.
-                </div>
-
-                <div className="space-y-2 text-xs">
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded font-mono shrink-0">Commercial Invoice</span>
-                    <span className="text-slate-600 leading-snug">Kommersiya hesab-fakturası.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded font-mono shrink-0">Packing List</span>
-                    <span className="text-slate-600 leading-snug">Məhsulun qablaşdırma siyahısı.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded font-mono shrink-0">Certificate of Origin</span>
-                    <span className="text-slate-600 leading-snug">Məhsulun mənşə sertifikatı.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded font-mono shrink-0">CMR / Bill of Lading / AWB</span>
-                    <span className="text-slate-600 leading-snug">Avtomobil, dəniz və hava nəqliyyatı sənədləri.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded shrink-0">İxrac bəyannaməsi</span>
-                    <span className="text-slate-600 leading-snug">Gömrük ixrac rəsmiləşdirilməsi zamanı istifadə olunan sənəd.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded font-mono shrink-0">Proforma Invoice</span>
-                    <span className="text-slate-600 leading-snug">Satışdan əvvəl kommersiya şərtlərini göstərən ilkin hesab sənədi.</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-4 pt-3 border-t border-slate-100 flex items-start gap-2 text-[11.5px] text-slate-500 italic">
-                <i className="fa-solid fa-circle-check text-indigo-500 mt-0.5 shrink-0"></i>
-                <span>Sənədlərin tam və dəqiq hazırlanması gömrük keçidini və ödənişin alınmasını sürətləndirir.</span>
-              </div>
-            </div>
+              );
+            })}
           </div>
         </div>
 
@@ -1874,8 +1818,8 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
         <div className="bg-white border-t border-slate-100">
           <div className="custom-container py-10 flex flex-col sm:flex-row items-center gap-4">
             <div className="flex-1">
-              <p className="text-base font-semibold text-[#171717]">{locale === 'AZ' ? 'Azərbaycandan məhsul almaq istəyirsiniz?' : locale === 'TR' ? "Azerbaycan'dan ürün almak mı istiyorsunuz?" : 'Ready to source from Azerbaijan?'}</p>
-              <p className="text-sm text-slate-500 mt-0.5">{locale === 'AZ' ? 'Sorğunuzu bizə göndərin, uyğun tədarükçüləri axtaraq.' : locale === 'TR' ? 'Sorgunuzu bize gönderin, uygun tedarikçileri arayalım.' : 'Send us your inquiry and we will find suitable suppliers.'}</p>
+              <p className="text-base font-semibold text-[#171717]">{bottomCtaTitle}</p>
+              <p className="text-sm text-slate-500 mt-0.5">{bottomCtaDesc}</p>
             </div>
             <div className="flex gap-2.5 shrink-0">
               <button
@@ -1883,14 +1827,14 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
                 onClick={onOpenRFQ}
                 className="bg-brandNavy hover:bg-brandNavyDark text-white text-xs font-semibold px-4 py-2 rounded transition-colors cursor-pointer"
               >
-                {ctaRFQ}
+                {bottomCtaRFQ}
               </button>
               <button
                 type="button"
                 onClick={() => onNavigate('products')}
                 className="border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-medium px-4 py-2 rounded transition-colors cursor-pointer"
               >
-                {ctaCatalog}
+                {bottomCtaCatalog}
               </button>
             </div>
           </div>
@@ -2147,42 +2091,37 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
 
   // ── PRODUCERS PAGE ────────────────────────────────────────────
   if (activeView === 'producers') {
-    const PRODUCER_STEPS = [
-      { num:'01', title:'İstehsal imkânları və məhsul məlumatları netləşdirilir', desc:'İstehsal gücünüzü, məhsul çeşitlərini, minimum sifariş miqdarını, qablaşdırma imkânlarını netləşdiririk.', azexbuy:'Məhsulun potensial xarici alıcılara düzgün təqdim edilməsini təmin edirik.', client:'Şirkət adı, fəaliyyət istiqaməti, texniki spesifikasiyalar, istehsal həcmi, qablaşdırma növləri', result:'Tam məhsul profili hazırlanır', next:'İxrac hazırlığı qiymətləndirilir' },
-      { num:'02', title:'İxrac hazırlığı qiymətləndirilir', desc:'Şirkətinizin və məhsullarınızın xarici bazarlara çıxış üçün hazırlıq səviyyəsi ön qiymətləndirmədən keçirilir.', azexbuy:'Keyfiyyət, istehsal davamlılığı, qablaşdırma, etiketləmə, sertifikatlar yoxlanır. Lazım olduqda inkişaf tövsiyələri verilir.', client:'Mövcud sertifikat sənədləri, nümunələr (tələb olunarsa)', result:'İxrac hazırlığı hesabatı', next:'Hədəf bazarlar araşdırılır' },
-      { num:'03', title:'Hədəf bazarlar araşdırılır', desc:'Məhsulunuzun xüsusiyyətlərinə uyğun beynəlxalq bazarları araşdırırıq.', azexbuy:'Hədəf ölkələrdə tələb, bazar meylləri, rəqabət mühiti, qiymət səviyyəsi, idxal şərtləri araşdırılır.', client:'Prioritet ölkələr (varsa), ixrac məhdudiyyətləri barədə məlumat', result:'Tövsiyə edilən hədəf bazarların siyahısı', next:'Potensial xarici alıcılar axtarılır' },
-      { num:'04', title:'Potensial xarici alıcılar axtarılır', desc:'Seçilmiş hədəf bazarlarda məhsulunuza uyğun potensial alıcıları, distribütorları, idxalçıları araşdırırıq.', azexbuy:'Müəyyən edilmiş şirkətlərin fəaliyyət istiqamətləri və məhsul tələbləri yoxlanılır.', client:'Üstünlük verilən alıcı tipi (varsa)', result:'Potensial alıcıların siyahısı', next:'Kommersiya danışıqları dəstəklənir' },
-      { num:'05', title:'Kommersiya danışıqları dəstəklənir', desc:'Potensial alıcılarla ilk əlaqələrin qurulmasına, məhsul məlumatlarının və kommersiya təkliflərinin təqdim edilməsinə dəstək veririk.', azexbuy:'Qiymət, sifariş həcmi, istehsal müddəti, qablaşdırma, ödəniş və çatdırılma şərtləri üzrə danışıqların aparılmasına yardım edirik.', client:'Kommersiya təklifi, qiymət siyahısı', result:'Alıcı ilə ilkin razılaşma', next:'Müqavilə və sənədlərə dəstək verilir' },
-      { num:'06', title:'Müqavilə, proforma və sənədlərə dəstək verilir', desc:'Satış üzrə razılaşma əldə edildikdən sonra müqavilə, proforma-invoice və digər ticarət sənədlərinin hazırlanmasına dəstək veririk.', azexbuy:'Sənədlərdə məhsul məlumatlarının, miqdarin, qiymətin, ödəniş və çatdırılma şərtlərinin düzgün əks etdirilməsinə diqqət yetiririk.', client:'Şirkət rekvizitləri, məhsul məlumatları', result:'İmzalı müqavilə / təsdiqlənmiş sifariş', next:'Sertifikat prosesləri koordinasiya edilir' },
-      { num:'07', title:'Sertifikat və uyğunluq prosesləri koordinasiya edilir', desc:'Hədəf bazarın tələblərinə uyğun sertifikat və uyğunluq sənədlərinin əldə edilməsinə yardım edirik.', azexbuy:'İlgili sertifikasiya qurumları ilə əlaqənin koordinasiyasına, müraciət və sənədləşdirmə prosesinin izlənməsinə dəstək veririk.', client:'Lazımi sınaq nümunələri, şirkət sənədləri', result:'Tələb olunan sertifikatlar əldə edilir', next:'Gömrük prosedurlarına dəstək verilir' },
-      { num:'08', title:'Gömrük prosedurlarına dəstək verilir', desc:'Məhsulun ixracı üçün tələb olunan gömrük sənədləri və prosedurları barədə məlumat veririk.', azexbuy:'İxrac sənədlərinin hazırlanması, ilgili tərəflərlə əlaqə və gömrük əməliyyatlarının mərhələlərinin izlənməsinə yardım edirik.', client:'Gömrük üçün tələb olunan şirkət və məhsul sənədləri', result:'Gömrük sənədləri tamamlanır', next:'Logistika koordinasiya edilir' },
-      { num:'09', title:'Logistika və çatdırılma koordinasiya edilir', desc:'Məhsulun hədəf ölkəyə çatdırılması üçün uyğun beynəlxalq logistika həllərinin araşdırılmasına dəstək veririk.', azexbuy:'Daşıma növü, marşrut, çatdırılma müddəti, yükün xüsusiyyətləri və razılaşdırılmış Incoterms® 2020 şərtləri nəzərə alınaraq daşıma mərhələlərinin koordinasiyasına yardım edirik.', client:'Yükün çəkisi, həcmi, xüsusi saxlama tələbləri', result:'Məhsul alıcıya çatdırılır', next:'Rəsmi Məhsul RFQ qeydiyyatı' },
-      { num:'10', title:'Rəsmi Məhsul RFQ qeydiyyatı', desc:'İxrac logistikası və sertifikatlaşdırma təsdiqləndikdən sonra məhsul təklifiniz rəsmiləşdirilir və Rəsmi İstehsalçı RFQ Dosyeniz qeydiyyatdan keçir.', azexbuy:'Yekun Məhsul RFQ sənədini hazırlayır və Rəsmi İstehsalçı RFQ Dosye Nömrəsi ilə qeydiyyatdan keçirir.', client:'Əksik sənəd və təsdiqlər (varsa)', result:'Qeydiyyatdan keçmiş Rəsmi İstehsalçı RFQ Dosye Nömrəsi', next:null },
-    ];
+    const pPage = producersPage || DEFAULT_PRODUCERS_PAGE;
+    const heroTitle = getLocalizedText(pPage.hero?.title, locale);
+    const heroDesc = getLocalizedText(pPage.hero?.desc, locale);
+    const ctaRegister = getLocalizedText(pPage.hero?.ctaRegister, locale);
+    const ctaServices = getLocalizedText(pPage.hero?.ctaServices, locale);
+    const heroImg = pPage.hero?.image || producerHeroImage;
 
-    const clientLabel = locale === 'AZ' ? 'İstehsalçı nə təqdim etməlidir?' : locale === 'TR' ? 'Üretici ne sunmalıdır?' : locale === 'RU' ? 'Что предоставляет производитель?' : 'What does the producer provide?';
-    const azexbuyLabel = locale === 'AZ' ? 'AZEXBUY nə edir?' : locale === 'TR' ? 'AZEXBUY ne yapar?' : locale === 'RU' ? 'Что делает AZEXBUY?' : 'What AZEXBUY does';
-    const resultLabel = locale === 'AZ' ? 'Gözlənilən nəticə' : locale === 'TR' ? 'Beklenen sonuç' : locale === 'RU' ? 'Ожидаемый результат' : 'Expected result';
-    const nextLabel = locale === 'AZ' ? 'Növbəti mərhələ' : locale === 'TR' ? 'Sonraki adım' : locale === 'RU' ? 'Следующий этап' : 'Next step';
-    const stepsTitle = locale === 'AZ' ? '10 mərhələli istehsalçı prosesi' : locale === 'TR' ? '10 adımlı üretici süreci' : locale === 'RU' ? '10-этапный процесс производителя' : '10-Step Producer Process';
-    const ctaRegister = locale === 'AZ' ? 'İstehsalçı kimi qeydiyyat' : locale === 'TR' ? 'Üretici olarak kayıt' : locale === 'RU' ? 'Регистрация производителя' : 'Register as Producer';
-    const ctaServices = locale === 'AZ' ? 'Xidmətlərə bax' : locale === 'TR' ? 'Hizmetlere bak' : locale === 'RU' ? 'Смотреть услуги' : 'View Services';
-    const heroTitle = locale === 'AZ' ? 'Məhsullarınızı dünya bazarlarına çıxarın' : locale === 'TR' ? 'Ürünlerinizi dünya pazarlarına çıkarın' : locale === 'RU' ? 'Выведите продукцию на мировые рынки' : 'Take your products to global markets';
-    const heroDesc = locale === 'AZ'
-      ? 'Şirkətiniz və məhsullarınız haqqında məlumat verin; ixrac imkanlarını birlikdə araşdıraq, potensial xarici alıcıları tapaq və beynəlxalq ticarət prosesini koordinasiya edək.'
-      : locale === 'TR'
-      ? 'Şirketiniz ve ürünleriniz hakkında bilgi verin; ihracat imkânlarını birlikte araştıralım, potansiyel yabancı alıcıları bulalım ve uluslararası ticaret sürecini koordine edelim.'
-      : locale === 'RU'
-      ? 'Предоставьте информацию о компании и продукции; исследуем экспортные возможности, найдём покупателей и скоординируем торговый процесс.'
-      : 'Share information about your company and products; we will research export opportunities, find buyers, and coordinate the trade process.';
+    const stepsTitle = getLocalizedText(pPage.stepsTitle, locale);
+    const clientLabel = getLocalizedText(pPage.clientLabel, locale);
+    const azexbuyLabel = getLocalizedText(pPage.azexbuyLabel, locale);
+    const resultLabel = getLocalizedText(pPage.resultLabel, locale);
+    const nextLabel = getLocalizedText(pPage.nextLabel, locale);
+    const stepsList = (Array.isArray(pPage.steps) && pPage.steps.length > 0) ? pPage.steps : DEFAULT_PRODUCERS_PAGE.steps;
+
+    const guideBadge = getLocalizedText(pPage.guideBadge, locale);
+    const guideTitle = getLocalizedText(pPage.guideTitle, locale);
+    const guideDesc = getLocalizedText(pPage.guideDesc, locale);
+    const guideCards = (Array.isArray(pPage.guideCards) && pPage.guideCards.length > 0) ? pPage.guideCards : DEFAULT_PRODUCERS_PAGE.guideCards;
+
+    const bottomCtaTitle = getLocalizedText(pPage.bottomCta?.title, locale);
+    const bottomCtaDesc = getLocalizedText(pPage.bottomCta?.desc, locale);
+    const bottomCtaRegister = getLocalizedText(pPage.bottomCta?.ctaRegister || pPage.hero?.ctaRegister, locale);
+    const bottomCtaServices = getLocalizedText(pPage.bottomCta?.ctaServices || pPage.hero?.ctaServices, locale);
 
     return (
       <div className="bg-[#F8FAFC] min-h-screen">
-        {/* Hero — full-width image, flush to topbar (admin-editable PRODUCER_HERO_IMAGE) */}
+        {/* Hero */}
         <div className="relative w-full overflow-hidden bg-[#0b2440]">
           <img
-            src={producerHeroImage}
-            alt="AZEXBUY Baku headquarters"
+            src={heroImg}
+            alt="AZEXBUY Producers"
             className="w-full h-[420px] object-cover object-center"
             referrerPolicy="no-referrer"
           />
@@ -2215,34 +2154,46 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
         <div className="custom-container py-10">
           <h2 className="text-lg font-bold text-[#171717] mb-6">{stepsTitle}</h2>
           <div className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden">
-            {PRODUCER_STEPS.map((step, idx) => {
+            {stepsList.map((step: any, idx: number) => {
               const isOpen = selectedProducerStep === idx + 1;
+              const sNum = step.num || String(idx + 1).padStart(2, '0');
+              const sTitle = getLocalizedText(step.title, locale);
+              const sDesc = getLocalizedText(step.desc, locale);
+              const sAzexbuy = getLocalizedText(step.azexbuy, locale);
+              const sClient = getLocalizedText(step.client, locale);
+              const sResult = getLocalizedText(step.result, locale);
+              const sNext = step.next ? getLocalizedText(step.next, locale) : null;
+
               return (
-                <div key={step.num} className="border-b border-[#F0F0F0] last:border-0">
+                <div key={sNum || idx} className="border-b border-[#F0F0F0] last:border-0">
                   <button type="button" className="w-full text-left px-5 py-4 flex items-start gap-4 cursor-pointer hover:bg-slate-50 transition-colors" onClick={() => setSelectedProducerStep(isOpen ? 0 : idx + 1)}>
-                    <span className="text-[13px] font-bold text-slate-400 mt-0.5 w-7 shrink-0">{step.num}</span>
+                    <span className="text-[13px] font-bold text-slate-400 mt-0.5 w-7 shrink-0">{sNum}</span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[15px] font-semibold text-[#171717]">{step.title}</p>
-                      {!isOpen && <p className="text-[13px] text-slate-500 mt-0.5 leading-relaxed">{step.desc.slice(0, 90)}…</p>}
+                      <p className="text-[15px] font-semibold text-[#171717]">{sTitle}</p>
+                      {!isOpen && sDesc && <p className="text-[13px] text-slate-500 mt-0.5 leading-relaxed">{sDesc.slice(0, 90)}…</p>}
                     </div>
                     <i className={`fa-solid fa-chevron-down text-slate-400 text-xs mt-1 shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}></i>
                   </button>
                   {isOpen && (
                     <div className="px-5 pb-5 space-y-3">
-                      <p className="text-[14px] text-slate-600 leading-relaxed ml-11">{step.desc}</p>
+                      {sDesc && <p className="text-[14px] text-slate-600 leading-relaxed ml-11">{sDesc}</p>}
                       <div className="ml-11 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div className="bg-[#F0FDF4] rounded-lg p-3.5">
-                          <p className="text-[11px] font-bold text-emerald-700 uppercase tracking-wider mb-1.5">{azexbuyLabel}</p>
-                          <p className="text-[13px] text-[#334]">{step.azexbuy}</p>
-                        </div>
-                        <div className="bg-slate-50 rounded-lg p-3.5">
-                          <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">{clientLabel}</p>
-                          <p className="text-[13px] text-slate-700">{step.client}</p>
-                        </div>
+                        {sAzexbuy && (
+                          <div className="bg-[#F0FDF4] rounded-lg p-3.5">
+                            <p className="text-[11px] font-bold text-emerald-700 uppercase tracking-wider mb-1.5">{azexbuyLabel}</p>
+                            <p className="text-[13px] text-[#334]">{sAzexbuy}</p>
+                          </div>
+                        )}
+                        {sClient && (
+                          <div className="bg-slate-50 rounded-lg p-3.5">
+                            <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">{clientLabel}</p>
+                            <p className="text-[13px] text-slate-700">{sClient}</p>
+                          </div>
+                        )}
                       </div>
                       <div className="ml-11 space-y-1">
-                        <p className="text-[13px] text-slate-700"><span className="font-semibold">{resultLabel}:</span> {step.result}</p>
-                        {step.next && <p className="text-[12px] text-slate-500"><span className="font-medium">{nextLabel}:</span> {step.next}</p>}
+                        {sResult && <p className="text-[13px] text-slate-700"><span className="font-semibold">{resultLabel}:</span> {sResult}</p>}
+                        {sNext && <p className="text-[12px] text-slate-500"><span className="font-medium">{nextLabel}:</span> {sNext}</p>}
                       </div>
                     </div>
                   )}
@@ -2252,240 +2203,88 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
           </div>
         </div>
 
-        {/* ── İXRAC BƏLƏDÇİSİ VƏ TİCARƏT STANDARTLARI (4 KART) ── */}
+        {/* Trade & Export Guide (Cards) */}
         <div className="custom-container pb-12">
           <div className="mb-6">
-            <span className="text-xs font-extrabold uppercase tracking-wider text-brandGreen block mb-1">
-              İxrac Hazırlığı və Beynəlxalq Standartlar
-            </span>
+            {guideBadge && (
+              <span className="text-xs font-extrabold uppercase tracking-wider text-brandGreen block mb-1">
+                {guideBadge}
+              </span>
+            )}
             <h2 className="text-xl sm:text-2xl font-extrabold text-[#171717] tracking-tight">
-              İstehsalçılar Üçün Ticarət və İxrac Bələdçisi
+              {guideTitle}
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-2xl leading-relaxed">
-              Beynəlxalq ticarət əməliyyatlarında satıcı və alıcı arasındakı çatdırılma şərtləri, qiymətləndirmə, keyfiyyət tələbləri və zəruri ixrac sənədləri.
-            </p>
+            {guideDesc && (
+              <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-2xl leading-relaxed">
+                {guideDesc}
+              </p>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Kart 1. Incoterms® 2020 */}
-            <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
-              <div>
-                <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-                      <i className="fa-solid fa-ship text-sm"></i>
+            {guideCards.map((card: any, cIdx: number) => {
+              const cardColorKey = card.color || (cIdx === 0 ? 'blue' : cIdx === 1 ? 'emerald' : cIdx === 2 ? 'amber' : 'indigo');
+              const theme = GUIDE_COLOR_MAP[cardColorKey] || GUIDE_COLOR_MAP.blue;
+              const iconClass = card.icon || (cIdx === 0 ? 'fa-solid fa-ship' : cIdx === 1 ? 'fa-solid fa-file-invoice-dollar' : cIdx === 2 ? 'fa-solid fa-certificate' : 'fa-solid fa-folder-open');
+              const cardBadge = getLocalizedText(card.badge, locale) || `Kart ${cIdx + 1}`;
+              const cardTitle = getLocalizedText(card.title, locale);
+              const cardTag = getLocalizedText(card.tag, locale);
+              const cardOverview = getLocalizedText(card.overview, locale);
+              const cardNote = getLocalizedText(card.note, locale);
+              const cardItems = card.items || [];
+
+              return (
+                <div key={cIdx} className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
+                  <div>
+                    <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-9 h-9 rounded-lg ${theme.bg} ${theme.text} flex items-center justify-center shrink-0`}>
+                          <i className={`${iconClass} text-sm`}></i>
+                        </div>
+                        <div>
+                          <span className={`text-[10px] font-bold uppercase tracking-wider ${theme.text} font-mono`}>{cardBadge}</span>
+                          <h3 className="text-[16px] font-bold text-[#171717]">{cardTitle}</h3>
+                        </div>
+                      </div>
+                      {cardTag && (
+                        <span className={`text-xs font-semibold px-2.5 py-1 ${theme.pillBg} ${theme.pillText} rounded-full border ${theme.pillBorder}`}>
+                          {cardTag}
+                        </span>
+                      )}
                     </div>
-                    <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 font-mono">Kart 1</span>
-                      <h3 className="text-[16px] font-bold text-[#171717]">Incoterms® 2020</h3>
-                    </div>
-                  </div>
-                  <span className="text-xs font-semibold px-2.5 py-1 bg-blue-50 text-blue-700 rounded-full border border-blue-100">
-                    Çatdırılma şərtləri
-                  </span>
-                </div>
 
-                <div className="bg-blue-50/50 border border-blue-100/70 rounded-lg p-3 mb-4 text-xs text-slate-700 leading-relaxed">
-                  <strong className="text-slate-900">Qısa izah:</strong> İxrac əməliyyatında satıcının və alıcının çatdırılma, daşınma xərcləri və risklər üzrə öhdəliklərini müəyyən edən beynəlxalq qaydalar.
-                </div>
+                    {cardOverview && (
+                      <div className={`${theme.lightBg} border ${theme.border}/70 rounded-lg p-3 mb-4 text-xs text-slate-700 leading-relaxed`}>
+                        <strong className="text-slate-900">{locale === 'AZ' ? 'Qısa izah:' : locale === 'TR' ? 'Kısa Açıklama:' : 'Overview:'}</strong>{' '}
+                        {cardOverview}
+                      </div>
+                    )}
 
-                <div className="space-y-2 text-xs">
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded font-mono shrink-0">EXW</span>
-                    <span className="text-slate-600 leading-snug">Satıcı məhsulu öz ərazisində alıcının sərəncamına verir.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded font-mono shrink-0">FCA</span>
-                    <span className="text-slate-600 leading-snug">Satıcı məhsulu razılaşdırılmış daşıyıcıya təhvil verir.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded font-mono shrink-0">FOB</span>
-                    <span className="text-slate-600 leading-snug">Dəniz daşımalarında məhsul gəminin göyərtəsinə yüklənir.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded font-mono shrink-0">CIF</span>
-                    <span className="text-slate-600 leading-snug">Satıcı dəyər, sığorta və fraxt xərclərini ödəyir.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded font-mono shrink-0">DAP</span>
-                    <span className="text-slate-600 leading-snug">Satıcı məhsulu razılaşdırılmış təyinat yerinə çatdırır.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded font-mono shrink-0">DDP</span>
-                    <span className="text-slate-600 leading-snug">Satıcı idxal rəsmiləşdirilməsi və müvafiq idxal rüsumları daxil olmaqla öhdəlikləri üzərinə götürür.</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-4 pt-3 border-t border-slate-100 flex items-start gap-2 text-[11.5px] text-slate-500 italic">
-                <i className="fa-solid fa-circle-info text-blue-500 mt-0.5 shrink-0"></i>
-                <span>İstehsalçı müqavilə bağlamazdan əvvəl seçilmiş Incoterms® şərtinə uyğun xərclərini və öhdəliklərini hesablamalıdır.</span>
-              </div>
-            </div>
-
-            {/* Kart 2. İxrac qiyməti və ödəniş şərtləri */}
-            <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
-              <div>
-                <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-                      <i className="fa-solid fa-file-invoice-dollar text-sm"></i>
-                    </div>
-                    <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 font-mono">Kart 2</span>
-                      <h3 className="text-[16px] font-bold text-[#171717]">İxrac qiyməti və ödəniş şərtləri</h3>
+                    <div className="space-y-2 text-xs">
+                      {cardItems.map((item: any, itIdx: number) => {
+                        const itLabel = getLocalizedText(item.label, locale);
+                        const itDesc = getLocalizedText(item.desc, locale);
+                        return (
+                          <div key={itIdx} className="flex items-start gap-2.5">
+                            <span className={`font-bold ${theme.pillText} ${theme.pillBg} px-1.5 py-0.5 rounded font-mono shrink-0`}>
+                              {itLabel}
+                            </span>
+                            <span className="text-slate-600 leading-snug">{itDesc}</span>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
-                  <span className="text-xs font-semibold px-2.5 py-1 bg-emerald-50 text-emerald-700 rounded-full border border-emerald-100">
-                    Export Pricing & Payment
-                  </span>
-                </div>
 
-                <div className="bg-emerald-50/50 border border-emerald-100/70 rounded-lg p-3 mb-4 text-xs text-slate-700 leading-relaxed">
-                  <strong className="text-slate-900">Qısa izah:</strong> Xarici alıcıya təqdim ediləcək satış qiymətinin formalaşdırılması və ödəniş şərtlərinin razılaşdırılması.
-                </div>
-
-                <div className="space-y-2 text-xs">
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-mono shrink-0">EXW qiyməti</span>
-                    <span className="text-slate-600 leading-snug">Məhsulun satıcının müəssisəsində təhvil verilmə qiyməti.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-mono shrink-0">FOB qiyməti</span>
-                    <span className="text-slate-600 leading-snug">Müvafiq dəniz daşınması şərtində gəminin göyərtəsinə qədər olan satıcı xərcləri nəzərə alınmaqla qiymət.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-mono shrink-0">CIF qiyməti</span>
-                    <span className="text-slate-600 leading-snug">Məhsulun dəyəri, sığorta və təyinat limanına qədər fraxt xərcləri.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-mono shrink-0">T/T</span>
-                    <span className="text-slate-600 leading-snug">Bank köçürməsi (Telegraphic Transfer).</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-mono shrink-0">L/C</span>
-                    <span className="text-slate-600 leading-snug">Akkreditiv (Letter of Credit).</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded shrink-0">Avans / Qalıq</span>
-                    <span className="text-slate-600 leading-snug">Tərəflərin razılaşdırdığı ilkin və yekun ödəniş bölgüsü.</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-4 pt-3 border-t border-slate-100 flex items-start gap-2 text-[11.5px] text-slate-500 italic">
-                <i className="fa-solid fa-circle-info text-emerald-500 mt-0.5 shrink-0"></i>
-                <span>İxrac qiyməti məhsulun maya dəyəri, qablaşdırma, daşınma və razılaşdırılmış çatdırılma şərtlərinə əsasən hesablanmalıdır.</span>
-              </div>
-            </div>
-
-            {/* Kart 3. Keyfiyyət və sertifikatlar */}
-            <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
-              <div>
-                <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
-                      <i className="fa-solid fa-certificate text-sm"></i>
+                  {cardNote && (
+                    <div className="mt-4 pt-3 border-t border-slate-100 flex items-start gap-2 text-[11.5px] text-slate-500 italic">
+                      <i className={`fa-solid fa-circle-info ${theme.infoText} mt-0.5 shrink-0`}></i>
+                      <span>{cardNote}</span>
                     </div>
-                    <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600 font-mono">Kart 3</span>
-                      <h3 className="text-[16px] font-bold text-[#171717]">Keyfiyyət və sertifikatlar</h3>
-                    </div>
-                  </div>
-                  <span className="text-xs font-semibold px-2.5 py-1 bg-amber-50 text-amber-700 rounded-full border border-amber-100">
-                    Quality & Certificates
-                  </span>
+                  )}
                 </div>
-
-                <div className="bg-amber-50/50 border border-amber-100/70 rounded-lg p-3 mb-4 text-xs text-slate-700 leading-relaxed">
-                  <strong className="text-slate-900">Qısa izah:</strong> İstehsal olunan məhsulun xarici bazarlara çıxarılması zamanı tələb oluna bilən keyfiyyət standartları, sertifikatlar və uyğunluq sənədləri.
-                </div>
-
-                <div className="space-y-2 text-xs">
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded font-mono shrink-0">ISO 9001</span>
-                    <span className="text-slate-600 leading-snug">Keyfiyyətin idarəetmə sistemi.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded font-mono shrink-0">ISO 22000 / HACCP</span>
-                    <span className="text-slate-600 leading-snug">Qida təhlükəsizliyi üzrə idarəetmə və nəzarət sistemləri.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded font-mono shrink-0">Halal</span>
-                    <span className="text-slate-600 leading-snug">Müvafiq tələblərə uyğunluq sertifikatı.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded font-mono shrink-0">CE</span>
-                    <span className="text-slate-600 leading-snug">Müəyyən məhsul qrupları üçün Avropa İttifaqının uyğunluq nişanlaması.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded shrink-0">Fitosanitar / Baytarlıq</span>
-                    <span className="text-slate-600 leading-snug">Müvafiq bitki və heyvan mənşəli məhsullar üçün tələb oluna bilər.</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-4 pt-3 border-t border-slate-100 flex items-start gap-2 text-[11.5px] text-slate-500 italic">
-                <i className="fa-solid fa-circle-info text-amber-500 mt-0.5 shrink-0"></i>
-                <span>Sertifikat tələbləri məhsulun kateqoriyasına, təyinat ölkəsinə və qüvvədə olan qaydalara görə dəyişir.</span>
-              </div>
-            </div>
-
-            {/* Kart 4. İxrac sənədləri */}
-            <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
-              <div>
-                <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
-                      <i className="fa-solid fa-folder-open text-sm"></i>
-                    </div>
-                    <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-600 font-mono">Kart 4</span>
-                      <h3 className="text-[16px] font-bold text-[#171717]">İxrac sənədləri</h3>
-                    </div>
-                  </div>
-                  <span className="text-xs font-semibold px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-full border border-indigo-100">
-                    Export Documents
-                  </span>
-                </div>
-
-                <div className="bg-indigo-50/50 border border-indigo-100/70 rounded-lg p-3 mb-4 text-xs text-slate-700 leading-relaxed">
-                  <strong className="text-slate-900">Qısa izah:</strong> Xarici alıcıya məhsul satışı, ixrac əməliyyatının sənədləşdirilməsi və yükün beynəlxalq daşınması zamanı istifadə olunan əsas sənədlər.
-                </div>
-
-                <div className="space-y-2 text-xs">
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded font-mono shrink-0">Commercial Invoice</span>
-                    <span className="text-slate-600 leading-snug">Kommersiya hesab-fakturası.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded font-mono shrink-0">Packing List</span>
-                    <span className="text-slate-600 leading-snug">Məhsulun qablaşdırma siyahısı.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded font-mono shrink-0">Certificate of Origin</span>
-                    <span className="text-slate-600 leading-snug">Məhsulun mənşə sertifikatı.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded font-mono shrink-0">CMR / Bill of Lading / AWB</span>
-                    <span className="text-slate-600 leading-snug">Avtomobil, dəniz və hava nəqliyyatı sənədləri.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded shrink-0">İxrac bəyannaməsi</span>
-                    <span className="text-slate-600 leading-snug">Gömrük ixrac rəsmiləşdirilməsi zamanı istifadə olunan sənəd.</span>
-                  </div>
-                  <div className="flex items-start gap-2.5">
-                    <span className="font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded font-mono shrink-0">Proforma Invoice</span>
-                    <span className="text-slate-600 leading-snug">Satışdan əvvəl kommersiya şərtlərini göstərən ilkin hesab sənədi.</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-4 pt-3 border-t border-slate-100 flex items-start gap-2 text-[11.5px] text-slate-500 italic">
-                <i className="fa-solid fa-circle-check text-indigo-500 mt-0.5 shrink-0"></i>
-                <span>Sənədlərin tam və dəqiq hazırlanması gömrük keçidini və ödənişin alınmasını sürətləndirir.</span>
-              </div>
-            </div>
+              );
+            })}
           </div>
         </div>
 
@@ -2493,8 +2292,8 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
         <div className="bg-white border-t border-slate-100">
           <div className="custom-container py-10 flex flex-col sm:flex-row items-center gap-4">
             <div className="flex-1">
-              <p className="text-base font-semibold text-[#171717]">{locale === 'AZ' ? 'Məhsullarınızı ixrac etmək istəyirsiniz?' : locale === 'TR' ? 'Ürünlerinizi ihraç etmek mi istiyorsunuz?' : 'Want to export your products?'}</p>
-              <p className="text-sm text-slate-500 mt-0.5">{locale === 'AZ' ? 'Şirkətiniz və məhsullarınız haqqında məlumat verin, ixrac imkânlarını birlikdə araşdıraq.' : locale === 'TR' ? 'Şirketiniz ve ürünleriniz hakkında bilgi verin, ihracat imkânlarını birlikte araştıralım.' : 'Share info about your company and products, and we will explore export opportunities together.'}</p>
+              <p className="text-base font-semibold text-[#171717]">{bottomCtaTitle}</p>
+              <p className="text-sm text-slate-500 mt-0.5">{bottomCtaDesc}</p>
             </div>
             <div className="flex gap-2.5 shrink-0">
               <button
@@ -2502,14 +2301,14 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
                 onClick={onOpenProducer}
                 className="bg-brandNavy hover:bg-brandNavyDark text-white text-xs font-semibold px-4 py-2 rounded transition-colors cursor-pointer"
               >
-                {ctaRegister}
+                {bottomCtaRegister}
               </button>
               <button
                 type="button"
                 onClick={() => onNavigate('services')}
                 className="border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-medium px-4 py-2 rounded transition-colors cursor-pointer"
               >
-                {ctaServices}
+                {bottomCtaServices}
               </button>
             </div>
           </div>

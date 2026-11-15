@@ -6,11 +6,13 @@ import {
   Anchor, HelpCircle, Info, Map, Users, FileText, Pencil, Mail, ExternalLink, UserPlus,
   Search, Phone, Copy, RotateCcw, BarChart3, Target, Workflow, ShieldCheck, Globe2, TrendingUp, Building2, ArrowRight,
   MapPin, Share2, Briefcase, Download, UploadCloud, Database,
+  ShoppingBag, Factory,
 } from 'lucide-react';
 import { UiLanguage } from '../types';
 import { flattenStrings } from '../utils/flattenStrings';
-import { UI_STRINGS, ABOUT_PAGE_DEFAULT, SERVICES_PILLARS, BUYER_STEPS, PRODUCER_STEPS } from '../../../../src/data/translations';
+import { UI_STRINGS, ABOUT_PAGE_DEFAULT, SERVICES_PILLARS, BUYER_STEPS, PRODUCER_STEPS, DEFAULT_BUYERS_PAGE, DEFAULT_PRODUCERS_PAGE } from '../../../../src/data/translations';
 import { SEED_SERVICES } from '../../seed';
+import { PortalPageEditor } from './PortalPageEditor';
 
 interface AzexbuyCMSViewProps { uiLang: UiLanguage; }
 
@@ -107,6 +109,8 @@ const CMS_PAGES = [
 
   // ── Daxili Səhifələr ──
   { key: 'about',             label: 'Haqqımızda',                 icon: Info,           group: 'Daxili Səhifələr' },
+  { key: 'buyers_page',       label: 'Alıcılar Səhifəsi (Buyers)', icon: ShoppingBag,    group: 'Daxili Səhifələr' },
+  { key: 'producers_page',    label: 'İstehsalçılar (Producers)',  icon: Factory,        group: 'Daxili Səhifələr' },
   { key: 'team',              label: 'Komanda (Ekip)',             icon: Users,          group: 'Daxili Səhifələr' },
   { key: 'contact',           label: 'Əlaqə & Ofis Məlumatları',   icon: Phone,          group: 'Daxili Səhifələr' },
 
@@ -1880,6 +1884,26 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
           };
           await saveContent(updated);
           load();
+        } else if (key === 'BUYER_HERO_IMAGE' || key === 'buyers_heroImage') {
+          const curBuyers = content.buyers_page ? { ...DEFAULT_BUYERS_PAGE, ...content.buyers_page } : { ...DEFAULT_BUYERS_PAGE };
+          curBuyers.hero = { ...(curBuyers.hero || {}), image: url };
+          const updated = {
+            ...content,
+            images: { ...(content.images || {}), BUYER_HERO_IMAGE: url },
+            buyers_page: curBuyers,
+          };
+          await saveContent(updated);
+          load();
+        } else if (key === 'PRODUCER_HERO_IMAGE' || key === 'producers_heroImage') {
+          const curProducers = content.producers_page ? { ...DEFAULT_PRODUCERS_PAGE, ...content.producers_page } : { ...DEFAULT_PRODUCERS_PAGE };
+          curProducers.hero = { ...(curProducers.hero || {}), image: url };
+          const updated = {
+            ...content,
+            images: { ...(content.images || {}), PRODUCER_HERO_IMAGE: url },
+            producers_page: curProducers,
+          };
+          await saveContent(updated);
+          load();
         } else {
           const curAbout = content.about ? { ...ABOUT_PAGE_DEFAULT, ...content.about } : { ...ABOUT_PAGE_DEFAULT };
           if (key === 'about_whoWeAreImage' || key === 'ABOUT_WHO_WE_ARE_IMAGE') {
@@ -3647,6 +3671,29 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
           {/* ── BUYER STEPS ── */}
           {page === 'buyer_steps' && (
             <>
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2 shadow-2xs">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded bg-[#0f3156] text-white flex items-center justify-center shrink-0">
+                    <ShoppingBag className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold text-slate-900 block">
+                      Tam Alıcılar Səhifəsi Redaktoru (/#/buyers)
+                    </span>
+                    <span className="text-[11px] text-slate-600 block">
+                      Hero arxa fonu, 7 addım prosesi, Incoterms və Ticarət bələdçisi qaydaları (EXW, FOB, CIF...) və CTA bölməsini idarə edin.
+                    </span>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setPage('buyers_page')}
+                  className="px-3.5 py-1.5 bg-[#0f3156] hover:bg-[#081c33] text-white text-xs font-bold rounded flex items-center gap-1.5 shrink-0 cursor-pointer shadow-2xs"
+                >
+                  <ShoppingBag className="w-3.5 h-3.5" /> Alıcılar Səhifəsi Redaktoruna Keç →
+                </button>
+              </div>
+
               <div className="flex items-center justify-between">
                 <h2 className="text-sm font-bold text-slate-800">Alıcı Addımları</h2>
                 <button
@@ -3749,6 +3796,29 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
           {/* ── PRODUCER STEPS ── */}
           {page === 'producer_steps' && (
             <>
+              <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2 shadow-2xs">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded bg-emerald-700 text-white flex items-center justify-center shrink-0">
+                    <Factory className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold text-slate-900 block">
+                      Tam İstehsalçılar Səhifəsi Redaktoru (/#/producers)
+                    </span>
+                    <span className="text-[11px] text-slate-600 block">
+                      Hero arxa fonu, 10 addım prosesi, İxrac standartları və Bələdçi qaydaları (Incoterms, Qiymət, Sertifikatlar, Sənədlər) və CTA bölməsini idarə edin.
+                    </span>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setPage('producers_page')}
+                  className="px-3.5 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded flex items-center gap-1.5 shrink-0 cursor-pointer shadow-2xs"
+                >
+                  <Factory className="w-3.5 h-3.5" /> İstehsalçılar Səhifəsi Redaktoruna Keç →
+                </button>
+              </div>
+
               <div className="flex items-center justify-between">
                 <h2 className="text-sm font-bold text-slate-800">İstehsalçı Mərhələləri</h2>
                 <button
@@ -4920,6 +4990,54 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
               </>
             );
           })()}
+
+          {/* ── BUYERS PORTAL PAGE (/ # / buyers) ── */}
+          {page === 'buyers_page' && (
+            <PortalPageEditor
+              type="buyers"
+              title="Alıcılar Səhifəsi (Buyers Portal — /#/buyers)"
+              description="Azərbaycandan tədarük səhifəsinin Hero, 7 mərhələli alıcı prosesi, ticarət bələdçisi kartları və CTA bölmələrini idarə edin. Addım və qaydaları əlavə edib silə bilərsiniz."
+              pageData={content.buyers_page || DEFAULT_BUYERS_PAGE}
+              defaultData={DEFAULT_BUYERS_PAGE}
+              heroImageKey="BUYER_HERO_IMAGE"
+              onChange={(updated) => setContent((c: any) => ({ ...c, buyers_page: updated }))}
+              onSave={(dataToSave) => {
+                const updated = {
+                  ...content,
+                  buyers_page: dataToSave || content.buyers_page || DEFAULT_BUYERS_PAGE,
+                };
+                saveContent(updated);
+              }}
+              saving={saving}
+              saved={saved}
+              onTriggerUpload={triggerUpload}
+              uploading={uploading}
+            />
+          )}
+
+          {/* ── PRODUCERS PORTAL PAGE (/ # / producers) ── */}
+          {page === 'producers_page' && (
+            <PortalPageEditor
+              type="producers"
+              title="İstehsalçılar Səhifəsi (Producers Portal — /#/producers)"
+              description="Məhsullarınızı dünya bazarlarına çıxarın səhifəsinin Hero, 10 mərhələli istehsalçı prosesi, ixrac bələdçisi kartları və CTA bölmələrini idarə edin. Addım və qaydaları əlavə edib silə bilərsiniz."
+              pageData={content.producers_page || DEFAULT_PRODUCERS_PAGE}
+              defaultData={DEFAULT_PRODUCERS_PAGE}
+              heroImageKey="PRODUCER_HERO_IMAGE"
+              onChange={(updated) => setContent((c: any) => ({ ...c, producers_page: updated }))}
+              onSave={(dataToSave) => {
+                const updated = {
+                  ...content,
+                  producers_page: dataToSave || content.producers_page || DEFAULT_PRODUCERS_PAGE,
+                };
+                saveContent(updated);
+              }}
+              saving={saving}
+              saved={saved}
+              onTriggerUpload={triggerUpload}
+              uploading={uploading}
+            />
+          )}
 
           {/* ── TEAM MANAGEMENT (KOMANDA) ── */}
           {page === 'team' && (

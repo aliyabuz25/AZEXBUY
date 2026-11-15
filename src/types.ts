@@ -335,3 +335,59 @@ export interface AboutPageContent {
     contactBtn: LocalizedText | Record<string, string>;
   };
 }
+
+export interface PortalStepItem {
+  num: string;
+  title: LocalizedText | Record<string, string> | string;
+  desc: LocalizedText | Record<string, string> | string;
+  azexbuy: LocalizedText | Record<string, string> | string;
+  client: LocalizedText | Record<string, string> | string;
+  result: LocalizedText | Record<string, string> | string;
+  next?: LocalizedText | Record<string, string> | string | null;
+}
+
+export interface GuideCardItem {
+  label: LocalizedText | Record<string, string> | string;
+  desc: LocalizedText | Record<string, string> | string;
+}
+
+export interface GuideCard {
+  badge: LocalizedText | Record<string, string> | string;
+  title: LocalizedText | Record<string, string> | string;
+  tag: LocalizedText | Record<string, string> | string;
+  icon?: string;
+  color?: string;
+  overview: LocalizedText | Record<string, string> | string;
+  items: GuideCardItem[];
+  note: LocalizedText | Record<string, string> | string;
+}
+
+export interface PortalPageContent {
+  hero: {
+    title: LocalizedText | Record<string, string> | string;
+    desc: LocalizedText | Record<string, string> | string;
+    ctaRFQ?: LocalizedText | Record<string, string> | string;
+    ctaCatalog?: LocalizedText | Record<string, string> | string;
+    ctaRegister?: LocalizedText | Record<string, string> | string;
+    ctaServices?: LocalizedText | Record<string, string> | string;
+    image?: string;
+  };
+  stepsTitle: LocalizedText | Record<string, string> | string;
+  clientLabel: LocalizedText | Record<string, string> | string;
+  azexbuyLabel: LocalizedText | Record<string, string> | string;
+  resultLabel: LocalizedText | Record<string, string> | string;
+  nextLabel: LocalizedText | Record<string, string> | string;
+  steps: PortalStepItem[];
+  guideBadge: LocalizedText | Record<string, string> | string;
+  guideTitle: LocalizedText | Record<string, string> | string;
+  guideDesc: LocalizedText | Record<string, string> | string;
+  guideCards: GuideCard[];
+  bottomCta: {
+    title: LocalizedText | Record<string, string> | string;
+    desc: LocalizedText | Record<string, string> | string;
+    ctaRFQ?: LocalizedText | Record<string, string> | string;
+    ctaCatalog?: LocalizedText | Record<string, string> | string;
+    ctaRegister?: LocalizedText | Record<string, string> | string;
+    ctaServices?: LocalizedText | Record<string, string> | string;
+  };
+}

@@ -105,6 +105,8 @@ const NAV_SECTIONS: NavSection[] = [
         icon: PenLine,
         subItems: [
           { id: 'azexbuy-cms', label: 'Əsas Səhifə (Hero, Bloklar)', cmsPageKey: 'hero' },
+          { id: 'azexbuy-cms', label: 'Alıcılar Səhifəsi (Buyers)', cmsPageKey: 'buyers_page' },
+          { id: 'azexbuy-cms', label: 'İstehsalçılar Səhifəsi (Producers)', cmsPageKey: 'producers_page' },
           { id: 'azexbuy-cms', label: 'Sosial Şəbəkələr (Social)', cmsPageKey: 'social' },
           { id: 'azexbuy-cms', label: 'Xidmət Müraciəti Modal (+/-)', cmsPageKey: 'service_modal' },
           { id: 'azexbuy-cms', label: 'Haqqımızda & Komanda', cmsPageKey: 'about' },
