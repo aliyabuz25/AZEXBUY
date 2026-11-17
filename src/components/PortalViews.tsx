@@ -797,7 +797,8 @@ export const ProductSpecModal: React.FC<ProductSpecModalProps> = ({
   onClose,
   onRequestProduct,
 }) => {
-  const { strings } = useLocalization();
+  const { strings, modalsConfig } = useLocalization();
+  const specCfg = modalsConfig?.productSpecModal;
   if (!product) return null;
 
   return (
@@ -908,7 +909,7 @@ export const ProductSpecModal: React.FC<ProductSpecModalProps> = ({
               }}
               className="bg-brandGreen hover:bg-brandGreenDark text-white font-bold px-5 py-2.5 rounded cursor-pointer flex items-center gap-2"
             >
-              <span>{strings[locale]?.featuredProducts?.requestProduct || strings.AZ?.featuredProducts?.requestProduct || 'Request RFQ'}</span>
+              <span>{specCfg?.rfqButtonText?.[locale] || strings[locale]?.featuredProducts?.requestProduct || strings.AZ?.featuredProducts?.requestProduct || 'Request RFQ'}</span>
               <i className="fa-solid fa-arrow-right text-[10px]"></i>
             </button>
           </div>

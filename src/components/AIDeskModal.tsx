@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Locale } from '../types';
+import { useLocalization } from '../context/LocalizationContext';
 
 interface AIDeskModalProps {
   isOpen: boolean;
@@ -76,10 +77,15 @@ export const AIDeskModal: React.FC<AIDeskModalProps> = ({
   locale,
   onOpenRFQ,
 }) => {
+  const { modalsConfig } = useLocalization();
+  const aiCfg = modalsConfig?.aiDeskModal;
   const [modelConnected, setModelConnected] = useState<boolean | null>(null);
   const [customFaqs, setCustomFaqs] = useState<FaqItem[]>([]);
 
   const getGreeting = () => {
+    if (aiCfg?.greetingMessage?.[locale]) {
+      return aiCfg.greetingMessage[locale];
+    }
     switch (locale) {
       case 'AZ':
         return 'Salam! AZEXBUY İxrac və Təchizat Masasıyam. Sizə ixrac məhsulları, HS kodları, daşıma və gömrük üzrə necə kömək edə bilərəm?';
@@ -165,7 +171,9 @@ export const AIDeskModal: React.FC<AIDeskModalProps> = ({
 
   // Decide FAQ list: custom from admin or default
   const activeFaqs: FaqItem[] =
-    customFaqs.length > 0
+    aiCfg?.faqChips?.[locale] && aiCfg.faqChips[locale].length > 0
+      ? aiCfg.faqChips[locale]
+      : customFaqs.length > 0
       ? customFaqs
       : DEFAULT_FAQS[locale] || DEFAULT_FAQS.EN;
 
@@ -322,7 +330,7 @@ export const AIDeskModal: React.FC<AIDeskModalProps> = ({
           <div className="flex items-center gap-2.5">
             <div className="relative flex items-center justify-center">
               <img
-                src={ASSISTANT_AVATAR}
+                src={aiCfg?.avatarUrl || ASSISTANT_AVATAR}
                 alt="3D Assistant"
                 width={32}
                 height={32}
@@ -335,9 +343,9 @@ export const AIDeskModal: React.FC<AIDeskModalProps> = ({
               }`}></span>
             </div>
             <div>
-              <h4 className="text-xs font-bold leading-tight">AZEXBUY Trade Desk</h4>
+              <h4 className="text-xs font-bold leading-tight">{aiCfg?.title?.[locale] || 'AZEXBUY Trade Desk'}</h4>
               <p className="text-[10px] text-slate-300">
-                {modelConnected ? '3D AI Assistant' : 'Connecting to Desk...'}
+                {aiCfg?.subtitle?.[locale] || (modelConnected ? '3D AI Assistant' : 'Connecting to Desk...')}
               </p>
             </div>
           </div>

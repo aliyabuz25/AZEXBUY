@@ -22,6 +22,7 @@ import {
   DEFAULT_PRODUCERS_PAGE,
 } from '../data/translations';
 import { CmsService, AboutPageContent, TeamMember, PortalPageContent } from '../types';
+import { DEFAULT_MODALS_CONFIG, AllModalsConfig } from '../data/defaultModals';
 
 // Same origin — both frontend and API run on the same port
 const OCTO_API_BASE = '';
@@ -160,6 +161,7 @@ type LocalizationContextType = {
     emailAlt: string;
     hours: string;
   };
+  modalsConfig: AllModalsConfig;
   refresh: () => void;
 };
 
@@ -195,6 +197,7 @@ const LocalizationContext = createContext<LocalizationContextType>({
     emailAlt: 'support@azexbuy.com',
     hours: '09:00 – 18:00 (AZT / UTC+4)',
   },
+  modalsConfig: DEFAULT_MODALS_CONFIG,
   refresh: () => {},
 });
 
@@ -534,6 +537,15 @@ function applyContentOverrides(content: any) {
       email: content?.contact?.email || 'info@azexbuy.com',
       emailAlt: content?.contact?.emailAlt || 'support@azexbuy.com',
       hours: content?.contact?.hours || '09:00 – 18:00 (AZT / UTC+4)',
+    },
+    modalsConfig: {
+      rfqModal: { ...DEFAULT_MODALS_CONFIG.rfqModal, ...(content?.modalsConfig?.rfqModal || content?.modals?.rfqModal || {}) },
+      producerModal: { ...DEFAULT_MODALS_CONFIG.producerModal, ...(content?.modalsConfig?.producerModal || content?.modals?.producerModal || {}) },
+      serviceModal: { ...DEFAULT_MODALS_CONFIG.serviceModal, ...(content?.modalsConfig?.serviceModal || content?.modals?.serviceModal || {}) },
+      aiDeskModal: { ...DEFAULT_MODALS_CONFIG.aiDeskModal, ...(content?.modalsConfig?.aiDeskModal || content?.modals?.aiDeskModal || {}) },
+      productSpecModal: { ...DEFAULT_MODALS_CONFIG.productSpecModal, ...(content?.modalsConfig?.productSpecModal || content?.modals?.productSpecModal || {}) },
+      searchModal: { ...DEFAULT_MODALS_CONFIG.searchModal, ...(content?.modalsConfig?.searchModal || content?.modals?.searchModal || {}) },
+      dossierModal: { ...DEFAULT_MODALS_CONFIG.dossierModal, ...(content?.modalsConfig?.dossierModal || content?.modals?.dossierModal || {}) },
     },
   };
 }

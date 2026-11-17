@@ -70,7 +70,8 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
   sourceView,
   onSubmitRFQ,
 }) => {
-  const { products: ctxProducts } = useLocalization();
+  const { products: ctxProducts, modalsConfig } = useLocalization();
+  const rfqCfg = modalsConfig?.rfqModal;
   const allProducts: ProductItem[] = ctxProducts && ctxProducts.length > 0 ? (ctxProducts as ProductItem[]) : PRODUCTS_CATALOG;
 
   // Determine if we are in product context:
@@ -188,14 +189,16 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
 
   if (!isOpen) return null;
 
-  const availableCerts = [
-    'AQTA Phytosanitary Certificate',
-    'Certificate of Origin (CT-1 / EUR.1)',
-    'ISO 22000 / Quality Assay',
-    'GLOBALG.A.P. Certified',
-    'Halal Certification',
-    'SGS Pre-Shipment Inspection',
-  ];
+  const availableCerts = (rfqCfg?.certificates && rfqCfg.certificates.length > 0)
+    ? rfqCfg.certificates
+    : [
+        'AQTA Phytosanitary Certificate',
+        'Certificate of Origin (CT-1 / EUR.1)',
+        'ISO 22000 / Quality Assay',
+        'GLOBALG.A.P. Certified',
+        'Halal Certification',
+        'SGS Pre-Shipment Inspection',
+      ];
 
   const handleToggleCert = (cert: string) => {
     setRequiredCerts((prev) =>
@@ -344,8 +347,11 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
         <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-4 flex items-center justify-between shrink-0">
           <div>
             <h3 className="text-base sm:text-lg font-semibold text-slate-800">
-              {ml('rfqTitle', locale)}
+              {rfqCfg?.title?.[locale] || ml('rfqTitle', locale)}
             </h3>
+            {rfqCfg?.subtitle?.[locale] && (
+              <p className="text-xs text-slate-500 mt-0.5">{rfqCfg.subtitle[locale]}</p>
+            )}
           </div>
           <button
             type="button"
@@ -504,11 +510,14 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
                 onChange={(e) => setIncoterm(e.target.value as IncotermCode)}
                 className="w-full h-10 px-3 text-xs font-semibold bg-white border border-slate-300 rounded text-slate-900"
               >
-                {INCOTERMS_GUIDE.map((ic) => (
-                  <option key={ic.code} value={ic.code}>
-                    {ic.code} — {ic.name.split('(')[0].trim()}
-                  </option>
-                ))}
+                {(rfqCfg?.incoterms && rfqCfg.incoterms.length > 0 ? rfqCfg.incoterms : INCOTERMS_GUIDE.map((ic) => ic.code)).map((code) => {
+                  const guide = INCOTERMS_GUIDE.find(g => g.code === code);
+                  return (
+                    <option key={code} value={code}>
+                      {code} {guide ? `— ${guide.name.split('(')[0].trim()}` : ''}
+                    </option>
+                  );
+                })}
               </select>
             </div>
             <div>
@@ -517,11 +526,19 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
               </label>
               <input
                 type="text"
+                list="rfq-destination-ports"
                 value={destinationPort}
                 onChange={(e) => setDestinationPort(e.target.value)}
-                placeholder="e.g. Hamburg, Mersin, Jebel Ali"
+                placeholder="e.g. Constanța, Poti, Mersin, Rotterdam..."
                 className="w-full h-10 px-3 text-xs bg-white border border-slate-300 rounded text-slate-900"
               />
+              {rfqCfg?.destinationPorts && rfqCfg.destinationPorts.length > 0 && (
+                <datalist id="rfq-destination-ports">
+                  {rfqCfg.destinationPorts.map((p, i) => (
+                    <option key={i} value={p} />
+                  ))}
+                </datalist>
+              )}
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">
@@ -721,7 +738,7 @@ export const RFQBuilderModal: React.FC<RFQModalProps> = ({
               form="rfq-form"
               className="flex-1 sm:flex-none px-6 py-2.5 text-xs font-bold text-white bg-brandNavy hover:bg-brandNavyDark rounded cursor-pointer flex items-center justify-center gap-2"
             >
-              <span>{ml('submitRfq', locale)}</span>
+              <span>{rfqCfg?.submitButton?.[locale] || ml('submitRfq', locale)}</span>
               <i className="fa-solid fa-arrow-right text-[10px]"></i>
             </button>
           </div>
@@ -744,6 +761,8 @@ export const ProducerOnboardingModal: React.FC<ProducerModalProps> = ({
   locale,
   onSubmitProducer,
 }) => {
+  const { modalsConfig } = useLocalization();
+  const producerCfg = modalsConfig?.producerModal;
   const [companyName, setCompanyName] = useState('');
   const [voenTin, setVoenTin] = useState('');
   const [economicRegion, setEconomicRegion] = useState('');
@@ -847,23 +866,27 @@ export const ProducerOnboardingModal: React.FC<ProducerModalProps> = ({
     'Xırdalan',
   ];
 
-  const certOptions = [
-    'AQTA Registration',
-    'CT-1 / EUR.1 Eligible',
-    'ISO 9001 / 22000',
-    'GLOBALG.A.P.',
-    'Halal Certified',
-    'OEKO-TEX / CE Mark',
-  ];
+  const certOptions = (producerCfg?.certificatesHeld && producerCfg.certificatesHeld.length > 0)
+    ? producerCfg.certificatesHeld
+    : [
+        'AQTA Registration',
+        'CT-1 / EUR.1 Eligible',
+        'ISO 9001 / 22000',
+        'GLOBALG.A.P.',
+        'Halal Certified',
+        'OEKO-TEX / CE Mark',
+      ];
 
-  const marketOptions = [
-    'European Union',
-    'GCC / Middle East',
-    'CIS & Central Asia',
-    'Turkey & Mediterranean',
-    'East & South Asia',
-    'North America',
-  ];
+  const marketOptions = (producerCfg?.targetMarkets && producerCfg.targetMarkets.length > 0)
+    ? producerCfg.targetMarkets
+    : [
+        'European Union',
+        'GCC / Middle East',
+        'CIS & Central Asia',
+        'Turkey & Mediterranean',
+        'East & South Asia',
+        'North America',
+      ];
 
   const addCustomCert = () => {
     const v = customCert.trim();
@@ -920,8 +943,11 @@ export const ProducerOnboardingModal: React.FC<ProducerModalProps> = ({
         <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-4 flex items-center justify-between shrink-0">
           <div>
             <h3 className="text-base sm:text-lg font-semibold text-slate-800">
-              {ml('producerTitle', locale)}
+              {producerCfg?.title?.[locale] || ml('producerTitle', locale)}
             </h3>
+            {producerCfg?.subtitle?.[locale] && (
+              <p className="text-xs text-slate-500 mt-0.5">{producerCfg.subtitle[locale]}</p>
+            )}
           </div>
           <button
             type="button"
@@ -1244,7 +1270,7 @@ export const ProducerOnboardingModal: React.FC<ProducerModalProps> = ({
               form="producer-form"
               className="flex-1 sm:flex-none px-5 py-2 text-xs font-bold text-white bg-brandGreen hover:bg-brandGreenDark rounded cursor-pointer flex items-center justify-center gap-2"
             >
-              <span>{ml('submitProducer', locale)}</span>
+              <span>{producerCfg?.submitButton?.[locale] || ml('submitProducer', locale)}</span>
               <i className="fa-solid fa-arrow-right text-[10px]"></i>
             </button>
           </div>
@@ -1267,6 +1293,8 @@ export const PrintableDossierModal: React.FC<DossierPrintModalProps> = ({
   locale = 'EN',
   onClose,
 }) => {
+  const { modalsConfig } = useLocalization();
+  const dossierCfg = modalsConfig?.dossierModal;
   if (!rfq && !producerApp) return null;
 
   const handlePrint = () => {
@@ -1550,7 +1578,8 @@ export const GlobalSearchModal: React.FC<SearchModalProps> = ({
   onSelectProduct,
   onRequestProduct,
 }) => {
-  const { products: ctxProducts } = useLocalization();
+  const { products: ctxProducts, modalsConfig } = useLocalization();
+  const searchCfg = modalsConfig?.searchModal;
   const allProducts: ProductItem[] = ctxProducts && ctxProducts.length > 0 ? (ctxProducts as ProductItem[]) : PRODUCTS_CATALOG;
   const [query, setQuery] = useState('');
 
@@ -1581,7 +1610,7 @@ export const GlobalSearchModal: React.FC<SearchModalProps> = ({
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder={ml('searchPlaceholder', locale)}
+            placeholder={searchCfg?.placeholder?.[locale] || ml('searchPlaceholder', locale)}
             className="w-full text-sm text-slate-900 focus:outline-none"
           />
           <button
@@ -1593,7 +1622,34 @@ export const GlobalSearchModal: React.FC<SearchModalProps> = ({
           </button>
         </div>
 
+        {/* Dynamic Trending Tags from Modals Config */}
+        {searchCfg?.trendingTags && searchCfg.trendingTags.length > 0 && !query && (
+          <div className="px-4 py-2 bg-slate-50 border-b border-slate-100 flex items-center gap-1.5 overflow-x-auto text-[11px]">
+            <span className="text-slate-400 font-semibold shrink-0">Trend:</span>
+            {searchCfg.trendingTags.map((t, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => setQuery(t.query || t.tag)}
+                className="px-2.5 py-0.5 rounded-full bg-white border border-slate-200 text-slate-700 hover:border-brandNavy hover:text-brandNavy transition-colors cursor-pointer shrink-0"
+              >
+                {t.tag}
+              </button>
+            ))}
+          </div>
+        )}
+
         <div className="flex-1 overflow-y-auto divide-y divide-slate-100">
+          {filteredProducts.length === 0 && (
+            <div className="p-8 text-center text-slate-500">
+              <p className="text-sm font-bold text-slate-800">
+                {searchCfg?.emptyStateTitle?.[locale] || 'Uyğun nəticə tapılmadı'}
+              </p>
+              <p className="text-xs text-slate-400 mt-1">
+                {searchCfg?.emptyStateDesc?.[locale] || 'Fərqli açar sözlə axtarın və ya birbaşa RFQ göndərin.'}
+              </p>
+            </div>
+          )}
           {filteredProducts.map((p) => (
             <div
               key={p.id}

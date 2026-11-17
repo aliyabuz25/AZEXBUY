@@ -22,6 +22,7 @@ import {
   ChevronDown,
   ChevronRight,
   Sparkles,
+  Layers,
 } from 'lucide-react';
 import { UiLanguage } from '../types';
 import { DICTIONARIES } from '../i18n';
@@ -111,6 +112,20 @@ const NAV_SECTIONS: NavSection[] = [
           { id: 'azexbuy-cms', label: 'Xidmət Müraciəti Modal (+/-)', cmsPageKey: 'service_modal' },
           { id: 'azexbuy-cms', label: 'Haqqımızda & Komanda', cmsPageKey: 'about' },
           { id: 'azexbuy-cms', label: 'Bütün Görsəllər & Media', cmsPageKey: 'images' },
+        ],
+      },
+      {
+        id: 'modals',
+        label: 'Modallar (Pop-uplar)',
+        icon: Layers,
+        subItems: [
+          { id: 'modals', label: '1. Qiymət Sorğusu (RFQ)', cmsPageKey: 'rfq' },
+          { id: 'modals', label: '2. İstehsalçı Qeydiyyatı', cmsPageKey: 'producer' },
+          { id: 'modals', label: '3. Xidmət Müraciəti', cmsPageKey: 'service' },
+          { id: 'modals', label: '4. Trade Desk AI Çat', cmsPageKey: 'aidesk' },
+          { id: 'modals', label: '5. Məhsul Detalı (Spec)', cmsPageKey: 'spec' },
+          { id: 'modals', label: '6. Qlobal Axtarış', cmsPageKey: 'search' },
+          { id: 'modals', label: '7. İxrac Dosyesi Çapı', cmsPageKey: 'dossier' },
         ],
       },
       {
@@ -246,7 +261,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const handleTabClick = (item: { id: string; label: string; icon: any }, extraParam?: string) => {
     if (extraParam) {
-      localStorage.setItem('azexbuy_cms_initial_page', extraParam);
+      if (item.id === 'modals') {
+        localStorage.setItem('azexbuy_modals_initial_page', extraParam);
+      } else {
+        localStorage.setItem('azexbuy_cms_initial_page', extraParam);
+      }
     }
     onSelectTab(item.id, item.label, item.id);
     if (isMobileDrawer) {

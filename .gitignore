@@ -13,7 +13,9 @@ coverage/
 .env.*
 .git
 backend/node_modules/
-data/
+/data/
+admin/data/
+!src/data/
 uploads/
 
 playwright-report/

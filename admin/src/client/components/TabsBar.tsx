@@ -19,7 +19,8 @@ import {
   Users,
   Mail,
   Cpu,
-  Activity
+  Activity,
+  Layers
 } from 'lucide-react';
 import { TabItem, UiLanguage } from '../types';
 
@@ -47,6 +48,7 @@ const iconMap: Record<string, React.FC<{ className?: string }>> = {
   settings: Settings,
   azexbuy: Boxes,
   'azexbuy-cms': PenLine,
+  modals: Layers,
   'product-catalog': Package,
   articles: BookOpen,
   services: Briefcase,

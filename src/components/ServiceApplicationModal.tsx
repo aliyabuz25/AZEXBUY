@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Locale, CmsService, ServiceApplication, getLocalizedText } from '../types';
 import { CountrySelect } from './CountrySelect';
+import { useLocalization } from '../context/LocalizationContext';
 
 interface ServiceApplicationModalProps {
   locale: Locale;
@@ -43,6 +44,8 @@ export const ServiceApplicationModal: React.FC<ServiceApplicationModalProps> = (
   onClose,
   onSubmit,
 }) => {
+  const { modalsConfig } = useLocalization();
+  const srvCfg = modalsConfig?.serviceModal;
   const [fullName, setFullName] = useState('');
   const [company, setCompany] = useState('');
   const [country, setCountry] = useState('');
@@ -116,7 +119,12 @@ export const ServiceApplicationModal: React.FC<ServiceApplicationModalProps> = (
 
         {/* Header */}
         <div className="bg-white border-b border-slate-200 px-5 py-4 flex items-center justify-between shrink-0">
-          <h3 className="text-base font-semibold text-slate-800">{t('title', locale)}</h3>
+          <div>
+            <h3 className="text-base font-semibold text-slate-800">{srvCfg?.title?.[locale] || t('title', locale)}</h3>
+            {srvCfg?.subtitle?.[locale] && (
+              <p className="text-xs text-slate-500 mt-0.5">{srvCfg.subtitle[locale]}</p>
+            )}
+          </div>
           <button type="button" onClick={onClose} className="text-slate-400 hover:text-slate-700 p-1.5 rounded transition-colors cursor-pointer">
             <i className="fa-solid fa-xmark text-base"></i>
           </button>
@@ -298,7 +306,7 @@ export const ServiceApplicationModal: React.FC<ServiceApplicationModalProps> = (
                     <span>...</span>
                   </>
                 ) : (
-                  t('submit', locale)
+                  srvCfg?.submitButton?.[locale] || t('submit', locale)
                 )}
               </button>
             </div>
