@@ -324,6 +324,10 @@ export const AIDeskModal: React.FC<AIDeskModalProps> = ({
               <img
                 src={ASSISTANT_AVATAR}
                 alt="3D Assistant"
+                width={32}
+                height={32}
+                loading="lazy"
+                decoding="async"
                 className="w-8 h-8 object-contain drop-shadow"
               />
               <span className={`absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full border border-[#00243E] ${
@@ -373,7 +377,7 @@ export const AIDeskModal: React.FC<AIDeskModalProps> = ({
           {/* Clean Typing Indicator with mini 3D robot */}
           {isAiThinking && (
             <div className="flex items-center gap-2 text-slate-500 text-[11px] px-3 py-1.5 bg-white rounded-2xl border border-slate-200/80 w-fit shadow-2xs animate-pulse">
-              <img src={ASSISTANT_AVATAR} alt="" className="w-4 h-4 object-contain animate-bounce" />
+              <img src={ASSISTANT_AVATAR} alt="" width={16} height={16} loading="lazy" decoding="async" className="w-4 h-4 object-contain animate-bounce" />
               <span>{locale === 'AZ' ? 'Düşünür və cavab yazır...' : 'Analyzing and answering...'}</span>
             </div>
           )}

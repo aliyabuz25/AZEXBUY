@@ -68,6 +68,7 @@ import { AboutView } from './components/AboutView';
 import { InsightsView } from './components/InsightsView';
 import { FavoritesView } from './components/FavoritesView';
 import { ServiceApplicationModal } from './components/ServiceApplicationModal';
+import { optimizeImageUrl } from './components/SafeImage';
 
 const SAMPLE_INITIAL_RFQ: RFQSubmission = {
   id: 'AZX-RFQ-2026-4819',
@@ -600,7 +601,9 @@ export default function App() {
                   alt="Azerbaijani products, pomegranates, hazelnuts, traditional armudu tea glasses, samovar and Baku Flame Towers landscape"
                   className="w-full h-full object-cover object-center"
                   referrerPolicy="no-referrer"
-                  src={heroImage}
+                  src={optimizeImageUrl(heroImage, 1400)}
+                  fetchPriority="high"
+                  decoding="async"
                 />
                 {/* Soft readable gradient overlay to ensure high contrast for typography and buttons */}
                 <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-white/20"></div>
@@ -732,7 +735,9 @@ export default function App() {
                         alt="Cargo container ship with global network"
                         className="w-full h-full object-cover object-right"
                         referrerPolicy="no-referrer"
-                        src={buyerCardImage}
+                        src={optimizeImageUrl(buyerCardImage, 800)}
+                        loading="lazy"
+                        decoding="async"
                       />
                       <div className="absolute inset-0 bg-gradient-to-r from-[#edf6fe] via-[#edf6fe]/90 via-45% to-transparent"></div>
                     </div>
@@ -768,7 +773,9 @@ export default function App() {
                         alt="Modern industrial manufacturing factory"
                         className="w-full h-full object-cover object-right"
                         referrerPolicy="no-referrer"
-                        src={producerCardImage}
+                        src={optimizeImageUrl(producerCardImage, 800)}
+                        loading="lazy"
+                        decoding="async"
                       />
                       <div className="absolute inset-0 bg-gradient-to-r from-[#f0fbf7] via-[#f0fbf7]/90 via-45% to-transparent"></div>
                     </div>
@@ -1075,10 +1082,11 @@ export default function App() {
                         <div className="w-full aspect-[4/3] rounded-lg overflow-hidden bg-slate-100 relative mb-2.5 flex items-center justify-center">
                           {cat.image ? (
                             <img
-                              src={cat.image}
+                              src={optimizeImageUrl(cat.image, 320)}
                               alt={getLocalizedText(cat.label, locale)}
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                               loading="lazy"
+                              decoding="async"
                               onError={(e) => {
                                 const target = e.currentTarget;
                                 target.style.display = 'none';
@@ -1135,7 +1143,9 @@ export default function App() {
                   alt="Baku Boulevard, Caspian Sea, Flame Towers, and Baku TV Tower panorama at dusk"
                   className="w-full h-full object-cover object-right"
                   referrerPolicy="no-referrer"
-                  src={whyAzImage}
+                  src={optimizeImageUrl(whyAzImage, 1200)}
+                  loading="lazy"
+                  decoding="async"
                 />
                 {/* Smooth deep navy gradient overlay transitioning to transparent on the right */}
                 <div className="absolute inset-0 bg-gradient-to-r from-[#00243E] via-[#00243E]/90 via-45% to-transparent"></div>
@@ -1296,11 +1306,18 @@ export default function App() {
             {/* Brand & Mandate */}
             <div className="space-y-3">
               <div className="flex items-center">
-                <img
-                  src="/logo-white.png"
-                  alt="AZEXBUY"
-                  className="h-8 w-auto object-contain"
-                />
+                <picture>
+                  <source type="image/webp" srcSet="/logo-white.webp" />
+                  <img
+                    src="/logo-white-navbar.png"
+                    alt="AZEXBUY"
+                    width={124}
+                    height={32}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-8 w-auto object-contain"
+                  />
+                </picture>
               </div>
               <p className="text-slate-400 leading-relaxed">{t.footer.description}</p>
               <div className="text-[11px] text-slate-400 pt-1">
@@ -1522,6 +1539,10 @@ export default function App() {
             <img
               src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f916/512.webp"
               alt="AI Assistant"
+              width={28}
+              height={28}
+              loading="lazy"
+              decoding="async"
               className="w-7 h-7 object-contain drop-shadow-sm"
             />
             <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white animate-pulse"></span>

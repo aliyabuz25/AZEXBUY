@@ -1,36 +1,36 @@
 import { Locale, ProductItem, ServicePillar, StepItem, AboutPageContent, TeamMember, PortalPageContent, PortalStepItem, GuideCard, GuideCardItem } from '../types';
 
 export const HERO_IMAGE =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuB9ZWqLLmb30gHFdTBf7cfY60pAMzYSTWRn2keRDZ7k8a3eQicd1I5xuOR1U44ux_eyOl79BjhxRaXdEbzovzXexqRo8oDy3gVECJAAKnDsq1DYgw7oR-p-U-VjFeMqmdwPl27SJVIP7hTVWchM1LYBR1EY2hy5C8iSkUcytv0qKVFgxmbifXswWW8UTnyUsQw5XBb81qNG2tremLOg_k5EPGCl-K_AWwSN8UQ3T1EN7HyePk3pvGD9';
+  'https://lh3.googleusercontent.com/aida-public/AB6AXuB9ZWqLLmb30gHFdTBf7cfY60pAMzYSTWRn2keRDZ7k8a3eQicd1I5xuOR1U44ux_eyOl79BjhxRaXdEbzovzXexqRo8oDy3gVECJAAKnDsq1DYgw7oR-p-U-VjFeMqmdwPl27SJVIP7hTVWchM1LYBR1EY2hy5C8iSkUcytv0qKVFgxmbifXswWW8UTnyUsQw5XBb81qNG2tremLOg_k5EPGCl-K_AWwSN8UQ3T1EN7HyePk3pvGD9=w1200-rw';
 
 export const BUYER_CARD_IMAGE =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuCHfBjlFdQNaNAsP2RbAdqbBzskyL-GFgkaTpjwu0U6iT-t0tvmdQxrsHV7DOVkxLI4TCvj6qWpEawxqKJPqQE9f5GeXtwvTu7-fs3s495aRNM41LY0ardk4_DhtXk2RrKbiZgwssXvlrrI_EThET-4vRXO-9SbspxRcE3KXflGW-LnO8LzAq_bYYS10R-r010CzBLBwMqbd6slv40ntEvn3OyeauJszJaHkxnHTcGCq-0XAIDQmj6_';
+  'https://lh3.googleusercontent.com/aida-public/AB6AXuCHfBjlFdQNaNAsP2RbAdqbBzskyL-GFgkaTpjwu0U6iT-t0tvmdQxrsHV7DOVkxLI4TCvj6qWpEawxqKJPqQE9f5GeXtwvTu7-fs3s495aRNM41LY0ardk4_DhtXk2RrKbiZgwssXvlrrI_EThET-4vRXO-9SbspxRcE3KXflGW-LnO8LzAq_bYYS10R-r010CzBLBwMqbd6slv40ntEvn3OyeauJszJaHkxnHTcGCq-0XAIDQmj6_=w800-rw';
 
 export const PRODUCER_CARD_IMAGE =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuDgrvRVBxN_YV05A8C2ZBQC2V2WHmgN9IrmvxhBvoVre7FKYjEbaR95Ew5PqX6-T-FG67u-0fHLCX6KeLtUrAkBIiJfWZGu7t3Ez2RyKvMerWTAHV1ROVLxhP4wE2oqLK-k9t1i6hrPmq-YJ-GDzjbqNDrNf2-SyjbXUmuQAJa5ScuKsRahZQdVKWyzFzRNPNYzxr3XOkiIb2BLWy4KJO-b-RWiNaaRqebQkQINqnQZfyBkDjpvxMId';
+  'https://lh3.googleusercontent.com/aida-public/AB6AXuDgrvRVBxN_YV05A8C2ZBQC2V2WHmgN9IrmvxhBvoVre7FKYjEbaR95Ew5PqX6-T-FG67u-0fHLCX6KeLtUrAkBIiJfWZGu7t3Ez2RyKvMerWTAHV1ROVLxhP4wE2oqLK-k9t1i6hrPmq-YJ-GDzjbqNDrNf2-SyjbXUmuQAJa5ScuKsRahZQdVKWyzFzRNPNYzxr3XOkiIb2BLWy4KJO-b-RWiNaaRqebQkQINqnQZfyBkDjpvxMId=w800-rw';
 
 export const BUYER_HERO_IMAGE =
-  'https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=1600&q=80';
+  'https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=1200&auto=format&q=75';
 export const PRODUCER_HERO_IMAGE =
-  'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=1600&q=80';
+  'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=1200&auto=format&q=75';
 
 export const WHY_AZERBAIJAN_IMAGE =
-  'https://lh3.googleusercontent.com/aida/AEtjO1WtUBR_2hOeUbRABsre_R7H-yW12FldWdxDp_6_abkiZuNwgF3fMTiwxdQCKdfEbdEWa-6CSQc0bQgUbjojei2itk13mAz_e09yOnKuFWP_7AO2BpMiNUQByyYnqtrPMywT0b4g4COdLkLc5_L75NtOsKv5OOgHz7VdAMCF-WDWgmhqccS9HdQKKY8cwD4AeVg_Z5AczT8rfvCVFXyJrgDuQKAsNiyYL54OeN2_HoFxHi9ltf4bUcbHSmM';
+  'https://lh3.googleusercontent.com/aida/AEtjO1WtUBR_2hOeUbRABsre_R7H-yW12FldWdxDp_6_abkiZuNwgF3fMTiwxdQCKdfEbdEWa-6CSQc0bQgUbjojei2itk13mAz_e09yOnKuFWP_7AO2BpMiNUQByyYnqtrPMywT0b4g4COdLkLc5_L75NtOsKv5OOgHz7VdAMCF-WDWgmhqccS9HdQKKY8cwD4AeVg_Z5AczT8rfvCVFXyJrgDuQKAsNiyYL54OeN2_HoFxHi9ltf4bUcbHSmM=w1200-rw';
 
 export const HOW_IT_WORKS_BUYERS_IMAGE =
-  'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800&q=80';
+  'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800&auto=format&q=75';
 
 export const HOW_IT_WORKS_SELLERS_IMAGE =
-  'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&q=80';
+  'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&auto=format&q=75';
 
 export const SERVICES_HERO_IMAGE =
-  'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1600&q=80';
+  'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1200&auto=format&q=75';
 
 export const PRODUCTS_HERO_IMAGE =
-  'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1600&q=80';
+  'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1200&auto=format&q=75';
 
 export const HOW_IT_WORKS_HERO_IMAGE =
-  'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1600&q=80';
+  'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1200&auto=format&q=75';
 
 export const PRODUCTS_CATALOG: ProductItem[] = [
   {

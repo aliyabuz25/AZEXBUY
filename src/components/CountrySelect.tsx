@@ -25,6 +25,7 @@ export const CircleFlag: React.FC<{ code: string; name?: string; className?: str
       src={`https://hatscripts.github.io/circle-flags/flags/${codeLower}.svg`}
       alt={name || code}
       loading="lazy"
+      decoding="async"
       onError={() => setHasError(true)}
       className={`${className} rounded-full object-cover shrink-0 border border-slate-100 shadow-xs select-none`}
     />

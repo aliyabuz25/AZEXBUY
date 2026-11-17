@@ -160,11 +160,18 @@ export const Navbar: React.FC<NavbarProps> = ({
           className="flex items-center group cursor-pointer shrink-0"
           data-purpose="brand-logo"
         >
-          <img
-            src="/logo.png"
-            alt="AZEXBUY"
-            className="h-9 w-auto object-contain transition-opacity group-hover:opacity-90"
-          />
+          <picture>
+            <source type="image/webp" srcSet="/logo.webp" />
+            <img
+              src="/logo-navbar.png"
+              alt="AZEXBUY"
+              width={140}
+              height={36}
+              fetchPriority="high"
+              decoding="async"
+              className="h-9 w-auto object-contain transition-opacity group-hover:opacity-90"
+            />
+          </picture>
         </button>
 
         {/* Desktop Nav Links */}
@@ -314,11 +321,17 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={() => handleNavClick('home')}
               className="flex items-center cursor-pointer"
             >
-              <img
-                src="/logo.png"
-                alt="AZEXBUY"
-                className="h-8 w-auto object-contain"
-              />
+              <picture>
+                <source type="image/webp" srcSet="/logo.webp" />
+                <img
+                  src="/logo-navbar.png"
+                  alt="AZEXBUY"
+                  width={124}
+                  height={32}
+                  decoding="async"
+                  className="h-8 w-auto object-contain"
+                />
+              </picture>
             </button>
             <button
               type="button"

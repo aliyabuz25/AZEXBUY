@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Locale } from '../types';
 import { MarkdownRenderer } from '../utils/markdownRenderer';
+import { optimizeImageUrl } from './SafeImage';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 interface AzArticle {
@@ -119,7 +120,14 @@ const ShareModal: React.FC<{ article: AzArticle; onClose: () => void }> = ({ art
         </div>
         {article.coverImage && (
           <div className="flex gap-3 items-center rounded-xl p-3 mb-5" style={{ backgroundColor: '#F8F8F3' }}>
-            <img src={article.coverImage} alt="" referrerPolicy="no-referrer" className="w-11 h-11 rounded-lg object-cover shrink-0" />
+            <img
+              src={optimizeImageUrl(article.coverImage, 96)}
+              alt=""
+              referrerPolicy="no-referrer"
+              loading="lazy"
+              decoding="async"
+              className="w-11 h-11 rounded-lg object-cover shrink-0"
+            />
             <p style={{ fontSize: '11px', fontWeight: 600, color: '#17231D', lineHeight: 1.4 }} className="line-clamp-2">{article.title}</p>
           </div>
         )}
@@ -202,7 +210,7 @@ const ArticleDetail: React.FC<{
         </button>
         {article.coverImage && (
           <div className="rounded-2xl overflow-hidden mb-8 shadow-sm" style={{ aspectRatio: '16/7' }}>
-            <img src={article.coverImage} alt={article.title} referrerPolicy="no-referrer" loading="lazy" className="w-full h-full object-cover" />
+            <img src={optimizeImageUrl(article.coverImage, 900)} alt={article.title} referrerPolicy="no-referrer" loading="lazy" decoding="async" className="w-full h-full object-cover" />
           </div>
         )}
         <div>{article.content ? renderBBCode(article.content) : <p style={{ fontSize: '15px', color: 'rgba(23,35,29,0.7)', lineHeight: 1.7 }}>{article.summary}</p>}</div>
@@ -246,10 +254,11 @@ const FeaturedCard: React.FC<{
       {/* Background image */}
       {article.coverImage && (
         <img
-          src={article.coverImage}
+          src={optimizeImageUrl(article.coverImage, 800)}
           alt={article.title}
           referrerPolicy="no-referrer"
           loading="lazy"
+          decoding="async"
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           style={{ opacity: 0.55 }}
         />
@@ -335,10 +344,11 @@ const SideCard: React.FC<{
         >
           {article.coverImage ? (
             <img
-              src={article.coverImage}
+              src={optimizeImageUrl(article.coverImage, 300)}
               alt={article.title}
               referrerPolicy="no-referrer"
               loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
           ) : (
@@ -398,7 +408,7 @@ const GridCard: React.FC<{
       onClick={() => onRead(article)}
     >
       {article.coverImage ? (
-        <img src={article.coverImage} alt={article.title} referrerPolicy="no-referrer" loading="lazy"
+        <img src={optimizeImageUrl(article.coverImage, 500)} alt={article.title} referrerPolicy="no-referrer" loading="lazy" decoding="async"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
       ) : (
         <div className="w-full h-full flex items-center justify-center" style={{ backgroundColor: 'rgba(0,36,62,0.06)' }}>

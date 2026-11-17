@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { Article, Locale } from '../types';
 import { MarkdownRenderer } from '../utils/markdownRenderer';
+import { optimizeImageUrl } from './SafeImage';
 
 const BACKEND = '';
 
@@ -125,9 +126,11 @@ const ShareModal: React.FC<ShareModalProps> = ({ article, onClose }) => {
         <div className="flex gap-3 p-3 bg-slate-50 rounded-xl mb-5 border border-slate-200">
           {article.coverImage && (
             <img
-              src={article.coverImage}
+              src={optimizeImageUrl(article.coverImage, 120)}
               alt={article.title}
               referrerPolicy="no-referrer"
+              loading="lazy"
+              decoding="async"
               className="w-14 h-14 rounded-lg object-cover shrink-0"
             />
           )}
@@ -211,9 +214,11 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, onShare 
       {article.coverImage && (
         <div className="rounded-2xl overflow-hidden h-64 sm:h-80 mb-6">
           <img
-            src={article.coverImage}
+            src={optimizeImageUrl(article.coverImage, 1200)}
             alt={article.title}
             referrerPolicy="no-referrer"
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover"
           />
         </div>
@@ -301,9 +306,11 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article, onRead, onShare }) =
           onClick={() => onRead(article)}
         >
           <img
-            src={article.coverImage}
+            src={optimizeImageUrl(article.coverImage, 600)}
             alt={article.title}
             referrerPolicy="no-referrer"
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
         </div>

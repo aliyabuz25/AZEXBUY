@@ -20,7 +20,7 @@ import {
   DEFAULT_PRODUCERS_PAGE,
 } from '../data/translations';
 import { useLocalization } from '../context/LocalizationContext';
-import { SafeImage } from './SafeImage';
+import { SafeImage, optimizeImageUrl } from './SafeImage';
 
 interface CatalogViewProps {
   locale: Locale;
@@ -249,10 +249,12 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
       {/* Hero with background image — flush to topbar */}
       <div className="relative w-full overflow-hidden bg-[#0b2440]">
         <img
-          src={productsHeroImage}
+          src={optimizeImageUrl(productsHeroImage, 1200)}
           alt="Export Commodities Catalog"
           className="w-full h-[360px] sm:h-[400px] object-cover object-center"
           referrerPolicy="no-referrer"
+          fetchPriority="high"
+          decoding="async"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0b2440] via-[#0b2440]/60 to-[#0b2440]/25"></div>
         <div className="absolute inset-x-0 bottom-0 z-10">
@@ -1451,9 +1453,11 @@ export const DossiersView: React.FC<DossiersViewProps> = ({
                 >
                   <div className="flex items-center gap-3">
                     <img
-                      src={p.image}
+                      src={optimizeImageUrl(p.image, 96)}
                       alt={getLocalizedText(p.name, locale)}
                       referrerPolicy="no-referrer"
+                      loading="lazy"
+                      decoding="async"
                       className="w-12 h-12 rounded object-cover"
                     />
                     <div>
@@ -1646,10 +1650,12 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
         {/* Hero */}
         <div className="relative w-full overflow-hidden bg-[#0b2440]">
           <img
-            src={heroImg}
+            src={optimizeImageUrl(heroImg, 1400)}
             alt="AZEXBUY Sourcing"
             className="w-full h-[420px] object-cover object-center"
             referrerPolicy="no-referrer"
+            loading="lazy"
+            decoding="async"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0b2440] via-[#0b2440]/45 to-[#0b2440]/15"></div>
           <div className="absolute inset-x-0 bottom-0 z-10">
@@ -1868,10 +1874,12 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
         {/* Hero with background image — flush to topbar */}
         <div className="relative w-full overflow-hidden bg-[#0b2440]">
           <img
-            src={howItWorksHeroImage}
+            src={optimizeImageUrl(howItWorksHeroImage, 1400)}
             alt="AZEXBUY Process"
             className="w-full h-[360px] sm:h-[400px] object-cover object-center"
             referrerPolicy="no-referrer"
+            loading="lazy"
+            decoding="async"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0b2440] via-[#0b2440]/60 to-[#0b2440]/25"></div>
           <div className="absolute inset-x-0 bottom-0 z-10">
@@ -1921,7 +1929,13 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
                 <div className="rounded-[20px] overflow-hidden bg-brandNavy p-6 sm:p-8 flex flex-col gap-5 min-h-[480px] shadow-sm">
                   <div>
                     <div className="rounded-[14px] overflow-hidden w-full aspect-[1.81/1] mb-4">
-                      <img src={howItWorksBuyersImage} alt="Buyers" className="w-full h-full object-cover" />
+                      <img
+                        src={optimizeImageUrl(howItWorksBuyersImage, 800)}
+                        alt="Buyers"
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                        decoding="async"
+                      />
                     </div>
                     <p className="text-[20px] font-normal text-white uppercase tracking-wide mb-3">{buyersLabel}</p>
                     <span className="inline-block bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-[12px] font-medium px-2.5 py-[4px] rounded-full mb-3">
@@ -2003,7 +2017,13 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
                 <div className="rounded-[20px] overflow-hidden bg-brandGreenDark p-6 sm:p-8 flex flex-col gap-5 min-h-[480px] shadow-sm">
                   <div>
                     <div className="rounded-[14px] overflow-hidden w-full aspect-[1.81/1] mb-4">
-                      <img src={howItWorksSellersImage} alt="Sellers" className="w-full h-full object-cover" />
+                      <img
+                        src={optimizeImageUrl(howItWorksSellersImage, 800)}
+                        alt="Sellers"
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                        decoding="async"
+                      />
                     </div>
                     <p className="text-[20px] font-normal text-white uppercase tracking-wide mb-3">{sellersLabel}</p>
                     <span className="inline-block bg-white/15 border border-white/20 text-white/90 text-[12px] font-medium px-2.5 py-[4px] rounded-full mb-3">
@@ -2120,10 +2140,12 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
         {/* Hero */}
         <div className="relative w-full overflow-hidden bg-[#0b2440]">
           <img
-            src={heroImg}
+            src={optimizeImageUrl(heroImg, 1400)}
             alt="AZEXBUY Producers"
             className="w-full h-[420px] object-cover object-center"
             referrerPolicy="no-referrer"
+            loading="lazy"
+            decoding="async"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0b2440] via-[#0b2440]/45 to-[#0b2440]/15"></div>
           <div className="absolute inset-x-0 bottom-0 z-10">
@@ -2323,10 +2345,12 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
         {/* Hero with background image — flush to topbar */}
         <div className="relative w-full overflow-hidden bg-[#0b2440]">
           <img
-            src={servicesHeroImage}
+            src={optimizeImageUrl(servicesHeroImage, 1400)}
             alt="AZEXBUY Services"
             className="w-full h-[360px] sm:h-[400px] object-cover object-center"
             referrerPolicy="no-referrer"
+            loading="lazy"
+            decoding="async"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0b2440] via-[#0b2440]/60 to-[#0b2440]/25"></div>
           <div className="absolute inset-x-0 bottom-0 z-10">

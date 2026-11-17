@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Locale, ViewMode, getLocalizedText } from '../types';
 import { useLocalization } from '../context/LocalizationContext';
+import { optimizeImageUrl } from './SafeImage';
 
 interface AboutViewProps {
   locale: Locale;
@@ -61,9 +62,11 @@ export const AboutView: React.FC<AboutViewProps> = ({ locale, onOpenRFQ, onOpenP
             {/* Right: Image */}
             <div className="relative rounded-2xl overflow-hidden h-80 lg:h-[480px] shadow-xl group">
               <img
-                src={about.whoWeAre.image || 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=800&q=80'}
+                src={optimizeImageUrl(about.whoWeAre.image || 'https://images.unsplash.com/photo-1578575437130-527eed3abbec', 800)}
                 alt="International trade and logistics"
                 referrerPolicy="no-referrer"
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-brandNavy/80 via-brandNavy/30 to-transparent"></div>
@@ -140,9 +143,11 @@ export const AboutView: React.FC<AboutViewProps> = ({ locale, onOpenRFQ, onOpenP
             {/* Mission */}
             <div className="relative rounded-2xl overflow-hidden min-h-[320px] flex items-end shadow-md">
               <img
-                src={about.missionVision.missionImage || 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=800&q=80'}
+                src={optimizeImageUrl(about.missionVision.missionImage || 'https://images.unsplash.com/photo-1521737711867-e3b97375f902', 800)}
                 alt="Mission"
                 referrerPolicy="no-referrer"
+                loading="lazy"
+                decoding="async"
                 className="absolute inset-0 w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-brandNavy/85 backdrop-blur-[1px]"></div>
@@ -162,9 +167,11 @@ export const AboutView: React.FC<AboutViewProps> = ({ locale, onOpenRFQ, onOpenP
             {/* Vision */}
             <div className="relative rounded-2xl overflow-hidden min-h-[320px] flex items-end shadow-md">
               <img
-                src={about.missionVision.visionImage || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80'}
+                src={optimizeImageUrl(about.missionVision.visionImage || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab', 800)}
                 alt="Vision"
                 referrerPolicy="no-referrer"
+                loading="lazy"
+                decoding="async"
                 className="absolute inset-0 w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-emerald-950/85 backdrop-blur-[1px]"></div>
@@ -249,9 +256,11 @@ export const AboutView: React.FC<AboutViewProps> = ({ locale, onOpenRFQ, onOpenP
             {(about.sectors.items || []).map((s, i) => (
               <div key={i} className="group relative rounded-xl overflow-hidden h-48 cursor-pointer shadow-sm">
                 <img
-                  src={s.image}
+                  src={optimizeImageUrl(s.image, 480)}
                   alt={t(s.title)}
                   referrerPolicy="no-referrer"
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent"></div>
@@ -322,11 +331,18 @@ export const AboutView: React.FC<AboutViewProps> = ({ locale, onOpenRFQ, onOpenP
             <div className="flex justify-center mb-8">
               <div className="bg-brandNavy text-white rounded-2xl px-8 py-4 text-center shadow-lg border border-slate-700/50">
                 <div className="flex items-center justify-center mb-1">
-                  <img
-                    src="/logo-white.png"
-                    alt="AZEXBUY"
-                    className="h-8 w-auto object-contain"
-                  />
+                  <picture>
+                    <source type="image/webp" srcSet="/logo-white.webp" />
+                    <img
+                      src="/logo-white-navbar.png"
+                      alt="AZEXBUY"
+                      width={124}
+                      height={32}
+                      loading="lazy"
+                      decoding="async"
+                      className="h-8 w-auto object-contain"
+                    />
+                  </picture>
                 </div>
                 <span className="text-[10px] text-brandGreen font-bold uppercase tracking-wider block">Trade Facilitation Gateway</span>
               </div>
