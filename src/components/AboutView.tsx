@@ -321,14 +321,12 @@ export const AboutView: React.FC<AboutViewProps> = ({ locale, onOpenRFQ, onOpenP
             {/* Center hub */}
             <div className="flex justify-center mb-8">
               <div className="bg-brandNavy text-white rounded-2xl px-8 py-4 text-center shadow-lg border border-slate-700/50">
-                <div className="flex items-center gap-2.5 justify-center mb-1">
-                  <svg className="w-6 h-6" fill="none" viewBox="0 0 100 100">
-                    <circle cx="50" cy="20" fill="#00B58D" r="14"/>
-                    <circle cx="80" cy="50" fill="#0075D5" r="14"/>
-                    <circle cx="50" cy="80" fill="#e63946" r="14"/>
-                    <circle cx="20" cy="50" fill="#f4a261" r="14"/>
-                  </svg>
-                  <span className="text-lg font-black tracking-tight text-white">AZEXBUY</span>
+                <div className="flex items-center justify-center mb-1">
+                  <img
+                    src="/logo-white.png"
+                    alt="AZEXBUY"
+                    className="h-8 w-auto object-contain"
+                  />
                 </div>
                 <span className="text-[10px] text-brandGreen font-bold uppercase tracking-wider block">Trade Facilitation Gateway</span>
               </div>

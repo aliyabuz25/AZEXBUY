@@ -1295,20 +1295,12 @@ export default function App() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-8 border-b border-slate-800/80 text-xs">
             {/* Brand & Mandate */}
             <div className="space-y-3">
-              <div className="flex items-center gap-2.5">
-                <svg className="w-7 h-7" fill="none" viewBox="0 0 100 100">
-                  <circle cx="50" cy="20" fill="#00B58D" r="14"></circle>
-                  <circle cx="80" cy="50" fill="#0075D5" r="14"></circle>
-                  <circle cx="50" cy="80" fill="#e63946" r="14"></circle>
-                  <circle cx="20" cy="50" fill="#f4a261" r="14"></circle>
-                  <circle cx="71" cy="29" fill="#2a9d8f" opacity="0.8" r="11"></circle>
-                  <circle cx="71" cy="71" fill="#60a5fa" opacity="0.8" r="11"></circle>
-                  <circle cx="29" cy="71" fill="#e76f51" opacity="0.8" r="11"></circle>
-                  <circle cx="29" cy="29" fill="#457b9d" opacity="0.8" r="11"></circle>
-                </svg>
-                <span className="text-lg font-extrabold tracking-tight text-white">
-                  AZEXBUY
-                </span>
+              <div className="flex items-center">
+                <img
+                  src="/logo-white.png"
+                  alt="AZEXBUY"
+                  className="h-8 w-auto object-contain"
+                />
               </div>
               <p className="text-slate-400 leading-relaxed">{t.footer.description}</p>
               <div className="text-[11px] text-slate-400 pt-1">

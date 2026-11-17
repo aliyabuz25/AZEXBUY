@@ -157,22 +157,14 @@ export const Navbar: React.FC<NavbarProps> = ({
         <button
           type="button"
           onClick={() => handleNavClick('home')}
-          className="flex items-center gap-2 group cursor-pointer shrink-0"
+          className="flex items-center group cursor-pointer shrink-0"
           data-purpose="brand-logo"
         >
-          <svg className="w-8 h-8 shrink-0 group-hover:rotate-12 transition-transform duration-300" fill="none" viewBox="0 0 100 100">
-            <circle cx="50" cy="20" fill="#00B58D" r="14" />
-            <circle cx="80" cy="50" fill="#00243E" r="14" />
-            <circle cx="50" cy="80" fill="#e63946" r="14" />
-            <circle cx="20" cy="50" fill="#f4a261" r="14" />
-            <circle cx="71" cy="29" fill="#2a9d8f" opacity="0.8" r="11" />
-            <circle cx="71" cy="71" fill="#1d3557" opacity="0.8" r="11" />
-            <circle cx="29" cy="71" fill="#e76f51" opacity="0.8" r="11" />
-            <circle cx="29" cy="29" fill="#457b9d" opacity="0.8" r="11" />
-          </svg>
-          <span className="text-xl font-extrabold tracking-tight text-brandNavy whitespace-nowrap">
-            AZEXBUY
-          </span>
+          <img
+            src="/logo.png"
+            alt="AZEXBUY"
+            className="h-9 w-auto object-contain transition-opacity group-hover:opacity-90"
+          />
         </button>
 
         {/* Desktop Nav Links */}
@@ -320,19 +312,13 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               type="button"
               onClick={() => handleNavClick('home')}
-              className="flex items-center gap-2 cursor-pointer"
+              className="flex items-center cursor-pointer"
             >
-              <svg className="w-7 h-7 shrink-0" fill="none" viewBox="0 0 100 100">
-                <circle cx="50" cy="20" fill="#00B58D" r="14" />
-                <circle cx="80" cy="50" fill="#00243E" r="14" />
-                <circle cx="50" cy="80" fill="#e63946" r="14" />
-                <circle cx="20" cy="50" fill="#f4a261" r="14" />
-                <circle cx="71" cy="29" fill="#2a9d8f" opacity="0.8" r="11" />
-                <circle cx="71" cy="71" fill="#1d3557" opacity="0.8" r="11" />
-                <circle cx="29" cy="71" fill="#e76f51" opacity="0.8" r="11" />
-                <circle cx="29" cy="29" fill="#457b9d" opacity="0.8" r="11" />
-              </svg>
-              <span className="text-lg font-extrabold tracking-tight text-brandNavy">AZEXBUY</span>
+              <img
+                src="/logo.png"
+                alt="AZEXBUY"
+                className="h-8 w-auto object-contain"
+              />
             </button>
             <button
               type="button"
