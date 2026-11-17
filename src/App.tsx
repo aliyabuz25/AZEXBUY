@@ -1532,7 +1532,7 @@ export default function App() {
         <button
           type="button"
           onClick={() => setAiDeskOpen(true)}
-          className="fixed bottom-6 right-6 z-40 bg-white hover:bg-slate-50 text-slate-800 px-4 py-2.5 rounded-full shadow-2xl flex items-center gap-2.5 text-xs font-bold border border-slate-200 cursor-pointer transition-all hover:scale-105 active:scale-95 no-print"
+          className="fixed bottom-12 sm:bottom-14 right-5 sm:right-7 z-40 bg-white hover:bg-slate-50 text-slate-800 px-4 py-2.5 rounded-full shadow-2xl flex items-center gap-2.5 text-xs font-bold border border-slate-200 cursor-pointer transition-all hover:scale-105 active:scale-95 no-print"
           title="AZEXBUY Trade Desk Chat"
         >
           <div className="relative flex items-center justify-center">
@@ -1553,7 +1553,7 @@ export default function App() {
 
       {/* Instant Action Feedback Toast */}
       {toastMessage && (
-        <div className="fixed bottom-20 right-6 z-50 bg-slate-900/95 text-white text-xs font-semibold px-4 py-3 rounded-lg shadow-xl border border-slate-700 flex items-center gap-2.5 animate-in fade-in slide-in-from-bottom-3 duration-200 no-print">
+        <div className="fixed bottom-26 sm:bottom-28 right-5 sm:right-7 z-50 bg-slate-900/95 text-white text-xs font-semibold px-4 py-3 rounded-lg shadow-xl border border-slate-700 flex items-center gap-2.5 animate-in fade-in slide-in-from-bottom-3 duration-200 no-print">
           <i className="fa-solid fa-circle-check text-emerald-400"></i>
           <span>{toastMessage}</span>
         </div>

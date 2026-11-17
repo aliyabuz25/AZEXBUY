@@ -313,7 +313,7 @@ export const AIDeskModal: React.FC<AIDeskModalProps> = ({
   };
 
   return createPortal(
-    <div className="fixed bottom-5 right-5 z-[99999] flex flex-col items-end pointer-events-auto font-sans">
+    <div className="fixed bottom-12 sm:bottom-14 right-5 sm:right-7 z-[99999] flex flex-col items-end pointer-events-auto font-sans">
       {/* Super-clean minimal chat window */}
       <div className="w-[94vw] sm:w-[370px] h-[520px] max-h-[85vh] bg-white rounded-2xl shadow-2xl border border-slate-200/90 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-3 duration-150">
         
