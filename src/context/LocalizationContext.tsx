@@ -393,9 +393,18 @@ export function mergeServicePillarsWithDefaults(services: any[]): typeof SERVICE
   if (!Array.isArray(services) || services.length === 0) {
     return SERVICES_DEFAULT;
   }
-  const knownIds = new Set(SERVICES_DEFAULT.map((p) => p.id));
+  const matchedSavedIds = new Set<string>();
   const merged = SERVICES_DEFAULT.map((defPillar, idx) => {
-    const saved = services.find((s) => s?.id === defPillar.id) || services[idx];
+    const saved = services.find((s) => {
+      if (!s) return false;
+      if (s.id === defPillar.id) return true;
+      if (defPillar.id === 'service-p7m7' && (s.id === 'service-p7m7' || s.id === 'digital-presence')) return true;
+      if (defPillar.id === 'service-81sv' && (s.id === 'service-81sv' || s.id === 'readiness-adaptation')) return true;
+      if (s.title?.AZ && defPillar.title?.AZ && s.title.AZ.trim().toLowerCase() === defPillar.title.AZ.trim().toLowerCase()) return true;
+      return false;
+    }) || services[idx];
+
+    if (saved?.id) matchedSavedIds.add(saved.id);
     if (!saved) return defPillar;
 
     const mergeLoc = (savedObj: any, defObj: any) => {
@@ -434,7 +443,7 @@ export function mergeServicePillarsWithDefaults(services: any[]): typeof SERVICE
     return {
       ...defPillar,
       ...saved,
-      id: defPillar.id,
+      id: saved.id || defPillar.id,
       iconClass: saved.iconClass || defPillar.iconClass,
       colorClass: saved.colorClass || defPillar.colorClass,
       linkColorClass: saved.linkColorClass || defPillar.linkColorClass,
@@ -446,6 +455,7 @@ export function mergeServicePillarsWithDefaults(services: any[]): typeof SERVICE
     };
   });
 
+  const knownIds = new Set([...SERVICES_DEFAULT.map((p) => p.id), ...matchedSavedIds]);
   const extraPillars = services.filter((s) => s?.id && !knownIds.has(s.id));
   return [...merged, ...extraPillars];
 }

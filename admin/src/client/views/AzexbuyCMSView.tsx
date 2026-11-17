@@ -302,46 +302,90 @@ const SaveBar = React.memo(({ onSave, saving, saved }: SaveBarProps) => (
 ));
 
 // ── Common Icon Picker for FontAwesome Icons ────────────────────────────
-export const AVAILABLE_FA_ICONS = [
-  { cls: 'fa-regular fa-circle-check', label: 'Check Circle (Seçim / Yoxlanmış)' },
-  { cls: 'fa-solid fa-circle-check', label: 'Solid Check (Təsdiqlənmiş)' },
-  { cls: 'fa-solid fa-globe', label: 'Qlobal / Dünya (Globe)' },
-  { cls: 'fa-solid fa-earth-americas', label: 'Dünya Xəritəsi' },
-  { cls: 'fa-solid fa-chart-line', label: 'Bazar / Qrafik (Chart Line)' },
-  { cls: 'fa-solid fa-chart-pie', label: 'Diaqram / Analitika' },
-  { cls: 'fa-regular fa-clipboard', label: 'Sənəd / Qeydiyyat (Clipboard)' },
-  { cls: 'fa-solid fa-file-contract', label: 'Müqavilə (Contract)' },
-  { cls: 'fa-solid fa-truck', label: 'Yük Maşını / TIR (Truck)' },
-  { cls: 'fa-solid fa-truck-fast', label: 'Sürətli Çatdırılma' },
-  { cls: 'fa-solid fa-ship', label: 'Gəmi / Dəniz Nəqliyyatı (Ship)' },
-  { cls: 'fa-solid fa-plane-departure', label: 'Təyyarə / Hava Yükü' },
-  { cls: 'fa-solid fa-train', label: 'Qatar / Dəmir Yolu' },
-  { cls: 'fa-solid fa-warehouse', label: 'Anbar / Saxlama' },
-  { cls: 'fa-solid fa-boxes-stacked', label: 'Yüklər / Qutular' },
-  { cls: 'fa-solid fa-location-dot', label: 'Məkan / Mövqe (Location Dot)' },
-  { cls: 'fa-solid fa-map-location-dot', label: 'Xəritə Məkanı' },
-  { cls: 'fa-solid fa-cubes-stacked', label: 'Sənaye / Kublar (Cubes)' },
-  { cls: 'fa-solid fa-industry', label: 'Fabrik / Sənaye (Industry)' },
-  { cls: 'fa-solid fa-factory', label: 'İstehsal Müəssisəsi (Factory)' },
-  { cls: 'fa-solid fa-seedling', label: 'Aqrar / Bitki / İnkişaf (Seedling)' },
-  { cls: 'fa-solid fa-wheat-awn', label: 'Buğda / Kənd Təsərrüfatı' },
-  { cls: 'fa-solid fa-apple-whole', label: 'Meyvə / Qida' },
-  { cls: 'fa-solid fa-shield-halved', label: 'Təhlükəsizlik / Zəmanət (Shield)' },
-  { cls: 'fa-solid fa-award', label: 'Mükafat / Keyfiyyət Sertifikatı' },
-  { cls: 'fa-solid fa-certificate', label: 'Sertifikat (Certificate)' },
-  { cls: 'fa-solid fa-store', label: 'Mağaza / Ticarət (Store)' },
-  { cls: 'fa-solid fa-shop', label: 'Satış / Topdansatış' },
-  { cls: 'fa-solid fa-network-wired', label: 'Şəbəkə / Tərəfdaşlıq (Network)' },
-  { cls: 'fa-solid fa-users', label: 'İstifadəçilər / Komanda' },
-  { cls: 'fa-solid fa-handshake', label: 'Əməkdaşlıq / Razılaşma' },
-  { cls: 'fa-solid fa-scale-balanced', label: 'Gömrük / Hüquq / Uyğunluq' },
-  { cls: 'fa-solid fa-flask', label: 'Laboratoriya / Sınaq' },
-  { cls: 'fa-solid fa-magnifying-glass', label: 'Axtarış / Araşdırma' },
-  { cls: 'fa-solid fa-bullseye', label: 'Hədəf Bazar / Strategiya' },
-  { cls: 'fa-solid fa-bolt', label: 'Sürət / Enerji' },
-  { cls: 'fa-solid fa-briefcase', label: 'Biznes / Portfel' },
-  { cls: 'fa-solid fa-building', label: 'Korporativ / Bina' },
-  { cls: 'fa-solid fa-coins', label: 'Maliyyə / Valyuta' },
+export interface FaIconItem {
+  cls: string;
+  label: string;
+  category?: 'pillars' | 'trade' | 'logistics' | 'tech' | 'industry' | 'legal';
+}
+
+export const AVAILABLE_FA_ICONS: FaIconItem[] = [
+  // ── 01-08 Əsas İxrac Sütunları ──
+  { cls: 'fa-solid fa-leaf', label: '01 Bazarlara Çıxış / Aqro & Yaşıl İxrac', category: 'pillars' },
+  { cls: 'fa-regular fa-address-book', label: '02 Alıcı Axtarışı & Satış / Əlaqələr', category: 'pillars' },
+  { cls: 'fa-solid fa-boxes-stacked', label: '03 İxracın İdarə Edilməsi / Qablaşdırma & Anbar', category: 'pillars' },
+  { cls: 'fa-solid fa-truck-fast', label: '04 Beynəlxalq Logistika / Sürətli Daşıma', category: 'pillars' },
+  { cls: 'fa-solid fa-building-user', label: '05 Outsourced İxrac Departamenti / Xarici Ticarət Masası', category: 'pillars' },
+  { cls: 'fa-solid fa-award', label: '06 Beynəlxalq Sərgilərdə Təmsilçilik / Mükafat & Missiya', category: 'pillars' },
+  { cls: 'fa-solid fa-laptop-code', label: '07 Rəqəmsal Mövcudluq / Onlayn Biznes Həlləri', category: 'pillars' },
+  { cls: 'fa-solid fa-sliders', label: '08 İxrac Hazırlığı / Məhsulun Bazara Uyğunlaşdırılması', category: 'pillars' },
+
+  // ── Beynəlxalq Ticarət & Satış ──
+  { cls: 'fa-solid fa-chart-line', label: 'Bazar / Qrafik / Artım (Chart Line)', category: 'trade' },
+  { cls: 'fa-solid fa-arrow-trend-up', label: 'İxrac Həcmi Artımı (Trend Up)', category: 'trade' },
+  { cls: 'fa-solid fa-chart-pie', label: 'Bazar Payı & Analitika', category: 'trade' },
+  { cls: 'fa-solid fa-chart-simple', label: 'Bazar Göstəriciləri (Chart Simple)', category: 'trade' },
+  { cls: 'fa-solid fa-handshake', label: 'Əməkdaşlıq & Ticarət Razılaşması', category: 'trade' },
+  { cls: 'fa-solid fa-user-tie', label: 'B2B Satınalma Meneceri / Alıcı', category: 'trade' },
+  { cls: 'fa-solid fa-users', label: 'İşçi Heyəti & Ticarət Komandası', category: 'trade' },
+  { cls: 'fa-solid fa-briefcase', label: 'Biznes Portfeli & Ticarət Masası', category: 'trade' },
+  { cls: 'fa-solid fa-bullseye', label: 'Hədəf Bazar / Strategiya', category: 'trade' },
+  { cls: 'fa-solid fa-building', label: 'Korporativ İxrac Şirkəti', category: 'trade' },
+  { cls: 'fa-solid fa-store', label: 'Ticarət Mağazası & Şəbəkə', category: 'trade' },
+  { cls: 'fa-solid fa-shop', label: 'Topdansatış Mərkəzi', category: 'trade' },
+
+  // ── Logistika & Nəqliyyat Dəhlizləri ──
+  { cls: 'fa-solid fa-truck', label: 'Yük Maşını / TIR (Road Freight)', category: 'logistics' },
+  { cls: 'fa-solid fa-truck-moving', label: 'Beynəlxalq Yük Karvanı', category: 'logistics' },
+  { cls: 'fa-solid fa-ship', label: 'Konteyner Gəmisi / Dəniz Daşımaları', category: 'logistics' },
+  { cls: 'fa-solid fa-plane-departure', label: 'Hava Yükü / Ekspres Karqo', category: 'logistics' },
+  { cls: 'fa-solid fa-train', label: 'Dəmir Yolu / Blok Qatarları (BTQ)', category: 'logistics' },
+  { cls: 'fa-solid fa-warehouse', label: 'Gömrük Anbarı & Saxlama', category: 'logistics' },
+  { cls: 'fa-solid fa-boxes-packing', label: 'Qablaşdırma & Paletləmə', category: 'logistics' },
+  { cls: 'fa-solid fa-route', label: 'Orta Dəhliz / Marşrut Xətti', category: 'logistics' },
+  { cls: 'fa-solid fa-compass', label: 'İxrac Naviqasiyası', category: 'logistics' },
+  { cls: 'fa-solid fa-location-dot', label: 'Logistika Məntəqəsi / Məkan', category: 'logistics' },
+  { cls: 'fa-solid fa-map-location-dot', label: 'Beynəlxalq Xəritə Məkanı', category: 'logistics' },
+
+  // ── Rəqəmsal Mövcudluq & İT Həllər ──
+  { cls: 'fa-solid fa-globe', label: 'Qlobal Şəbəkə & Dünya Portalı', category: 'tech' },
+  { cls: 'fa-solid fa-earth-americas', label: 'Dünya Xəritəsi / İxrac Bazarları', category: 'tech' },
+  { cls: 'fa-solid fa-desktop', label: 'Veb-Platforma / Masaüstü Portal', category: 'tech' },
+  { cls: 'fa-solid fa-display', label: 'Rəqəmsal Vitrin & Monitor', category: 'tech' },
+  { cls: 'fa-solid fa-code', label: 'Veb Proqramlaşdırma & Kodlaşdırma', category: 'tech' },
+  { cls: 'fa-solid fa-server', label: 'Server & Hostinq İnfrastrukturu', category: 'tech' },
+  { cls: 'fa-solid fa-cloud', label: 'Bulud Sistemi & Məlumat Bazası', category: 'tech' },
+  { cls: 'fa-solid fa-network-wired', label: 'Şəbəkə İnteqrasiyası & B2B API', category: 'tech' },
+  { cls: 'fa-solid fa-qrcode', label: 'QR Kod & Rəqəmsal İzləmə', category: 'tech' },
+  { cls: 'fa-solid fa-magnifying-glass', label: 'Bazar Araşdırması & Axtarış', category: 'tech' },
+  { cls: 'fa-solid fa-magnifying-glass-chart', label: 'Analitik Axtarış & İcmal', category: 'tech' },
+  { cls: 'fa-solid fa-bullhorn', label: 'Rəqəmsal Marketinq & Elan', category: 'tech' },
+
+  // ── Sənaye, İstehsal & Aqro ──
+  { cls: 'fa-solid fa-industry', label: 'Sənaye Müəssisəsi & Fabrik', category: 'industry' },
+  { cls: 'fa-solid fa-factory', label: 'İstehsal Klasteri (Factory)', category: 'industry' },
+  { cls: 'fa-solid fa-cubes-stacked', label: 'Xammal & İstehsal Ehtiyatları', category: 'industry' },
+  { cls: 'fa-solid fa-gears', label: 'Texnoloji Xətt & Avtomatlaşdırma', category: 'industry' },
+  { cls: 'fa-solid fa-seedling', label: 'Aqro İstehsal & Yaşıl Təbii Məhsullar', category: 'industry' },
+  { cls: 'fa-solid fa-wheat-awn', label: 'Taxıl & Kənd Təsərrüfatı Məhsulları', category: 'industry' },
+  { cls: 'fa-solid fa-apple-whole', label: 'Meyvə-Tərəvəz & Qida İxracı', category: 'industry' },
+  { cls: 'fa-solid fa-flask', label: 'AQTA Laboratoriya Sınağı & Analiz', category: 'industry' },
+
+  // ── Hüquq, Sənədləşmə & Keyfiyyət ──
+  { cls: 'fa-solid fa-scale-balanced', label: 'Gömrük Qanunvericiliyi & Arbitraj', category: 'legal' },
+  { cls: 'fa-solid fa-file-contract', label: 'İxrac Müqaviləsi & İncoterms', category: 'legal' },
+  { cls: 'fa-regular fa-clipboard', label: 'Qeydiyyat & İxrac Ərizəsi', category: 'legal' },
+  { cls: 'fa-solid fa-certificate', label: 'Mənşə Sertifikatı (EUR.1 / CT-1)', category: 'legal' },
+  { cls: 'fa-solid fa-stamp', label: 'Rəsmi Təsdiq & Möhür', category: 'legal' },
+  { cls: 'fa-solid fa-shield-halved', label: 'Təhlükəsizlik Zəmanəti & Escrow', category: 'legal' },
+  { cls: 'fa-solid fa-circle-check', label: 'Təsdiqlənmiş Uyğunluq (Solid Check)', category: 'legal' },
+  { cls: 'fa-regular fa-circle-check', label: 'Yoxlanmış Status (Regular Check)', category: 'legal' },
+  { cls: 'fa-solid fa-id-card', label: 'KYB Korporativ Yoxlanış Vəsiqəsi', category: 'legal' },
+  { cls: 'fa-solid fa-coins', label: 'Valyuta & İxrac Gəliri', category: 'legal' },
+  { cls: 'fa-solid fa-credit-card', label: 'Bank Akkreditivi (Letter of Credit)', category: 'legal' },
+  { cls: 'fa-solid fa-receipt', label: 'Kommersiya İnvoysu (Invoice)', category: 'legal' },
+  { cls: 'fa-solid fa-headset', label: 'Trade Desk Müştəri Dəstəyi', category: 'trade' },
+  { cls: 'fa-solid fa-bolt', label: 'Sürətli Yaşıl Dəhliz Rejimi', category: 'logistics' },
+  { cls: 'fa-solid fa-star', label: 'Premium İxracatçı Statusu', category: 'pillars' },
 ];
 
 export const IconPickerDropdown: React.FC<{
@@ -351,68 +395,165 @@ export const IconPickerDropdown: React.FC<{
 }> = ({ value, onChange, label = 'İkon' }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [filter, setFilter] = useState('');
+  const [activeCategory, setActiveCategory] = useState<string>('all');
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const filteredIcons = AVAILABLE_FA_ICONS.filter(
-    (ic) => ic.cls.toLowerCase().includes(filter.toLowerCase()) || ic.label.toLowerCase().includes(filter.toLowerCase())
-  );
+  useEffect(() => {
+    const handlePointerDown = (e: MouseEvent | TouchEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    if (isOpen) {
+      document.addEventListener('mousedown', handlePointerDown);
+      document.addEventListener('touchstart', handlePointerDown);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('touchstart', handlePointerDown);
+    };
+  }, [isOpen]);
+
+  const filteredIcons = useMemo(() => {
+    return AVAILABLE_FA_ICONS.filter((ic) => {
+      const matchCat = activeCategory === 'all' || ic.category === activeCategory;
+      if (!matchCat) return false;
+      if (!filter.trim()) return true;
+      const q = filter.toLowerCase().trim();
+      return ic.cls.toLowerCase().includes(q) || ic.label.toLowerCase().includes(q);
+    });
+  }, [filter, activeCategory]);
+
+  const selectedItem = AVAILABLE_FA_ICONS.find((ic) => ic.cls === value);
+  const cleanFilter = filter.trim();
+  const customFaClass = cleanFilter.startsWith('fa-') ? cleanFilter : `fa-solid fa-${cleanFilter}`;
 
   return (
-    <div className="relative">
+    <div ref={containerRef} className={`relative ${isOpen ? 'z-50' : ''}`}>
       {label && <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">{label}</label>}
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full h-8 px-2.5 bg-white border border-slate-200 hover:border-[#0f3156] rounded-sm flex items-center justify-between gap-2 text-xs text-slate-700 shadow-2xs transition-colors"
+        className="w-full h-8 px-2.5 bg-white border border-slate-200 hover:border-[#0f3156] rounded-sm flex items-center justify-between gap-2 text-xs text-slate-700 shadow-2xs transition-colors cursor-pointer"
       >
         <div className="flex items-center gap-2 truncate">
           <div className="w-5 h-5 rounded bg-slate-100 flex items-center justify-center shrink-0 text-[#0f3156]">
             <i className={value || 'fa-solid fa-circle-check'}></i>
           </div>
           <span className="truncate font-mono text-[11px]">
-            {AVAILABLE_FA_ICONS.find((ic) => ic.cls === value)?.label || value || 'İkon seçin'}
+            {selectedItem?.label || value || 'İkon seçin'}
           </span>
         </div>
-        <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+        <ChevronDown className={`w-3.5 h-3.5 text-slate-400 shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
-        <div className="absolute z-50 left-0 right-0 mt-1 bg-white border border-slate-200 rounded shadow-xl p-2 max-h-64 overflow-y-auto space-y-2">
-          <div className="sticky top-0 bg-white pb-1 border-b border-slate-100">
+        <div className="absolute z-50 left-0 mt-1 w-80 sm:w-96 max-w-[95vw] bg-white border border-slate-200 rounded-lg shadow-2xl p-2.5 space-y-2">
+          {/* Search Input */}
+          <div className="relative">
             <input
               type="text"
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
-              placeholder="İkon axtar (məs: truck, globe, ship)..."
-              className="w-full h-7 px-2 text-xs border border-slate-200 rounded focus:outline-none focus:border-[#0f3156]"
+              placeholder="İkon axtar və ya yaz (məs: leaf, truck, code)..."
+              className="w-full h-8 px-2.5 pr-7 text-xs border border-slate-300 rounded focus:outline-none focus:border-[#0f3156] font-medium"
               autoFocus
             />
+            {filter && (
+              <button
+                type="button"
+                onClick={() => setFilter('')}
+                className="absolute right-2 top-2 text-slate-400 hover:text-slate-600 text-xs"
+              >
+                ✕
+              </button>
+            )}
           </div>
-          <div className="grid grid-cols-1 gap-1">
-            {filteredIcons.map((ic) => {
-              const isSelected = ic.cls === value;
-              return (
-                <button
-                  key={ic.cls}
-                  type="button"
-                  onClick={() => {
-                    onChange(ic.cls);
-                    setIsOpen(false);
-                  }}
-                  className={`flex items-center gap-2.5 px-2 py-1.5 rounded text-left text-xs transition-colors ${
-                    isSelected ? 'bg-[#0f3156] text-white' : 'hover:bg-slate-100 text-slate-700'
-                  }`}
-                >
-                  <div className={`w-5 h-5 rounded flex items-center justify-center text-sm shrink-0 ${isSelected ? 'text-white' : 'text-[#0f3156]'}`}>
-                    <i className={ic.cls}></i>
-                  </div>
-                  <div className="truncate flex-1">
-                    <div className="font-medium text-[11px] truncate">{ic.label}</div>
-                    <div className={`text-[9px] font-mono truncate ${isSelected ? 'text-slate-200' : 'text-slate-400'}`}>{ic.cls}</div>
-                  </div>
-                  {isSelected && <CheckCircle className="w-3.5 h-3.5 text-white shrink-0" />}
-                </button>
-              );
-            })}
+
+          {/* Quick Category Chips */}
+          <div className="flex items-center gap-1 overflow-x-auto pb-1 text-[10px] font-medium border-b border-slate-100">
+            {[
+              { id: 'all', label: 'Hamısı' },
+              { id: 'pillars', label: '★ 01-08 Əsas' },
+              { id: 'trade', label: 'Ticarət' },
+              { id: 'logistics', label: 'Logistika' },
+              { id: 'tech', label: 'Rəqəmsal' },
+              { id: 'industry', label: 'Sənaye' },
+              { id: 'legal', label: 'Hüquq' },
+            ].map((cat) => (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => setActiveCategory(cat.id)}
+                className={`px-2 py-0.5 rounded-full shrink-0 transition-colors ${
+                  activeCategory === cat.id
+                    ? 'bg-[#0f3156] text-white font-bold'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Custom FA class applier when filter is typed */}
+          {cleanFilter && (
+            <div className="p-2 bg-blue-50/70 border border-blue-200 rounded-md flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="w-6 h-6 rounded bg-[#0f3156] text-white flex items-center justify-center text-xs shrink-0">
+                  <i className={customFaClass}></i>
+                </div>
+                <div className="truncate text-left">
+                  <div className="text-[10px] text-slate-500">Xüsusi klass daxil et:</div>
+                  <div className="font-mono text-[11px] font-bold text-[#0f3156] truncate">{customFaClass}</div>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  onChange(customFaClass);
+                  setIsOpen(false);
+                }}
+                className="px-2.5 py-1 bg-[#0f3156] hover:bg-[#1a4a7a] text-white text-[10px] font-bold rounded cursor-pointer shrink-0 transition-colors"
+              >
+                Tətbiq et
+              </button>
+            </div>
+          )}
+
+          {/* Icon List */}
+          <div className="max-h-60 overflow-y-auto space-y-1 pr-1">
+            {filteredIcons.length === 0 ? (
+              <div className="text-center py-4 text-xs text-slate-400">
+                Uyğun hazır ikon tapılmadı. Yuxarıdakı &quot;Tətbiq et&quot; düyməsi ilə xüsusi klass kimi seçə bilərsiniz.
+              </div>
+            ) : (
+              filteredIcons.map((ic) => {
+                const isSelected = ic.cls === value;
+                return (
+                  <button
+                    key={ic.cls}
+                    type="button"
+                    onClick={() => {
+                      onChange(ic.cls);
+                      setIsOpen(false);
+                    }}
+                    className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded text-left text-xs transition-colors cursor-pointer ${
+                      isSelected ? 'bg-[#0f3156] text-white' : 'hover:bg-slate-100 text-slate-700'
+                    }`}
+                  >
+                    <div className={`w-6 h-6 rounded flex items-center justify-center text-sm shrink-0 ${isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 text-[#0f3156]'}`}>
+                      <i className={ic.cls}></i>
+                    </div>
+                    <div className="truncate flex-1">
+                      <div className="font-medium text-[11px] truncate">{ic.label}</div>
+                      <div className={`text-[9px] font-mono truncate ${isSelected ? 'text-slate-200' : 'text-slate-400'}`}>{ic.cls}</div>
+                    </div>
+                    {isSelected && <CheckCircle className="w-3.5 h-3.5 text-white shrink-0" />}
+                  </button>
+                );
+              })
+            )}
           </div>
         </div>
       )}
@@ -448,9 +589,18 @@ const mergeServicePillarsWithDefaults = (services: any[]): any[] => {
   if (!Array.isArray(services) || services.length === 0) {
     return SERVICES_PILLARS;
   }
-  const knownIds = new Set(SERVICES_PILLARS.map((p) => p.id));
+  const matchedSavedIds = new Set<string>();
   const merged = SERVICES_PILLARS.map((defPillar, idx) => {
-    const saved = services.find((s) => s?.id === defPillar.id) || services[idx];
+    const saved = services.find((s) => {
+      if (!s) return false;
+      if (s.id === defPillar.id) return true;
+      if (defPillar.id === 'service-p7m7' && (s.id === 'service-p7m7' || s.id === 'digital-presence')) return true;
+      if (defPillar.id === 'service-81sv' && (s.id === 'service-81sv' || s.id === 'readiness-adaptation')) return true;
+      if (s.title?.AZ && defPillar.title?.AZ && s.title.AZ.trim().toLowerCase() === defPillar.title.AZ.trim().toLowerCase()) return true;
+      return false;
+    }) || services[idx];
+
+    if (saved?.id) matchedSavedIds.add(saved.id);
     if (!saved) return defPillar;
 
     const mergeLoc = (savedObj: any, defObj: any) => {
@@ -489,7 +639,7 @@ const mergeServicePillarsWithDefaults = (services: any[]): any[] => {
     return {
       ...defPillar,
       ...saved,
-      id: defPillar.id,
+      id: saved.id || defPillar.id,
       iconClass: saved.iconClass || defPillar.iconClass,
       colorClass: saved.colorClass || defPillar.colorClass,
       linkColorClass: saved.linkColorClass || defPillar.linkColorClass,
@@ -501,6 +651,7 @@ const mergeServicePillarsWithDefaults = (services: any[]): any[] => {
     };
   });
 
+  const knownIds = new Set([...SERVICES_PILLARS.map((p) => p.id), ...matchedSavedIds]);
   const extraPillars = services.filter((s) => s?.id && !knownIds.has(s.id));
   return [...merged, ...extraPillars];
 };
@@ -670,6 +821,18 @@ const ServicePillarEditor = React.memo(({ content, onChange, onSaveContent, savi
             >
               <Plus className="w-3.5 h-3.5" /> Yeni Kart (+)
             </button>
+            <button
+              type="button"
+              onClick={async () => {
+                await onSaveContent({ ...content, services: pillars });
+              }}
+              disabled={saving}
+              className="h-7 px-3 flex items-center gap-1.5 text-[11px] font-bold rounded bg-[#0f3156] hover:bg-[#1a4a7a] text-white shadow-2xs transition-colors cursor-pointer disabled:opacity-50"
+              title="Bütün xidmət kartlarını və ikonları dərhal yadda saxla"
+            >
+              {saving ? <RefreshCw className="w-3 h-3 animate-spin" /> : <Save className="w-3 h-3" />}
+              <span>{saved ? 'Saxlanıldı!' : 'Xidmətləri Saxla'}</span>
+            </button>
           </div>
         </div>
 
@@ -753,7 +916,7 @@ const ServicePillarEditor = React.memo(({ content, onChange, onSaveContent, savi
                 <div>
                   <div className="text-xs font-bold text-slate-900 flex items-center gap-2">
                     <span className="w-5 h-5 rounded bg-slate-100 text-slate-600 font-mono text-[10px] flex items-center justify-center font-bold">
-                      0{pIdx + 1}
+                      {pIdx + 1 < 10 ? `0${pIdx + 1}` : `${pIdx + 1}`}
                     </span>
                     <span>{p.title?.AZ || p.title?.EN || p.id}</span>
                     {p.title?.TR && (
@@ -1560,6 +1723,18 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
     }
     return 'navbar';
   });
+
+  useEffect(() => {
+    const handleSwitch = (e: any) => {
+      const pageKey = e.detail?.page || localStorage.getItem('azexbuy_cms_initial_page');
+      if (pageKey) {
+        setPage(pageKey as PageKey);
+        localStorage.removeItem('azexbuy_cms_initial_page');
+      }
+    };
+    window.addEventListener('azexbuy_cms_switch_page', handleSwitch);
+    return () => window.removeEventListener('azexbuy_cms_switch_page', handleSwitch);
+  }, []);
   const [locale, setLocale] = useState<Loc>('EN');
 
   const [locData, setLocData] = useState<Record<string, Record<string, string>>>(DEFAULT_STRINGS);

@@ -331,6 +331,35 @@ export const ServicesView: React.FC<ServicesViewProps> = () => {
         </div>
       </div>
 
+      {/* 8 Core Service Pillars Link Banner */}
+      <div className="bg-[#0f3156]/5 border border-[#0f3156]/15 rounded-lg p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="w-8 h-8 rounded-lg bg-[#0f3156] text-white flex items-center justify-center shrink-0">
+            <Briefcase className="w-4 h-4" />
+          </div>
+          <div>
+            <div className="font-bold text-slate-900">01-08 Əsas İxrac Sütunları və İkonları (Sayt /services)</div>
+            <div className="text-slate-600 text-[11px]">
+              Saytın &quot;/services&quot; səhifəsindəki 8 əsas kartın ikonlarını, başlıqlarını və bəndlərini dəyişmək üçün CMS Xidmətlər bölməsinə keçin.
+            </div>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            localStorage.setItem('azexbuy_cms_initial_page', 'services');
+            window.dispatchEvent(new CustomEvent('azexbuy_cms_switch_page', { detail: { page: 'services' } }));
+            // Trigger switch to azexbuy-cms tab if available
+            const cmsTabBtn = document.querySelector('[data-tab-id="azexbuy-cms"]') as HTMLButtonElement | null;
+            if (cmsTabBtn) cmsTabBtn.click();
+            window.location.hash = '#azexbuy-cms';
+          }}
+          className="px-3.5 py-1.5 bg-[#0f3156] hover:bg-[#1a4a7a] text-white text-xs font-bold rounded cursor-pointer shrink-0 transition-colors shadow-2xs text-center"
+        >
+          01-08 Sütunları Redaktə Et →
+        </button>
+      </div>
+
       {/* Tabs */}
       <div className="flex gap-1 border-b border-slate-200">
         <button

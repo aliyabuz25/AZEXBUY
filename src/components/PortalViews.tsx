@@ -2404,10 +2404,10 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
               </p>
             </div>
 
-            {/* 4 Core Service Pillars Grid */}
+            {/* 8 Core Service Pillars Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
               {(cmsServicesPillars && cmsServicesPillars.length > 0 ? cmsServicesPillars : SERVICES_PILLARS).map((srv: any, index: number) => {
-                const badgeNumber = `0${index + 1}`;
+                const badgeNumber = index + 1 < 10 ? `0${index + 1}` : `${index + 1}`;
                 const titleText = getLocalizedText(srv.title || srv.name, locale);
                 const descText = getLocalizedText(srv.subtitle || srv.description, locale);
 

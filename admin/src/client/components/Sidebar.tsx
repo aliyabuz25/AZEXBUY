@@ -106,6 +106,7 @@ const NAV_SECTIONS: NavSection[] = [
         icon: PenLine,
         subItems: [
           { id: 'azexbuy-cms', label: 'Əsas Səhifə (Hero, Bloklar)', cmsPageKey: 'hero' },
+          { id: 'azexbuy-cms', label: 'İxrac Xidmətləri (01-08)', cmsPageKey: 'services' },
           { id: 'azexbuy-cms', label: 'Alıcılar Səhifəsi (Buyers)', cmsPageKey: 'buyers_page' },
           { id: 'azexbuy-cms', label: 'İstehsalçılar Səhifəsi (Producers)', cmsPageKey: 'producers_page' },
           { id: 'azexbuy-cms', label: 'Sosial Şəbəkələr (Social)', cmsPageKey: 'social' },
@@ -263,8 +264,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
     if (extraParam) {
       if (item.id === 'modals') {
         localStorage.setItem('azexbuy_modals_initial_page', extraParam);
+        window.dispatchEvent(new CustomEvent('azexbuy_modals_switch_page', { detail: { page: extraParam } }));
       } else {
         localStorage.setItem('azexbuy_cms_initial_page', extraParam);
+        window.dispatchEvent(new CustomEvent('azexbuy_cms_switch_page', { detail: { page: extraParam } }));
       }
     }
     onSelectTab(item.id, item.label, item.id);
