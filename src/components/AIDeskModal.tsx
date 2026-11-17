@@ -318,7 +318,7 @@ export const AIDeskModal: React.FC<AIDeskModalProps> = ({
       <div className="w-[94vw] sm:w-[370px] h-[520px] max-h-[85vh] bg-white rounded-2xl shadow-2xl border border-slate-200/90 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-3 duration-150">
         
         {/* Minimal Clean Header with 3D Animated Avatar */}
-        <div className="bg-[#0f3156] text-white px-4 py-3 flex items-center justify-between shrink-0">
+        <div className="bg-[#00243E] text-white px-4 py-3 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2.5">
             <div className="relative flex items-center justify-center">
               <img
@@ -326,7 +326,7 @@ export const AIDeskModal: React.FC<AIDeskModalProps> = ({
                 alt="3D Assistant"
                 className="w-8 h-8 object-contain drop-shadow"
               />
-              <span className={`absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full border border-[#0f3156] ${
+              <span className={`absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full border border-[#00243E] ${
                 modelConnected ? 'bg-emerald-400' : 'bg-amber-400'
               }`}></span>
             </div>
@@ -360,7 +360,7 @@ export const AIDeskModal: React.FC<AIDeskModalProps> = ({
               <div
                 className={`max-w-[85%] rounded-2xl px-3.5 py-2 leading-relaxed text-[12px] ${
                   m.sender === 'user'
-                    ? 'bg-[#0f3156] text-white rounded-br-xs font-medium'
+                    ? 'bg-[#00243E] text-white rounded-br-xs font-medium'
                     : 'bg-white text-slate-800 border border-slate-200/80 rounded-bl-xs shadow-2xs'
                 }`}
               >
@@ -393,7 +393,7 @@ export const AIDeskModal: React.FC<AIDeskModalProps> = ({
                     className="text-left px-3 py-2 bg-white hover:bg-slate-50 active:bg-slate-100 border border-slate-200/90 rounded-xl text-slate-700 text-[11px] leading-snug cursor-pointer transition-all flex items-center justify-between group shadow-2xs"
                   >
                     <span>{faq.q}</span>
-                    <i className="fa-solid fa-chevron-right text-[9px] text-slate-300 group-hover:text-[#0f3156] transition-colors ml-2 shrink-0"></i>
+                    <i className="fa-solid fa-chevron-right text-[9px] text-slate-300 group-hover:text-[#00243E] transition-colors ml-2 shrink-0"></i>
                   </button>
                 ))}
               </div>
@@ -414,12 +414,12 @@ export const AIDeskModal: React.FC<AIDeskModalProps> = ({
                   value={userMessage}
                   onChange={(e) => setUserMessage(e.target.value)}
                   placeholder={locale === 'AZ' ? 'Sualınızı yazın, asistent cavablasın...' : 'Type your question...'}
-                  className="flex-1 h-9 px-3 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#0f3156] focus:bg-white transition-all"
+                  className="flex-1 h-9 px-3 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#00243E] focus:bg-white transition-all"
                 />
                 <button
                   type="submit"
                   disabled={!userMessage.trim() || isAiThinking}
-                  className="h-9 w-9 bg-[#0f3156] hover:bg-[#081c33] disabled:opacity-40 text-white rounded-xl flex items-center justify-center transition-all cursor-pointer shrink-0"
+                  className="h-9 w-9 bg-[#00243E] hover:bg-[#001728] disabled:opacity-40 text-white rounded-xl flex items-center justify-center transition-all cursor-pointer shrink-0"
                   aria-label="Send"
                 >
                   <i className="fa-solid fa-arrow-up text-xs"></i>
@@ -433,7 +433,7 @@ export const AIDeskModal: React.FC<AIDeskModalProps> = ({
                       onClose();
                       onOpenRFQ();
                     }}
-                    className="text-[#0f3156] font-bold hover:underline cursor-pointer"
+                    className="text-[#00243E] font-bold hover:underline cursor-pointer"
                   >
                     + Create Official RFQ
                   </button>
@@ -461,7 +461,7 @@ export const AIDeskModal: React.FC<AIDeskModalProps> = ({
                   value={userName}
                   onChange={(e) => setUserName(e.target.value)}
                   placeholder={locale === 'AZ' ? 'Adınız / Şirkət' : 'Your name / Company'}
-                  className="w-full h-8 px-2.5 text-xs bg-white border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:border-[#0f3156]"
+                  className="w-full h-8 px-2.5 text-xs bg-white border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:border-[#00243E]"
                 />
                 <input
                   type="email"
@@ -469,12 +469,12 @@ export const AIDeskModal: React.FC<AIDeskModalProps> = ({
                   value={userEmail}
                   onChange={(e) => setUserEmail(e.target.value)}
                   placeholder={locale === 'AZ' ? 'E-poçt ünvanınız (mütləq)' : 'Your email (required)'}
-                  className="w-full h-8 px-2.5 text-xs bg-white border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:border-[#0f3156]"
+                  className="w-full h-8 px-2.5 text-xs bg-white border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:border-[#00243E]"
                 />
                 {errorMsg && <p className="text-[10px] text-red-500 font-medium">{errorMsg}</p>}
                 <button
                   type="submit"
-                  className="w-full h-8 bg-[#0f3156] hover:bg-[#081c33] text-white font-bold rounded-lg text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+                  className="w-full h-8 bg-[#00243E] hover:bg-[#001728] text-white font-bold rounded-lg text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-xs"
                 >
                   <i className="fa-solid fa-paper-plane text-[10px]"></i>
                   <span>{locale === 'AZ' ? 'Rəhbərliyə Çatdır' : 'Deliver to Management'}</span>
@@ -498,7 +498,7 @@ export const AIDeskModal: React.FC<AIDeskModalProps> = ({
               <button
                 type="button"
                 onClick={() => setStep('chat')}
-                className="text-[10px] text-[#0f3156] font-semibold underline cursor-pointer"
+                className="text-[10px] text-[#00243E] font-semibold underline cursor-pointer"
               >
                 {locale === 'AZ' ? 'Çata qayıt' : 'Back to chat'}
               </button>

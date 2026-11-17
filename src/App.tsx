@@ -703,11 +703,11 @@ export default function App() {
               <div className="custom-container">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Left: For Buyers */}
-                  <div className="relative bg-gradient-to-r from-[#ebf5fe] via-[#edf6fe] to-[#d6ebfd] rounded-xl border border-blue-100/80 overflow-hidden flex flex-col sm:flex-row items-stretch justify-between shadow-sm min-h-[220px]">
+                  <div className="relative bg-gradient-to-r from-[#ebf5fe] via-[#edf6fe] to-[#D4E9F4] rounded-xl border border-blue-100/80 overflow-hidden flex flex-col sm:flex-row items-stretch justify-between shadow-sm min-h-[220px]">
                     {/* Content Side */}
                     <div className="p-6 sm:p-7 flex flex-col justify-between max-w-sm sm:max-w-md z-10 relative">
                       <div>
-                        <span className="text-[11px] font-extrabold tracking-wider uppercase text-blue-600 block mb-1.5">
+                        <span className="text-[11px] font-extrabold tracking-wider uppercase text-brandBlue block mb-1.5">
                           {t.bilateral.buyersTag}
                         </span>
                         <h3 className="text-2xl font-black text-brandNavy mb-2.5 leading-tight tracking-tight">
@@ -1126,7 +1126,7 @@ export default function App() {
 
             {/* BEGIN: WhyAzerbaijan */}
             <section
-              className="relative w-full bg-[#071c30] text-white overflow-hidden min-h-[160px] sm:min-h-[180px] lg:min-h-[190px] flex items-center border-t border-gray-100"
+              className="relative w-full bg-[#00243E] text-white overflow-hidden min-h-[160px] sm:min-h-[180px] lg:min-h-[190px] flex items-center border-t border-gray-100"
               data-purpose="azerbaijan-advantages"
             >
               {/* Full-width Panoramic Baku Boulevard Sunset Background Image */}
@@ -1138,7 +1138,7 @@ export default function App() {
                   src={whyAzImage}
                 />
                 {/* Smooth deep navy gradient overlay transitioning to transparent on the right */}
-                <div className="absolute inset-0 bg-gradient-to-r from-[#071d33] via-[#071d33]/90 via-45% to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-[#00243E] via-[#00243E]/90 via-45% to-transparent"></div>
               </div>
 
               <div className="custom-container relative z-10 w-full py-7 sm:py-8">
@@ -1154,7 +1154,7 @@ export default function App() {
                     <button
                       type="button"
                       onClick={() => setActiveView('insights')}
-                      className="inline-flex items-center gap-2 border border-white/30 hover:border-white text-white text-xs font-semibold px-4 py-1.5 rounded transition-colors bg-[#08233d]/50 hover:bg-[#08233d]/80 cursor-pointer"
+                      className="inline-flex items-center gap-2 border border-white/30 hover:border-white text-white text-xs font-semibold px-4 py-1.5 rounded transition-colors bg-[#001728]/50 hover:bg-[#001728]/80 cursor-pointer"
                     >
                       <span>{t.whyAzerbaijan.learnMore}</span>
                       <i className="fa-solid fa-arrow-right text-[10px]"></i>
@@ -1186,7 +1186,7 @@ export default function App() {
                 </div>
 
                 {activeAzFeatureIdx !== null && effectiveWhyAzFeatures[activeAzFeatureIdx] && (
-                  <div className="mt-4 p-3.5 bg-[#08233d]/90 border border-white/20 rounded text-xs text-slate-100 flex items-center justify-between gap-4 max-w-2xl">
+                  <div className="mt-4 p-3.5 bg-[#001728]/90 border border-white/20 rounded text-xs text-slate-100 flex items-center justify-between gap-4 max-w-2xl">
                     <span>{effectiveWhyAzFeatures[activeAzFeatureIdx].detail}</span>
                     <button
                       type="button"
@@ -1290,15 +1290,15 @@ export default function App() {
       </main>
 
       {/* Institutional Footer */}
-      <footer className="bg-[#061526] text-slate-300 border-t border-slate-800 py-10 no-print">
+      <footer className="bg-[#00243E] text-slate-300 border-t border-slate-800 py-10 no-print">
         <div className="custom-container">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-8 border-b border-slate-800/80 text-xs">
             {/* Brand & Mandate */}
             <div className="space-y-3">
               <div className="flex items-center gap-2.5">
                 <svg className="w-7 h-7" fill="none" viewBox="0 0 100 100">
-                  <circle cx="50" cy="20" fill="#009775" r="14"></circle>
-                  <circle cx="80" cy="50" fill="#3b82f6" r="14"></circle>
+                  <circle cx="50" cy="20" fill="#00B58D" r="14"></circle>
+                  <circle cx="80" cy="50" fill="#0075D5" r="14"></circle>
                   <circle cx="50" cy="80" fill="#e63946" r="14"></circle>
                   <circle cx="20" cy="50" fill="#f4a261" r="14"></circle>
                   <circle cx="71" cy="29" fill="#2a9d8f" opacity="0.8" r="11"></circle>
@@ -1534,7 +1534,7 @@ export default function App() {
             />
             <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white animate-pulse"></span>
           </div>
-          <span className="text-[#0f3156] font-extrabold text-[12px] tracking-tight">Trade Desk</span>
+          <span className="text-brandNavy font-extrabold text-[12px] tracking-tight">Trade Desk</span>
         </button>
       )}
 

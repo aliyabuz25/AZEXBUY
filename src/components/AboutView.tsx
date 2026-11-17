@@ -323,8 +323,8 @@ export const AboutView: React.FC<AboutViewProps> = ({ locale, onOpenRFQ, onOpenP
               <div className="bg-brandNavy text-white rounded-2xl px-8 py-4 text-center shadow-lg border border-slate-700/50">
                 <div className="flex items-center gap-2.5 justify-center mb-1">
                   <svg className="w-6 h-6" fill="none" viewBox="0 0 100 100">
-                    <circle cx="50" cy="20" fill="#009775" r="14"/>
-                    <circle cx="80" cy="50" fill="#3b82f6" r="14"/>
+                    <circle cx="50" cy="20" fill="#00B58D" r="14"/>
+                    <circle cx="80" cy="50" fill="#0075D5" r="14"/>
                     <circle cx="50" cy="80" fill="#e63946" r="14"/>
                     <circle cx="20" cy="50" fill="#f4a261" r="14"/>
                   </svg>

@@ -48,7 +48,7 @@ export function parseInlineText(text: string): React.ReactNode[] {
         (/^\[code\][\s\S]*\[\/code\]$/i.test(part))) {
       const inner = part.startsWith('`') ? part.slice(1, -1) : part.slice(6, -7);
       return (
-        <code key={idx} className="px-1.5 py-0.5 rounded bg-slate-100 text-[#00382D] font-mono text-xs border border-slate-200">
+        <code key={idx} className="px-1.5 py-0.5 rounded bg-slate-100 text-[#00243E] font-mono text-xs border border-slate-200">
           {inner}
         </code>
       );
@@ -297,7 +297,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, cla
             return (
               <h1
                 key={idx}
-                className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-[#17231D] mt-8 mb-4 leading-tight"
+                className="font-sans text-2xl sm:text-3xl font-extrabold tracking-tight text-[#17231D] mt-8 mb-4 leading-tight"
               >
                 {parseInlineText(b.text || '')}
               </h1>
@@ -307,7 +307,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, cla
             return (
               <h2
                 key={idx}
-                className="font-serif text-xl sm:text-2xl font-bold tracking-tight text-[#17231D] mt-7 mb-3.5 border-b border-[#E8EAE3] pb-2 leading-snug"
+                className="font-sans text-xl sm:text-2xl font-bold tracking-tight text-[#17231D] mt-7 mb-3.5 border-b border-[#E8EAE3] pb-2 leading-snug"
               >
                 {parseInlineText(b.text || '')}
               </h2>
@@ -382,7 +382,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, cla
             return (
               <ol
                 key={idx}
-                className="my-4 space-y-2 pl-6 list-decimal marker:font-bold marker:text-[#00382D] text-[15px] text-[#17231D]/85 leading-relaxed"
+                className="my-4 space-y-2 pl-6 list-decimal marker:font-bold marker:text-[#00243E] text-[15px] text-[#17231D]/85 leading-relaxed"
               >
                 {b.items?.map((it, itemIdx) => (
                   <li

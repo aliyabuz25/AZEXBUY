@@ -161,8 +161,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           data-purpose="brand-logo"
         >
           <svg className="w-8 h-8 shrink-0 group-hover:rotate-12 transition-transform duration-300" fill="none" viewBox="0 0 100 100">
-            <circle cx="50" cy="20" fill="#009775" r="14" />
-            <circle cx="80" cy="50" fill="#0f3156" r="14" />
+            <circle cx="50" cy="20" fill="#00B58D" r="14" />
+            <circle cx="80" cy="50" fill="#00243E" r="14" />
             <circle cx="50" cy="80" fill="#e63946" r="14" />
             <circle cx="20" cy="50" fill="#f4a261" r="14" />
             <circle cx="71" cy="29" fill="#2a9d8f" opacity="0.8" r="11" />
@@ -323,8 +323,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="flex items-center gap-2 cursor-pointer"
             >
               <svg className="w-7 h-7 shrink-0" fill="none" viewBox="0 0 100 100">
-                <circle cx="50" cy="20" fill="#009775" r="14" />
-                <circle cx="80" cy="50" fill="#0f3156" r="14" />
+                <circle cx="50" cy="20" fill="#00B58D" r="14" />
+                <circle cx="80" cy="50" fill="#00243E" r="14" />
                 <circle cx="50" cy="80" fill="#e63946" r="14" />
                 <circle cx="20" cy="50" fill="#f4a261" r="14" />
                 <circle cx="71" cy="29" fill="#2a9d8f" opacity="0.8" r="11" />

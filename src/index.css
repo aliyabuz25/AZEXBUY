@@ -1,45 +1,52 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brandNavy: #0f3156;
-  --color-brandNavyDark: #081c33;
-  --color-brandSovereign: #102c46;
-  --color-brandGreen: #009775;
-  --color-brandGreenDark: #007e62;
+  /* AZEXBUY Brand Identity — Color Palette */
+  --color-brandNavy: #00243E;
+  --color-brandNavyDark: #001728;
+  --color-brandSovereign: #00243E;
+
+  --color-brandTeal: #00B58D;
+  --color-brandTealDark: #009675;
+  --color-brandTealLight: #e6f8f4;
+  --color-brandGreen: #00B58D;
+  --color-brandGreenDark: #009675;
+  --color-brandGreenLight: #e6f8f4;
+
+  --color-brandBlue: #0075D5;
+  --color-brandBlueDark: #005fad;
+  --color-brandBlueHover: #0068bd;
+
+  --color-brandIce: #D4E9F4;
+  --color-brandIceLight: #eef6fa;
+  --color-brandBlueLight: #D4E9F4;
+
   --color-brandGold: #c4993d;
-  --color-brandBlueLight: #eef6fc;
-  --color-brandGreenLight: #edf9f5;
   --color-brandText: #1f2937;
   --color-brandSubtext: #4b5563;
-  /* SOLEI editorial palette */
-  --color-soleiForest: #00382D;
-  --color-soleiForestDark: #002C23;
-  --color-soleiLime: #B8F46A;
-  --color-soleiLimeLight: #D9F6B5;
-  --color-soleiBg: #F8F8F3;
-  --color-soleiSurface: #FFFFFF;
-  --color-soleiText: #17231D;
-  --color-soleiMuted: #7C857D;
-  --color-soleiBorder: #E8EAE3;
-  --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-body: "Inter", "Plus Jakarta Sans", sans-serif;
-  --font-serif: "Instrument Serif", Georgia, serif;
+
+  /* Typography / Modern Sans Serif */
+  --font-sans: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-body: "Plus Jakarta Sans", "Inter", sans-serif;
+  --font-serif: "Plus Jakarta Sans", "Inter", sans-serif;
 }
 
 body {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   color: #1f2937;
   background-color: #ffffff;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
 
-/* SOLEI editorial serif utility */
-.font-serif { font-family: "Instrument Serif", Georgia, serif; }
+/* Enforce Modern Sans Serif globally */
+.font-serif {
+  font-family: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
 
-/* Insights gradient band */
+/* Brand gradient band using core palette (Blue -> Teal -> Ice) */
 .solei-gradient-band {
-  background: linear-gradient(135deg, #B8F46A 0%, #D9F6B5 55%, #eaf7d4 100%);
+  background: linear-gradient(135deg, #0075D5 0%, #00B58D 55%, #D4E9F4 100%);
 }
 
 /* Smooth image aspect ratio helpers */

@@ -20,17 +20,17 @@ export function bbcodeToHtml(input: string): string {
     .replace(/\[right\]([\s\S]*?)\[\/right\]/gi,   '<div style="text-align:right">$1</div>')
     // URL
     .replace(/\[url=([^\]]+)\]([\s\S]*?)\[\/url\]/gi,
-      '<a href="$1" target="_blank" rel="noopener noreferrer" style="color:#2563eb;text-decoration:underline;font-weight:500">$2</a>')
+      '<a href="$1" target="_blank" rel="noopener noreferrer" style="color:#0075D5;text-decoration:underline;font-weight:500">$2</a>')
     .replace(/\[url\]([\s\S]*?)\[\/url\]/gi,
-      '<a href="$1" target="_blank" rel="noopener noreferrer" style="color:#2563eb;text-decoration:underline;font-weight:500">$1</a>')
+      '<a href="$1" target="_blank" rel="noopener noreferrer" style="color:#0075D5;text-decoration:underline;font-weight:500">$1</a>')
     // Image
     .replace(/\[img\]([\s\S]*?)\[\/img\]/gi,
       '<img src="$1" alt="" style="max-width:100%;height:auto;border-radius:6px;margin:.4em 0;display:block" />')
     // Quote
     .replace(/\[quote=([^\]]+)\]([\s\S]*?)\[\/quote\]/gi,
-      '<blockquote style="border-left:4px solid #0f3156;margin:1em 0;padding:.6em 1em;background:#eff6ff;border-radius:0 6px 6px 0;color:#1e3a5f"><strong>$1:</strong><br>$2</blockquote>')
+      '<blockquote style="border-left:4px solid #00243E;margin:1em 0;padding:.6em 1em;background:#D4E9F4;border-radius:0 6px 6px 0;color:#00243E"><strong>$1:</strong><br>$2</blockquote>')
     .replace(/\[quote\]([\s\S]*?)\[\/quote\]/gi,
-      '<blockquote style="border-left:4px solid #0f3156;margin:1em 0;padding:.6em 1em;background:#eff6ff;border-radius:0 6px 6px 0;color:#1e3a5f">$1</blockquote>')
+      '<blockquote style="border-left:4px solid #00243E;margin:1em 0;padding:.6em 1em;background:#D4E9F4;border-radius:0 6px 6px 0;color:#00243E">$1</blockquote>')
     // Code
     .replace(/\[code\]([\s\S]*?)\[\/code\]/gi,
       '<pre style="background:#0f172a;color:#e2e8f0;border-radius:8px;padding:1em;overflow-x:auto;font-family:\'Fira Code\',\'Courier New\',monospace;font-size:.88em;margin:.6em 0"><code>$1</code></pre>')

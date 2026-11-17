@@ -136,7 +136,7 @@ const ShareModal: React.FC<{ article: AzArticle; onClose: () => void }> = ({ art
         <div className="flex items-center gap-2 rounded-xl p-2.5" style={{ backgroundColor: '#F8F8F3' }}>
           <span className="truncate flex-1 font-medium" style={{ fontSize: '9px', color: '#7C857D' }}>{url}</span>
           <button onClick={copy} className="shrink-0 px-3 py-1.5 rounded-lg cursor-pointer transition-colors"
-            style={{ backgroundColor: copied ? '#00382D' : '#17231D', color: '#fff', fontSize: '11px', fontWeight: 700 }}>
+            style={{ backgroundColor: copied ? '#00B58D' : '#00243E', color: '#fff', fontSize: '11px', fontWeight: 700 }}>
             {copied ? 'Copied!' : 'Copy'}
           </button>
         </div>
@@ -173,11 +173,11 @@ const ArticleDetail: React.FC<{
 
       <div className="custom-container" style={{ maxWidth: '800px', margin: '0 auto', paddingTop: 'clamp(20px,4vw,48px)', paddingBottom: 'clamp(32px,6vw,64px)' }}>
         <div className="mb-5">
-          <span className="rounded-full" style={{ fontSize: '10px', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#00382D', backgroundColor: '#D9F6B5', padding: '4px 12px' }}>
+          <span className="rounded-full" style={{ fontSize: '10px', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#00243E', backgroundColor: '#D4E9F4', padding: '4px 12px' }}>
             {article.category}
           </span>
         </div>
-        <h1 className="font-serif" style={{ fontSize: 'clamp(28px,5vw,42px)', color: '#17231D', lineHeight: 1.15, marginBottom: '16px', letterSpacing: '-0.02em' }}>
+        <h1 className="font-sans font-extrabold" style={{ fontSize: 'clamp(28px,5vw,42px)', color: '#00243E', lineHeight: 1.15, marginBottom: '16px', letterSpacing: '-0.02em' }}>
           {article.title}
         </h1>
         <div className="flex flex-wrap items-center gap-4" style={{ fontSize: '13px', color: '#7C857D', marginBottom: '24px' }}>
@@ -189,14 +189,14 @@ const ArticleDetail: React.FC<{
           {article.viewCount > 0 && <><span>·</span><span>{article.viewCount.toLocaleString()} views</span></>}
         </div>
         {article.summary && (
-          <p className="font-medium italic" style={{ fontSize: '16px', color: 'rgba(23,35,29,0.7)', lineHeight: 1.65, borderLeft: '3px solid #B8F46A', paddingLeft: '20px', paddingTop: '8px', paddingBottom: '8px', marginBottom: '28px', backgroundColor: '#f4faf2', borderRadius: '0 8px 8px 0' }}>
+          <p className="font-medium italic" style={{ fontSize: '16px', color: 'rgba(23,35,29,0.7)', lineHeight: 1.65, borderLeft: '3px solid #00B58D', paddingLeft: '20px', paddingTop: '8px', paddingBottom: '8px', marginBottom: '28px', backgroundColor: '#f0fbf7', borderRadius: '0 8px 8px 0' }}>
             {article.summary}
           </p>
         )}
         <button onClick={() => onShare(article)} className="inline-flex items-center gap-2 rounded-full cursor-pointer transition-colors mb-8"
-          style={{ backgroundColor: '#00382D', color: '#fff', fontSize: '12px', fontWeight: 700, padding: '10px 20px' }}
-          onMouseEnter={e => (e.currentTarget as HTMLElement).style.backgroundColor = '#002C23'}
-          onMouseLeave={e => (e.currentTarget as HTMLElement).style.backgroundColor = '#00382D'}>
+          style={{ backgroundColor: '#00243E', color: '#fff', fontSize: '12px', fontWeight: 700, padding: '10px 20px' }}
+          onMouseEnter={e => (e.currentTarget as HTMLElement).style.backgroundColor = '#001728'}
+          onMouseLeave={e => (e.currentTarget as HTMLElement).style.backgroundColor = '#00243E'}>
           <i className="fa-solid fa-share-nodes" style={{ fontSize: '10px' }}></i>
           <span>Share</span>
         </button>
@@ -213,9 +213,9 @@ const ArticleDetail: React.FC<{
           </div>
           <button onClick={() => onShare(article)} className="inline-flex items-center gap-2 rounded-full cursor-pointer transition-colors"
             style={{ border: '1px solid #E8EAE3', color: '#17231D', fontSize: '13px', fontWeight: 600, padding: '10px 20px', backgroundColor: '#fff' }}
-            onMouseEnter={e => (e.currentTarget as HTMLElement).style.borderColor = '#00382D'}
+            onMouseEnter={e => (e.currentTarget as HTMLElement).style.borderColor = '#00243E'}
             onMouseLeave={e => (e.currentTarget as HTMLElement).style.borderColor = '#E8EAE3'}>
-            <i className="fa-solid fa-share-nodes" style={{ fontSize: '12px', color: '#00382D' }}></i>
+            <i className="fa-solid fa-share-nodes" style={{ fontSize: '12px', color: '#00243E' }}></i>
             <span>Share</span>
           </button>
         </div>
@@ -237,7 +237,7 @@ const FeaturedCard: React.FC<{
       style={{
         borderRadius: '10px',
         height: '425px',
-        backgroundColor: '#00382D',
+        backgroundColor: '#00243E',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-end',
@@ -258,14 +258,14 @@ const FeaturedCard: React.FC<{
       {/* Gradient overlay — dark at bottom */}
       <div
         className="absolute inset-0"
-        style={{ background: 'linear-gradient(to top, rgba(0,25,15,0.98) 0%, rgba(0,30,18,0.65) 42%, rgba(0,30,18,0.08) 100%)' }}
+        style={{ background: 'linear-gradient(to top, rgba(0,36,62,0.98) 0%, rgba(0,36,62,0.65) 42%, rgba(0,36,62,0.08) 100%)' }}
       />
 
       {/* Top-left category label */}
       <div className="absolute top-4 left-4 z-10">
         <span className="rounded-full" style={{
           fontSize: '10px', fontWeight: 800, letterSpacing: '0.07em', textTransform: 'uppercase',
-          color: '#00382D', backgroundColor: '#B8F46A', padding: '3px 10px',
+          color: '#00243E', backgroundColor: '#D4E9F4', padding: '3px 10px',
         }}>
           {article.category}
         </span>
@@ -273,7 +273,7 @@ const FeaturedCard: React.FC<{
 
       {/* Bottom content */}
       <div className="relative z-10" style={{ padding: '0 24px 24px' }}>
-        <h2 className="font-serif text-white" style={{
+        <h2 className="font-sans font-bold text-white" style={{
           fontSize: 'clamp(18px,2.2vw,24px)',
           lineHeight: 1.2,
           marginBottom: '8px',
@@ -290,7 +290,7 @@ const FeaturedCard: React.FC<{
           <button
             onClick={(e) => { e.stopPropagation(); onRead(article); }}
             className="inline-flex items-center gap-1.5 rounded-full cursor-pointer transition-colors"
-            style={{ backgroundColor: '#fff', color: '#00382D', fontSize: '11px', fontWeight: 800, padding: '7px 16px' }}
+            style={{ backgroundColor: '#fff', color: '#00243E', fontSize: '11px', fontWeight: 800, padding: '7px 16px' }}
             onMouseEnter={e => (e.currentTarget as HTMLElement).style.backgroundColor = '#F8F8F3'}
             onMouseLeave={e => (e.currentTarget as HTMLElement).style.backgroundColor = '#fff'}
           >
@@ -342,8 +342,8 @@ const SideCard: React.FC<{
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center" style={{ backgroundColor: 'rgba(0,56,45,0.08)' }}>
-              <i className="fa-solid fa-newspaper" style={{ fontSize: '20px', color: 'rgba(0,56,45,0.25)' }}></i>
+            <div className="w-full h-full flex items-center justify-center" style={{ backgroundColor: 'rgba(0,36,62,0.06)' }}>
+              <i className="fa-solid fa-newspaper" style={{ fontSize: '20px', color: 'rgba(0,36,62,0.25)' }}></i>
             </div>
           )}
         </div>
@@ -352,12 +352,12 @@ const SideCard: React.FC<{
         <div className="flex-1 min-w-0" style={{ paddingTop: '2px' }}>
           <span style={{
             fontSize: '9px', fontWeight: 800, letterSpacing: '0.08em',
-            textTransform: 'uppercase', color: '#00382D', display: 'block', marginBottom: '5px',
+            textTransform: 'uppercase', color: '#00243E', display: 'block', marginBottom: '5px',
           }}>
             {article.category}
           </span>
           <h3
-            className="font-serif group-hover:text-[#00382D] transition-colors line-clamp-3"
+            className="font-sans font-bold group-hover:text-[#00243E] transition-colors line-clamp-3"
             style={{ fontSize: '13px', lineHeight: 1.3, color: '#17231D', marginBottom: '8px', letterSpacing: '-0.01em' }}
           >
             {article.title}
@@ -371,7 +371,7 @@ const SideCard: React.FC<{
               onClick={(e) => { e.stopPropagation(); onShare(article); }}
               className="cursor-pointer transition-colors"
               style={{ color: '#7C857D', fontSize: '10px', padding: '2px 4px' }}
-              onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = '#00382D'}
+              onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = '#00243E'}
               onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = '#7C857D'}
               title="Share"
             >
@@ -401,16 +401,16 @@ const GridCard: React.FC<{
         <img src={article.coverImage} alt={article.title} referrerPolicy="no-referrer" loading="lazy"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
       ) : (
-        <div className="w-full h-full flex items-center justify-center" style={{ backgroundColor: 'rgba(0,56,45,0.08)' }}>
-          <i className="fa-solid fa-newspaper" style={{ fontSize: '28px', color: 'rgba(0,56,45,0.2)' }}></i>
+        <div className="w-full h-full flex items-center justify-center" style={{ backgroundColor: 'rgba(0,36,62,0.06)' }}>
+          <i className="fa-solid fa-newspaper" style={{ fontSize: '28px', color: 'rgba(0,36,62,0.2)' }}></i>
         </div>
       )}
     </div>
-    <span style={{ fontSize: '9px', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#00382D', display: 'block', marginBottom: '6px' }}>
+    <span style={{ fontSize: '9px', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#00243E', display: 'block', marginBottom: '6px' }}>
       {article.category}
     </span>
     <h3
-      className="font-serif group-hover:text-[#00382D] transition-colors line-clamp-3 cursor-pointer flex-1"
+      className="font-sans font-bold group-hover:text-[#00243E] transition-colors line-clamp-3 cursor-pointer flex-1"
       style={{ fontSize: '15px', lineHeight: 1.3, color: '#17231D', marginBottom: '8px', letterSpacing: '-0.01em' }}
       onClick={() => onRead(article)}
     >
@@ -424,14 +424,14 @@ const GridCard: React.FC<{
       <div className="flex items-center gap-3">
         <button onClick={() => onShare(article)} className="cursor-pointer transition-colors"
           style={{ fontSize: '10px', color: '#7C857D' }} title="Share"
-          onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = '#00382D'}
+          onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = '#00243E'}
           onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = '#7C857D'}>
           <i className="fa-solid fa-share-nodes"></i>
         </button>
         <button onClick={() => onRead(article)} className="inline-flex items-center gap-1 cursor-pointer transition-colors"
-          style={{ fontSize: '10px', fontWeight: 800, color: '#00382D' }}
-          onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = '#002C23'}
-          onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = '#00382D'}>
+          style={{ fontSize: '10px', fontWeight: 800, color: '#00243E' }}
+          onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = '#001728'}
+          onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = '#00243E'}>
           <span>Read more</span>
           <i className="fa-solid fa-arrow-right" style={{ fontSize: '8px' }}></i>
         </button>
@@ -514,34 +514,34 @@ export const InsightsView: React.FC<InsightsViewProps> = ({ locale, onNavigateHo
   return (
     <div style={{ backgroundColor: '#F8F8F3', minHeight: '100vh' }}>
       {/* ═══════════════════════════════════════════
-          2. HERO — ~200px, dark green, 2-column
+          2. HERO — ~200px, deep navy, 2-column
       ═══════════════════════════════════════════ */}
-      <section style={{ backgroundColor: '#00382D', display: 'flex', alignItems: 'center' }}>
+      <section style={{ backgroundColor: '#00243E', display: 'flex', alignItems: 'center' }}>
         <div className="custom-container w-full" style={{ paddingTop: '24px', paddingBottom: '24px' }}>
           <div className="flex flex-col lg:flex-row lg:items-center" style={{ gap: '24px' }}>
 
-            {/* Left — large serif headline */}
+            {/* Left — large modern sans headline */}
             <div style={{ flex: '1 1 0', minWidth: 0 }}>
-<h1 className="font-serif text-white" style={{
+              <h1 className="font-sans font-black text-white" style={{
                 fontSize: 'clamp(24px,3.5vw,42px)',
                 lineHeight: 1.15,
                 letterSpacing: '-0.02em',
                 margin: 0,
               }}>
                 {loc === 'AZ'
-                  ? <>{`Azərbaycan ixracatı üzrə`}<br />{`bilik və `}<span style={{ color: '#B8F46A' }}>analitika</span></>
+                  ? <>{`Azərbaycan ixracatı üzrə`}<br />{`bilik və `}<span style={{ color: '#00B58D' }}>analitika</span></>
                   : loc === 'TR'
-                  ? <>{`Azerbaycan ticareti üzerine`}<br />{`bilgi ve `}<span style={{ color: '#B8F46A' }}>analitik</span></>
+                  ? <>{`Azerbaycan ticareti üzerine`}<br />{`bilgi ve `}<span style={{ color: '#00B58D' }}>analitik</span></>
                   : loc === 'RU'
-                  ? <>{`Знания и аналитика`}<br />{`по `}<span style={{ color: '#B8F46A' }}>азербайджанской торговле</span></>
-                  : <>{`Azerbaijan trade`}<br />{`knowledge & `}<span style={{ color: '#B8F46A' }}>insights</span></>
+                  ? <>{`Знания и аналитика`}<br />{`по `}<span style={{ color: '#00B58D' }}>азербайджанской торговле</span></>
+                  : <>{`Azerbaijan trade`}<br />{`knowledge & `}<span style={{ color: '#00B58D' }}>insights</span></>
                 }
               </h1>
             </div>
 
             {/* Right — small desc, hidden on mobile */}
             <div className="hidden lg:block" style={{ width: '280px', flexShrink: 0 }}>
-              <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.55)', lineHeight: 1.65, marginBottom: '16px' }}>
+              <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.65)', lineHeight: 1.65, marginBottom: '16px' }}>
                 {loc === 'AZ' ? 'Azərbaycan ixracat dəhlizləri, beynəlxalq satınalma və qlobal ticarət bazarı üzrə ekspert analitikası.' : loc === 'TR' ? "Azerbaycan ihracat koridorları, uluslararası satın alma ve küresel ticaret pazarı üzerine uzman analizi." : loc === 'RU' ? 'Экспертная аналитика по экспортным коридорам Азербайджана, международным закупкам и мировым торговым рынкам.' : "Expert analysis on Azerbaijan's export corridors, international procurement insights, and global trade market intelligence."}
               </p>
               <div className="flex items-center gap-2">
@@ -573,7 +573,7 @@ export const InsightsView: React.FC<InsightsViewProps> = ({ locale, onNavigateHo
 
           {/* ── Section heading + subtitle + search + filters ── */}
           <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-            <h2 className="font-serif" style={{ fontSize: 'clamp(26px,3vw,36px)', color: '#17231D', margin: '0 0 6px', letterSpacing: '-0.02em' }}>
+            <h2 className="font-sans font-extrabold" style={{ fontSize: 'clamp(26px,3vw,36px)', color: '#00243E', margin: '0 0 6px', letterSpacing: '-0.02em' }}>
               {loc === 'AZ' ? 'Beynəlxalq ticarət haqqında məlumat və analitika mərkəzi' : loc === 'TR' ? 'Uluslararası ticaret hakkında bilgi ve analitik merkezi' : loc === 'RU' ? 'Аналитический центр о международной торговле' : 'International Trade Knowledge & Analytics Hub'}
             </h2>
             <p style={{ fontSize: '12px', color: '#7C857D', marginBottom: '18px' }}>
@@ -611,7 +611,7 @@ export const InsightsView: React.FC<InsightsViewProps> = ({ locale, onNavigateHo
           {/* ── States ── */}
           {loading && (
             <div style={{ textAlign: 'center', padding: '80px 0' }}>
-              <i className="fa-solid fa-spinner fa-spin" style={{ fontSize: '20px', color: '#00382D', marginRight: '10px' }}></i>
+              <i className="fa-solid fa-spinner fa-spin" style={{ fontSize: '20px', color: '#00243E', marginRight: '10px' }}></i>
               <span style={{ fontSize: '13px', color: '#7C857D' }}>Loading reports...</span>
             </div>
           )}
@@ -619,7 +619,7 @@ export const InsightsView: React.FC<InsightsViewProps> = ({ locale, onNavigateHo
           {!loading && error && (
             <div style={{ textAlign: 'center', padding: '64px 0' }}>
               <p style={{ fontSize: '13px', color: '#7C857D', marginBottom: '12px' }}>{error}</p>
-              <button onClick={fetchData} style={{ fontSize: '11px', fontWeight: 700, color: '#00382D', textDecoration: 'underline', cursor: 'pointer', background: 'none', border: 'none' }}>Retry</button>
+              <button onClick={fetchData} style={{ fontSize: '11px', fontWeight: 700, color: '#00243E', textDecoration: 'underline', cursor: 'pointer', background: 'none', border: 'none' }}>Retry</button>
             </div>
           )}
 
@@ -627,7 +627,7 @@ export const InsightsView: React.FC<InsightsViewProps> = ({ locale, onNavigateHo
             <div style={{ textAlign: 'center', padding: '64px 0' }}>
               <p style={{ fontSize: '13px', fontWeight: 600, color: '#17231D', marginBottom: '8px' }}>No articles found</p>
               <button onClick={() => { setActiveFilter('All'); setSearchQuery(''); }}
-                style={{ fontSize: '11px', fontWeight: 700, color: '#00382D', textDecoration: 'underline', cursor: 'pointer', background: 'none', border: 'none' }}>
+                style={{ fontSize: '11px', fontWeight: 700, color: '#00243E', textDecoration: 'underline', cursor: 'pointer', background: 'none', border: 'none' }}>
                 Show all
               </button>
             </div>
@@ -666,7 +666,7 @@ export const InsightsView: React.FC<InsightsViewProps> = ({ locale, onNavigateHo
                 <div>
                   {showFeaturedHero && (
                     <div className="flex items-center gap-4" style={{ marginBottom: '24px' }}>
-                      <h3 className="font-serif" style={{ fontSize: '18px', color: '#17231D', letterSpacing: '-0.01em', whiteSpace: 'nowrap' }}>More Reports</h3>
+                      <h3 className="font-sans font-bold" style={{ fontSize: '18px', color: '#17231D', letterSpacing: '-0.01em', whiteSpace: 'nowrap' }}>More Reports</h3>
                       <div style={{ flex: 1, borderTop: '1px solid #E8EAE3' }}></div>
                     </div>
                   )}
@@ -681,7 +681,7 @@ export const InsightsView: React.FC<InsightsViewProps> = ({ locale, onNavigateHo
                         onClick={() => setVisibleCount(v => v + PAGE_SIZE)}
                         className="inline-flex items-center gap-2 rounded-full cursor-pointer transition-all"
                         style={{ border: '1px solid #E8EAE3', color: '#17231D', fontSize: '13px', fontWeight: 600, padding: '12px 28px', backgroundColor: '#fff' }}
-                        onMouseEnter={e => (e.currentTarget as HTMLElement).style.borderColor = '#00382D'}
+                        onMouseEnter={e => (e.currentTarget as HTMLElement).style.borderColor = '#00243E'}
                         onMouseLeave={e => (e.currentTarget as HTMLElement).style.borderColor = '#E8EAE3'}>
                         <span>Load more reports</span>
                         <span style={{ fontSize: '11px', color: '#7C857D' }}>({gridArticles.length - visibleCount})</span>

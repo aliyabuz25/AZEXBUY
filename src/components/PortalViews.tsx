@@ -356,7 +356,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
                 type="button"
                 onClick={() => setViewMode('table')}
                 className={`px-2.5 py-1.5 rounded text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${
-                  viewMode === 'table' ? 'bg-[#0f3156] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                  viewMode === 'table' ? 'bg-[#00243E] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
                 }`}
                 title="Sətir-bə-sətir DataGrid cədvəl görünüşü"
               >
@@ -367,7 +367,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
                 type="button"
                 onClick={() => setViewMode('grid')}
                 className={`px-2.5 py-1.5 rounded text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${
-                  viewMode === 'grid' ? 'bg-[#0f3156] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                  viewMode === 'grid' ? 'bg-[#00243E] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
                 }`}
                 title="Şəkilli Kart Görünüşü"
               >
@@ -394,7 +394,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
             <select
               value={pageSize}
               onChange={e => { setPageSize(Number(e.target.value)); setPage(1); }}
-              className="h-8 px-2.5 bg-white border border-slate-300 rounded-md text-xs font-semibold text-slate-700 shadow-2xs focus:outline-none focus:border-[#0f3156] cursor-pointer"
+              className="h-8 px-2.5 bg-white border border-slate-300 rounded-md text-xs font-semibold text-slate-700 shadow-2xs focus:outline-none focus:border-[#00243E] cursor-pointer"
             >
               <option value="12">12 {pagLabels.itemsShort}</option>
               <option value="24">24 {pagLabels.itemsShort}</option>
@@ -447,7 +447,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-[#0f3156] text-white text-[11px] font-bold uppercase tracking-wider select-none">
+                  <tr className="bg-[#00243E] text-white text-[11px] font-bold uppercase tracking-wider select-none">
                     <th className="py-3 px-3 w-10 text-center">#</th>
                     <th
                       onClick={() => handleSort('hsCode')}
@@ -509,7 +509,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
                         <td className="py-2.5 px-4">
                           <div
                             onClick={() => onInspectProduct(product)}
-                            className="font-bold text-slate-900 group-hover:text-[#0f3156] cursor-pointer transition-colors"
+                            className="font-bold text-slate-900 group-hover:text-[#00243E] cursor-pointer transition-colors"
                           >
                             {getLocalizedText(product.name, locale)}
                           </div>
@@ -535,7 +535,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
                             <button
                               type="button"
                               onClick={() => onInspectProduct(product)}
-                              className="px-2 py-1 text-[11px] font-bold text-slate-600 hover:text-[#0f3156] hover:bg-slate-100 rounded transition-colors cursor-pointer"
+                              className="px-2 py-1 text-[11px] font-bold text-slate-600 hover:text-[#00243E] hover:bg-slate-100 rounded transition-colors cursor-pointer"
                               title="Spesifikasiyalara Bax"
                             >
                               Detallar
@@ -740,7 +740,7 @@ export const CatalogView: React.FC<CatalogViewProps> = ({
                   onClick={() => handlePageChange(item)}
                   className={`min-w-[32px] h-8 px-2 rounded-md text-xs font-bold transition-all cursor-pointer flex items-center justify-center tabular-nums ${
                     isCurrent
-                      ? 'bg-[#0f3156] text-white shadow-xs'
+                      ? 'bg-[#00243E] text-white shadow-xs'
                       : 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 hover:border-slate-300'
                   }`}
                   aria-current={isCurrent ? 'page' : undefined}
