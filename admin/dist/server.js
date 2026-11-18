@@ -6015,16 +6015,17 @@ function getAccountSmtpConfig(targetEmail) {
     routes = {};
   }
   const custom = routes[targetEmail.toLowerCase().trim()];
-  if (custom && custom.host && custom.user && custom.password) {
+  if (custom && custom.enabled && custom.host && custom.user && custom.password) {
+    const port = parseInt(String(custom.port)) || 587;
     return {
-      host: custom.host,
-      port: custom.port || 587,
-      secure: Boolean(custom.secure),
-      user: custom.user,
+      host: String(custom.host).trim(),
+      port,
+      secure: custom.secure !== void 0 ? Boolean(custom.secure) : port === 465,
+      user: String(custom.user).trim(),
       password: custom.password,
       from_name: custom.from_name || globalSmtp?.from_name || "AZEXBUY",
       from_email: custom.from_email || custom.user,
-      enabled: custom.enabled !== void 0 ? custom.enabled : globalSmtp?.enabled
+      enabled: true
     };
   }
   return globalSmtp;
@@ -6032,23 +6033,34 @@ function getAccountSmtpConfig(targetEmail) {
 async function createTransport(targetEmail) {
   const s = getAccountSmtpConfig(targetEmail);
   if (!s?.enabled || !s?.host || !s?.user || !s?.password) return null;
+  const port = parseInt(String(s.port)) || 587;
+  const isSecure = s.secure !== void 0 ? Boolean(s.secure) : port === 465;
   return nodemailer.createTransport({
-    host: s.host,
-    port: parseInt(s.port) || 587,
-    secure: Boolean(s.secure),
-    auth: { user: s.user, pass: s.password },
-    tls: { rejectUnauthorized: false }
+    host: String(s.host).trim(),
+    port,
+    secure: isSecure,
+    auth: {
+      user: String(s.user).trim(),
+      pass: String(s.password).trim()
+    },
+    tls: {
+      rejectUnauthorized: false,
+      minVersion: "TLSv1.2"
+    },
+    connectionTimeout: 12e3,
+    greetingTimeout: 12e3,
+    socketTimeout: 15e3
   });
 }
 async function sendNotificationEmail(subject, html, toOverride) {
   const logId = `eml-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
   const now = (/* @__PURE__ */ new Date()).toISOString();
   const s = getSmtpSettings();
-  const to = toOverride || s?.notify_email || "desk@azexbuy.az";
+  const to = (toOverride || s?.notify_email || "info@azexbuy.com").trim();
   try {
     if (!s?.enabled) {
       try {
-        mainDb.prepare("INSERT INTO email_logs (id, created_at, recipient, subject, status, error_message) VALUES (?, ?, ?, ?, ?, ?)").run(logId, now, to, subject, "skipped", "SMTP deaktivdir");
+        mainDb.prepare("INSERT INTO email_logs (id, created_at, recipient, subject, status, error_message) VALUES (?, ?, ?, ?, ?, ?)").run(logId, now, to, subject, "skipped", "SMTP deaktivdir (Admin panelind\u0259 SMTP ayarlar\u0131n\u0131 aktiv edin)");
       } catch {
       }
       return;
@@ -6057,13 +6069,16 @@ async function sendNotificationEmail(subject, html, toOverride) {
     const activeCfg = getAccountSmtpConfig(to);
     if (!transporter) {
       try {
-        mainDb.prepare("INSERT INTO email_logs (id, created_at, recipient, subject, status, error_message) VALUES (?, ?, ?, ?, ?, ?)").run(logId, now, to, subject, "skipped", "SMTP ba\u011Flant\u0131s\u0131 qurula bilm\u0259di");
+        mainDb.prepare("INSERT INTO email_logs (id, created_at, recipient, subject, status, error_message) VALUES (?, ?, ?, ?, ?, ?)").run(logId, now, to, subject, "skipped", "SMTP m\u0259lumatlar\u0131 natamamd\u0131r (Host, istifad\u0259\xE7i v\u0259 \u015Fifr\u0259 t\u0259l\u0259b olunur)");
       } catch {
       }
       return;
     }
+    const rawFrom = (activeCfg.from_email || s.from_email || activeCfg.user || s.user || "").trim();
+    const fromEmail = rawFrom.includes("@") ? rawFrom : "noreply@azexbuy.com";
+    const fromName = (activeCfg.from_name || s.from_name || "AZEXBUY").trim();
     await transporter.sendMail({
-      from: `"${activeCfg.from_name || s.from_name || "AZEXBUY"}" <${activeCfg.from_email || activeCfg.user || s.from_email || s.user}>`,
+      from: `"${fromName}" <${fromEmail}>`,
       to,
       subject,
       html
@@ -6072,8 +6087,9 @@ async function sendNotificationEmail(subject, html, toOverride) {
       mainDb.prepare("INSERT INTO email_logs (id, created_at, recipient, subject, status, error_message) VALUES (?, ?, ?, ?, ?, ?)").run(logId, now, to, subject, "sent", null);
     } catch {
     }
+    console.log(`[SMTP] \u2713 Bildiri\u015F m\u0259ktubu u\u011Furla g\xF6nd\u0259rildi: ${to} (${subject})`);
   } catch (err) {
-    console.error("[SMTP] Send failed:", err);
+    console.error("[SMTP] Send failed:", err?.message || err);
     try {
       mainDb.prepare("INSERT INTO email_logs (id, created_at, recipient, subject, status, error_message) VALUES (?, ?, ?, ?, ?, ?)").run(logId, now, to, subject, "failed", err?.message || String(err));
     } catch {
@@ -6240,27 +6256,93 @@ app.post("/api/smtp-settings", requireAuth, (req, res) => {
 });
 app.post("/api/smtp-test", requireAuth, async (req, res) => {
   try {
-    const { host, port, secure, user, password, from_name, from_email, to } = req.body;
-    if (!host || !user || !password || !to) {
-      return res.status(400).json({ success: false, error: "host, user, password and to are required" });
+    const { host, port, secure, user, password, from_name, from_email, to, departmentEmail } = req.body;
+    const current = getSmtpSettings();
+    let effectivePass = password && password !== "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022" ? String(password).trim() : "";
+    if (!effectivePass) {
+      if (departmentEmail) {
+        const routeConfig = getAccountSmtpConfig(departmentEmail);
+        if (routeConfig && routeConfig.password && routeConfig.password !== "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022") {
+          effectivePass = routeConfig.password;
+        }
+      }
+      if (!effectivePass) {
+        effectivePass = current?.password || "";
+      }
     }
+    let effectiveHost = String(host || "").trim();
+    let effectiveUser = String(user || "").trim();
+    if (departmentEmail) {
+      const routeConfig = getAccountSmtpConfig(departmentEmail);
+      if (!effectiveHost && routeConfig?.host) effectiveHost = routeConfig.host;
+      if (!effectiveUser && routeConfig?.user) effectiveUser = routeConfig.user;
+    }
+    if (!effectiveHost) effectiveHost = current?.host || "";
+    if (!effectiveUser) effectiveUser = current?.user || "";
+    const effectiveTo = String(to || current?.notify_email || effectiveUser || "").trim();
+    if (!effectiveHost || !effectiveUser || !effectivePass) {
+      return res.status(400).json({
+        success: false,
+        error: "SMTP Host, \u0130stifad\u0259\xE7i ad\u0131 v\u0259 \u015Eifr\u0259 daxil edilm\u0259lidir (\u015Eifr\u0259 daxil edin v\u0259 ya \u0259vv\u0259lc\u0259 yadda saxlay\u0131n)."
+      });
+    }
+    if (!effectiveTo || !effectiveTo.includes("@")) {
+      return res.status(400).json({
+        success: false,
+        error: "D\xFCzg\xFCn test e-po\xE7t \xFCnvan\u0131 (Al\u0131c\u0131) daxil edin."
+      });
+    }
+    const numericPort = parseInt(String(port || current?.port)) || 587;
+    const isSecure = secure !== void 0 ? Boolean(secure) : numericPort === 465;
     const transporter = nodemailer.createTransport({
-      host,
-      port: parseInt(port) || 587,
-      secure: Boolean(secure),
-      auth: { user, pass: password },
-      tls: { rejectUnauthorized: false }
+      host: effectiveHost,
+      port: numericPort,
+      secure: isSecure,
+      auth: { user: effectiveUser, pass: effectivePass },
+      tls: { rejectUnauthorized: false, minVersion: "TLSv1.2" },
+      connectionTimeout: 12e3,
+      greetingTimeout: 12e3,
+      socketTimeout: 15e3
     });
     await transporter.verify();
+    const rawFrom = (from_email || current?.from_email || effectiveUser || "").trim();
+    const senderEmail = rawFrom.includes("@") ? rawFrom : "noreply@azexbuy.com";
+    const senderName = (from_name || current?.from_name || "AZEXBUY").trim();
     await transporter.sendMail({
-      from: `"${from_name || "AZEXBUY"}" <${from_email || user}>`,
-      to,
-      subject: "AZEXBUY SMTP Test \u2014 U\u011Furlu",
-      html: "<p>SMTP konfiqurasiyas\u0131 u\u011Furla yoxland\u0131. AZEXBUY bildiriml\u0259ri aktiv.</p>"
+      from: `"${senderName}" <${senderEmail}>`,
+      to: effectiveTo,
+      subject: "AZEXBUY SMTP Test \u2014 U\u011Furlu Ba\u011Flant\u0131",
+      html: `
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 560px; margin: 0 auto; padding: 24px; border: 1px solid #e2e8f0; border-radius: 12px; background: #ffffff;">
+          <h2 style="color: #0f3156; margin-top: 0; font-size: 18px;">AZEXBUY SMTP Test Bildiri\u015Fi</h2>
+          <p style="color: #334155; font-size: 14px; line-height: 1.6;">
+            T\u0259brikl\u0259r! <b>${effectiveHost}:${numericPort}</b> SMTP serveri il\u0259 \u0259laq\u0259 u\u011Furla quruldu v\u0259 test m\u0259ktubu \xE7atd\u0131r\u0131ld\u0131.
+          </p>
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; margin: 16px 0; font-size: 12px; color: #475569; line-height: 1.8;">
+            <div><b>Server:</b> ${effectiveHost} (Port: ${numericPort}, ${isSecure ? "SSL/TLS" : "STARTTLS"})</div>
+            <div><b>\u0130stifad\u0259\xE7i:</b> ${effectiveUser}</div>
+            <div><b>G\xF6nd\u0259r\u0259n:</b> ${senderName} &lt;${senderEmail}&gt;</div>
+            <div><b>Al\u0131c\u0131:</b> ${effectiveTo}</div>
+            <div><b>Tarix:</b> ${(/* @__PURE__ */ new Date()).toLocaleString("az-AZ")}</div>
+          </div>
+          <p style="color: #059669; font-weight: 600; font-size: 13px; margin-bottom: 0;">
+            \u2713 AZEXBUY sistem bildiri\u015Fl\u0259ri (RFQ, \u0130stehsal\xE7\u0131 Qeydiyyat\u0131, Xidm\u0259t M\xFCraci\u0259ti) problemsiz i\u015Fl\u0259y\u0259c\u0259kdir.
+          </p>
+        </div>
+      `
     });
-    res.json({ success: true, message: "Test e-po\xE7tu g\xF6nd\u0259rildi." });
+    try {
+      mainDb.prepare("INSERT INTO email_logs (id, created_at, recipient, subject, status, error_message) VALUES (?, ?, ?, ?, ?, ?)").run(`test-${Date.now()}`, (/* @__PURE__ */ new Date()).toISOString(), effectiveTo, "AZEXBUY SMTP Test \u2014 U\u011Furlu Ba\u011Flant\u0131", "sent", null);
+    } catch {
+    }
+    res.json({ success: true, message: `Test e-po\xE7tu u\u011Furla g\xF6nd\u0259rildi: ${effectiveTo}` });
   } catch (err) {
-    res.status(500).json({ success: false, error: err.message || "SMTP x\u0259tas\u0131" });
+    console.error("[SMTP Test Error]:", err?.message || err);
+    try {
+      mainDb.prepare("INSERT INTO email_logs (id, created_at, recipient, subject, status, error_message) VALUES (?, ?, ?, ?, ?, ?)").run(`test-${Date.now()}`, (/* @__PURE__ */ new Date()).toISOString(), req.body?.to || "unknown", "AZEXBUY SMTP Test", "failed", err?.message || String(err));
+    } catch {
+    }
+    res.status(500).json({ success: false, error: err.message || "SMTP serverin\u0259 qo\u015Fulma x\u0259tas\u0131" });
   }
 });
 function getAiSettings() {

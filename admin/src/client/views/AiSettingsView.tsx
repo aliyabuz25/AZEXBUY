@@ -45,17 +45,26 @@ export const AiSettingsView: React.FC<AiSettingsViewProps> = () => {
   const [savedMsg, setSavedMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
-  const token = typeof window !== 'undefined' ? localStorage.getItem('azexbuy_admin_token') : null;
-  const authHeaders = {
-    'Content-Type': 'application/json',
-    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+  const getToken = () =>
+    (typeof window !== 'undefined'
+      ? localStorage.getItem('octotech_admin_jwt') ||
+        sessionStorage.getItem('octotech_admin_jwt') ||
+        localStorage.getItem('azexbuy_admin_token')
+      : '') || '';
+
+  const getAuthHeaders = () => {
+    const t = getToken();
+    return {
+      'Content-Type': 'application/json',
+      ...(t ? { Authorization: `Bearer ${t}` } : {}),
+    };
   };
 
   const fetchSettingsAndModels = async () => {
     setLoading(true);
     try {
       // 1. Fetch settings
-      const res = await fetch('/api/ai-settings', { headers: authHeaders });
+      const res = await fetch('/api/ai-settings', { headers: getAuthHeaders() });
       const data = await res.json();
       if (res.ok) {
         if (Array.isArray(data.api_keys) && data.api_keys.length > 0) {
@@ -162,7 +171,7 @@ export const AiSettingsView: React.FC<AiSettingsViewProps> = () => {
 
       const res = await fetch('/api/ai-settings', {
         method: 'POST',
-        headers: authHeaders,
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           provider: 'openrouter',
           api_keys: cleanedKeys,
