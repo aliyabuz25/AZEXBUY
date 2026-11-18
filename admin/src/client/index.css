@@ -17,12 +17,72 @@
   --theme-badge-text: #334155;
 }
 
-/* Global Strict SF Pro Font */
-html, body, *, ::before, ::after, button, input, select, textarea {
-  font-family: var(--font-sans) !important;
+/* Global Strict SF Pro Font for textual elements */
+html, body, button, input, select, textarea {
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   letter-spacing: -0.012em;
+}
+
+/* =========================================================
+   Font Awesome Icon Protection
+   Prevent global fonts from overriding FontAwesome glyphs
+   ========================================================= */
+.fa,
+.fas,
+.far,
+.fal,
+.fad,
+.fab,
+.fa-solid,
+.fa-regular,
+.fa-light,
+.fa-thin,
+.fa-duotone,
+.fa-brands,
+[class*="fa-"],
+[class*="fa-"]::before,
+[class*="fa-"]::after,
+i[class*="fa-"],
+i[class*="fa-"]::before {
+  font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands", "FontAwesome" !important;
+  font-style: normal !important;
+  font-variant: normal !important;
+  text-rendering: auto !important;
+  line-height: 1 !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
+.fa-solid,
+.fa-solid::before,
+.fas,
+.fas::before,
+[class*="fa-solid"],
+[class*="fa-solid"]::before {
+  font-family: "Font Awesome 6 Free" !important;
+  font-weight: 900 !important;
+}
+
+.fa-regular,
+.fa-regular::before,
+.far,
+.far::before,
+[class*="fa-regular"],
+[class*="fa-regular"]::before {
+  font-family: "Font Awesome 6 Free" !important;
+  font-weight: 400 !important;
+}
+
+.fa-brands,
+.fa-brands::before,
+.fab,
+.fab::before,
+[class*="fa-brands"],
+[class*="fa-brands"]::before {
+  font-family: "Font Awesome 6 Brands" !important;
+  font-weight: 400 !important;
 }
 
 /* Global Flat & Köşeli (Sharp Edges - No Rounding) */
