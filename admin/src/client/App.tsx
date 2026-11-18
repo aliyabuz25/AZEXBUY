@@ -25,7 +25,6 @@ import { FloatingFlagSelector } from './components/FloatingFlagSelector';
 
 import { DashboardView } from './views/DashboardView';
 import { SeoManagerView } from './views/SeoManagerView';
-import { LocalizationView } from './views/LocalizationView';
 import { MediaView } from './views/MediaView';
 import { DataRecordsView } from './views/DataRecordsView';
 import { SettingsView } from './views/SettingsView';
@@ -63,7 +62,9 @@ const getInitialSidebarCollapsed = (): boolean => {
 
 const getInitialActiveTab = (): string => {
   if (typeof window === 'undefined') return 'dashboard';
-  return localStorage.getItem(TAB_STORAGE_KEY) || 'dashboard';
+  const saved = localStorage.getItem(TAB_STORAGE_KEY) || 'dashboard';
+  if (saved === 'localization') return 'azexbuy-cms';
+  return saved;
 };
 
 export const App: React.FC = () => {
@@ -801,15 +802,6 @@ export const App: React.FC = () => {
             />
           )}
           {activeTabId === 'seo-manager' && <SeoManagerView seo={seo} onSaveSeo={handleSaveSeo} uiLang={uiLang} />}
-          {activeTabId === 'localization' && (
-            <LocalizationView
-              translations={translations}
-              onSaveTranslation={handleSaveTranslation}
-              onAddTranslation={handleAddTranslation}
-              onDeleteTranslation={handleDeleteTranslation}
-              uiLang={uiLang}
-            />
-          )}
           {activeTabId === 'media' && (
             <MediaView
               media={media}

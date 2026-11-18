@@ -135,11 +135,6 @@ const NAV_SECTIONS: NavSection[] = [
           { id: 'modals', label: '7. İxrac Dosyesi Çapı', cmsPageKey: 'dossier' },
         ],
       },
-      {
-        id: 'localization',
-        label: 'Lokalizasiya & Dillər',
-        icon: Globe,
-      },
     ],
   },
   {

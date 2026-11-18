@@ -21,7 +21,9 @@ import {
   Users,
   Mail,
   Cpu,
-  Activity
+  Activity,
+  ClipboardList,
+  Layers
 } from 'lucide-react';
 import { UiLanguage } from '../types';
 import { DICTIONARIES } from '../i18n';
@@ -65,7 +67,8 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
     { type: 'nav', id: 'services', title: 'Xidmətlər İdarəetməsi', icon: Briefcase, subtitle: 'İxrac xidmətləri, kateqoriyalar, ikonlar' },
     { type: 'nav', id: 'articles', title: 'Bloq & Analitika Məqalələri', icon: BookOpen, subtitle: 'Bloq yazıları, xəbərlər və analitikalar' },
     { type: 'nav', id: 'azexbuy-cms', title: 'AZEXBUY CMS — Məzmun', icon: PenLine, subtitle: 'Bütün səhifələr, xidmət modalları, mətn və şəkillər' },
-    { type: 'nav', id: 'localization', title: t['nav.localization'] || 'Lokalizasiya & Dillər', icon: Globe, subtitle: '6 dildə sistem tərcümələri' },
+    { type: 'nav', id: 'service-modal', title: 'Xidmət Müraciəti Formu', icon: ClipboardList, subtitle: 'Xidmət seçimləri (+/-), ikonlar və form mətnləri' },
+    { type: 'nav', id: 'modals', title: 'Modallar (Pop-uplar)', icon: Layers, subtitle: 'RFQ, İstehsalçı, AI Çat və pop-up pəncərələr' },
     { type: 'nav', id: 'user-management', title: 'İstifadəçilər & Girişlər', icon: Users, subtitle: 'Admin istifadəçiləri və səlahiyyətlər' },
     { type: 'nav', id: 'smtp-settings', title: 'SMTP E-poçt Konfiqurasiyası', icon: Mail, subtitle: 'E-poçt göndərmə və bildiriş serveri' },
     { type: 'nav', id: 'ai-settings', title: 'OpenRouter AI Parametrləri', icon: Cpu, subtitle: 'Süni intellekt və model konfiqurasiyası' },
