@@ -25,6 +25,7 @@ export interface SeoConfig {
   ogImage: string;
   sitemapUrl: string;
   lastUpdated: string;
+  pageOverrides?: Record<string, { title?: string; description?: string; keywords?: string }>;
 }
 
 export interface TranslationItem {

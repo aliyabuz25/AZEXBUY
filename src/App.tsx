@@ -219,6 +219,60 @@ export default function App() {
     document.documentElement.lang = locale.toLowerCase();
   }, [locale]);
 
+  // Dynamic SEO Synchronization from Admin Panel
+  useEffect(() => {
+    fetch('/api/seo')
+      .then((r) => r.json())
+      .then((res) => {
+        if (res.success && res.data) {
+          const s = res.data;
+          const pageOverride = s.pageOverrides?.[activeView];
+          const newTitle =
+            pageOverride?.title ||
+            (activeView === 'home'
+              ? s.title
+              : `${activeView.charAt(0).toUpperCase() + activeView.slice(1)} | ${s.title || 'AZEXBUY'}`);
+          const newDesc = pageOverride?.description || s.description;
+
+          if (newTitle) {
+            document.title = newTitle;
+            const ogTitle = document.querySelector('meta[property="og:title"]');
+            if (ogTitle) ogTitle.setAttribute('content', newTitle);
+          }
+          if (newDesc) {
+            const metaDesc = document.querySelector('meta[name="description"]');
+            if (metaDesc) metaDesc.setAttribute('content', newDesc);
+            const ogDesc = document.querySelector('meta[property="og:description"]');
+            if (ogDesc) ogDesc.setAttribute('content', newDesc);
+          }
+          if (s.keywords) {
+            let metaKw = document.querySelector('meta[name="keywords"]');
+            if (!metaKw) {
+              metaKw = document.createElement('meta');
+              metaKw.setAttribute('name', 'keywords');
+              document.head.appendChild(metaKw);
+            }
+            metaKw.setAttribute('content', s.keywords);
+          }
+          if (s.ogImage) {
+            const ogImg = document.querySelector('meta[property="og:image"]');
+            if (ogImg) ogImg.setAttribute('content', s.ogImage);
+          }
+          if (s.canonical) {
+            let canon = document.querySelector('link[rel="canonical"]');
+            if (!canon) {
+              canon = document.createElement('link');
+              canon.setAttribute('rel', 'canonical');
+              document.head.appendChild(canon);
+            }
+            const hashPart = activeView === 'home' ? '' : `#/${activeView}`;
+            canon.setAttribute('href', `${s.canonical.replace(/\/$/, '')}${hashPart}`);
+          }
+        }
+      })
+      .catch(() => {});
+  }, [activeView, locale]);
+
   useEffect(() => {
     localStorage.setItem('azexbuy_rfqs', JSON.stringify(rfqSubmissions));
   }, [rfqSubmissions]);

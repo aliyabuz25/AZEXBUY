@@ -425,7 +425,15 @@ app.get('/api/sites', (_req: Request, res: Response) => {
 
 // 2. SEO Management Endpoints (Real & Persistent)
 app.get('/api/seo', (_req: Request, res: Response) => {
-  const seo = Database.getSeo();
+  let seo = Database.getSeo();
+  try {
+    const row = azexbuyDb.prepare("SELECT value FROM azexbuy_kv WHERE key = 'seo'").get() as any;
+    if (row?.value) {
+      const parsed = JSON.parse(row.value);
+      seo = { ...seo, ...parsed };
+    }
+  } catch {}
+
   // Dynamic SEO Score Calculation
   let score = 50;
   if (seo.title && seo.title.length >= 25 && seo.title.length <= 65) score += 20;
@@ -443,6 +451,12 @@ app.get('/api/seo', (_req: Request, res: Response) => {
 
 app.post('/api/seo', requireAuth, (req: Request, res: Response) => {
   const updated = Database.updateSeo(req.body);
+  try {
+    azexbuyDb.prepare("INSERT OR REPLACE INTO azexbuy_kv (key, value, updated_at) VALUES ('seo', ?, ?)")
+      .run(JSON.stringify(updated), new Date().toISOString());
+  } catch (dbErr) {
+    console.error('Error saving SEO to azexbuy_kv:', dbErr);
+  }
   res.json({
     success: true,
     message: 'SEO parametrləri uğurla yeniləndi',
@@ -3803,7 +3817,14 @@ app.get('*', (_req: Request, res: Response) => {
   if (!fs.existsSync(azexbuyIdx)) return res.status(404).send('AZEXBUY frontend not built yet.');
 
   try {
-    const seo = Database.getSeo();
+    let seo = Database.getSeo();
+    try {
+      const row = azexbuyDb.prepare("SELECT value FROM azexbuy_kv WHERE key = 'seo'").get() as any;
+      if (row?.value) {
+        const parsed = JSON.parse(row.value);
+        seo = { ...seo, ...parsed };
+      }
+    } catch {}
     let html = fs.readFileSync(azexbuyIdx, 'utf-8');
 
     const title = seo.title || 'AZEXBUY — Connecting Azerbaijani Products with Global Buyers';

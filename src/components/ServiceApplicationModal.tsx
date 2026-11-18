@@ -61,7 +61,7 @@ export const ServiceApplicationModal: React.FC<ServiceApplicationModalProps> = (
   const activeService = useMemo(() => {
     if (preselectedServiceId) {
       const found = services.find(
-        (s) =>
+        (s: any) =>
           s.id === preselectedServiceId ||
           s.rfqSlug === preselectedServiceId ||
           (s.title && Object.values(s.title).some((v: any) => v === preselectedServiceId))
@@ -207,7 +207,7 @@ export const ServiceApplicationModal: React.FC<ServiceApplicationModalProps> = (
               {activeService && (
                 <div>
                   <label className={labelCls}>
-                    {srvCfg?.servicesLabel?.[locale] || srvCfg?.selectedServiceLabel?.[locale] || t('services', locale)}
+                    {srvCfg?.servicesLabel?.[locale] || t('services', locale)}
                   </label>
                   <div className="flex items-center gap-3.5 p-3.5 rounded-xl border border-slate-200/90 bg-slate-50/80 shadow-2xs">
                     <div className={`w-10 h-10 rounded-xl ${activeService.colorClass || 'bg-brandNavy'} flex items-center justify-center shrink-0 text-white shadow-xs`}>
@@ -215,11 +215,11 @@ export const ServiceApplicationModal: React.FC<ServiceApplicationModalProps> = (
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="text-sm font-bold text-slate-900 leading-snug truncate">
-                        {getLocalizedText(activeService.title || activeService.name, locale)}
+                        {getLocalizedText(activeService.title || (activeService as any).name, locale)}
                       </div>
-                      {(activeService.targetAudience || activeService.description || activeService.subtitle) && (
+                      {(activeService.targetAudience || activeService.description || (activeService as any).subtitle) && (
                         <div className="text-xs text-slate-500 truncate mt-0.5">
-                          {getLocalizedText(activeService.targetAudience || activeService.description || activeService.subtitle, locale)}
+                          {getLocalizedText(activeService.targetAudience || activeService.description || (activeService as any).subtitle, locale)}
                         </div>
                       )}
                     </div>

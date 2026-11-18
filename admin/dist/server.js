@@ -4120,7 +4120,15 @@ app.get("/api/sites", (_req, res) => {
   res.json({ success: true, data: [site] });
 });
 app.get("/api/seo", (_req, res) => {
-  const seo = Database.getSeo();
+  let seo = Database.getSeo();
+  try {
+    const row = azexbuyDb.prepare("SELECT value FROM azexbuy_kv WHERE key = 'seo'").get();
+    if (row?.value) {
+      const parsed = JSON.parse(row.value);
+      seo = { ...seo, ...parsed };
+    }
+  } catch {
+  }
   let score = 50;
   if (seo.title && seo.title.length >= 25 && seo.title.length <= 65) score += 20;
   if (seo.description && seo.description.length >= 60 && seo.description.length <= 165) score += 15;
@@ -4135,6 +4143,11 @@ app.get("/api/seo", (_req, res) => {
 });
 app.post("/api/seo", requireAuth, (req, res) => {
   const updated = Database.updateSeo(req.body);
+  try {
+    azexbuyDb.prepare("INSERT OR REPLACE INTO azexbuy_kv (key, value, updated_at) VALUES ('seo', ?, ?)").run(JSON.stringify(updated), (/* @__PURE__ */ new Date()).toISOString());
+  } catch (dbErr) {
+    console.error("Error saving SEO to azexbuy_kv:", dbErr);
+  }
   res.json({
     success: true,
     message: "SEO parametrl\u0259ri u\u011Furla yenil\u0259ndi",
@@ -7347,7 +7360,15 @@ app.get("*", (_req, res) => {
   const azexbuyIdx = path3.join(azexbuyDist, "index.html");
   if (!fs3.existsSync(azexbuyIdx)) return res.status(404).send("AZEXBUY frontend not built yet.");
   try {
-    const seo = Database.getSeo();
+    let seo = Database.getSeo();
+    try {
+      const row = azexbuyDb.prepare("SELECT value FROM azexbuy_kv WHERE key = 'seo'").get();
+      if (row?.value) {
+        const parsed = JSON.parse(row.value);
+        seo = { ...seo, ...parsed };
+      }
+    } catch {
+    }
     let html = fs3.readFileSync(azexbuyIdx, "utf-8");
     const title = seo.title || "AZEXBUY \u2014 Connecting Azerbaijani Products with Global Buyers";
     const description = seo.description || "Sovereign digital trade gateway connecting international business buyers with vetted Azerbaijani manufacturers, producers, and export suppliers.";

@@ -103,9 +103,9 @@ const NAV_SECTIONS: NavSection[] = [
     title: 'Məzmun & CMS',
     items: [
       {
-        id: 'service-modal',
-        label: 'Xidmət Müraciəti Formu',
-        icon: ClipboardList,
+        id: 'seo-manager',
+        label: 'SEO & Meta Teqlər',
+        icon: Globe,
       },
       {
         id: 'azexbuy-cms',
@@ -117,10 +117,14 @@ const NAV_SECTIONS: NavSection[] = [
           { id: 'azexbuy-cms', label: 'Alıcılar Səhifəsi (Buyers)', cmsPageKey: 'buyers_page' },
           { id: 'azexbuy-cms', label: 'İstehsalçılar Səhifəsi (Producers)', cmsPageKey: 'producers_page' },
           { id: 'azexbuy-cms', label: 'Sosial Şəbəkələr (Social)', cmsPageKey: 'social' },
-          { id: 'azexbuy-cms', label: 'Xidmət Müraciəti Formu', cmsPageKey: 'service_modal' },
           { id: 'azexbuy-cms', label: 'Haqqımızda', cmsPageKey: 'about' },
           { id: 'azexbuy-cms', label: 'Bütün Görsəllər & Media', cmsPageKey: 'images' },
         ],
+      },
+      {
+        id: 'service-modal',
+        label: 'Xidmət Müraciəti Formu',
+        icon: ClipboardList,
       },
       {
         id: 'modals',
