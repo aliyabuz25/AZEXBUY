@@ -132,6 +132,7 @@ export const ModalsView: React.FC<ModalsViewProps> = ({ uiLang, initialModalKey 
     const updatedContent = {
       ...contentObj,
       modalsConfig: cfg,
+      modals: cfg,
     };
     // Exclude products array as per CMS standards
     delete (updatedContent as any).products;

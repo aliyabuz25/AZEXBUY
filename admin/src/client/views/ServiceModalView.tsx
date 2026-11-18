@@ -253,10 +253,11 @@ export const ServiceModalView: React.FC<ServiceModalViewProps> = () => {
       const res = await fetch('/api/azexbuy/content');
       if (res.ok) {
         const data = await res.json();
-        if (data.modalsConfig?.serviceModal) {
+        const savedSrvModal = data.modalsConfig?.serviceModal || data.modals?.serviceModal;
+        if (savedSrvModal) {
           setModalConfig((prev: any) => ({
             ...prev,
-            ...data.modalsConfig.serviceModal,
+            ...savedSrvModal,
           }));
         }
 
@@ -308,6 +309,10 @@ export const ServiceModalView: React.FC<ServiceModalViewProps> = () => {
         ...currentContent,
         modalsConfig: {
           ...(currentContent.modalsConfig || {}),
+          serviceModal: modalConfig,
+        },
+        modals: {
+          ...(currentContent.modals || {}),
           serviceModal: modalConfig,
         },
       };
