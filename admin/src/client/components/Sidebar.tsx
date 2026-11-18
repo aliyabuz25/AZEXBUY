@@ -23,6 +23,7 @@ import {
   ChevronRight,
   Sparkles,
   Layers,
+  ClipboardList,
 } from 'lucide-react';
 import { UiLanguage } from '../types';
 import { DICTIONARIES } from '../i18n';
@@ -100,6 +101,11 @@ const NAV_SECTIONS: NavSection[] = [
   {
     title: 'Məzmun & CMS',
     items: [
+      {
+        id: 'service-modal',
+        label: 'Xidmət Müraciəti Formu',
+        icon: ClipboardList,
+      },
       {
         id: 'azexbuy-cms',
         label: 'CMS — Məzmun',

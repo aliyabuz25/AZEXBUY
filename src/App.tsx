@@ -355,6 +355,14 @@ export default function App() {
   const featuredProducts = cmsProducts.filter((p: any) => p.featured);
 
   const allServicesForModal: CmsService[] = useMemo(() => {
+    // If cmsServices is configured in CMS / Admin panel, use it directly!
+    // This allows complete adding/removing/reordering of services from admin without duplicate injection.
+    if (Array.isArray(cmsServices) && cmsServices.length > 0) {
+      return [...cmsServices]
+        .filter((s: CmsService) => s.isActive !== false)
+        .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+    }
+
     const pillars = cmsServicesPillars && cmsServicesPillars.length > 0 ? cmsServicesPillars : SERVICES_PILLARS;
     const convertedPillars: CmsService[] = pillars.map((p: any, idx: number) => ({
       id: p.id,
@@ -384,9 +392,7 @@ export default function App() {
       isActive: true,
     }));
 
-    const pillarIds = new Set(convertedPillars.map(p => p.id));
-    const extraServices = (cmsServices || []).filter((s: CmsService) => !pillarIds.has(s.id));
-    return [...convertedPillars, ...extraServices];
+    return convertedPillars;
   }, [cmsServicesPillars, cmsServices]);
 
   // Dynamic WhyAZEXBUY items (from CMS content or localized translations)

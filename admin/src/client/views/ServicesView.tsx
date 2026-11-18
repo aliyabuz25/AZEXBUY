@@ -344,20 +344,32 @@ export const ServicesView: React.FC<ServicesViewProps> = () => {
             </div>
           </div>
         </div>
-        <button
-          type="button"
-          onClick={() => {
-            localStorage.setItem('azexbuy_cms_initial_page', 'services');
-            window.dispatchEvent(new CustomEvent('azexbuy_cms_switch_page', { detail: { page: 'services' } }));
-            // Trigger switch to azexbuy-cms tab if available
-            const cmsTabBtn = document.querySelector('[data-tab-id="azexbuy-cms"]') as HTMLButtonElement | null;
-            if (cmsTabBtn) cmsTabBtn.click();
-            window.location.hash = '#azexbuy-cms';
-          }}
-          className="px-3.5 py-1.5 bg-[#0f3156] hover:bg-[#1a4a7a] text-white text-xs font-bold rounded cursor-pointer shrink-0 transition-colors shadow-2xs text-center"
-        >
-          01-08 Sütunları Redaktə Et →
-        </button>
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            type="button"
+            onClick={() => {
+              localStorage.setItem('azexbuy_cms_initial_page', 'services');
+              window.dispatchEvent(new CustomEvent('azexbuy_cms_switch_page', { detail: { page: 'services' } }));
+              const cmsTabBtn = document.querySelector('[data-tab-id="azexbuy-cms"]') as HTMLButtonElement | null;
+              if (cmsTabBtn) cmsTabBtn.click();
+              window.location.hash = '#azexbuy-cms';
+            }}
+            className="px-3.5 py-1.5 bg-[#0f3156] hover:bg-[#1a4a7a] text-white text-xs font-bold rounded cursor-pointer transition-colors shadow-2xs text-center"
+          >
+            01-08 Sütunları Redaktə Et →
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              const modalTabBtn = document.querySelector('[data-tab-id="service-modal"]') as HTMLButtonElement | null;
+              if (modalTabBtn) modalTabBtn.click();
+              window.location.hash = '#service-modal';
+            }}
+            className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded cursor-pointer transition-colors shadow-2xs text-center"
+          >
+            Formu (+/- Seçimləri) Redaktə Et →
+          </button>
+        </div>
       </div>
 
       {/* Tabs */}

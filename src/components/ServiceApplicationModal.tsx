@@ -121,8 +121,8 @@ export const ServiceApplicationModal: React.FC<ServiceApplicationModalProps> = (
         <div className="bg-white border-b border-slate-200 px-5 py-4 flex items-center justify-between shrink-0">
           <div>
             <h3 className="text-base font-semibold text-slate-800">{srvCfg?.title?.[locale] || t('title', locale)}</h3>
-            {srvCfg?.subtitle?.[locale] && (
-              <p className="text-xs text-slate-500 mt-0.5">{srvCfg.subtitle[locale]}</p>
+            {(srvCfg?.subtitle?.[locale] || srvCfg?.subtitle?.AZ || srvCfg?.subtitle?.EN) && (
+              <p className="text-xs text-slate-500 mt-0.5">{getLocalizedText(srvCfg.subtitle, locale)}</p>
             )}
           </div>
           <button type="button" onClick={onClose} className="text-slate-400 hover:text-slate-700 p-1.5 rounded transition-colors cursor-pointer">
@@ -135,7 +135,7 @@ export const ServiceApplicationModal: React.FC<ServiceApplicationModalProps> = (
             <div className="w-14 h-14 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center">
               <i className="fa-solid fa-check text-xl text-emerald-600"></i>
             </div>
-            <p className="text-sm font-medium text-slate-700">{t('success', locale)}</p>
+            <p className="text-sm font-medium text-slate-700">{srvCfg?.successMessage?.[locale] || t('success', locale)}</p>
             <button
               type="button"
               onClick={onClose}
@@ -184,13 +184,13 @@ export const ServiceApplicationModal: React.FC<ServiceApplicationModalProps> = (
 
               {/* Service selection */}
               <div>
-                <label className={`${labelCls} mb-2`}>{t('services', locale)} <span className="text-red-500">*</span></label>
+                <label className={`${labelCls} mb-2`}>{srvCfg?.servicesLabel?.[locale] || t('services', locale)} <span className="text-red-500">*</span></label>
 
                 {primaryServices.length > 0 && (
                   <div className="mb-3">
                     <div className="text-[10px] font-medium text-emerald-700 uppercase mb-2 flex items-center gap-1.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span>
-                      {t('primaryBadge', locale)}
+                      {srvCfg?.primaryBadge?.[locale] || t('primaryBadge', locale)}
                     </div>
                     <div className="space-y-1.5">
                       {primaryServices.map(srv => {
@@ -233,7 +233,7 @@ export const ServiceApplicationModal: React.FC<ServiceApplicationModalProps> = (
                   <div>
                     <div className="text-[10px] font-medium text-slate-500 uppercase mb-2 flex items-center gap-1.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-slate-300 inline-block"></span>
-                      {t('additionalBadge', locale)}
+                      {srvCfg?.additionalBadge?.[locale] || t('additionalBadge', locale)}
                     </div>
                     <div className="space-y-1.5">
                       {secondaryServices.map(srv => {
@@ -275,7 +275,7 @@ export const ServiceApplicationModal: React.FC<ServiceApplicationModalProps> = (
 
               {/* Details */}
               <div>
-                <label className={labelCls}>{t('details', locale)}</label>
+                <label className={labelCls}>{srvCfg?.detailsLabel?.[locale] || t('details', locale)}</label>
                 <textarea
                   value={details}
                   onChange={e => setDetails(e.target.value)}

@@ -20,7 +20,8 @@ import {
   Mail,
   Cpu,
   Activity,
-  Layers
+  Layers,
+  ClipboardList
 } from 'lucide-react';
 import { TabItem, UiLanguage } from '../types';
 
@@ -52,6 +53,7 @@ const iconMap: Record<string, React.FC<{ className?: string }>> = {
   'product-catalog': Package,
   articles: BookOpen,
   services: Briefcase,
+  'service-modal': ClipboardList,
   inbox: Inbox,
   'user-management': Users,
   'ai-settings': Cpu,
@@ -87,6 +89,7 @@ export const TabsBar: React.FC<TabsBarProps> = ({
             return (
               <motion.button
                 key={tab.id}
+                data-tab-id={tab.id}
                 layout
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}

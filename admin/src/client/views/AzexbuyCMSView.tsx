@@ -13,6 +13,7 @@ import { flattenStrings } from '../utils/flattenStrings';
 import { UI_STRINGS, ABOUT_PAGE_DEFAULT, SERVICES_PILLARS, BUYER_STEPS, PRODUCER_STEPS, DEFAULT_BUYERS_PAGE, DEFAULT_PRODUCERS_PAGE } from '../../../../src/data/translations';
 import { SEED_SERVICES } from '../../seed';
 import { PortalPageEditor } from './PortalPageEditor';
+import { ServiceModalView } from './ServiceModalView';
 
 interface AzexbuyCMSViewProps { uiLang: UiLanguage; }
 
@@ -2722,29 +2723,9 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
 
           {/* ── SERVICE APPLICATION MODAL & OPTIONS (+/-) ── */}
           {page === 'service_modal' && (
-            <>
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded bg-[#0f3156]/10 text-[#0f3156] flex items-center justify-center shrink-0">
-                    <Briefcase className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h2 className="text-sm font-bold text-slate-900">Xidmət Müraciəti Modalı və Seçimləri</h2>
-                    <p className="text-xs text-slate-500">
-                      Pop-up müraciət pəncərəsindəki bütün xidmətləri (+/-) artırıb-azaldın, ikonlarını seçin və mətnləri tənzimləyin.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <ServiceModalEditor
-                content={content}
-                onChange={(next) => setContent(next)}
-                onSaveContent={saveContent}
-                saving={saving}
-                saved={saved}
-              />
-            </>
+            <div className="-mt-2">
+              <ServiceModalView uiLang={uiLang} />
+            </div>
           )}
 
           {/* ── HOW IT WORKS ── */}

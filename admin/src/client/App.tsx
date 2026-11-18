@@ -40,6 +40,7 @@ import { ProductCatalogView } from './views/ProductCatalogView';
 import { ArticlesView } from './views/ArticlesView';
 import { ServicesView } from './views/ServicesView';
 import { ModalsView } from './views/ModalsView';
+import { ServiceModalView } from './views/ServiceModalView';
 
 const LANG_STORAGE_KEY = 'octotech_admin_lang';
 const SIDEBAR_STORAGE_KEY = 'octotech_admin_sidebar_collapsed';
@@ -154,6 +155,7 @@ export const App: React.FC = () => {
     { id: 'dashboard',        title: 'Canlı İcmal',            icon: 'dashboard',        closable: false },
     { id: 'azexbuy',          title: 'AZEXBUY',                icon: 'azexbuy',          closable: true },
     { id: 'azexbuy-cms',      title: 'AZEXBUY CMS',            icon: 'azexbuy-cms',      closable: true },
+    { id: 'service-modal',    title: 'Xidmət Müraciəti Formu', icon: 'clipboard-list',   closable: true },
     { id: 'modals',           title: 'Modallar (Pop-uplar)',   icon: 'modals',           closable: true },
     { id: 'articles',         title: 'Bloq & Məqalələr',       icon: 'articles',         closable: true },
     { id: 'product-catalog',  title: 'Məhsul Kataloqu',        icon: 'product-catalog',  closable: true },
@@ -862,6 +864,9 @@ export const App: React.FC = () => {
           )}
           {activeTabId === 'services' && (
             <ServicesView uiLang={uiLang} />
+          )}
+          {activeTabId === 'service-modal' && (
+            <ServiceModalView uiLang={uiLang} />
           )}
           {activeTabId === 'modals' && (
             <ModalsView uiLang={uiLang} initialModalKey={localStorage.getItem('azexbuy_modals_initial_page') || 'rfq'} />
