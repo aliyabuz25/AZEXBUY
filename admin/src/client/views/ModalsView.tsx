@@ -22,6 +22,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { UiLanguage } from '../types';
+import { ModalEmailSelector } from '../components/ModalEmailSelector';
 import {
   DEFAULT_MODALS_CONFIG,
   AllModalsConfig,
@@ -322,6 +323,20 @@ export const ModalsView: React.FC<ModalsViewProps> = ({ uiLang, initialModalKey 
                   <span>Sıfırla</span>
                 </button>
               </div>
+
+              {/* Notification Email (SMTP) */}
+              <ModalEmailSelector
+                value={cfg.rfqModal.notificationEmail}
+                onChange={(email) =>
+                  setCfg((prev) => ({
+                    ...prev,
+                    rfqModal: { ...prev.rfqModal, notificationEmail: email },
+                  }))
+                }
+                defaultEmail="procurement@azexbuy.com"
+                modalName="Qiymət Sorğusu (RFQ)"
+                helpText="Alıcı saytda RFQ formasını doldurub təsdiqlədikdə, bütün məhsul siyahısı və çatdırılma şərtləri bu e-poçt ünvanına göndərilir."
+              />
 
               {/* Title & Subtitle */}
               <div className="grid grid-cols-1 gap-4">
@@ -693,6 +708,20 @@ export const ModalsView: React.FC<ModalsViewProps> = ({ uiLang, initialModalKey 
                 </button>
               </div>
 
+              {/* Notification Email (SMTP) */}
+              <ModalEmailSelector
+                value={cfg.producerModal.notificationEmail}
+                onChange={(email) =>
+                  setCfg((prev) => ({
+                    ...prev,
+                    producerModal: { ...prev.producerModal, notificationEmail: email },
+                  }))
+                }
+                defaultEmail="export@azexbuy.com"
+                modalName="İstehsalçı Qeydiyyatı"
+                helpText="Yerli istehsalçı və ya fermer qeydiyyat formasını göndərdikdə, bütün müəssisə məlumatları və məhsul siyahısı bu e-poçt ünvanına çatdırılır."
+              />
+
               {/* Title & Subtitle */}
               <div className="grid grid-cols-1 gap-4">
                 <div>
@@ -995,6 +1024,20 @@ export const ModalsView: React.FC<ModalsViewProps> = ({ uiLang, initialModalKey 
                   <span>Sıfırla</span>
                 </button>
               </div>
+
+              {/* Notification Email (SMTP) */}
+              <ModalEmailSelector
+                value={cfg.aiDeskModal.notificationEmail}
+                onChange={(email) =>
+                  setCfg((prev) => ({
+                    ...prev,
+                    aiDeskModal: { ...prev.aiDeskModal, notificationEmail: email },
+                  }))
+                }
+                defaultEmail="support@azexbuy.com"
+                modalName="Trade Desk AI Çat"
+                helpText="Ziyarətçi AI Çat üzərindən sorğu və ya əlaqə məlumatı qoyduqda bildiriş bu e-poçt ünvanına yönləndirilir."
+              />
 
               {/* Title & Subtitle */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

@@ -4,6 +4,7 @@ import {
   AlertCircle, Briefcase, Check, ExternalLink, RotateCcw
 } from 'lucide-react';
 import { UiLanguage } from '../types';
+import { ModalEmailSelector } from '../components/ModalEmailSelector';
 
 interface ServiceModalViewProps {
   uiLang: UiLanguage;
@@ -23,6 +24,7 @@ const LOCALE_LABELS: Record<LocaleKey, string> = {
 
 export const DEFAULT_SERVICE_MODAL_CONFIG = {
   enabled: true,
+  notificationEmail: 'export@azexbuy.com',
   title: {
     AZ: 'Xidmət Müraciəti Formu',
     EN: 'Service Application Form',
@@ -467,6 +469,15 @@ export const ServiceModalView: React.FC<ServiceModalViewProps> = () => {
           ═══════════════════════════════════════════════════════════════════════════ */}
       {activeTab === 'headers' && (
         <div className="bg-white border border-slate-200 rounded-b-xl p-5 sm:p-6 shadow-xs space-y-6">
+          {/* Connected Notification Email (SMTP) */}
+          <ModalEmailSelector
+            value={modalConfig.notificationEmail}
+            onChange={(email) => setModalConfig((prev: any) => ({ ...prev, notificationEmail: email }))}
+            defaultEmail="export@azexbuy.com"
+            modalName="Xidmət Müraciəti Formu"
+            helpText="Ziyarətçi saytda Xidmət Müraciəti göndərdikdə bildiriş məktubu və ərizə detalları bu e-poçt ünvanına çatdırılır."
+          />
+
           {/* Language Switcher */}
           <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-200">
             <div>

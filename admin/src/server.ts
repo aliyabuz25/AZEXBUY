@@ -2143,6 +2143,16 @@ app.post('/api/azexbuy/rfqs', async (req: Request, res: Response) => {
   res.json({ success: true, id: d.id });
   // Send email notification (non-blocking)
   const itemsList = (d.items || []).map((it: any) => `<li><b>${it.productName}</b> — ${it.quantity} ${it.unit} (HS: ${it.hsCode || '—'})</li>`).join('');
+  let modalRfqRecipient: string | undefined;
+  try {
+    const cRow = azexbuyDb.prepare("SELECT value FROM azexbuy_kv WHERE key = 'content'").get() as any;
+    if (cRow?.value) {
+      const c = JSON.parse(cRow.value);
+      modalRfqRecipient = c.modalsConfig?.rfqModal?.notificationEmail || c.modals?.rfqModal?.notificationEmail;
+    }
+  } catch {}
+  const rfqTargetEmail = modalRfqRecipient || getSmtpSettings()?.rfq_email || undefined;
+
   sendNotificationEmail(
     `[AZEXBUY] Yeni RFQ: ${d.buyerCompany} (${d.country})`,
     `<h2>Yeni RFQ Sorğusu</h2>
@@ -2153,10 +2163,10 @@ app.post('/api/azexbuy/rfqs', async (req: Request, res: Response) => {
        <tr><td style="padding:4px 12px;color:#666">Əlaqə</td><td>${d.contactName} — ${d.email}</td></tr>
        <tr><td style="padding:4px 12px;color:#666">Incoterm</td><td>${d.incoterm} / ${d.destinationPort || '—'}</td></tr>
      </table>
-<h3 style="margin-top:16px">Mallar</h3><ul>${itemsList}</ul>
-      ${d.notes ? `<p><b>Qeyd:</b> ${d.notes}</p>` : ''}
-      <p style="color:#888;font-size:12px;margin-top:24px">AZEXBUY Admin: <a href="http://localhost:${PORT}/octo-admin">Panelə keç</a></p>`,
-    getSmtpSettings()?.rfq_email || undefined
+     <h3 style="margin-top:16px">Mallar</h3><ul>${itemsList}</ul>
+     ${d.notes ? `<p><b>Qeyd:</b> ${d.notes}</p>` : ''}
+     <p style="color:#888;font-size:12px;margin-top:24px">AZEXBUY Admin: <a href="http://localhost:${PORT}/octo-admin">Panelə keç</a></p>`,
+    rfqTargetEmail
   );
 });
 
@@ -2217,6 +2227,16 @@ app.post('/api/azexbuy/producers', async (req: Request, res: Response) => {
   // Send email notification (non-blocking)
   const certs = (d.certifications || []).join(', ') || '—';
   const markets = (d.targetMarkets || []).join(', ') || '—';
+  let modalProducerRecipient: string | undefined;
+  try {
+    const cRow = azexbuyDb.prepare("SELECT value FROM azexbuy_kv WHERE key = 'content'").get() as any;
+    if (cRow?.value) {
+      const c = JSON.parse(cRow.value);
+      modalProducerRecipient = c.modalsConfig?.producerModal?.notificationEmail || c.modals?.producerModal?.notificationEmail;
+    }
+  } catch {}
+  const producerTargetEmail = modalProducerRecipient || getSmtpSettings()?.producer_email || undefined;
+
   sendNotificationEmail(
     `[AZEXBUY] Yeni İstehsalçı: ${d.companyName}`,
     `<h2>Yeni İstehsalçı Qeydiyyatı</h2>
@@ -2232,7 +2252,7 @@ app.post('/api/azexbuy/producers', async (req: Request, res: Response) => {
        <tr><td style="padding:4px 12px;color:#666">Outsourced Desk</td><td>${d.outsourcedDeskRequested ? 'Bəli' : 'Xeyr'}</td></tr>
      </table>
      <p style="color:#888;font-size:12px;margin-top:24px">AZEXBUY Admin: <a href="http://localhost:${PORT}/octo-admin">Panelə keç</a></p>`,
-    getSmtpSettings()?.producer_email || undefined
+    producerTargetEmail
   );
 });
 
@@ -2327,18 +2347,29 @@ app.post('/api/azexbuy/contacts', async (req: Request, res: Response) => {
   res.json({ success: true, id });
   // Determine recipient based on inquiry type and SMTP routing settings
   const smtp = getSmtpSettings();
-  let targetRecipient = smtp?.contact_email || smtp?.info_email || 'info@azexbuy.com';
-  const inqLower = (inquiryType || '').toLowerCase();
-  if (inqLower.includes('buyer') || inqLower.includes('sourc') || inqLower.includes('procure')) {
-    targetRecipient = smtp?.sourcing_email || smtp?.procurement_email || targetRecipient;
-  } else if (inqLower.includes('logistics') || inqLower.includes('freight') || inqLower.includes('corridor')) {
-    targetRecipient = smtp?.logistics_email || targetRecipient;
-  } else if (inqLower.includes('producer') || inqLower.includes('export')) {
-    targetRecipient = smtp?.export_email || smtp?.producer_email || targetRecipient;
-  } else if (inqLower.includes('partner')) {
-    targetRecipient = smtp?.partnerships_email || targetRecipient;
-  } else if (inqLower.includes('support')) {
-    targetRecipient = smtp?.support_email || targetRecipient;
+  let modalContactRecipient: string | undefined;
+  try {
+    const cRow = azexbuyDb.prepare("SELECT value FROM azexbuy_kv WHERE key = 'content'").get() as any;
+    if (cRow?.value) {
+      const c = JSON.parse(cRow.value);
+      modalContactRecipient = c.modalsConfig?.contactModal?.notificationEmail || c.modals?.contactModal?.notificationEmail;
+    }
+  } catch {}
+
+  let targetRecipient = modalContactRecipient || smtp?.contact_email || smtp?.info_email || 'info@azexbuy.com';
+  if (!modalContactRecipient) {
+    const inqLower = (inquiryType || '').toLowerCase();
+    if (inqLower.includes('buyer') || inqLower.includes('sourc') || inqLower.includes('procure')) {
+      targetRecipient = smtp?.sourcing_email || smtp?.procurement_email || targetRecipient;
+    } else if (inqLower.includes('logistics') || inqLower.includes('freight') || inqLower.includes('corridor')) {
+      targetRecipient = smtp?.logistics_email || targetRecipient;
+    } else if (inqLower.includes('producer') || inqLower.includes('export')) {
+      targetRecipient = smtp?.export_email || smtp?.producer_email || targetRecipient;
+    } else if (inqLower.includes('partner')) {
+      targetRecipient = smtp?.partnerships_email || targetRecipient;
+    } else if (inqLower.includes('support')) {
+      targetRecipient = smtp?.support_email || targetRecipient;
+    }
   }
 
   // Send email notification (non-blocking)
@@ -2624,6 +2655,16 @@ app.post('/api/azexbuy/service-applications', async (req: Request, res: Response
   // Send email notification (non-blocking)
   const srvList = Array.isArray(d.selectedServices) ? d.selectedServices.join(', ') : '';
   const smtpCfg = getSmtpSettings();
+  let modalServiceRecipient: string | undefined;
+  try {
+    const cRow = azexbuyDb.prepare("SELECT value FROM azexbuy_kv WHERE key = 'content'").get() as any;
+    if (cRow?.value) {
+      const c = JSON.parse(cRow.value);
+      modalServiceRecipient = c.modalsConfig?.serviceModal?.notificationEmail || c.modals?.serviceModal?.notificationEmail;
+    }
+  } catch {}
+  const serviceTargetEmail = modalServiceRecipient || smtpCfg?.export_email || smtpCfg?.producer_email || smtpCfg?.notify_email || undefined;
+
   sendNotificationEmail(
     `[AZEXBUY] Yeni Xidmət Müraciəti: ${d.fullName} (${d.company || 'Fərdi'})`,
     `<h2>Yeni İxrac Xidməti Müraciəti</h2>
@@ -2638,7 +2679,7 @@ app.post('/api/azexbuy/service-applications', async (req: Request, res: Response
      </table>
      ${d.details ? `<h3 style="margin-top:16px">Təfərrüatlar</h3><p style="font-family:sans-serif;font-size:14px">${d.details}</p>` : ''}
      <p style="color:#888;font-size:12px;margin-top:24px">AZEXBUY Admin: <a href="http://localhost:${PORT}/octo-admin">Panelə keç</a></p>`,
-    smtpCfg?.export_email || smtpCfg?.producer_email || undefined
+    serviceTargetEmail
   );
 });
 

@@ -60,6 +60,7 @@ export interface TrendingTagConfig {
 
 export interface RFQModalConfig {
   enabled: boolean;
+  notificationEmail?: string;
   title: LocalizedString;
   subtitle: LocalizedString;
   submitButton: LocalizedString;
@@ -82,6 +83,7 @@ export interface RFQModalConfig {
 
 export interface ProducerModalConfig {
   enabled: boolean;
+  notificationEmail?: string;
   title: LocalizedString;
   subtitle: LocalizedString;
   submitButton: LocalizedString;
@@ -95,6 +97,7 @@ export interface ProducerModalConfig {
 
 export interface ServiceModalConfig {
   enabled: boolean;
+  notificationEmail?: string;
   title: LocalizedString;
   subtitle: LocalizedString;
   submitButton: LocalizedString;
@@ -116,6 +119,7 @@ export interface ServiceModalConfig {
 
 export interface AIDeskModalConfig {
   enabled: boolean;
+  notificationEmail?: string;
   title: LocalizedString;
   subtitle: LocalizedString;
   avatarUrl: string;
@@ -165,6 +169,7 @@ export interface AllModalsConfig {
 export const DEFAULT_MODALS_CONFIG: AllModalsConfig = {
   rfqModal: {
     enabled: true,
+    notificationEmail: 'procurement@azexbuy.com',
     title: {
       AZ: 'Rəsmi İxrac Qiymət Sorğusu (RFQ)',
       EN: 'Request an Official Export Quotation (RFQ)',
@@ -246,6 +251,7 @@ export const DEFAULT_MODALS_CONFIG: AllModalsConfig = {
 
   producerModal: {
     enabled: true,
+    notificationEmail: 'export@azexbuy.com',
     title: {
       AZ: 'İstehsalçı İxrac Qeydiyyatı & Alıcı Uyğunlaşdırması',
       EN: 'Producer Export Onboarding & Global Buyer Matchmaking',
@@ -384,6 +390,7 @@ export const DEFAULT_MODALS_CONFIG: AllModalsConfig = {
 
   serviceModal: {
     enabled: true,
+    notificationEmail: 'export@azexbuy.com',
     title: {
       AZ: 'Xidmət Müraciəti Formu',
       EN: 'Service Application Form',
@@ -522,6 +529,7 @@ export const DEFAULT_MODALS_CONFIG: AllModalsConfig = {
 
   aiDeskModal: {
     enabled: true,
+    notificationEmail: 'support@azexbuy.com',
     title: {
       AZ: 'AZEXBUY Trade Desk',
       EN: 'AZEXBUY Trade Desk',
