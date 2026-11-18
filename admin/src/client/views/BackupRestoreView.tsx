@@ -163,31 +163,45 @@ export const BackupRestoreView: React.FC<BackupRestoreViewProps> = ({ uiLang, on
   const handleDownloadZip = async () => {
     try {
       setDownloadingZip(true);
-      notify('Tam ZIP backup hazırlanır (verilənlər bazası və bütün media şəkilləri)...');
+      notify('Tam ZIP backup hazırlanır (baza və bütün şəkillər)...');
       const token = getToken();
-      const res = await fetch(`/api/backup/download-zip?token=${encodeURIComponent(token)}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+
+      // 1. First trigger generation via export-zip POST
+      const res = await fetch('/api/backup/export-zip', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
       });
-      if (!res.ok) throw new Error(`Status ${res.status}: Backup faylı alına bilmədi`);
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Backup yaradılarkən xəta baş verdi');
+      }
 
-      const blob = await res.blob();
-      const disposition = res.headers.get('Content-Disposition') || '';
-      let filename = `azexbuy_full_backup_${new Date().toISOString().slice(0, 10)}.zip`;
-      const match = disposition.match(/filename="?([^"]+)"?/);
-      if (match && match[1]) filename = match[1];
+      // 2. Trigger native browser download directly via the generated file URL
+      const downloadUrl = `/api/backup/download-file/${encodeURIComponent(data.filename)}?token=${encodeURIComponent(token)}`;
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.setAttribute('download', data.filename);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-
-      notify(`✓ Tam ZIP backup (${formatBytes(blob.size)}) endirildi!`);
+      notify(`✓ Tam ZIP backup (${formatBytes(data.sizeBytes)}) endirildi!`);
       fetchBackupInfo();
+      fetchBackupsList();
     } catch (err: any) {
+      // Fallback: direct window download
+      try {
+        const token = getToken();
+        const link = document.createElement('a');
+        link.href = `/api/backup/download-zip?token=${encodeURIComponent(token)}`;
+        link.setAttribute('download', 'azexbuy_full_backup.zip');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch {}
       notify('Backup endirmə xətası: ' + err.message);
     } finally {
       setDownloadingZip(false);
@@ -200,24 +214,40 @@ export const BackupRestoreView: React.FC<BackupRestoreViewProps> = ({ uiLang, on
       setDownloadingSqlite(true);
       notify('SQLite baza faylı hazırlanır...');
       const token = getToken();
-      const res = await fetch(`/api/backup/download-sqlite?token=${encodeURIComponent(token)}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (!res.ok) throw new Error(`Status ${res.status}`);
 
-      const blob = await res.blob();
-      const filename = `azexbuy_database_${new Date().toISOString().slice(0, 10)}.sqlite`;
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
+      const res = await fetch('/api/backup/export', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Baza export xətası');
+      }
+
+      const downloadUrl = `/api/backup/download-file/${encodeURIComponent(data.filename)}?token=${encodeURIComponent(token)}`;
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.setAttribute('download', data.filename);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
       notify('✓ SQLite verilənlər bazası endirildi!');
+      fetchBackupInfo();
+      fetchBackupsList();
     } catch (err: any) {
+      try {
+        const token = getToken();
+        const link = document.createElement('a');
+        link.href = `/api/backup/download-sqlite?token=${encodeURIComponent(token)}`;
+        link.setAttribute('download', 'azexbuy_full_backup.sqlite');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch {}
       notify('SQLite endirmə xətası: ' + err.message);
     } finally {
       setDownloadingSqlite(false);

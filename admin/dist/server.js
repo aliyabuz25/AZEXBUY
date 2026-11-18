@@ -4376,32 +4376,42 @@ app.get("/api/backup/info", (_req, res) => {
 });
 app.get("/api/backup/download-zip", requireAuth, (_req, res) => {
   try {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
     const zipResult = SqliteBackupManager.exportToZip();
-    res.setHeader("Content-Type", "application/zip");
-    res.setHeader("Content-Disposition", `attachment; filename="${zipResult.filename}"`);
     res.download(zipResult.filePath, zipResult.filename, (err) => {
-      if (err) console.error("Error sending ZIP backup download:", err);
+      if (err && !res.headersSent) {
+        console.error("Error sending ZIP backup download:", err);
+      }
     });
   } catch (err) {
-    res.status(500).json({ success: false, error: "ZIP backup yarad\u0131lark\u0259n x\u0259ta: " + err.message });
+    if (!res.headersSent) {
+      res.status(500).json({ success: false, error: "ZIP backup yarad\u0131lark\u0259n x\u0259ta: " + err.message });
+    }
   }
 });
 app.get("/api/backup/download-sqlite", requireAuth, (_req, res) => {
   try {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
     const filePath = SqliteBackupManager.exportToSqlite();
     const dateStr = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
     const timeStr = (/* @__PURE__ */ new Date()).toISOString().slice(11, 19).replace(/:/g, "-");
     const filename = `azexbuy_full_backup_${dateStr}_${timeStr}.sqlite`;
-    res.setHeader("Content-Type", "application/vnd.sqlite3");
-    res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
     res.download(filePath, filename, (err) => {
-      if (err) console.error("Error sending sqlite backup download:", err);
+      if (err && !res.headersSent) {
+        console.error("Error sending sqlite backup download:", err);
+      }
     });
   } catch (err) {
-    res.status(500).json({ success: false, error: "SQLite backup yarad\u0131lark\u0259n x\u0259ta: " + err.message });
+    if (!res.headersSent) {
+      res.status(500).json({ success: false, error: "SQLite backup yarad\u0131lark\u0259n x\u0259ta: " + err.message });
+    }
   }
 });
 app.get("/api/backup/download", requireAuth, (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
   const format = String(req.query.format || "zip").toLowerCase();
   if (format === "sqlite" || format === "db") {
     try {
@@ -4409,39 +4419,32 @@ app.get("/api/backup/download", requireAuth, (req, res) => {
       const dateStr = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
       const timeStr = (/* @__PURE__ */ new Date()).toISOString().slice(11, 19).replace(/:/g, "-");
       const filename = `azexbuy_full_backup_${dateStr}_${timeStr}.sqlite`;
-      res.setHeader("Content-Type", "application/vnd.sqlite3");
-      res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
       return res.download(filePath, filename);
     } catch (err) {
-      return res.status(500).json({ success: false, error: err.message });
+      if (!res.headersSent) return res.status(500).json({ success: false, error: err.message });
+      return;
     }
   }
   try {
     const zipResult = SqliteBackupManager.exportToZip();
-    res.setHeader("Content-Type", "application/zip");
-    res.setHeader("Content-Disposition", `attachment; filename="${zipResult.filename}"`);
     return res.download(zipResult.filePath, zipResult.filename);
   } catch (err) {
-    return res.status(500).json({ success: false, error: err.message });
+    if (!res.headersSent) return res.status(500).json({ success: false, error: err.message });
+    return;
   }
 });
 app.get("/api/backup/download-file/:filename", requireAuth, (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
   const rawFilename = path3.basename(req.params.filename);
   const backupsDir = path3.join(dataDir, "backups");
-  const targetPath = path3.join(backupsDir, rawFilename);
+  let targetPath = path3.join(backupsDir, rawFilename);
   if (!fs3.existsSync(targetPath)) {
-    const fallbackPath = path3.join(dataDir, rawFilename);
-    if (!fs3.existsSync(fallbackPath)) {
-      return res.status(404).json({ success: false, error: "Backup fayl\u0131 tap\u0131lmad\u0131" });
-    }
-    const ext2 = path3.extname(rawFilename).toLowerCase();
-    res.setHeader("Content-Type", ext2 === ".zip" ? "application/zip" : "application/octet-stream");
-    res.setHeader("Content-Disposition", `attachment; filename="${rawFilename}"`);
-    return res.download(fallbackPath, rawFilename);
+    targetPath = path3.join(dataDir, rawFilename);
   }
-  const ext = path3.extname(rawFilename).toLowerCase();
-  res.setHeader("Content-Type", ext === ".zip" ? "application/zip" : "application/octet-stream");
-  res.setHeader("Content-Disposition", `attachment; filename="${rawFilename}"`);
+  if (!fs3.existsSync(targetPath)) {
+    return res.status(404).json({ success: false, error: "Backup fayl\u0131 tap\u0131lmad\u0131" });
+  }
   return res.download(targetPath, rawFilename);
 });
 app.post("/api/backup/export-zip", requireAuth, (_req, res) => {
