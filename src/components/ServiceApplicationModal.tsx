@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Locale, CmsService, ServiceApplication, getLocalizedText } from '../types';
 import { CountrySelect } from './CountrySelect';
 import { useLocalization } from '../context/LocalizationContext';
@@ -52,18 +52,23 @@ export const ServiceApplicationModal: React.FC<ServiceApplicationModalProps> = (
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [details, setDetails] = useState('');
-  const [selectedServices, setSelectedServices] = useState<string[]>(
-    preselectedServiceId ? [preselectedServiceId] : []
-  );
   const [error, setError] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const toggleService = (id: string) => {
-    setSelectedServices(prev =>
-      prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id]
-    );
-  };
+  // Automatically resolve the active service based on the clicked card
+  const activeService = useMemo(() => {
+    if (preselectedServiceId) {
+      const found = services.find(
+        (s) =>
+          s.id === preselectedServiceId ||
+          s.rfqSlug === preselectedServiceId ||
+          (s.title && Object.values(s.title).some((v: any) => v === preselectedServiceId))
+      );
+      if (found) return found;
+    }
+    return services[0] || null;
+  }, [services, preselectedServiceId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,7 +77,15 @@ export const ServiceApplicationModal: React.FC<ServiceApplicationModalProps> = (
     if (!company.trim()) return setError(t('required', locale));
     if (!country.trim()) return setError(t('required', locale));
     if (!email.trim()) return setError(t('required', locale));
-    if (selectedServices.length === 0) return setError(t('selectAtLeastOne', locale));
+
+    const chosenServiceTitle = activeService
+      ? (getLocalizedText(activeService.title, 'AZ') || getLocalizedText(activeService.title, locale) || activeService.id)
+      : (preselectedServiceId || 'Ümumi İxrac Xidməti');
+
+    const effectiveServices = [chosenServiceTitle];
+    if (activeService?.id && activeService.id !== chosenServiceTitle) {
+      effectiveServices.push(activeService.id);
+    }
 
     setLoading(true);
     const application: ServiceApplication = {
@@ -84,7 +97,7 @@ export const ServiceApplicationModal: React.FC<ServiceApplicationModalProps> = (
       email: email.trim(),
       phone: phone.trim(),
       details: details.trim(),
-      selectedServices,
+      selectedServices: effectiveServices,
       status: 'Pending',
     };
 
@@ -106,9 +119,6 @@ export const ServiceApplicationModal: React.FC<ServiceApplicationModalProps> = (
       setLoading(false);
     }
   };
-
-  const primaryServices = services.filter(s => s.serviceType === 'primary');
-  const secondaryServices = services.filter(s => s.serviceType === 'secondary');
 
   return (
     <div
@@ -182,96 +192,33 @@ export const ServiceApplicationModal: React.FC<ServiceApplicationModalProps> = (
                 </div>
               </div>
 
-              {/* Service selection */}
-              <div>
-                <label className={`${labelCls} mb-2`}>{srvCfg?.servicesLabel?.[locale] || t('services', locale)} <span className="text-red-500">*</span></label>
-
-                {primaryServices.length > 0 && (
-                  <div className="mb-3">
-                    <div className="text-[10px] font-medium text-emerald-700 uppercase mb-2 flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span>
-                      {srvCfg?.primaryBadge?.[locale] || t('primaryBadge', locale)}
+              {/* Selected Service Card (Locked based on clicked card) */}
+              {activeService && (
+                <div>
+                  <label className={labelCls}>
+                    {srvCfg?.servicesLabel?.[locale] || (locale === 'AZ' ? 'Müraciət edilən xidmət' : locale === 'TR' ? 'Başvurulan hizmet' : locale === 'RU' ? 'Выбранная услуга' : 'Requested Service')}
+                  </label>
+                  <div className="flex items-center gap-3.5 p-3.5 rounded-xl border border-slate-200/90 bg-slate-50/80 shadow-2xs">
+                    <div className={`w-10 h-10 rounded-xl ${activeService.colorClass || 'bg-brandNavy'} flex items-center justify-center shrink-0 text-white shadow-xs`}>
+                      <i className={`${activeService.iconClass || 'fa-solid fa-briefcase'} text-sm`}></i>
                     </div>
-                    <div className="space-y-1.5">
-                      {primaryServices.map(srv => {
-                        const isSelected = selectedServices.includes(srv.id);
-                        return (
-                          <button
-                            key={srv.id}
-                            type="button"
-                            onClick={() => toggleService(srv.id)}
-                            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg border transition-all cursor-pointer text-left ${
-                              isSelected
-                                ? 'border-slate-800 bg-slate-50'
-                                : 'border-slate-200 bg-white hover:border-slate-300'
-                            }`}
-                          >
-                            <div className={`w-8 h-8 rounded-lg ${srv.colorClass} flex items-center justify-center shrink-0`}>
-                              <i className={`${srv.iconClass} text-white text-xs`}></i>
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className={`text-sm font-medium ${isSelected ? 'text-slate-900' : 'text-slate-700'}`}>
-                                {getLocalizedText(srv.title, locale)}
-                              </div>
-                              <div className="text-xs text-slate-400 truncate">
-                                {getLocalizedText(srv.targetAudience, locale)}
-                              </div>
-                            </div>
-                            <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 transition-colors ${
-                              isSelected ? 'bg-slate-800 border-slate-800' : 'border-slate-300'
-                            }`}>
-                              {isSelected && <i className="fa-solid fa-check text-white text-[8px]"></i>}
-                            </div>
-                          </button>
-                        );
-                      })}
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-bold text-slate-900 leading-snug truncate">
+                        {getLocalizedText(activeService.title || activeService.name, locale)}
+                      </div>
+                      {(activeService.targetAudience || activeService.description || activeService.subtitle) && (
+                        <div className="text-xs text-slate-500 truncate mt-0.5">
+                          {getLocalizedText(activeService.targetAudience || activeService.description || activeService.subtitle, locale)}
+                        </div>
+                      )}
+                    </div>
+                    <div className="shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-[11px] font-semibold text-emerald-700">
+                      <i className="fa-solid fa-check text-[9px]"></i>
+                      <span>{locale === 'AZ' ? 'Seçildi' : locale === 'TR' ? 'Seçildi' : locale === 'RU' ? 'Выбрано' : 'Selected'}</span>
                     </div>
                   </div>
-                )}
-
-                {secondaryServices.length > 0 && (
-                  <div>
-                    <div className="text-[10px] font-medium text-slate-500 uppercase mb-2 flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-slate-300 inline-block"></span>
-                      {srvCfg?.additionalBadge?.[locale] || t('additionalBadge', locale)}
-                    </div>
-                    <div className="space-y-1.5">
-                      {secondaryServices.map(srv => {
-                        const isSelected = selectedServices.includes(srv.id);
-                        return (
-                          <button
-                            key={srv.id}
-                            type="button"
-                            onClick={() => toggleService(srv.id)}
-                            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg border transition-all cursor-pointer text-left ${
-                              isSelected
-                                ? 'border-slate-800 bg-slate-50'
-                                : 'border-slate-200 bg-white hover:border-slate-300'
-                            }`}
-                          >
-                            <div className={`w-8 h-8 rounded-lg ${srv.colorClass} flex items-center justify-center shrink-0`}>
-                              <i className={`${srv.iconClass} text-white text-xs`}></i>
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className={`text-sm font-medium ${isSelected ? 'text-slate-900' : 'text-slate-700'}`}>
-                                {getLocalizedText(srv.title, locale)}
-                              </div>
-                              <div className="text-xs text-slate-400 truncate">
-                                {getLocalizedText(srv.targetAudience, locale)}
-                              </div>
-                            </div>
-                            <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 transition-colors ${
-                              isSelected ? 'bg-slate-800 border-slate-800' : 'border-slate-300'
-                            }`}>
-                              {isSelected && <i className="fa-solid fa-check text-white text-[8px]"></i>}
-                            </div>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-              </div>
+                </div>
+              )}
 
               {/* Details */}
               <div>

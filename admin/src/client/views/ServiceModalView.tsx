@@ -1226,151 +1226,40 @@ export const ServiceModalView: React.FC<ServiceModalViewProps> = () => {
                   </div>
                 </div>
 
-                {/* Service Selection List (Interactive Preview) */}
-                <div>
-                  <label className="block text-xs font-medium text-slate-500 mb-2">
-                    {modalConfig.servicesLabel?.[previewLocale] || 'Xidmət seçimi'}{' '}
-                    <span className="text-red-500">*</span>
-                  </label>
-
-                  {/* Primary Services */}
-                  {servicesList.filter((s) => s.serviceType === 'primary' && s.isActive !== false)
-                    .length > 0 && (
-                    <div className="mb-3">
-                      <div className="text-[10px] font-medium text-emerald-700 uppercase mb-2 flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span>
-                        {modalConfig.primaryBadge?.[previewLocale] || 'Əsas xidmət'}
-                      </div>
-                      <div className="space-y-1.5">
-                        {servicesList
-                          .filter((s) => s.serviceType === 'primary' && s.isActive !== false)
-                          .map((srv) => {
-                            const isSelected = previewSelectedServices.includes(srv.id);
-                            return (
-                              <button
-                                key={srv.id}
-                                type="button"
-                                onClick={() =>
-                                  setPreviewSelectedServices((prev) =>
-                                    prev.includes(srv.id)
-                                      ? prev.filter((id) => id !== srv.id)
-                                      : [...prev, srv.id]
-                                  )
-                                }
-                                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg border transition-all cursor-pointer text-left ${
-                                  isSelected
-                                    ? 'border-slate-800 bg-slate-50'
-                                    : 'border-slate-200 bg-white hover:border-slate-300'
-                                }`}
-                              >
-                                <div
-                                  className={`w-8 h-8 rounded-lg ${
-                                    srv.colorClass || 'bg-emerald-500'
-                                  } flex items-center justify-center shrink-0 text-white`}
-                                >
-                                  <i className={`${srv.iconClass || 'fa-solid fa-briefcase'} text-xs`}></i>
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <div
-                                    className={`text-sm font-medium ${
-                                      isSelected ? 'text-slate-900' : 'text-slate-700'
-                                    }`}
-                                  >
-                                    {srv.title?.[previewLocale] || srv.title?.AZ || srv.id}
-                                  </div>
-                                  <div className="text-xs text-slate-400 truncate">
-                                    {srv.targetAudience?.[previewLocale] ||
-                                      srv.targetAudience?.AZ ||
-                                      ''}
-                                  </div>
-                                </div>
-                                <div
-                                  className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 transition-colors ${
-                                    isSelected
-                                      ? 'bg-slate-800 border-slate-800'
-                                      : 'border-slate-300'
-                                  }`}
-                                >
-                                  {isSelected && (
-                                    <i className="fa-solid fa-check text-white text-[8px]"></i>
-                                  )}
-                                </div>
-                              </button>
-                            );
-                          })}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Secondary Services */}
-                  {servicesList.filter((s) => s.serviceType === 'secondary' && s.isActive !== false)
-                    .length > 0 && (
-                    <div>
-                      <div className="text-[10px] font-medium text-slate-500 uppercase mb-2 flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-slate-300 inline-block"></span>
-                        {modalConfig.additionalBadge?.[previewLocale] || 'Əlavə xidmət'}
-                      </div>
-                      <div className="space-y-1.5">
-                        {servicesList
-                          .filter((s) => s.serviceType === 'secondary' && s.isActive !== false)
-                          .map((srv) => {
-                            const isSelected = previewSelectedServices.includes(srv.id);
-                            return (
-                              <button
-                                key={srv.id}
-                                type="button"
-                                onClick={() =>
-                                  setPreviewSelectedServices((prev) =>
-                                    prev.includes(srv.id)
-                                      ? prev.filter((id) => id !== srv.id)
-                                      : [...prev, srv.id]
-                                  )
-                                }
-                                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg border transition-all cursor-pointer text-left ${
-                                  isSelected
-                                    ? 'border-slate-800 bg-slate-50'
-                                    : 'border-slate-200 bg-white hover:border-slate-300'
-                                }`}
-                              >
-                                <div
-                                  className={`w-8 h-8 rounded-lg ${
-                                    srv.colorClass || 'bg-slate-700'
-                                  } flex items-center justify-center shrink-0 text-white`}
-                                >
-                                  <i className={`${srv.iconClass || 'fa-solid fa-briefcase'} text-xs`}></i>
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <div
-                                    className={`text-sm font-medium ${
-                                      isSelected ? 'text-slate-900' : 'text-slate-700'
-                                    }`}
-                                  >
-                                    {srv.title?.[previewLocale] || srv.title?.AZ || srv.id}
-                                  </div>
-                                  <div className="text-xs text-slate-400 truncate">
-                                    {srv.targetAudience?.[previewLocale] ||
-                                      srv.targetAudience?.AZ ||
-                                      ''}
-                                  </div>
-                                </div>
-                                <div
-                                  className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 transition-colors ${
-                                    isSelected
-                                      ? 'bg-slate-800 border-slate-800'
-                                      : 'border-slate-300'
-                                  }`}
-                                >
-                                  {isSelected && (
-                                    <i className="fa-solid fa-check text-white text-[8px]"></i>
-                                  )}
-                                </div>
-                              </button>
-                            );
-                          })}
-                      </div>
-                    </div>
-                  )}
-                </div>
+                {/* Pre-selected Service Card (Preview) */}
+                {servicesList.length > 0 && (
+                  <div>
+                    <label className="block text-xs font-medium text-slate-500 mb-2">
+                      {modalConfig.servicesLabel?.[previewLocale] || 'Müraciət edilən xidmət'}
+                    </label>
+                    {(() => {
+                      const srv = servicesList[0];
+                      return (
+                        <div className="flex items-center gap-3.5 p-3.5 rounded-xl border border-slate-200 bg-slate-50 shadow-2xs">
+                          <div
+                            className={`w-10 h-10 rounded-xl ${
+                              srv.colorClass || 'bg-brandNavy'
+                            } flex items-center justify-center shrink-0 text-white shadow-xs`}
+                          >
+                            <i className={`${srv.iconClass || 'fa-solid fa-briefcase'} text-sm`}></i>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="text-sm font-bold text-slate-900 leading-snug truncate">
+                              {srv.title?.[previewLocale] || srv.title?.AZ || srv.id}
+                            </div>
+                            <div className="text-xs text-slate-500 truncate mt-0.5">
+                              {srv.targetAudience?.[previewLocale] || srv.targetAudience?.AZ || ''}
+                            </div>
+                          </div>
+                          <div className="shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-[11px] font-semibold text-emerald-700">
+                            <i className="fa-solid fa-check text-[9px]"></i>
+                            <span>Seçildi</span>
+                          </div>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                )}
 
                 {/* Details */}
                 <div>

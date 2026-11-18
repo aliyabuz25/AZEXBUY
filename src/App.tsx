@@ -843,14 +843,23 @@ export default function App() {
                           ))}
                         </ul>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => setActiveView('services')}
-                        className={`inline-flex items-center gap-1.5 text-xs font-bold ${srv.linkColorClass} hover:underline cursor-pointer w-fit`}
-                      >
-                        <span>{t.services.learnMore}</span>
-                        <i className="fa-solid fa-arrow-right text-[10px]"></i>
-                      </button>
+                      <div className="flex items-center justify-between gap-2 pt-3 border-t border-gray-100">
+                        <button
+                          type="button"
+                          onClick={() => { setServiceAppPreselected(srv.id); setServiceAppModalOpen(true); }}
+                          className="inline-flex items-center gap-1.5 text-xs font-bold text-brandNavy hover:text-brandGreen cursor-pointer"
+                        >
+                          <span>{locale === 'AZ' ? 'Müraciət et' : locale === 'TR' ? 'Başvur' : locale === 'RU' ? 'Подать заявку' : 'Apply'}</span>
+                          <i className="fa-solid fa-arrow-right text-[10px]"></i>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setActiveView('services')}
+                          className={`inline-flex items-center gap-1 text-[11px] font-medium ${srv.linkColorClass} hover:underline cursor-pointer`}
+                        >
+                          <span>{t.services.learnMore}</span>
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
