@@ -111,7 +111,7 @@ const NAV_SECTIONS: NavSection[] = [
           { id: 'azexbuy-cms', label: 'İstehsalçılar Səhifəsi (Producers)', cmsPageKey: 'producers_page' },
           { id: 'azexbuy-cms', label: 'Sosial Şəbəkələr (Social)', cmsPageKey: 'social' },
           { id: 'azexbuy-cms', label: 'Xidmət Müraciəti Modal (+/-)', cmsPageKey: 'service_modal' },
-          { id: 'azexbuy-cms', label: 'Haqqımızda & Komanda', cmsPageKey: 'about' },
+          { id: 'azexbuy-cms', label: 'Haqqımızda', cmsPageKey: 'about' },
           { id: 'azexbuy-cms', label: 'Bütün Görsəllər & Media', cmsPageKey: 'images' },
         ],
       },

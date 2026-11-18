@@ -111,7 +111,6 @@ const CMS_PAGES = [
   { key: 'about',             label: 'Haqqımızda',                 icon: Info,           group: 'Daxili Səhifələr' },
   { key: 'buyers_page',       label: 'Alıcılar Səhifəsi (Buyers)', icon: ShoppingBag,    group: 'Daxili Səhifələr' },
   { key: 'producers_page',    label: 'İstehsalçılar (Producers)',  icon: Factory,        group: 'Daxili Səhifələr' },
-  { key: 'team',              label: 'Komanda (Ekip)',             icon: Users,          group: 'Daxili Səhifələr' },
   { key: 'contact',           label: 'Əlaqə & Ofis Məlumatları',   icon: Phone,          group: 'Daxili Səhifələr' },
 
   // ── Kataloq və Axınlar ──
@@ -1813,13 +1812,6 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
     });
   };
 
-  // Team members state
-  const [teamMembers, setTeamMembers] = useState<any[]>([]);
-  const [teamLoading, setTeamLoading] = useState(false);
-  const [editingMember, setEditingMember] = useState<any | null>(null);
-  const [showNewMember, setShowNewMember] = useState(false);
-  const [newMember, setNewMember] = useState({ id: '', name: '', photo: '', email: '', linkedin: '', sortOrder: 0, isActive: true, role: { AZ:'', EN:'', TR:'', RU:'', AR:'', ES:'' }, bio: { AZ:'', EN:'', TR:'', RU:'', AR:'', ES:'' } });
-
   const fileRef = useRef<HTMLInputElement>(null);
   const [pendingKey, setPendingKey] = useState<string | null>(null);
 
@@ -1886,19 +1878,11 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
     }
   };
 
-  const loadTeam = useCallback(async () => {
-    setTeamLoading(true);
-    const tm = await apiGet('/api/azexbuy/team?fresh=1');
-    if (Array.isArray(tm)) setTeamMembers(tm);
-    setTeamLoading(false);
-  }, []);
-
   const load = useCallback(async () => {
-    const [l, c, imgs, tm] = await Promise.all([
+    const [l, c, imgs] = await Promise.all([
       apiGet('/api/azexbuy/localization'),
       apiGet('/api/azexbuy/content'),
       apiGet('/api/azexbuy/images'),
-      apiGet('/api/azexbuy/team?fresh=1'),
     ]);
     if (l && Object.keys(l).length > 0) {
       const merged: Record<string, Record<string, string>> = {};
@@ -1909,7 +1893,6 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
     }
     if (c) setContent(c);
     if (imgs) setImages(imgs);
-    if (Array.isArray(tm)) setTeamMembers(tm);
   }, []);
 
   useEffect(() => { load(); }, [load]);
@@ -1947,57 +1930,6 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
     }
     setSaving(false);
   }, []);
-
-  const handleToggleMemberActive = async (member: any) => {
-    const updated = !member.isActive;
-    const res = await apiPatch(`/api/azexbuy/team/${member.id}`, { isActive: updated });
-    if (res.ok) {
-      setTeamMembers(prev => prev.map(m => m.id === member.id ? { ...m, isActive: updated } : m));
-      flash();
-    }
-  };
-
-  const handleDeleteMember = async (id: string) => {
-    if (!window.confirm('Bu komanda üzvünü silmək istədiyinizdən əminsiniz?')) return;
-    const ok = await apiDelete(`/api/azexbuy/team/${id}`);
-    if (ok) {
-      setTeamMembers(prev => prev.filter(m => m.id !== id));
-      flash();
-    }
-  };
-
-  const handleSaveNewMember = async () => {
-    if (!newMember.name) { alert('Ad və Soyad daxil edilməlidir'); return; }
-    const id = newMember.id || `tm-${Date.now().toString(36)}`;
-    const payload = { ...newMember, id };
-    const res = await apiPost('/api/azexbuy/team', payload);
-    if (res.ok) {
-      setShowNewMember(false);
-      setNewMember({ id: '', name: '', photo: '', email: '', linkedin: '', sortOrder: teamMembers.length + 1, isActive: true, role: { AZ:'', EN:'', TR:'', RU:'', AR:'', ES:'' }, bio: { AZ:'', EN:'', TR:'', RU:'', AR:'', ES:'' } });
-      loadTeam();
-      flash();
-    } else {
-      const msg = res.status === 401
-        ? 'Sessiyanın vaxtı bitmişdir. Zəhmət olmasa yenidən daxil olun.'
-        : (res.error ? `Saxlama xətası: ${res.error}` : 'Saxlama xətası baş verdi.');
-      alert(msg);
-    }
-  };
-
-  const handleSaveEditMember = async () => {
-    if (!editingMember || !editingMember.name) return;
-    const res = await apiPatch(`/api/azexbuy/team/${editingMember.id}`, editingMember);
-    if (res.ok) {
-      setEditingMember(null);
-      loadTeam();
-      flash();
-    } else {
-      const msg = res.status === 401
-        ? 'Sessiyanın vaxtı bitmişdir. Zəhmət olmasa yenidən daxil olun.'
-        : (res.error ? `Yeniləmə xətası: ${res.error}` : 'Yeniləmə xətası baş verdi.');
-      alert(msg);
-    }
-  };
 
   // Stable string change handler
   const handleStrChange = useCallback((k: string, val: string) => {
@@ -2038,11 +1970,7 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
       });
       if (r.ok) {
         const { url } = await r.json();
-        if (key === 'team_new') {
-          setNewMember(prev => ({ ...prev, photo: url }));
-        } else if (key === 'team_edit') {
-          setEditingMember((prev: any) => ({ ...prev, photo: url }));
-        } else if (key.startsWith('category_')) {
+        if (key.startsWith('category_')) {
           const catKey = key.replace('category_', '');
           const updated = {
             ...content,
@@ -2070,6 +1998,17 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
           };
           await saveContent(updated);
           load();
+        } else if (key.startsWith('prod_')) {
+          const prodIdx = parseInt(key.replace('prod_', ''), 10);
+          if (!isNaN(prodIdx)) {
+            const p = [...(content.products || [])];
+            if (p[prodIdx]) {
+              p[prodIdx] = { ...p[prodIdx], image: url };
+              const updated = { ...content, products: p };
+              await saveContent(updated);
+              load();
+            }
+          }
         } else {
           const curAbout = content.about ? { ...ABOUT_PAGE_DEFAULT, ...content.about } : { ...ABOUT_PAGE_DEFAULT };
           if (key === 'about_whoWeAreImage' || key === 'ABOUT_WHO_WE_ARE_IMAGE') {
@@ -3754,7 +3693,7 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                 </div>
                 <button
                   onClick={() => {
-                    const newProd = { id: `prod-${Date.now()}`, hsCode: '', minOrderQty: '', annualCapacity: '', leadTimeDays: '', name: {}, shortDesc: {}, originRegion: {}, packaging: {}, gradeSpecs: {} };
+                    const newProd = { id: `prod-${Date.now()}`, hsCode: '', minOrderQty: '', annualCapacity: '', leadTimeDays: '', image: '', name: {}, shortDesc: {}, originRegion: {}, packaging: {}, gradeSpecs: {} };
                     const updated = { ...content, products: [...(content.products || []), newProd] };
                     setContent(updated);
                     saveContent(updated);
@@ -3795,6 +3734,28 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                   </div>
                   {expandedId === 'p'+idx && (
                     <div className="border-t border-slate-100 p-4 space-y-3 bg-slate-50/50">
+                      <div className="bg-white border border-slate-200 rounded p-3">
+                        <label className="block text-[10px] font-bold text-slate-400 font-mono mb-1.5 uppercase">Məhsul Şəkli URL</label>
+                        <div className="flex gap-2">
+                          <input
+                            value={prod.image || ''}
+                            onChange={e => {
+                              const p = [...(content.products || [])];
+                              p[idx] = { ...p[idx], image: e.target.value };
+                              setContent((c: any) => ({ ...c, products: p }));
+                            }}
+                            placeholder="https://... və ya Şəkil Yüklə"
+                            className="flex-1 h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 focus:outline-none focus:border-[#0f3156] rounded-sm"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => triggerUpload(`prod_${idx}`)}
+                            className="h-8 px-3 bg-[#0f3156] text-white text-xs font-bold rounded-sm flex items-center gap-1.5 hover:bg-[#081c33]"
+                          >
+                            <Upload className="w-3 h-3" /> Yüklə
+                          </button>
+                        </div>
+                      </div>
                       {[['HS Kodu','hsCode'],['Min Sifariş','minOrderQty'],['Yıllık Kapasite','annualCapacity'],['Çatdırılma Müddəti','leadTimeDays']].map(([lbl, fld]) => (
                         <div key={fld} className="bg-white border border-slate-200 rounded p-3">
                           <label className="block text-[10px] font-bold text-slate-400 font-mono mb-1.5 uppercase">{lbl}</label>
@@ -4222,6 +4183,99 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                           </div>
                         </div>
                       ))}
+
+                      {/* Pillars / Alt Sütunlar (3 Əsas Blok) */}
+                      <div className="pt-2 border-t border-slate-200">
+                        <div className="flex items-center justify-between mb-3">
+                          <div>
+                            <span className="text-xs font-bold text-slate-800">Əsas Prioritet Sütunları (Who We Are Pillars)</span>
+                            <span className="text-[10px] text-slate-400 ml-2 font-mono">({(ab.whoWeAre?.pillars || []).length} sütun)</span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              updateAb(p => {
+                                const pillars = [...(p.whoWeAre?.pillars || [])];
+                                pillars.push({
+                                  icon: 'fa-solid fa-arrow-up-right-dots',
+                                  label: { AZ: '', EN: '', TR: '', RU: '', AR: '', ES: '' }
+                                });
+                                return { ...p, whoWeAre: { ...p.whoWeAre, pillars } };
+                              });
+                            }}
+                            className="h-7 px-2.5 bg-[#0f3156] text-white text-[11px] font-bold rounded-sm flex items-center gap-1 hover:bg-[#081c33]"
+                          >
+                            <Plus className="w-3.5 h-3.5" /> Sütun Əlavə Et
+                          </button>
+                        </div>
+
+                        <div className="space-y-3">
+                          {(ab.whoWeAre?.pillars || []).map((pil: any, pIdx: number) => (
+                            <div key={pIdx} className="bg-white border border-slate-200 rounded p-3 space-y-2">
+                              <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                                <span className="text-xs font-bold text-slate-800">Sütun #{pIdx + 1} — {pil.label?.AZ || pil.label?.EN || `Sütun ${pIdx + 1}`}</span>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (window.confirm('Bu sütunu silmək istədiyinizdən əminsiniz?')) {
+                                      updateAb(p => {
+                                        const pillars = (p.whoWeAre?.pillars || []).filter((_: any, i: number) => i !== pIdx);
+                                        return { ...p, whoWeAre: { ...p.whoWeAre, pillars } };
+                                      });
+                                    }
+                                  }}
+                                  className="text-red-500 hover:text-red-700 p-1"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+
+                              <div>
+                                <div className="text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">İkon</div>
+                                <IconPickerDropdown
+                                  value={pil.icon || 'fa-solid fa-arrow-up-right-dots'}
+                                  onChange={(ic) => {
+                                    updateAb(p => {
+                                      const pillars = [...(p.whoWeAre?.pillars || [])];
+                                      pillars[pIdx] = { ...pillars[pIdx], icon: ic };
+                                      return { ...p, whoWeAre: { ...p.whoWeAre, pillars } };
+                                    });
+                                  }}
+                                />
+                              </div>
+
+                              <div>
+                                <div className="text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Sütun Mətni / Başlığı (6 Dil)</div>
+                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                                  {LOCALES.map(loc => (
+                                    <div key={loc} className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded px-2 py-1">
+                                      <span className="text-[9px] font-bold text-slate-400 font-mono w-4">{loc}</span>
+                                      <input
+                                        type="text"
+                                        value={pil.label?.[loc] || ''}
+                                        onChange={(e) => {
+                                          const val = e.target.value;
+                                          updateAb(p => {
+                                            const pillars = [...(p.whoWeAre?.pillars || [])];
+                                            pillars[pIdx] = {
+                                              ...pillars[pIdx],
+                                              label: { ...(pillars[pIdx].label || {}), [loc]: val }
+                                            };
+                                            return { ...p, whoWeAre: { ...p.whoWeAre, pillars } };
+                                          });
+                                        }}
+                                        placeholder={loc}
+                                        className="w-full text-xs bg-transparent focus:outline-none text-slate-800"
+                                      />
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
                       <SaveBar onSave={() => saveContent(content)} saving={saving} saved={saved} />
                     </div>
                   )}
@@ -4523,140 +4577,169 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                           </div>
                         </div>
                       ))}
-                      <SaveBar onSave={() => saveContent(content)} saving={saving} saved={saved} />
-                    </div>
-                  )}
-                </div>
 
-                {/* 05 — Strateji İstiqamətlər */}
-                <div className="bg-white border border-slate-200 rounded overflow-hidden">
-                  <button onClick={() => setExpandedId(expandedId === 'ab_pillars' ? null : 'ab_pillars')}
-                    className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-50 text-left">
-                    <span className="text-xs font-bold text-slate-900">05. Strateji İstiqamətlər (Strategic Pillars)</span>
-                    {expandedId === 'ab_pillars' ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
-                  </button>
-                  {expandedId === 'ab_pillars' && (
-                    <div className="border-t border-slate-100 p-4 space-y-3 bg-slate-50/50">
-                      {[
-                        { label: 'Bölmə Badge', fld: 'badge', multi: false },
-                        { label: 'Bölmə Başlığı', fld: 'title', multi: false },
-                        { label: 'Bölmə Təsviri', fld: 'desc', multi: true },
-                      ].map(item => (
-                        <div key={item.fld} className="bg-white border border-slate-200 rounded p-3">
-                          <div className="text-[10px] font-bold text-slate-500 uppercase mb-2 font-mono">{item.label}</div>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                            {LOCALES.map(loc => (
-                              <div key={loc}>
-                                <div className="text-[9px] font-bold text-slate-400 mb-0.5">{loc}</div>
-                                {item.multi ? (
-                                  <textarea
-                                    value={(ab.activities as any)?.[item.fld]?.[loc] || ''}
-                                    onChange={e => {
-                                      const v = e.target.value;
-                                      updateAb(p => ({
-                                        ...p,
-                                        activities: {
-                                          ...p.activities,
-                                          [item.fld]: { ...((p.activities as any)[item.fld] || {}), [loc]: v }
-                                        }
-                                      }));
-                                    }}
-                                    rows={2}
-                                    className="w-full text-xs bg-slate-50 border border-slate-200 px-2 py-1 rounded-sm"
-                                  />
-                                ) : (
-                                  <input
-                                    value={(ab.activities as any)?.[item.fld]?.[loc] || ''}
-                                    onChange={e => {
-                                      const v = e.target.value;
-                                      updateAb(p => ({
-                                        ...p,
-                                        activities: {
-                                          ...p.activities,
-                                          [item.fld]: { ...((p.activities as any)[item.fld] || {}), [loc]: v }
-                                        }
-                                      }));
-                                    }}
-                                    className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2 rounded-sm"
-                                  />
-                                )}
-                              </div>
-                            ))}
+                      {/* Service Model Steps (01, 02, 03) */}
+                      <div className="pt-2 border-t border-slate-200">
+                        <div className="flex items-center justify-between mb-3">
+                          <div>
+                            <span className="text-xs font-bold text-slate-800">Xidmət Addımları (Service Model Steps)</span>
+                            <span className="text-[10px] text-slate-400 ml-2 font-mono">({(ab.serviceModel?.steps || []).length} addım)</span>
                           </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              updateAb(p => {
+                                const steps = [...(p.serviceModel?.steps || [])];
+                                const nextNum = String(steps.length + 1).padStart(2, '0');
+                                steps.push({
+                                  step: nextNum,
+                                  icon: 'fa-solid fa-briefcase',
+                                  color: 'bg-blue-600',
+                                  borderColor: 'border-blue-200',
+                                  bgColor: 'bg-blue-50',
+                                  title: { AZ: '', EN: '', TR: '', RU: '', AR: '', ES: '' },
+                                  desc: { AZ: '', EN: '', TR: '', RU: '', AR: '', ES: '' }
+                                });
+                                return { ...p, serviceModel: { ...p.serviceModel, steps } };
+                              });
+                            }}
+                            className="h-7 px-2.5 bg-[#0f3156] text-white text-[11px] font-bold rounded-sm flex items-center gap-1 hover:bg-[#081c33]"
+                          >
+                            <Plus className="w-3.5 h-3.5" /> Yeni Addım Əlavə Et
+                          </button>
                         </div>
-                      ))}
-                      <SaveBar onSave={() => saveContent(content)} saving={saving} saved={saved} />
-                    </div>
-                  )}
-                </div>
 
-                {/* 06 — İnstitusional Dəyərlər */}
-                <div className="bg-white border border-slate-200 rounded overflow-hidden">
-                  <button onClick={() => setExpandedId(expandedId === 'ab_values' ? null : 'ab_values')}
-                    className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-50 text-left">
-                    <span className="text-xs font-bold text-slate-900">06. İnstitusional Dəyərlər (Core Values)</span>
-                    {expandedId === 'ab_values' ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
-                  </button>
-                  {expandedId === 'ab_values' && (
-                    <div className="border-t border-slate-100 p-4 space-y-3 bg-slate-50/50">
-                      {[
-                        { label: 'Bölmə Badge', fld: 'badge', multi: false },
-                        { label: 'Bölmə Başlığı', fld: 'title', multi: false },
-                        { label: 'Bölmə Təsviri', fld: 'desc', multi: true },
-                      ].map(item => (
-                        <div key={item.fld} className="bg-white border border-slate-200 rounded p-3">
-                          <div className="text-[10px] font-bold text-slate-500 uppercase mb-2 font-mono">{item.label}</div>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                            {LOCALES.map(loc => (
-                              <div key={loc}>
-                                <div className="text-[9px] font-bold text-slate-400 mb-0.5">{loc}</div>
-                                {item.multi ? (
-                                  <textarea
-                                    value={(ab.values as any)?.[item.fld]?.[loc] || ''}
-                                    onChange={e => {
-                                      const v = e.target.value;
-                                      updateAb(p => ({
-                                        ...p,
-                                        values: {
-                                          ...p.values,
-                                          [item.fld]: { ...((p.values as any)[item.fld] || {}), [loc]: v }
-                                        }
-                                      }));
-                                    }}
-                                    rows={2}
-                                    className="w-full text-xs bg-slate-50 border border-slate-200 px-2 py-1 rounded-sm"
-                                  />
-                                ) : (
-                                  <input
-                                    value={(ab.values as any)?.[item.fld]?.[loc] || ''}
-                                    onChange={e => {
-                                      const v = e.target.value;
-                                      updateAb(p => ({
-                                        ...p,
-                                        values: {
-                                          ...p.values,
-                                          [item.fld]: { ...((p.values as any)[item.fld] || {}), [loc]: v }
-                                        }
-                                      }));
-                                    }}
-                                    className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2 rounded-sm"
-                                  />
-                                )}
+                        <div className="space-y-3">
+                          {(ab.serviceModel?.steps || []).map((stepItem: any, sIdx: number) => (
+                            <div key={sIdx} className="bg-white border border-slate-200 rounded p-3 space-y-3">
+                              <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                                <div className="flex items-center gap-2">
+                                  <span className="w-6 h-6 rounded bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center font-mono">
+                                    {stepItem.step || String(sIdx + 1).padStart(2, '0')}
+                                  </span>
+                                  <span className="text-xs font-bold text-slate-800 truncate max-w-[200px]">
+                                    {stepItem.title?.AZ || stepItem.title?.EN || `Addım #${sIdx + 1}`}
+                                  </span>
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (window.confirm('Bu addımı silmək istədiyinizdən əminsiniz?')) {
+                                      updateAb(p => {
+                                        const steps = (p.serviceModel?.steps || []).filter((_: any, i: number) => i !== sIdx);
+                                        return { ...p, serviceModel: { ...p.serviceModel, steps } };
+                                      });
+                                    }
+                                  }}
+                                  className="text-red-500 hover:text-red-700 p-1"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
                               </div>
-                            ))}
-                          </div>
+
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                  <div className="text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Nömrə (Məs: 01, 02)</div>
+                                  <input
+                                    type="text"
+                                    value={stepItem.step || ''}
+                                    onChange={(e) => {
+                                      const val = e.target.value;
+                                      updateAb(p => {
+                                        const steps = [...(p.serviceModel?.steps || [])];
+                                        steps[sIdx] = { ...steps[sIdx], step: val };
+                                        return { ...p, serviceModel: { ...p.serviceModel, steps } };
+                                      });
+                                    }}
+                                    placeholder="01"
+                                    className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                                  />
+                                </div>
+                                <div>
+                                  <div className="text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">İkon</div>
+                                  <IconPickerDropdown
+                                    value={stepItem.icon || 'fa-solid fa-search'}
+                                    onChange={(ic) => {
+                                      updateAb(p => {
+                                        const steps = [...(p.serviceModel?.steps || [])];
+                                        steps[sIdx] = { ...steps[sIdx], icon: ic };
+                                        return { ...p, serviceModel: { ...p.serviceModel, steps } };
+                                      });
+                                    }}
+                                  />
+                                </div>
+                              </div>
+
+                              <div>
+                                <div className="text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Addım Başlığı (6 Dil)</div>
+                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                                  {LOCALES.map(loc => (
+                                    <div key={loc} className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded px-2 py-1">
+                                      <span className="text-[9px] font-bold text-slate-400 font-mono w-4">{loc}</span>
+                                      <input
+                                        type="text"
+                                        value={stepItem.title?.[loc] || ''}
+                                        onChange={(e) => {
+                                          const val = e.target.value;
+                                          updateAb(p => {
+                                            const steps = [...(p.serviceModel?.steps || [])];
+                                            steps[sIdx] = {
+                                              ...steps[sIdx],
+                                              title: { ...(steps[sIdx].title || {}), [loc]: val }
+                                            };
+                                            return { ...p, serviceModel: { ...p.serviceModel, steps } };
+                                          });
+                                        }}
+                                        placeholder={loc}
+                                        className="w-full text-xs bg-transparent focus:outline-none text-slate-800"
+                                      />
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+
+                              <div>
+                                <div className="text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Təsvir (6 Dil)</div>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                  {LOCALES.map(loc => (
+                                    <div key={loc} className="bg-slate-50 border border-slate-200 rounded p-1.5">
+                                      <div className="text-[9px] font-bold text-slate-400 font-mono mb-1">{loc}</div>
+                                      <textarea
+                                        rows={2}
+                                        value={stepItem.desc?.[loc] || ''}
+                                        onChange={(e) => {
+                                          const val = e.target.value;
+                                          updateAb(p => {
+                                            const steps = [...(p.serviceModel?.steps || [])];
+                                            steps[sIdx] = {
+                                              ...steps[sIdx],
+                                              desc: { ...(steps[sIdx].desc || {}), [loc]: val }
+                                            };
+                                            return { ...p, serviceModel: { ...p.serviceModel, steps } };
+                                          });
+                                        }}
+                                        placeholder={`Təsvir (${loc})`}
+                                        className="w-full text-xs bg-transparent focus:outline-none text-slate-800"
+                                      />
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                      ))}
+                      </div>
+
                       <SaveBar onSave={() => saveContent(content)} saving={saving} saved={saved} />
                     </div>
                   )}
                 </div>
 
-                {/* 07 — Prioritet İxrac Sektorları */}
+                {/* 05 — Prioritet İxrac Sektorları */}
                 <div className="bg-white border border-slate-200 rounded overflow-hidden">
                   <button onClick={() => setExpandedId(expandedId === 'ab_sectors' ? null : 'ab_sectors')}
                     className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-50 text-left">
-                    <span className="text-xs font-bold text-slate-900">07. Prioritet İxrac Sektorları (Priority Export Sectors & Images)</span>
+                    <span className="text-xs font-bold text-slate-900">05. Prioritet İxrac Sektorları (Priority Export Sectors & Images)</span>
                     {expandedId === 'ab_sectors' ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
                   </button>
                   {expandedId === 'ab_sectors' && (
@@ -4802,14 +4885,220 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                   )}
                 </div>
 
-                {/* 08 — Dəhlizlər və Tərəfdaşlar */}
+                {/* 06 — İnstitusional Dəyərlər */}
                 <div className="bg-white border border-slate-200 rounded overflow-hidden">
-                  <button onClick={() => setExpandedId(expandedId === 'ab_corridors' ? null : 'ab_corridors')}
+                  <button onClick={() => setExpandedId(expandedId === 'ab_values' ? null : 'ab_values')}
                     className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-50 text-left">
-                    <span className="text-xs font-bold text-slate-900">08. Logistika Dəhlizləri və Tərəfdaşlar (Trade Corridors)</span>
-                    {expandedId === 'ab_corridors' ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
+                    <span className="text-xs font-bold text-slate-900">06. İnstitusional Dəyərlər (Core Values)</span>
+                    {expandedId === 'ab_values' ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
                   </button>
-                  {expandedId === 'ab_corridors' && (
+                  {expandedId === 'ab_values' && (
+                    <div className="border-t border-slate-100 p-4 space-y-4 bg-slate-50/50">
+                      {[
+                        { label: 'Bölmə Badge', fld: 'badge', multi: false },
+                        { label: 'Bölmə Başlığı', fld: 'title', multi: false },
+                        { label: 'Bölmə Təsviri', fld: 'desc', multi: true },
+                      ].map(item => (
+                        <div key={item.fld} className="bg-white border border-slate-200 rounded p-3">
+                          <div className="text-[10px] font-bold text-slate-500 uppercase mb-2 font-mono">{item.label}</div>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            {LOCALES.map(loc => (
+                              <div key={loc}>
+                                <div className="text-[9px] font-bold text-slate-400 mb-0.5">{loc}</div>
+                                {item.multi ? (
+                                  <textarea
+                                    value={(ab.values as any)?.[item.fld]?.[loc] || ''}
+                                    onChange={e => {
+                                      const v = e.target.value;
+                                      updateAb(p => ({
+                                        ...p,
+                                        values: {
+                                          ...p.values,
+                                          [item.fld]: { ...((p.values as any)[item.fld] || {}), [loc]: v }
+                                        }
+                                      }));
+                                    }}
+                                    rows={2}
+                                    className="w-full text-xs bg-slate-50 border border-slate-200 px-2 py-1 rounded-sm"
+                                  />
+                                ) : (
+                                  <input
+                                    value={(ab.values as any)?.[item.fld]?.[loc] || ''}
+                                    onChange={e => {
+                                      const v = e.target.value;
+                                      updateAb(p => ({
+                                        ...p,
+                                        values: {
+                                          ...p.values,
+                                          [item.fld]: { ...((p.values as any)[item.fld] || {}), [loc]: v }
+                                        }
+                                      }));
+                                    }}
+                                    className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2 rounded-sm"
+                                  />
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+
+                      {/* Dəyərlər Maddələri (values.items) */}
+                      <div className="pt-2 border-t border-slate-200">
+                        <div className="flex items-center justify-between mb-3">
+                          <div>
+                            <span className="text-xs font-bold text-slate-800">Dəyərlər Kartları (Values Cards)</span>
+                            <span className="text-[10px] text-slate-400 ml-2 font-mono">({(ab.values?.items || []).length} element)</span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              updateAb(p => {
+                                const items = [...(p.values?.items || [])];
+                                items.push({
+                                  icon: 'fa-solid fa-circle-check',
+                                  color: 'text-blue-600 bg-blue-50',
+                                  title: { AZ: '', EN: '', TR: '', RU: '', AR: '', ES: '' },
+                                  desc: { AZ: '', EN: '', TR: '', RU: '', AR: '', ES: '' }
+                                });
+                                return { ...p, values: { ...p.values, items } };
+                              });
+                            }}
+                            className="h-7 px-2.5 bg-[#0f3156] text-white text-[11px] font-bold rounded-sm flex items-center gap-1 hover:bg-[#081c33]"
+                          >
+                            <Plus className="w-3.5 h-3.5" /> Yeni Dəyər Əlavə Et
+                          </button>
+                        </div>
+
+                        <div className="space-y-3">
+                          {(ab.values?.items || []).map((vItem: any, vIdx: number) => (
+                            <div key={vIdx} className="bg-white border border-slate-200 rounded p-3 space-y-3">
+                              <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                                <span className="text-xs font-bold text-slate-800 truncate max-w-[200px]">
+                                  {vItem.title?.AZ || vItem.title?.EN || `Dəyər #${vIdx + 1}`}
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (window.confirm('Bu dəyəri silmək istədiyinizdən əminsiniz?')) {
+                                      updateAb(p => {
+                                        const items = (p.values?.items || []).filter((_: any, i: number) => i !== vIdx);
+                                        return { ...p, values: { ...p.values, items } };
+                                      });
+                                    }
+                                  }}
+                                  className="text-red-500 hover:text-red-700 p-1"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                  <div className="text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">İkon</div>
+                                  <IconPickerDropdown
+                                    value={vItem.icon || 'fa-solid fa-user-check'}
+                                    onChange={(ic) => {
+                                      updateAb(p => {
+                                        const items = [...(p.values?.items || [])];
+                                        items[vIdx] = { ...items[vIdx], icon: ic };
+                                        return { ...p, values: { ...p.values, items } };
+                                      });
+                                    }}
+                                  />
+                                </div>
+                                <div>
+                                  <div className="text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Rəng Klası (Məs: text-blue-600 bg-blue-50)</div>
+                                  <input
+                                    type="text"
+                                    value={vItem.color || ''}
+                                    onChange={(e) => {
+                                      const c = e.target.value;
+                                      updateAb(p => {
+                                        const items = [...(p.values?.items || [])];
+                                        items[vIdx] = { ...items[vIdx], color: c };
+                                        return { ...p, values: { ...p.values, items } };
+                                      });
+                                    }}
+                                    placeholder="text-blue-600 bg-blue-50"
+                                    className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                                  />
+                                </div>
+                              </div>
+
+                              <div>
+                                <div className="text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Dəyər Başlığı (6 Dil)</div>
+                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                                  {LOCALES.map(loc => (
+                                    <div key={loc} className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded px-2 py-1">
+                                      <span className="text-[9px] font-bold text-slate-400 font-mono w-4">{loc}</span>
+                                      <input
+                                        type="text"
+                                        value={vItem.title?.[loc] || ''}
+                                        onChange={(e) => {
+                                          const val = e.target.value;
+                                          updateAb(p => {
+                                            const items = [...(p.values?.items || [])];
+                                            items[vIdx] = {
+                                              ...items[vIdx],
+                                              title: { ...(items[vIdx].title || {}), [loc]: val }
+                                            };
+                                            return { ...p, values: { ...p.values, items } };
+                                          });
+                                        }}
+                                        placeholder={loc}
+                                        className="w-full text-xs bg-transparent focus:outline-none text-slate-800"
+                                      />
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+
+                              <div>
+                                <div className="text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Təsvir (6 Dil)</div>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                  {LOCALES.map(loc => (
+                                    <div key={loc} className="bg-slate-50 border border-slate-200 rounded p-1.5">
+                                      <div className="text-[9px] font-bold text-slate-400 font-mono mb-1">{loc}</div>
+                                      <textarea
+                                        rows={2}
+                                        value={vItem.desc?.[loc] || ''}
+                                        onChange={(e) => {
+                                          const val = e.target.value;
+                                          updateAb(p => {
+                                            const items = [...(p.values?.items || [])];
+                                            items[vIdx] = {
+                                              ...items[vIdx],
+                                              desc: { ...(items[vIdx].desc || {}), [loc]: val }
+                                            };
+                                            return { ...p, values: { ...p.values, items } };
+                                          });
+                                        }}
+                                        placeholder={`Təsvir (${loc})`}
+                                        className="w-full text-xs bg-transparent focus:outline-none text-slate-800"
+                                      />
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <SaveBar onSave={() => saveContent(content)} saving={saving} saved={saved} />
+                    </div>
+                  )}
+                </div>
+
+                {/* 07 — İş Birliyi Modeli */}
+                <div className="bg-white border border-slate-200 rounded overflow-hidden">
+                  <button onClick={() => setExpandedId(expandedId === 'ab_partnership' ? null : 'ab_partnership')}
+                    className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-50 text-left">
+                    <span className="text-xs font-bold text-slate-900">07. İş Birliyi Modeli (Partnership Model)</span>
+                    {expandedId === 'ab_partnership' ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
+                  </button>
+                  {expandedId === 'ab_partnership' && (
                     <div className="border-t border-slate-100 p-4 space-y-3 bg-slate-50/50">
                       {[
                         { label: 'Bölmə Badge', fld: 'badge', multi: false },
@@ -5020,19 +5309,19 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                   )}
                 </div>
 
-                {/* 09 — Komanda Bölməsi Başlığı */}
+                {/* 08 — Gələcəyə Baxış & Strateji Hədəflər (Strategic Growth) */}
                 <div className="bg-white border border-slate-200 rounded overflow-hidden">
-                  <button onClick={() => setExpandedId(expandedId === 'ab_team_head' ? null : 'ab_team_head')}
+                  <button onClick={() => setExpandedId(expandedId === 'ab_growth' ? null : 'ab_growth')}
                     className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-50 text-left">
-                    <span className="text-xs font-bold text-slate-900">09. Komanda Bölməsi Başlıqları (Team Section Header)</span>
-                    {expandedId === 'ab_team_head' ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
+                    <span className="text-xs font-bold text-slate-900">08. Gələcəyə Baxış & Strateji Hədəflər (Strategic Growth)</span>
+                    {expandedId === 'ab_growth' ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
                   </button>
-                  {expandedId === 'ab_team_head' && (
-                    <div className="border-t border-slate-100 p-4 space-y-3 bg-slate-50/50">
+                  {expandedId === 'ab_growth' && (
+                    <div className="border-t border-slate-100 p-4 space-y-4 bg-slate-50/50">
                       {[
                         { label: 'Badge', fld: 'badge', multi: false },
                         { label: 'Başlıq', fld: 'title', multi: false },
-                        { label: 'Açıqlama', fld: 'desc', multi: true },
+                        { label: 'Açıqlama / Təsvir', fld: 'desc', multi: true },
                       ].map(item => (
                         <div key={item.fld} className="bg-white border border-slate-200 rounded p-3">
                           <div className="text-[10px] font-bold text-slate-500 uppercase mb-2 font-mono">{item.label}</div>
@@ -5042,14 +5331,14 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                                 <div className="text-[9px] font-bold text-slate-400 mb-0.5">{loc}</div>
                                 {item.multi ? (
                                   <textarea
-                                    value={(ab.team as any)?.[item.fld]?.[loc] || ''}
+                                    value={(ab.growth as any)?.[item.fld]?.[loc] || ''}
                                     onChange={e => {
                                       const v = e.target.value;
                                       updateAb(p => ({
                                         ...p,
-                                        team: {
-                                          ...p.team,
-                                          [item.fld]: { ...((p.team as any)[item.fld] || {}), [loc]: v }
+                                        growth: {
+                                          ...p.growth,
+                                          [item.fld]: { ...((p.growth as any)?.[item.fld] || {}), [loc]: v }
                                         }
                                       }));
                                     }}
@@ -5058,14 +5347,14 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                                   />
                                 ) : (
                                   <input
-                                    value={(ab.team as any)?.[item.fld]?.[loc] || ''}
+                                    value={(ab.growth as any)?.[item.fld]?.[loc] || ''}
                                     onChange={e => {
                                       const v = e.target.value;
                                       updateAb(p => ({
                                         ...p,
-                                        team: {
-                                          ...p.team,
-                                          [item.fld]: { ...((p.team as any)[item.fld] || {}), [loc]: v }
+                                        growth: {
+                                          ...p.growth,
+                                          [item.fld]: { ...((p.growth as any)?.[item.fld] || {}), [loc]: v }
                                         }
                                       }));
                                     }}
@@ -5077,16 +5366,166 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
                           </div>
                         </div>
                       ))}
+
+                      {/* Strateji Hədəflər Siyahısı (growth.items) */}
+                      <div className="pt-2 border-t border-slate-200">
+                        <div className="flex items-center justify-between mb-3">
+                          <div>
+                            <span className="text-xs font-bold text-slate-800">Hədəf və İstiqamətlər Siyahısı (Growth Items)</span>
+                            <span className="text-[10px] text-slate-400 ml-2 font-mono">({(ab.growth?.items || []).length} element)</span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              updateAb(p => {
+                                const items = [...(p.growth?.items || [])];
+                                const nextNum = String(items.length + 1).padStart(2, '0');
+                                items.push({
+                                  num: nextNum,
+                                  icon: 'fa-solid fa-chart-line',
+                                  title: { AZ: '', EN: '', TR: '', RU: '', AR: '', ES: '' },
+                                  desc: { AZ: '', EN: '', TR: '', RU: '', AR: '', ES: '' }
+                                });
+                                return { ...p, growth: { ...p.growth, items } };
+                              });
+                            }}
+                            className="h-7 px-2.5 bg-[#0f3156] text-white text-[11px] font-bold rounded-sm flex items-center gap-1 hover:bg-[#081c33]"
+                          >
+                            <Plus className="w-3.5 h-3.5" /> Yeni Hədəf Əlavə Et
+                          </button>
+                        </div>
+
+                        <div className="space-y-3">
+                          {(ab.growth?.items || []).map((gItem: any, gIdx: number) => (
+                            <div key={gIdx} className="bg-white border border-slate-200 rounded p-3 space-y-3">
+                              <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                                <div className="flex items-center gap-2">
+                                  <span className="w-6 h-6 rounded bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center font-mono">
+                                    {gItem.num || String(gIdx + 1).padStart(2, '0')}
+                                  </span>
+                                  <span className="text-xs font-bold text-slate-800 truncate max-w-[200px]">
+                                    {gItem.title?.AZ || gItem.title?.EN || `Hədəf #${gIdx + 1}`}
+                                  </span>
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (window.confirm('Bu hədəfi silmək istədiyinizdən əminsiniz?')) {
+                                      updateAb(p => {
+                                        const items = (p.growth?.items || []).filter((_: any, i: number) => i !== gIdx);
+                                        return { ...p, growth: { ...p.growth, items } };
+                                      });
+                                    }
+                                  }}
+                                  className="text-red-500 hover:text-red-700 p-1"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                  <div className="text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Nömrə (Məs: 01, 02)</div>
+                                  <input
+                                    type="text"
+                                    value={gItem.num || ''}
+                                    onChange={(e) => {
+                                      const val = e.target.value;
+                                      updateAb(p => {
+                                        const items = [...(p.growth?.items || [])];
+                                        items[gIdx] = { ...items[gIdx], num: val };
+                                        return { ...p, growth: { ...p.growth, items } };
+                                      });
+                                    }}
+                                    placeholder="01"
+                                    className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2 rounded-sm focus:outline-none focus:border-[#0f3156] font-mono"
+                                  />
+                                </div>
+                                <div>
+                                  <div className="text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">İkon</div>
+                                  <IconPickerDropdown
+                                    value={gItem.icon || 'fa-solid fa-earth-americas'}
+                                    onChange={(ic) => {
+                                      updateAb(p => {
+                                        const items = [...(p.growth?.items || [])];
+                                        items[gIdx] = { ...items[gIdx], icon: ic };
+                                        return { ...p, growth: { ...p.growth, items } };
+                                      });
+                                    }}
+                                  />
+                                </div>
+                              </div>
+
+                              <div>
+                                <div className="text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Hədəf Başlığı (6 Dil)</div>
+                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                                  {LOCALES.map(loc => (
+                                    <div key={loc} className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded px-2 py-1">
+                                      <span className="text-[9px] font-bold text-slate-400 font-mono w-4">{loc}</span>
+                                      <input
+                                        type="text"
+                                        value={gItem.title?.[loc] || ''}
+                                        onChange={(e) => {
+                                          const val = e.target.value;
+                                          updateAb(p => {
+                                            const items = [...(p.growth?.items || [])];
+                                            items[gIdx] = {
+                                              ...items[gIdx],
+                                              title: { ...(items[gIdx].title || {}), [loc]: val }
+                                            };
+                                            return { ...p, growth: { ...p.growth, items } };
+                                          });
+                                        }}
+                                        placeholder={loc}
+                                        className="w-full text-xs bg-transparent focus:outline-none text-slate-800"
+                                      />
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+
+                              <div>
+                                <div className="text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Təsvir (6 Dil)</div>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                  {LOCALES.map(loc => (
+                                    <div key={loc} className="bg-slate-50 border border-slate-200 rounded p-1.5">
+                                      <div className="text-[9px] font-bold text-slate-400 font-mono mb-1">{loc}</div>
+                                      <textarea
+                                        rows={2}
+                                        value={gItem.desc?.[loc] || ''}
+                                        onChange={(e) => {
+                                          const val = e.target.value;
+                                          updateAb(p => {
+                                            const items = [...(p.growth?.items || [])];
+                                            items[gIdx] = {
+                                              ...items[gIdx],
+                                              desc: { ...(items[gIdx].desc || {}), [loc]: val }
+                                            };
+                                            return { ...p, growth: { ...p.growth, items } };
+                                          });
+                                        }}
+                                        placeholder={`Təsvir (${loc})`}
+                                        className="w-full text-xs bg-transparent focus:outline-none text-slate-800"
+                                      />
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
                       <SaveBar onSave={() => saveContent(content)} saving={saving} saved={saved} />
                     </div>
                   )}
                 </div>
 
-                {/* 10 — Əməkdaşlığa Dəvət (CTA) */}
+                {/* 09 — Əməkdaşlığa Dəvət (CTA) */}
                 <div className="bg-white border border-slate-200 rounded overflow-hidden">
                   <button onClick={() => setExpandedId(expandedId === 'ab_cta' ? null : 'ab_cta')}
                     className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-50 text-left">
-                    <span className="text-xs font-bold text-slate-900">10. Əməkdaşlığa Dəvət (CTA)</span>
+                    <span className="text-xs font-bold text-slate-900">09. Əməkdaşlığa Dəvət (CTA)</span>
                     {expandedId === 'ab_cta' ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
                   </button>
                   {expandedId === 'ab_cta' && (
@@ -5198,325 +5637,6 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
               onTriggerUpload={triggerUpload}
               uploading={uploading}
             />
-          )}
-
-          {/* ── TEAM MANAGEMENT (KOMANDA) ── */}
-          {page === 'team' && (
-            <>
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h2 className="text-sm font-bold text-slate-800">Komanda İdarəetməsi (Ekip)</h2>
-                  <p className="text-xs text-slate-500">Haqqımızda səhifəsində görünən komanda üzvlərini, vəzifələrini və əlaqə məlumatlarını idarə edin.</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={loadTeam}
-                    disabled={teamLoading}
-                    className="h-8 px-3 flex items-center gap-1.5 text-xs border border-slate-200 hover:bg-slate-100 text-slate-600 rounded-sm"
-                  >
-                    <RefreshCw className={`w-3.5 h-3.5 ${teamLoading ? 'animate-spin' : ''}`} /> Yenilə
-                  </button>
-                  <button
-                    onClick={() => {
-                      setNewMember({
-                        id: `tm-${Date.now().toString(36)}`,
-                        name: '',
-                        photo: '',
-                        email: '',
-                        linkedin: '',
-                        sortOrder: teamMembers.length + 1,
-                        isActive: true,
-                        role: { AZ:'', EN:'', TR:'', RU:'', AR:'', ES:'' },
-                        bio: { AZ:'', EN:'', TR:'', RU:'', AR:'', ES:'' }
-                      });
-                      setShowNewMember(true);
-                    }}
-                    className="h-8 px-3.5 flex items-center gap-1.5 text-xs font-bold bg-[#0f3156] text-white hover:bg-[#081c33] rounded-sm"
-                  >
-                    <UserPlus className="w-3.5 h-3.5" /> Yeni Komanda Üzvü
-                  </button>
-                </div>
-              </div>
-
-              {/* Stats Bar */}
-              <div className="grid grid-cols-3 gap-3 mb-4">
-                <div className="bg-white border border-slate-200 p-3 rounded">
-                  <div className="text-[10px] font-bold text-slate-400 uppercase font-mono">Ümumi Üzvlər</div>
-                  <div className="text-xl font-black text-slate-800 mt-0.5">{teamMembers.length}</div>
-                </div>
-                <div className="bg-white border border-slate-200 p-3 rounded">
-                  <div className="text-[10px] font-bold text-slate-400 uppercase font-mono">Aktiv Üzvlər</div>
-                  <div className="text-xl font-black text-emerald-600 mt-0.5">
-                    {teamMembers.filter(m => m.isActive).length}
-                  </div>
-                </div>
-                <div className="bg-white border border-slate-200 p-3 rounded">
-                  <div className="text-[10px] font-bold text-slate-400 uppercase font-mono">Deaktiv Üzvlər</div>
-                  <div className="text-xl font-black text-slate-400 mt-0.5">
-                    {teamMembers.filter(m => !m.isActive).length}
-                  </div>
-                </div>
-              </div>
-
-              {/* Members List */}
-              {teamLoading && (
-                <div className="py-12 text-center text-xs text-slate-400">
-                  <RefreshCw className="w-5 h-5 mx-auto animate-spin mb-2" /> Komanda üzvləri yüklənir...
-                </div>
-              )}
-
-              {!teamLoading && teamMembers.length === 0 && (
-                <div className="bg-white border border-dashed border-slate-200 rounded p-8 text-center text-xs text-slate-400">
-                  <Users className="w-8 h-8 mx-auto mb-2 text-slate-300" /> Hələ heç bir komanda üzvü əlavə edilməyib.
-                </div>
-              )}
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {teamMembers.map(m => {
-                  const roleTxt = m.role?.[locale] || m.role?.AZ || m.role?.EN || '';
-                  const bioTxt = m.bio?.[locale] || m.bio?.AZ || m.bio?.EN || '';
-
-                  return (
-                    <div key={m.id} className="bg-white border border-slate-200 rounded-lg p-4 flex flex-col justify-between hover:shadow-sm transition-shadow">
-                      <div>
-                        <div className="flex items-start gap-3 mb-3">
-                          <div className="w-14 h-14 rounded-lg bg-slate-100 border border-slate-200 overflow-hidden shrink-0">
-                            {m.photo ? (
-                              <img src={m.photo} alt={m.name} className="w-full h-full object-cover object-top" referrerPolicy="no-referrer" />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center text-slate-400">
-                                <Users className="w-6 h-6" />
-                              </div>
-                            )}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-between gap-1">
-                              <h3 className="text-xs font-bold text-slate-900 truncate">{m.name}</h3>
-                              <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${m.isActive ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-500'}`}>
-                                {m.isActive ? 'Aktiv' : 'Passiv'}
-                              </span>
-                            </div>
-                            <div className="text-[11px] font-medium text-emerald-700 truncate mt-0.5">{roleTxt || 'Vəzifə qeyd edilməyib'}</div>
-                            <div className="text-[10px] text-slate-400 font-mono mt-0.5">Sıra: #{m.sortOrder ?? 0}</div>
-                          </div>
-                        </div>
-
-                        {bioTxt && (
-                          <p className="text-[11px] text-slate-500 line-clamp-2 leading-relaxed mb-3 bg-slate-50 p-2 rounded border border-slate-100">
-                            {bioTxt}
-                          </p>
-                        )}
-
-                        <div className="space-y-1 text-[10px] text-slate-500 font-mono mb-3">
-                          {m.email && <div className="truncate"><span className="text-slate-400">Email:</span> {m.email}</div>}
-                          {m.linkedin && <div className="truncate"><span className="text-slate-400">LinkedIn:</span> {m.linkedin}</div>}
-                        </div>
-                      </div>
-
-                      <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
-                        <button
-                          onClick={() => handleToggleMemberActive(m)}
-                          className={`h-7 px-2 text-[10px] font-bold border rounded-sm transition-colors ${m.isActive ? 'border-amber-300 text-amber-700 hover:bg-amber-50' : 'border-emerald-300 text-emerald-700 hover:bg-emerald-50'}`}
-                        >
-                          {m.isActive ? 'Deaktiv Et' : 'Aktivləşdir'}
-                        </button>
-                        <div className="flex items-center gap-1.5">
-                          <button
-                            onClick={() => setEditingMember(m)}
-                            className="h-7 px-2.5 flex items-center gap-1 text-[11px] font-medium border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-sm"
-                          >
-                            <Pencil className="w-3 h-3" /> Redaktə
-                          </button>
-                          <button
-                            onClick={() => handleDeleteMember(m.id)}
-                            className="h-7 px-2 text-red-500 hover:bg-red-50 border border-red-200 rounded-sm"
-                          >
-                            <Trash2 className="w-3 h-3" />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Add/Edit Modal */}
-              {(showNewMember || editingMember !== null) && (() => {
-                const isNew = showNewMember;
-                const cur = isNew ? newMember : editingMember;
-                const setCur = isNew ? setNewMember : setEditingMember;
-
-                return (
-                  <div className="fixed inset-0 z-[9999] bg-black/70 flex items-center justify-center p-4 backdrop-blur-xs">
-                    <div className="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden">
-                      {/* Modal Header */}
-                      <div className="px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between shrink-0">
-                        <div className="flex items-center gap-2">
-                          <Users className="w-4 h-4 text-emerald-400" />
-                          <h3 className="text-xs font-bold uppercase tracking-wider">
-                            {isNew ? 'Yeni Komanda Üzvü Əlavə Et' : `Redaktə: ${cur.name}`}
-                          </h3>
-                        </div>
-                        <button onClick={() => { setShowNewMember(false); setEditingMember(null); }} className="text-slate-400 hover:text-white">
-                          <X className="w-4 h-4" />
-                        </button>
-                      </div>
-
-                      {/* Modal Body */}
-                      <div className="p-5 overflow-y-auto space-y-4 flex-1">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          <div>
-                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Ad və Soyad *</label>
-                            <input
-                              value={cur.name || ''}
-                              onChange={e => setCur((p: any) => ({ ...p, name: e.target.value }))}
-                              placeholder="Məs: Ali Əhmədov"
-                              className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156]"
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Sıralama (Order)</label>
-                            <input
-                              type="number"
-                              value={cur.sortOrder ?? 0}
-                              onChange={e => setCur((p: any) => ({ ...p, sortOrder: parseInt(e.target.value) || 0 }))}
-                              className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156]"
-                            />
-                          </div>
-                        </div>
-
-                        {/* Photo URL + upload */}
-                        <div>
-                          <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Şəkil URL</label>
-                          <div className="flex gap-2">
-                            <input
-                              value={cur.photo || ''}
-                              onChange={e => setCur((p: any) => ({ ...p, photo: e.target.value }))}
-                              placeholder="https://..."
-                              className="flex-1 h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156]"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => triggerUpload(isNew ? 'team_new' : 'team_edit')}
-                              className="h-8 px-3 bg-[#0f3156] text-white text-xs font-bold rounded-sm flex items-center gap-1.5 hover:bg-[#081c33]"
-                            >
-                              <Upload className="w-3 h-3" /> Yüklə
-                            </button>
-                          </div>
-                          {cur.photo && (
-                            <div className="mt-2 flex items-center gap-3">
-                              <div className="w-14 h-14 bg-slate-100 border border-slate-200 rounded-lg overflow-hidden shrink-0 flex items-center justify-center">
-                                <img src={cur.photo} alt="Preview" className="w-full h-full object-cover object-top" referrerPolicy="no-referrer" />
-                              </div>
-                              <span className="text-[10px] text-slate-400 truncate font-mono">{cur.photo}</span>
-                            </div>
-                          )}
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          <div>
-                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Email</label>
-                            <input
-                              value={cur.email || ''}
-                              onChange={e => setCur((p: any) => ({ ...p, email: e.target.value }))}
-                              placeholder="ad@azexbuy.com"
-                              className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156]"
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">LinkedIn URL</label>
-                            <input
-                              value={cur.linkedin || ''}
-                              onChange={e => setCur((p: any) => ({ ...p, linkedin: e.target.value }))}
-                              placeholder="https://linkedin.com/in/..."
-                              className="w-full h-8 text-xs bg-slate-50 border border-slate-200 px-2.5 rounded-sm focus:outline-none focus:border-[#0f3156]"
-                            />
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-2 pt-1">
-                          <input
-                            type="checkbox"
-                            id="m_active"
-                            checked={cur.isActive !== false}
-                            onChange={e => setCur((p: any) => ({ ...p, isActive: e.target.checked }))}
-                            className="rounded border-slate-300 text-[#0f3156] focus:ring-0"
-                          />
-                          <label htmlFor="m_active" className="text-xs font-bold text-slate-700 cursor-pointer">
-                            Saytda Aktiv Göstərilsin
-                          </label>
-                        </div>
-
-                        {/* Multilingual Roles */}
-                        <div className="bg-slate-50 border border-slate-200 p-3 rounded-lg space-y-2">
-                          <div className="text-[10px] font-bold text-slate-600 uppercase font-mono">Vəzifə / Rol (Bütün dillərdə)</div>
-                          <div className="space-y-1.5">
-                            {LOCALES.map(loc => (
-                              <div key={loc} className="flex items-center gap-2">
-                                <div className="w-10 h-7 rounded bg-white border border-slate-200 text-slate-700 font-bold text-[11px] font-mono flex items-center justify-center shrink-0">
-                                  {loc}
-                                </div>
-                                <input
-                                  value={cur.role?.[loc] || ''}
-                                  onChange={e => {
-                                    const val = e.target.value;
-                                    setCur((p: any) => ({ ...p, role: { ...(p.role || {}), [loc]: val } }));
-                                  }}
-                                  className="flex-1 h-7 text-xs bg-white border border-slate-200 px-2 rounded-sm focus:outline-none focus:border-[#0f3156]"
-                                  placeholder={`${loc} dilində vəzifə...`}
-                                />
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Multilingual Bio */}
-                        <div className="bg-slate-50 border border-slate-200 p-3 rounded-lg space-y-2">
-                          <div className="text-[10px] font-bold text-slate-600 uppercase font-mono">Bio / Təcrübə (Bütün dillərdə)</div>
-                          <div className="space-y-1.5">
-                            {LOCALES.map(loc => (
-                              <div key={loc} className="flex items-start gap-2">
-                                <div className="w-10 h-7 rounded bg-white border border-slate-200 text-slate-700 font-bold text-[11px] font-mono flex items-center justify-center shrink-0 mt-0.5">
-                                  {loc}
-                                </div>
-                                <textarea
-                                  value={cur.bio?.[loc] || ''}
-                                  onChange={e => {
-                                    const val = e.target.value;
-                                    setCur((p: any) => ({ ...p, bio: { ...(p.bio || {}), [loc]: val } }));
-                                  }}
-                                  rows={2}
-                                  className="flex-1 text-xs bg-white border border-slate-200 px-2 py-1 rounded-sm focus:outline-none focus:border-[#0f3156] resize-none"
-                                  placeholder={`${loc} dilində bio...`}
-                                />
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Modal Footer */}
-                      <div className="px-5 py-3 bg-slate-100 border-t border-slate-200 flex items-center justify-end gap-2 shrink-0">
-                        <button
-                          type="button"
-                          onClick={() => { setShowNewMember(false); setEditingMember(null); }}
-                          className="h-8 px-4 text-xs font-medium border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 rounded-sm"
-                        >
-                          İmtina
-                        </button>
-                        <button
-                          type="button"
-                          onClick={isNew ? handleSaveNewMember : handleSaveEditMember}
-                          className="h-8 px-5 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-sm"
-                        >
-                          {isNew ? 'Əlavə Et' : 'Dəyişiklikləri Saxla'}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })()}
-            </>
           )}
 
         </div>
