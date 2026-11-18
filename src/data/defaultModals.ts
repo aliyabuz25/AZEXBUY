@@ -98,9 +98,20 @@ export interface ServiceModalConfig {
   title: LocalizedString;
   subtitle: LocalizedString;
   submitButton: LocalizedString;
-  companyTypes: string[];
-  urgencyLevels: string[];
-  privacyNote: LocalizedString;
+  companyTypes?: string[];
+  urgencyLevels?: string[];
+  privacyNote?: LocalizedString;
+  fullNameLabel?: LocalizedString;
+  companyLabel?: LocalizedString;
+  countryLabel?: LocalizedString;
+  emailLabel?: LocalizedString;
+  phoneLabel?: LocalizedString;
+  servicesLabel?: LocalizedString;
+  selectedBadge?: LocalizedString;
+  detailsLabel?: LocalizedString;
+  detailsPlaceholder?: LocalizedString;
+  cancelButton?: LocalizedString;
+  successMessage?: LocalizedString;
 }
 
 export interface AIDeskModalConfig {
@@ -396,6 +407,94 @@ export const DEFAULT_MODALS_CONFIG: AllModalsConfig = {
       RU: 'Отправить заявку',
       AR: 'إرسال الطلب',
       ES: 'Enviar Solicitud',
+    },
+    cancelButton: {
+      AZ: 'Ləğv et',
+      EN: 'Cancel',
+      TR: 'İptal',
+      RU: 'Отмена',
+      AR: 'إلغاء',
+      ES: 'Cancelar',
+    },
+    fullNameLabel: {
+      AZ: 'Ad Soyad',
+      EN: 'Full Name',
+      TR: 'Ad Soyad',
+      RU: 'Имя и фамилия',
+      AR: 'الاسم الكامل',
+      ES: 'Nombre completo',
+    },
+    companyLabel: {
+      AZ: 'Şirkət adı',
+      EN: 'Company Name',
+      TR: 'Şirket Adı',
+      RU: 'Название компании',
+      AR: 'اسم الشركة',
+      ES: 'Nombre de empresa',
+    },
+    countryLabel: {
+      AZ: 'Ölkə',
+      EN: 'Country',
+      TR: 'Ülke',
+      RU: 'Страна',
+      AR: 'الدولة',
+      ES: 'País',
+    },
+    emailLabel: {
+      AZ: 'E-poçt',
+      EN: 'Email',
+      TR: 'E-posta',
+      RU: 'Эл. почта',
+      AR: 'البريد الإلكتروني',
+      ES: 'Correo electrónico',
+    },
+    phoneLabel: {
+      AZ: 'Telefon',
+      EN: 'Phone',
+      TR: 'Telefon',
+      RU: 'Телефон',
+      AR: 'الهاتف',
+      ES: 'Teléfono',
+    },
+    servicesLabel: {
+      AZ: 'Müraciət edilən xidmət',
+      EN: 'Requested Service',
+      TR: 'Başvurulan Hizmet',
+      RU: 'Выбранная услуга',
+      AR: 'الخدمة المطلوبة',
+      ES: 'Servicio Solicitado',
+    },
+    selectedBadge: {
+      AZ: 'Seçildi',
+      EN: 'Selected',
+      TR: 'Seçildi',
+      RU: 'Выбрано',
+      AR: 'تم الاختيار',
+      ES: 'Seleccionado',
+    },
+    detailsLabel: {
+      AZ: 'Müraciətin təfərrüatları',
+      EN: 'Application Details',
+      TR: 'Başvurunun ayrıntıları',
+      RU: 'Детали заявки',
+      AR: 'تفاصيل الطلب',
+      ES: 'Detalles de la solicitud',
+    },
+    detailsPlaceholder: {
+      AZ: 'Əlavə qeydləriniz və ya xüsusi tələbləriniz...',
+      EN: 'Your additional notes or specific requirements...',
+      TR: 'Ek notlarınız veya özel gereksinimleriniz...',
+      RU: 'Дополнительные примечания или особые требования...',
+      AR: 'ملاحظاتك الإضافية أو متطلباتك الخاصة...',
+      ES: 'Sus notas adicionales o requisitos específicos...',
+    },
+    successMessage: {
+      AZ: 'Müraciətiniz uğurla göndərildi!',
+      EN: 'Your application was submitted successfully!',
+      TR: 'Başvurunuz başarıyla gönderildi!',
+      RU: 'Ваша заявка успешно отправлена!',
+      AR: 'تم إرسال طلبك بنجاح!',
+      ES: '¡Su solicitud fue enviada con éxito!',
     },
     companyTypes: [
       'İdxalçı / Xarici Alıcı',

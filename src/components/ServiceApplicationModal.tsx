@@ -12,14 +12,15 @@ interface ServiceApplicationModalProps {
 }
 
 const LABEL: Record<string, Record<Locale, string>> = {
-  title:           { AZ: 'Xidmət Müraciəti',              EN: 'Service Application',          TR: 'Hizmet Başvurusu',          RU: 'Заявка на услугу',              AR: 'طلب الخدمة',              ES: 'Solicitud de servicio' },
+  title:           { AZ: 'Xidmət Müraciəti Formu',         EN: 'Service Application Form',     TR: 'Hizmet Başvuru Formu',      RU: 'Форма заявки на услугу',        AR: 'نموذج طلب الخدمة',        ES: 'Formulario de solicitud de servicios' },
   fullName:        { AZ: 'Ad Soyad',                       EN: 'Full Name',                    TR: 'Ad Soyad',                  RU: 'Имя и фамилия',                 AR: 'الاسم الكامل',            ES: 'Nombre completo' },
   company:         { AZ: 'Şirkət adı',                     EN: 'Company Name',                 TR: 'Şirket Adı',                RU: 'Название компании',             AR: 'اسم الشركة',              ES: 'Nombre de empresa' },
   country:         { AZ: 'Ölkə',                           EN: 'Country',                      TR: 'Ülke',                      RU: 'Страна',                        AR: 'الدولة',                  ES: 'País' },
   email:           { AZ: 'E-poçt',                         EN: 'Email',                        TR: 'E-posta',                   RU: 'Эл. почта',                     AR: 'البريد الإلكتروني',       ES: 'Correo electrónico' },
   phone:           { AZ: 'Telefon',                        EN: 'Phone',                        TR: 'Telefon',                   RU: 'Телефон',                       AR: 'الهاتف',                  ES: 'Teléfono' },
   details:         { AZ: 'Müraciətin təfərrüatları',       EN: 'Application Details',          TR: 'Başvurunun ayrıntıları',    RU: 'Детали заявки',                 AR: 'تفاصيل الطلب',            ES: 'Detalles de la solicitud' },
-  services:        { AZ: 'Xidmət seçimi',                  EN: 'Service Selection',            TR: 'Hizmet Seçimi',             RU: 'Выбор услуги',                  AR: 'اختيار الخدمة',           ES: 'Selección de servicio' },
+  services:        { AZ: 'Müraciət edilən xidmət',         EN: 'Requested Service',            TR: 'Başvurulan Hizmet',         RU: 'Выбранная услуga',              AR: 'الخدمة المطلوبة',         ES: 'Servicio solicitado' },
+  selectedBadge:   { AZ: 'Seçildi',                        EN: 'Selected',                     TR: 'Seçildi',                   RU: 'Выбрано',                       AR: 'تم الاختيار',             ES: 'Seleccionado' },
   submit:          { AZ: 'Müraciəti göndər',               EN: 'Submit Application',           TR: 'Başvuruyu Gönder',          RU: 'Отправить заявку',              AR: 'إرسال الطلب',             ES: 'Enviar solicitud' },
   cancel:          { AZ: 'Ləğv et',                        EN: 'Cancel',                       TR: 'İptal',                     RU: 'Отмена',                        AR: 'إلغاء',                   ES: 'Cancelar' },
   required:        { AZ: 'Bu sahə məcburidir',             EN: 'This field is required',       TR: 'Bu alan zorunludur',        RU: 'Это поле обязательно',          AR: 'هذا الحقل مطلوب',         ES: 'Este campo es obligatorio' },
@@ -166,15 +167,21 @@ export const ServiceApplicationModal: React.FC<ServiceApplicationModalProps> = (
               {/* Contact fields */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className={labelCls}>{t('fullName', locale)} <span className="text-red-500">*</span></label>
+                  <label className={labelCls}>
+                    {srvCfg?.fullNameLabel?.[locale] || t('fullName', locale)} <span className="text-red-500">*</span>
+                  </label>
                   <input type="text" value={fullName} onChange={e => setFullName(e.target.value)} className={inputCls} required />
                 </div>
                 <div>
-                  <label className={labelCls}>{t('company', locale)} <span className="text-red-500">*</span></label>
+                  <label className={labelCls}>
+                    {srvCfg?.companyLabel?.[locale] || t('company', locale)} <span className="text-red-500">*</span>
+                  </label>
                   <input type="text" value={company} onChange={e => setCompany(e.target.value)} className={inputCls} required />
                 </div>
                 <div>
-                  <label className={labelCls}>{t('country', locale)} <span className="text-red-500">*</span></label>
+                  <label className={labelCls}>
+                    {srvCfg?.countryLabel?.[locale] || t('country', locale)} <span className="text-red-500">*</span>
+                  </label>
                   <CountrySelect
                     value={country}
                     onChange={setCountry}
@@ -183,11 +190,15 @@ export const ServiceApplicationModal: React.FC<ServiceApplicationModalProps> = (
                   />
                 </div>
                 <div>
-                  <label className={labelCls}>{t('email', locale)} <span className="text-red-500">*</span></label>
+                  <label className={labelCls}>
+                    {srvCfg?.emailLabel?.[locale] || t('email', locale)} <span className="text-red-500">*</span>
+                  </label>
                   <input type="email" value={email} onChange={e => setEmail(e.target.value)} className={inputCls} required />
                 </div>
                 <div className="sm:col-span-2">
-                  <label className={labelCls}>{t('phone', locale)}</label>
+                  <label className={labelCls}>
+                    {srvCfg?.phoneLabel?.[locale] || t('phone', locale)}
+                  </label>
                   <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} className={inputCls} />
                 </div>
               </div>
@@ -196,7 +207,7 @@ export const ServiceApplicationModal: React.FC<ServiceApplicationModalProps> = (
               {activeService && (
                 <div>
                   <label className={labelCls}>
-                    {srvCfg?.servicesLabel?.[locale] || (locale === 'AZ' ? 'Müraciət edilən xidmət' : locale === 'TR' ? 'Başvurulan hizmet' : locale === 'RU' ? 'Выбранная услуга' : 'Requested Service')}
+                    {srvCfg?.servicesLabel?.[locale] || srvCfg?.selectedServiceLabel?.[locale] || t('services', locale)}
                   </label>
                   <div className="flex items-center gap-3.5 p-3.5 rounded-xl border border-slate-200/90 bg-slate-50/80 shadow-2xs">
                     <div className={`w-10 h-10 rounded-xl ${activeService.colorClass || 'bg-brandNavy'} flex items-center justify-center shrink-0 text-white shadow-xs`}>
@@ -214,7 +225,7 @@ export const ServiceApplicationModal: React.FC<ServiceApplicationModalProps> = (
                     </div>
                     <div className="shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-[11px] font-semibold text-emerald-700">
                       <i className="fa-solid fa-check text-[9px]"></i>
-                      <span>{locale === 'AZ' ? 'Seçildi' : locale === 'TR' ? 'Seçildi' : locale === 'RU' ? 'Выбрано' : 'Selected'}</span>
+                      <span>{srvCfg?.selectedBadge?.[locale] || t('selectedBadge', locale)}</span>
                     </div>
                   </div>
                 </div>
@@ -226,6 +237,7 @@ export const ServiceApplicationModal: React.FC<ServiceApplicationModalProps> = (
                 <textarea
                   value={details}
                   onChange={e => setDetails(e.target.value)}
+                  placeholder={srvCfg?.detailsPlaceholder?.[locale] || ''}
                   rows={3}
                   className="w-full px-3 py-2.5 text-sm bg-white border border-slate-200 rounded-md text-slate-900 focus:outline-none focus:border-slate-400 resize-none transition-colors"
                 />
@@ -239,7 +251,7 @@ export const ServiceApplicationModal: React.FC<ServiceApplicationModalProps> = (
                 onClick={onClose}
                 className="px-4 py-2 text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg cursor-pointer transition-colors"
               >
-                {t('cancel', locale)}
+                {srvCfg?.cancelButton?.[locale] || t('cancel', locale)}
               </button>
               <button
                 type="submit"
