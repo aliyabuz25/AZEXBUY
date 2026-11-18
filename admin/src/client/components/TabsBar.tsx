@@ -21,7 +21,8 @@ import {
   Cpu,
   Activity,
   Layers,
-  ClipboardList
+  ClipboardList,
+  Archive
 } from 'lucide-react';
 import { TabItem, UiLanguage } from '../types';
 
@@ -58,6 +59,8 @@ const iconMap: Record<string, React.FC<{ className?: string }>> = {
   'user-management': Users,
   'ai-settings': Cpu,
   'smtp-settings': Mail,
+  'backup-restore': Archive,
+  archive: Archive,
   logs: Activity,
 };
 

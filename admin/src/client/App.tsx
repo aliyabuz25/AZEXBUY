@@ -40,6 +40,7 @@ import { ArticlesView } from './views/ArticlesView';
 import { ServicesView } from './views/ServicesView';
 import { ModalsView } from './views/ModalsView';
 import { ServiceModalView } from './views/ServiceModalView';
+import { BackupRestoreView } from './views/BackupRestoreView';
 
 const LANG_STORAGE_KEY = 'octotech_admin_lang';
 const SIDEBAR_STORAGE_KEY = 'octotech_admin_sidebar_collapsed';
@@ -116,31 +117,8 @@ export const App: React.FC = () => {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [topBarDownloading, setTopBarDownloading] = useState(false);
 
-  const handleTopBarBackup = async () => {
-    try {
-      setTopBarDownloading(true);
-      showToast('SQLite tam backup hazırlanır...');
-      const curToken = localStorage.getItem(JWT_STORAGE_KEY) || token || '';
-      const res = await fetch(`/api/backup/download?token=${encodeURIComponent(curToken)}`, {
-        headers: { 'Authorization': `Bearer ${curToken}` }
-      });
-      if (!res.ok) throw new Error('Backup endirilə bilmədi (Status: ' + res.status + ')');
-      const blob = await res.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      const dateStr = new Date().toISOString().slice(0, 10);
-      a.download = `azexbuy_full_backup_${dateStr}.sqlite`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-      showToast('✓ SQLite tam backup endirildi!');
-    } catch (e: any) {
-      showToast('Backup xətası: ' + e.message);
-    } finally {
-      setTopBarDownloading(false);
-    }
+  const handleTopBarBackup = () => {
+    openTab('backup-restore', 'Backup & Bərpa', 'archive');
   };
 
   // Admin user
@@ -844,6 +822,9 @@ export const App: React.FC = () => {
           )}
           {activeTabId === 'ai-settings' && (
             <AiSettingsView uiLang={uiLang} />
+          )}
+          {activeTabId === 'backup-restore' && (
+            <BackupRestoreView uiLang={uiLang} onToast={showToast} />
           )}
           {activeTabId === 'logs' && (
             <LogsView uiLang={uiLang} />

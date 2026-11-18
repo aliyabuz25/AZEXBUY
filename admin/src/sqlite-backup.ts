@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import BetterSqlite3 from 'better-sqlite3';
+import AdmZip from 'adm-zip';
 import { Database, DatabaseSchema } from './db.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -10,12 +11,45 @@ const ROOT_DIR = path.resolve(__dirname, '..');
 const DATA_DIR = path.join(ROOT_DIR, 'data');
 const BACKUPS_DIR = path.join(DATA_DIR, 'backups');
 const BACKUP_SQLITE_PATH = path.join(DATA_DIR, 'azexbuy_full_backup.sqlite');
+const BACKUP_ZIP_PATH = path.join(DATA_DIR, 'azexbuy_full_backup.zip');
 
 export interface TableSummary {
   name: string;
   rows: number;
   label?: string;
   db?: string;
+}
+
+export interface BackupFileItem {
+  filename: string;
+  filePath: string;
+  sizeBytes: number;
+  createdAt: string;
+  type: 'zip' | 'sqlite' | 'db';
+  isSafety: boolean;
+}
+
+export interface ZipBackupResult {
+  filePath: string;
+  filename: string;
+  sizeBytes: number;
+  tablesCount: number;
+  totalRows: number;
+  mediaFilesCount: number;
+  mediaSizeBytes: number;
+  exportedAt: string;
+}
+
+export interface ZipRestoreResult {
+  success: boolean;
+  message: string;
+  totalRestoredTables: number;
+  totalRestoredRows: number;
+  totalRestoredMedia: number;
+  restoredMediaBytes: number;
+  restoredTables: TableSummary[];
+  safetyBackupFile: string;
+  backupTimestamp: string;
 }
 
 export interface BackupInfoResult {
@@ -28,6 +62,12 @@ export interface BackupInfoResult {
   lastGenerated: string | null;
   tableBreakdown: TableSummary[];
   safetyBackupsCount: number;
+  mediaFilesCount: number;
+  mediaTotalSizeBytes: number;
+  zipBackupExists: boolean;
+  zipFileSizeBytes: number;
+  lastZipGenerated: string | null;
+  backupsList: BackupFileItem[];
 }
 
 export interface RestoreResult {
@@ -866,16 +906,475 @@ export class SqliteBackupManager {
       if (fs.existsSync(storePath)) liveDbSizeBytes += fs.statSync(storePath).size;
     } catch {}
 
+    const mediaStats = this.getMediaStats();
+    let zipBackupExists = false;
+    let zipFileSizeBytes = 0;
+    let lastZipGenerated: string | null = null;
+    if (fs.existsSync(BACKUP_ZIP_PATH)) {
+      try {
+        const zStat = fs.statSync(BACKUP_ZIP_PATH);
+        zipBackupExists = true;
+        zipFileSizeBytes = zStat.size;
+        lastZipGenerated = zStat.mtime.toISOString();
+      } catch {}
+    }
+
+    const backupsList = this.listBackups();
+
     return {
-      engine: 'SQLite 3 (BetterSqlite3 Enterprise)',
+      engine: 'SQLite 3 & Universal ZIP Engine',
       version: '2.4.3',
-      format: '.sqlite / .db (Full Relational Database)',
+      format: '.zip (Tam Baza + Şəkillər) & .sqlite',
       tablesCount: tableBreakdown.length,
       totalRecords,
       fileSizeBytes: fileSizeBytes || liveDbSizeBytes,
       lastGenerated,
       tableBreakdown,
-      safetyBackupsCount
+      safetyBackupsCount,
+      mediaFilesCount: mediaStats.totalFiles,
+      mediaTotalSizeBytes: mediaStats.totalBytes,
+      zipBackupExists,
+      zipFileSizeBytes,
+      lastZipGenerated,
+      backupsList
+    };
+  }
+
+  /**
+   * Returns media files count and total size in uploads directory
+   */
+  public static getMediaStats(): { totalFiles: number; totalBytes: number } {
+    const uploadsDir = path.join(ROOT_DIR, 'uploads');
+    let totalFiles = 0;
+    let totalBytes = 0;
+
+    const scan = (dir: string) => {
+      if (!fs.existsSync(dir)) return;
+      const list = fs.readdirSync(dir);
+      for (const item of list) {
+        if (item === '.DS_Store' || item === 'temp') continue;
+        const p = path.join(dir, item);
+        try {
+          const stat = fs.statSync(p);
+          if (stat.isDirectory()) {
+            scan(p);
+          } else {
+            totalFiles++;
+            totalBytes += stat.size;
+          }
+        } catch {}
+      }
+    };
+
+    scan(uploadsDir);
+    return { totalFiles, totalBytes };
+  }
+
+  /**
+   * Lists all existing backup files (both ZIP and SQLite)
+   */
+  public static listBackups(): BackupFileItem[] {
+    this.ensureDirs();
+    const result: BackupFileItem[] = [];
+
+    // Check BACKUPS_DIR
+    if (fs.existsSync(BACKUPS_DIR)) {
+      try {
+        const files = fs.readdirSync(BACKUPS_DIR);
+        for (const f of files) {
+          if (f.startsWith('.')) continue;
+          const ext = path.extname(f).toLowerCase();
+          if (!['.zip', '.sqlite', '.db'].includes(ext)) continue;
+          const p = path.join(BACKUPS_DIR, f);
+          try {
+            const stat = fs.statSync(p);
+            result.push({
+              filename: f,
+              filePath: p,
+              sizeBytes: stat.size,
+              createdAt: stat.mtime.toISOString(),
+              type: ext === '.zip' ? 'zip' : (ext === '.sqlite' ? 'sqlite' : 'db'),
+              isSafety: f.startsWith('safety_')
+            });
+          } catch {}
+        }
+      } catch {}
+    }
+
+    // Check default backup files in DATA_DIR
+    if (fs.existsSync(BACKUP_ZIP_PATH)) {
+      try {
+        const stat = fs.statSync(BACKUP_ZIP_PATH);
+        result.push({
+          filename: 'azexbuy_full_backup.zip',
+          filePath: BACKUP_ZIP_PATH,
+          sizeBytes: stat.size,
+          createdAt: stat.mtime.toISOString(),
+          type: 'zip',
+          isSafety: false
+        });
+      } catch {}
+    }
+    if (fs.existsSync(BACKUP_SQLITE_PATH)) {
+      try {
+        const stat = fs.statSync(BACKUP_SQLITE_PATH);
+        result.push({
+          filename: 'azexbuy_full_backup.sqlite',
+          filePath: BACKUP_SQLITE_PATH,
+          sizeBytes: stat.size,
+          createdAt: stat.mtime.toISOString(),
+          type: 'sqlite',
+          isSafety: false
+        });
+      } catch {}
+    }
+
+    // Deduplicate by filename and sort newest first
+    const seen = new Set<string>();
+    const unique = result.filter(item => {
+      if (seen.has(item.filename)) return false;
+      seen.add(item.filename);
+      return true;
+    });
+
+    return unique.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }
+
+  /**
+   * Exports full application state AND all media/images into a complete ZIP archive
+   */
+  public static exportToZip(targetZipPath?: string): ZipBackupResult {
+    this.ensureDirs();
+    const dateStr = new Date().toISOString().slice(0, 10);
+    const timeStr = new Date().toISOString().slice(11, 19).replace(/:/g, '-');
+    const filename = `azexbuy_full_backup_${dateStr}_${timeStr}.zip`;
+    const outZipPath = targetZipPath || path.join(BACKUPS_DIR, filename);
+
+    // 1. Export unified SQLite file
+    const tempSqlitePath = path.join(BACKUPS_DIR, `temp_full_${Date.now()}.sqlite`);
+    this.exportToSqlite(tempSqlitePath);
+
+    const zip = new AdmZip();
+
+    // 2. Add the unified SQLite DB file
+    zip.addLocalFile(tempSqlitePath, '', 'azexbuy_full_backup.sqlite');
+
+    // 3. Add direct copies of active database files if they exist
+    const azDbPath = path.join(DATA_DIR, 'azexbuy.db');
+    if (fs.existsSync(azDbPath)) {
+      try {
+        const azDb = new BetterSqlite3(azDbPath, { readonly: true });
+        try { azDb.pragma('wal_checkpoint(PASSIVE)'); } catch {}
+        azDb.close();
+      } catch {}
+      zip.addLocalFile(azDbPath, 'data', 'azexbuy.db');
+    }
+
+    const octoDbPath = path.join(DATA_DIR, 'octo.db');
+    if (fs.existsSync(octoDbPath)) {
+      try {
+        const octoDb = new BetterSqlite3(octoDbPath, { readonly: true });
+        try { octoDb.pragma('wal_checkpoint(PASSIVE)'); } catch {}
+        octoDb.close();
+      } catch {}
+      zip.addLocalFile(octoDbPath, 'data', 'octo.db');
+    }
+
+    const storePath = path.join(DATA_DIR, 'store.json');
+    if (fs.existsSync(storePath)) {
+      zip.addLocalFile(storePath, 'data', 'store.json');
+    }
+
+    // 4. Generate structured JSON dump of all tables for transparency
+    const jsonDump: Record<string, any[]> = {};
+    let totalRows = 0;
+    const tableSummaries: TableSummary[] = [];
+
+    if (fs.existsSync(azDbPath)) {
+      try {
+        const azDb = new BetterSqlite3(azDbPath, { readonly: true });
+        const tables = azDb.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").all() as any[];
+        for (const t of tables) {
+          const rows = azDb.prepare(`SELECT * FROM "${t.name}"`).all();
+          jsonDump[t.name] = rows;
+          totalRows += rows.length;
+          tableSummaries.push({
+            name: t.name,
+            rows: rows.length,
+            label: this.getTableFriendlyLabel(t.name),
+            db: 'azexbuy.db'
+          });
+        }
+        azDb.close();
+      } catch (e) {
+        console.warn('[SqliteBackup] azDb JSON dump warning:', e);
+      }
+    }
+
+    if (fs.existsSync(octoDbPath)) {
+      try {
+        const octoDb = new BetterSqlite3(octoDbPath, { readonly: true });
+        const tables = octoDb.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").all() as any[];
+        for (const t of tables) {
+          const rows = octoDb.prepare(`SELECT * FROM "${t.name}"`).all();
+          // Mask sensitive passwords in JSON dump
+          if (t.name === 'admin_users') {
+            jsonDump[t.name] = rows.map((u: any) => ({ ...u, password: '[PROTECTED_HASH]' }));
+          } else if (t.name === 'smtp_settings') {
+            jsonDump[t.name] = rows.map((s: any) => ({ ...s, password: s.password ? '••••••••' : '' }));
+          } else {
+            jsonDump[t.name] = rows;
+          }
+          totalRows += rows.length;
+          tableSummaries.push({
+            name: t.name,
+            rows: rows.length,
+            label: this.getTableFriendlyLabel(t.name),
+            db: 'octo.db'
+          });
+        }
+        octoDb.close();
+      } catch (e) {
+        console.warn('[SqliteBackup] octoDb JSON dump warning:', e);
+      }
+    }
+
+    zip.addFile('data/azexbuy_export.json', Buffer.from(JSON.stringify(jsonDump, null, 2), 'utf-8'));
+
+    // 5. Add all uploaded media files from UPLOADS_DIR
+    const uploadsDir = path.join(ROOT_DIR, 'uploads');
+    let mediaFilesCount = 0;
+    let mediaSizeBytes = 0;
+    const mediaFileList: { path: string; size: number }[] = [];
+
+    const addFilesRecursively = (dir: string, zipSubdir: string) => {
+      if (!fs.existsSync(dir)) return;
+      const list = fs.readdirSync(dir);
+      for (const item of list) {
+        if (item === '.DS_Store' || item === 'temp') continue;
+        const fullPath = path.join(dir, item);
+        const stat = fs.statSync(fullPath);
+        if (stat.isDirectory()) {
+          addFilesRecursively(fullPath, `${zipSubdir}/${item}`);
+        } else {
+          zip.addLocalFile(fullPath, zipSubdir, item);
+          mediaFilesCount++;
+          mediaSizeBytes += stat.size;
+          mediaFileList.push({ path: `${zipSubdir}/${item}`, size: stat.size });
+        }
+      }
+    };
+
+    addFilesRecursively(uploadsDir, 'uploads');
+
+    // 6. Add public branding if exists
+    const workspaceDir = path.resolve(ROOT_DIR, '..');
+    const publicDir = path.join(workspaceDir, 'public');
+    if (fs.existsSync(publicDir)) {
+      try {
+        const pubFiles = fs.readdirSync(publicDir);
+        for (const f of pubFiles) {
+          if (f.startsWith('logo') || f.startsWith('favicon')) {
+            const fullPath = path.join(publicDir, f);
+            const stat = fs.statSync(fullPath);
+            if (!stat.isDirectory()) {
+              zip.addLocalFile(fullPath, 'public_branding', f);
+            }
+          }
+        }
+      } catch {}
+    }
+
+    // 7. Generate and add manifest.json
+    const manifest = {
+      app: 'AZEXBUY Enterprise Platform',
+      engine: 'AZEXBUY Universal ZIP Backup Engine',
+      version: '2.4.3',
+      type: 'full_system_zip',
+      format: 'ZIP (Databases, CMS Content & Media)',
+      exportedAt: new Date().toISOString(),
+      database: {
+        tablesCount: tableSummaries.length,
+        totalRows,
+        tables: tableSummaries
+      },
+      media: {
+        totalFiles: mediaFilesCount,
+        totalSizeBytes: mediaSizeBytes,
+        files: mediaFileList
+      }
+    };
+    zip.addFile('manifest.json', Buffer.from(JSON.stringify(manifest, null, 2), 'utf-8'));
+
+    // 8. Write ZIP to file
+    zip.writeZip(outZipPath);
+
+    // Also update current azexbuy_full_backup.zip link
+    try {
+      fs.copyFileSync(outZipPath, BACKUP_ZIP_PATH);
+    } catch {}
+
+    // Clean temp sqlite
+    try {
+      if (fs.existsSync(tempSqlitePath)) fs.unlinkSync(tempSqlitePath);
+    } catch {}
+
+    const finalStat = fs.statSync(outZipPath);
+
+    return {
+      filePath: outZipPath,
+      filename,
+      sizeBytes: finalStat.size,
+      tablesCount: tableSummaries.length,
+      totalRows,
+      mediaFilesCount,
+      mediaSizeBytes,
+      exportedAt: manifest.exportedAt
+    };
+  }
+
+  /**
+   * Restores full state (databases, CMS content, and uploaded images) from a ZIP backup archive
+   */
+  public static restoreFromZip(
+    zipFilePath: string,
+    activeDbs?: {
+      azexbuyDb?: BetterSqlite3.Database;
+      mainDb?: BetterSqlite3.Database;
+      azRedis?: any;
+      azDel?: (key: string) => Promise<void>;
+    }
+  ): ZipRestoreResult {
+    if (!fs.existsSync(zipFilePath)) {
+      throw new Error('ZIP backup faylı tapılmadı');
+    }
+
+    let zip: AdmZip;
+    try {
+      zip = new AdmZip(zipFilePath);
+    } catch (e: any) {
+      throw new Error('Etibarsız və ya zədələnmiş ZIP faylı: ' + e.message);
+    }
+
+    const entries = zip.getEntries();
+    if (entries.length === 0) {
+      throw new Error('ZIP arxivi boşdur (heç bir fayl tapılmadı).');
+    }
+
+    // 1. Create automated pre-restore safety backup of current state
+    const ts = new Date().toISOString().replace(/[:.]/g, '-');
+    const safetyZipFilename = `safety_full_backup_before_restore_${ts}.zip`;
+    const safetyZipPath = path.join(BACKUPS_DIR, safetyZipFilename);
+    try {
+      this.exportToZip(safetyZipPath);
+    } catch (e) {
+      console.warn('[SqliteBackup] Could not create pre-restore safety zip, creating safety sqlite instead:', e);
+      this.createSafetyBackup();
+    }
+
+    // Read manifest if available
+    let manifest: any = null;
+    const manifestEntry = entries.find(e => e.entryName === 'manifest.json');
+    if (manifestEntry) {
+      try {
+        manifest = JSON.parse(manifestEntry.getData().toString('utf-8'));
+      } catch {}
+    }
+
+    // 2. Restore Databases
+    let sqliteEntry = entries.find(e => 
+      !e.isDirectory && (
+        e.entryName === 'azexbuy_full_backup.sqlite' ||
+        e.entryName === 'data/azexbuy_full_backup.sqlite' ||
+        e.name.endsWith('.sqlite')
+      )
+    );
+
+    let restoreSqliteResult: RestoreResult = {
+      success: true,
+      message: 'OK',
+      totalRestoredTables: 0,
+      totalRestoredRows: 0,
+      restoredTables: [],
+      safetyBackupFile: safetyZipFilename,
+      backupTimestamp: manifest?.exportedAt || new Date().toISOString()
+    };
+
+    if (sqliteEntry) {
+      const tempSqliteRestorePath = path.join(BACKUPS_DIR, `temp_restore_${Date.now()}.sqlite`);
+      fs.writeFileSync(tempSqliteRestorePath, sqliteEntry.getData());
+      try {
+        restoreSqliteResult = this.restoreFromSqlite(tempSqliteRestorePath, activeDbs);
+      } finally {
+        try { if (fs.existsSync(tempSqliteRestorePath)) fs.unlinkSync(tempSqliteRestorePath); } catch {}
+      }
+    } else {
+      // Check if azexbuy.db is present in data/
+      const azDbEntry = entries.find(e => !e.isDirectory && (e.entryName === 'data/azexbuy.db' || e.name === 'azexbuy.db'));
+      if (azDbEntry) {
+        const tempAzPath = path.join(BACKUPS_DIR, `temp_az_${Date.now()}.db`);
+        fs.writeFileSync(tempAzPath, azDbEntry.getData());
+        try {
+          restoreSqliteResult = this.restoreFromSqlite(tempAzPath, activeDbs);
+        } finally {
+          try { if (fs.existsSync(tempAzPath)) fs.unlinkSync(tempAzPath); } catch {}
+        }
+      }
+    }
+
+    // 3. Restore Media and Uploads
+    let restoredMediaCount = 0;
+    let restoredMediaBytes = 0;
+    const workspaceDir = path.resolve(ROOT_DIR, '..');
+    const publicDir = path.join(workspaceDir, 'public');
+
+    for (const entry of entries) {
+      if (entry.isDirectory) continue;
+      const normalized = path.normalize(entry.entryName).replace(/^(\.\.(\/|\\|$))+/, '');
+
+      if (normalized.startsWith('uploads/') || normalized.startsWith('uploads\\')) {
+        const destPath = path.join(ROOT_DIR, normalized);
+        fs.mkdirSync(path.dirname(destPath), { recursive: true });
+        fs.writeFileSync(destPath, entry.getData());
+        restoredMediaCount++;
+        restoredMediaBytes += entry.header.size;
+      } else if (normalized.startsWith('public_branding/') || normalized.startsWith('public_branding\\')) {
+        const fileName = path.basename(normalized);
+        const destPath = path.join(publicDir, fileName);
+        if (fs.existsSync(publicDir)) {
+          fs.writeFileSync(destPath, entry.getData());
+        }
+      }
+    }
+
+    // 4. Invalidate Caches
+    if (activeDbs?.azDel) {
+      const keys = [
+        'azexbuy:localization',
+        'azexbuy:content',
+        'azexbuy:categories',
+        'azexbuy:products',
+        'azexbuy:services',
+        'azexbuy:team',
+        'azexbuy:stats',
+        'azexbuy:rfqs',
+        'azexbuy:producers'
+      ];
+      for (const k of keys) {
+        try { activeDbs.azDel(k).catch(() => {}); } catch {}
+      }
+    }
+
+    return {
+      success: true,
+      message: `Bütün sayt məzmunu (${restoreSqliteResult.totalRestoredTables} cədvəl, ${restoreSqliteResult.totalRestoredRows} sətir) və ${restoredMediaCount} media faylı ZIP arxivindən tam və uğurla bərpa edildi!`,
+      totalRestoredTables: restoreSqliteResult.totalRestoredTables,
+      totalRestoredRows: restoreSqliteResult.totalRestoredRows,
+      totalRestoredMedia: restoredMediaCount,
+      restoredMediaBytes,
+      restoredTables: restoreSqliteResult.restoredTables,
+      safetyBackupFile: safetyZipFilename,
+      backupTimestamp: manifest?.exportedAt || restoreSqliteResult.backupTimestamp || new Date().toISOString()
     };
   }
 

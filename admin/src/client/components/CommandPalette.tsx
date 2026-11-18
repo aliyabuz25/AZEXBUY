@@ -23,7 +23,8 @@ import {
   Cpu,
   Activity,
   ClipboardList,
-  Layers
+  Layers,
+  Archive
 } from 'lucide-react';
 import { UiLanguage } from '../types';
 import { DICTIONARIES } from '../i18n';
@@ -72,6 +73,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
     { type: 'nav', id: 'user-management', title: 'İstifadəçilər & Girişlər', icon: Users, subtitle: 'Admin istifadəçiləri və səlahiyyətlər' },
     { type: 'nav', id: 'smtp-settings', title: 'SMTP E-poçt Konfiqurasiyası', icon: Mail, subtitle: 'E-poçt göndərmə və bildiriş serveri' },
     { type: 'nav', id: 'ai-settings', title: 'OpenRouter AI Parametrləri', icon: Cpu, subtitle: 'Süni intellekt və model konfiqurasiyası' },
+    { type: 'nav', id: 'backup-restore', title: 'Ehtiyat Nüsxə & Bərpa (Full ZIP & Media)', icon: Archive, subtitle: 'Bütün saytın tam ZIP nüsxəsini endirin və ya bərpa edin' },
     { type: 'nav', id: 'logs', title: 'Sistem Logları', icon: Activity, subtitle: 'Sistem audit və əməliyyat logları' },
     { type: 'nav', id: 'settings', title: t['nav.settings'] || 'Sistem Parametrləri', icon: Settings, subtitle: 'Ümumi konfiqurasiya və sazlamalar' },
     { type: 'nav', id: 'dashboard', title: t['nav.dashboard'] || 'Köhnə Analitika İcmalı', icon: LayoutGrid, subtitle: 'Köhnə analitika paneli' },

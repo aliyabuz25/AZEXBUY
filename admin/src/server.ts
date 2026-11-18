@@ -718,7 +718,7 @@ app.post('/api/setup/reset', (_req: Request, res: Response) => {
   res.json({ success: true, message: 'Quraşdırma sihirbazı sıfırlandı', data: setup });
 });
 
-// 9. Full Site Backup via SQLite Endpoints
+// 9. Full Site Backup & Restore (ZIP with Media & SQLite Database)
 app.get('/api/backup/info', (_req: Request, res: Response) => {
   try {
     const info = SqliteBackupManager.getBackupInfo();
@@ -728,7 +728,22 @@ app.get('/api/backup/info', (_req: Request, res: Response) => {
   }
 });
 
-app.get('/api/backup/download', requireAuth, (_req: Request, res: Response) => {
+// Download full ZIP backup (all DBs + CMS + Uploads/Images)
+app.get('/api/backup/download-zip', requireAuth, (_req: Request, res: Response) => {
+  try {
+    const zipResult = SqliteBackupManager.exportToZip();
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader('Content-Disposition', `attachment; filename="${zipResult.filename}"`);
+    res.download(zipResult.filePath, zipResult.filename, (err) => {
+      if (err) console.error('Error sending ZIP backup download:', err);
+    });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: 'ZIP backup yaradılarkən xəta: ' + err.message });
+  }
+});
+
+// Download legacy SQLite-only backup
+app.get('/api/backup/download-sqlite', requireAuth, (_req: Request, res: Response) => {
   try {
     const filePath = SqliteBackupManager.exportToSqlite();
     const dateStr = new Date().toISOString().slice(0, 10);
@@ -737,17 +752,81 @@ app.get('/api/backup/download', requireAuth, (_req: Request, res: Response) => {
 
     res.setHeader('Content-Type', 'application/vnd.sqlite3');
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
-
     res.download(filePath, filename, (err) => {
-      if (err) {
-        console.error('Error sending sqlite backup download:', err);
-      }
+      if (err) console.error('Error sending sqlite backup download:', err);
     });
   } catch (err: any) {
-    res.status(500).json({ success: false, error: 'Backup yaradılarkən xəta baş verdi: ' + err.message });
+    res.status(500).json({ success: false, error: 'SQLite backup yaradılarkən xəta: ' + err.message });
   }
 });
 
+// General download route (supports ?format=zip or ?format=sqlite)
+app.get('/api/backup/download', requireAuth, (req: Request, res: Response) => {
+  const format = String(req.query.format || 'zip').toLowerCase();
+  if (format === 'sqlite' || format === 'db') {
+    try {
+      const filePath = SqliteBackupManager.exportToSqlite();
+      const dateStr = new Date().toISOString().slice(0, 10);
+      const timeStr = new Date().toISOString().slice(11, 19).replace(/:/g, '-');
+      const filename = `azexbuy_full_backup_${dateStr}_${timeStr}.sqlite`;
+      res.setHeader('Content-Type', 'application/vnd.sqlite3');
+      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+      return res.download(filePath, filename);
+    } catch (err: any) {
+      return res.status(500).json({ success: false, error: err.message });
+    }
+  }
+
+  try {
+    const zipResult = SqliteBackupManager.exportToZip();
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader('Content-Disposition', `attachment; filename="${zipResult.filename}"`);
+    return res.download(zipResult.filePath, zipResult.filename);
+  } catch (err: any) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Download a specific backup file from backups list
+app.get('/api/backup/download-file/:filename', requireAuth, (req: Request, res: Response) => {
+  const rawFilename = path.basename(req.params.filename);
+  const backupsDir = path.join(dataDir, 'backups');
+  const targetPath = path.join(backupsDir, rawFilename);
+
+  if (!fs.existsSync(targetPath)) {
+    // Check if in dataDir
+    const fallbackPath = path.join(dataDir, rawFilename);
+    if (!fs.existsSync(fallbackPath)) {
+      return res.status(404).json({ success: false, error: 'Backup faylı tapılmadı' });
+    }
+    const ext = path.extname(rawFilename).toLowerCase();
+    res.setHeader('Content-Type', ext === '.zip' ? 'application/zip' : 'application/octet-stream');
+    res.setHeader('Content-Disposition', `attachment; filename="${rawFilename}"`);
+    return res.download(fallbackPath, rawFilename);
+  }
+
+  const ext = path.extname(rawFilename).toLowerCase();
+  res.setHeader('Content-Type', ext === '.zip' ? 'application/zip' : 'application/octet-stream');
+  res.setHeader('Content-Disposition', `attachment; filename="${rawFilename}"`);
+  return res.download(targetPath, rawFilename);
+});
+
+// Export ZIP backup via POST
+app.post('/api/backup/export-zip', requireAuth, (_req: Request, res: Response) => {
+  try {
+    const zipResult = SqliteBackupManager.exportToZip();
+    res.json({
+      success: true,
+      message: 'Tam ZIP backup (bütün bazalar və media şəkilləri) uğurla yaradıldı',
+      ...zipResult,
+      downloadUrl: `/api/backup/download-zip`
+    });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: 'ZIP export xətası: ' + err.message });
+  }
+});
+
+// Export SQLite backup via POST
 app.post('/api/backup/export', requireAuth, (_req: Request, res: Response) => {
   try {
     const filePath = SqliteBackupManager.exportToSqlite();
@@ -762,10 +841,20 @@ app.post('/api/backup/export', requireAuth, (_req: Request, res: Response) => {
       filename,
       sizeBytes: stat.size,
       exportedAt: new Date().toISOString(),
-      downloadUrl: '/api/backup/download'
+      downloadUrl: '/api/backup/download?format=sqlite'
     });
   } catch (err: any) {
     res.status(500).json({ success: false, error: 'Backup export xətası: ' + err.message });
+  }
+});
+
+// List all backups
+app.get('/api/backup/list', requireAuth, (_req: Request, res: Response) => {
+  try {
+    const list = SqliteBackupManager.listBackups();
+    res.json({ success: true, data: list });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
@@ -775,17 +864,18 @@ if (!fs.existsSync(tempUploadDir)) {
 }
 const backupUpload = multer({
   dest: tempUploadDir,
-  limits: { fileSize: 150 * 1024 * 1024 },
+  limits: { fileSize: 500 * 1024 * 1024 }, // 500 MB limit for full backups with media
   fileFilter: (_req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase();
-    if (['.sqlite', '.db', '.sqlite3'].includes(ext) || ext === '') {
+    if (['.zip', '.sqlite', '.db', '.sqlite3'].includes(ext) || ext === '') {
       cb(null, true);
     } else {
-      cb(new Error('Yalnız .sqlite və ya .db backup faylları qəbul edilir.'));
+      cb(new Error('Yalnız .zip və ya .sqlite/.db backup faylları qəbul edilir.'));
     }
   }
 });
 
+// Restore from uploaded ZIP or SQLite
 app.post(
   '/api/backup/restore',
   requireAuth,
@@ -803,16 +893,44 @@ app.post(
       files?.file?.[0];
 
     if (!uploadedFile) {
-      return res.status(400).json({ success: false, error: '.sqlite backup faylı seçilməyib' });
+      return res.status(400).json({ success: false, error: 'Backup faylı (.zip və ya .sqlite) seçilməyib' });
     }
 
     try {
-      const restored = SqliteBackupManager.restoreFromSqlite(uploadedFile.path, {
-        azexbuyDb,
-        mainDb,
-        azRedis,
-        azDel
-      });
+      const originalName = uploadedFile.originalname || '';
+      const ext = path.extname(originalName).toLowerCase();
+
+      // Check if file is ZIP
+      let isZip = ext === '.zip';
+      if (!isZip) {
+        // Inspect magic bytes (PK\x03\x04)
+        try {
+          const fd = fs.openSync(uploadedFile.path, 'r');
+          const buf = Buffer.alloc(4);
+          fs.readSync(fd, buf, 0, 4, 0);
+          fs.closeSync(fd);
+          if (buf[0] === 0x50 && buf[1] === 0x4b && (buf[2] === 0x03 || buf[2] === 0x05)) {
+            isZip = true;
+          }
+        } catch {}
+      }
+
+      let restored: any;
+      if (isZip) {
+        restored = SqliteBackupManager.restoreFromZip(uploadedFile.path, {
+          azexbuyDb,
+          mainDb,
+          azRedis,
+          azDel
+        });
+      } else {
+        restored = SqliteBackupManager.restoreFromSqlite(uploadedFile.path, {
+          azexbuyDb,
+          mainDb,
+          azRedis,
+          azDel
+        });
+      }
 
       try {
         if (fs.existsSync(uploadedFile.path)) fs.unlinkSync(uploadedFile.path);
@@ -820,7 +938,9 @@ app.post(
 
       res.json({
         success: true,
-        message: 'Məlumat bazası SQLite backup-dan tam və uğurla bərpa edildi!',
+        message: isZip
+          ? `Məlumat bazası və media şəkilləri ZIP nüsxəsindən tam bərpa edildi!`
+          : `Məlumat bazası SQLite nüsxəsindən tam bərpa edildi!`,
         data: restored
       });
     } catch (err: any) {
@@ -831,6 +951,51 @@ app.post(
     }
   }
 );
+
+// Restore from a previously saved backup file on server
+app.post('/api/backup/restore-saved', requireAuth, async (req: Request, res: Response) => {
+  const { filename } = req.body;
+  if (!filename) return res.status(400).json({ success: false, error: 'Fayl adı tələb olunur' });
+
+  const cleanFilename = path.basename(filename);
+  const backupsDir = path.join(dataDir, 'backups');
+  let targetPath = path.join(backupsDir, cleanFilename);
+  if (!fs.existsSync(targetPath)) {
+    targetPath = path.join(dataDir, cleanFilename);
+  }
+
+  if (!fs.existsSync(targetPath)) {
+    return res.status(404).json({ success: false, error: 'Göstərilən ehtiyat nüsxəsi tapılmadı' });
+  }
+
+  try {
+    const ext = path.extname(cleanFilename).toLowerCase();
+    let restored: any;
+    if (ext === '.zip') {
+      restored = SqliteBackupManager.restoreFromZip(targetPath, {
+        azexbuyDb,
+        mainDb,
+        azRedis,
+        azDel
+      });
+    } else {
+      restored = SqliteBackupManager.restoreFromSqlite(targetPath, {
+        azexbuyDb,
+        mainDb,
+        azRedis,
+        azDel
+      });
+    }
+
+    res.json({
+      success: true,
+      message: `"${cleanFilename}" nüsxəsindən sistem tam və uğurla bərpa edildi!`,
+      data: restored
+    });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: 'Bərpa xətası: ' + err.message });
+  }
+});
 
 // 10. Software Version & Safe GitHub Update Engine
 const GITHUB_REPO = 'aliyabuz25/OctoUniversalController';

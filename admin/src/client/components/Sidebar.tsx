@@ -24,6 +24,7 @@ import {
   Sparkles,
   Layers,
   ClipboardList,
+  Archive,
 } from 'lucide-react';
 import { UiLanguage } from '../types';
 import { DICTIONARIES } from '../i18n';
@@ -140,11 +141,12 @@ const NAV_SECTIONS: NavSection[] = [
   {
     title: 'Sistem & Tənzimləmələr',
     items: [
-      { id: 'user-management', label: 'İstifadəçilər',  icon: Users },
-      { id: 'smtp-settings',   label: 'SMTP E-poçt',    icon: Mail },
-      { id: 'ai-settings',     label: 'OpenRouter AI',  icon: Cpu },
-      { id: 'logs',            label: 'Sistem Logları', icon: Activity },
-      { id: 'settings',        label: 'Parametrlər',    icon: Settings },
+      { id: 'user-management', label: 'İstifadəçilər',      icon: Users },
+      { id: 'smtp-settings',   label: 'SMTP E-poçt',        icon: Mail },
+      { id: 'ai-settings',     label: 'OpenRouter AI',      icon: Cpu },
+      { id: 'backup-restore',  label: 'Backup & Bərpa',     icon: Archive },
+      { id: 'logs',            label: 'Sistem Logları',     icon: Activity },
+      { id: 'settings',        label: 'Parametrlər',        icon: Settings },
     ],
   },
 ];
