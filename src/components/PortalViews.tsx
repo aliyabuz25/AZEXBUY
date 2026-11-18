@@ -2360,7 +2360,7 @@ export const SubpagePortalView: React.FC<SubpagePortalProps> = ({
                 {strings[locale]?.services?.heading || strings.AZ?.services?.heading || 'Services'}
               </h1>
               <p className="text-sm sm:text-base text-slate-100/90 leading-relaxed mb-6 max-w-2xl">
-                {strings[locale]?.services?.outsourcedDesc || strings[locale]?.services?.subheading || strings.AZ?.services?.outsourcedDesc || 'Beynəlxalq ticarət əməliyyatları, aqrar və sənaye ixracatı, logistika və gömrük dəstəyi.'}
+                {strings[locale]?.services?.subheading || strings.AZ?.services?.subheading || 'Beynəlxalq ticarət əməliyyatları, aqrar və sənaye ixracatı, logistika və gömrük dəstəyi.'}
               </p>
               <div className="flex flex-wrap gap-3">
                 <button

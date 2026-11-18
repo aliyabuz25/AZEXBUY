@@ -926,7 +926,7 @@ const ServicePillarEditor = React.memo(({ content, onChange, onSaveContent, savi
                     )}
                   </div>
                   <div className="text-[10px] text-slate-400 font-mono mt-0.5">
-                    ID: <span className="font-semibold text-slate-600">{p.id}</span> {p.turnaround ? `· SLA: ${p.turnaround}` : ''}
+                    ID: <span className="font-semibold text-slate-600">{p.id}</span>
                   </div>
                 </div>
               </div>
@@ -940,8 +940,8 @@ const ServicePillarEditor = React.memo(({ content, onChange, onSaveContent, savi
               </button>
             </div>
 
-            {/* Settings (Icon, Color, SLA) */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-2.5 bg-slate-50/70 rounded-md border border-slate-100">
+            {/* Settings (Icon, Color) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-2.5 bg-slate-50/70 rounded-md border border-slate-100">
               <IconPickerDropdown
                 label="Kartın İkonu"
                 value={p.iconClass || 'fa-solid fa-circle-check'}
@@ -961,15 +961,6 @@ const ServicePillarEditor = React.memo(({ content, onChange, onSaveContent, savi
                   <option value="bg-amber-500">Amber</option>
                   <option value="bg-rose-600">Rose</option>
                 </select>
-              </div>
-              <div>
-                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1 font-mono">Turnaround / SLA</label>
-                <input
-                  value={p.turnaround || ''}
-                  onChange={(e) => setPillarTurnaround(p.id, e.target.value)}
-                  placeholder="məs: 5 Business Days"
-                  className="w-full h-8 text-xs bg-white border border-slate-200 rounded px-2.5 focus:outline-none focus:border-[#0f3156]"
-                />
               </div>
             </div>
 
@@ -2778,11 +2769,6 @@ export const AzexbuyCMSView: React.FC<AzexbuyCMSViewProps> = () => {
               <MultiLocF label="Bölmə / Hero Başlığı" strKey="services.heading" locData={locData} onChange={handleMultiLocChange} />
               <MultiLocF label="Alt Başlıq" strKey="services.subheading" multi locData={locData} onChange={handleMultiLocChange} />
               <MultiLocF label='"Ətraflı" Buton Mətni' strKey="services.learnMore" locData={locData} onChange={handleMultiLocChange} />
-              <div className="bg-slate-100 px-3 py-2 text-[10px] font-bold text-slate-500 uppercase rounded mt-2">Outsourced Export Department Bloku</div>
-              <MultiLocF label="Blok Başlığı" strKey="services.outsourcedTitle" multi locData={locData} onChange={handleMultiLocChange} />
-              <MultiLocF label="Etiket/Badge" strKey="services.outsourcedBadge" locData={locData} onChange={handleMultiLocChange} />
-              <MultiLocF label="Açıqlama" strKey="services.outsourcedDesc" multi locData={locData} onChange={handleMultiLocChange} />
-              <MultiLocF label="CTA Mətni" strKey="services.outsourcedCta" locData={locData} onChange={handleMultiLocChange} />
               <div className="bg-slate-100 px-3 py-2 text-[10px] font-bold text-slate-500 uppercase rounded mt-2">Əsas Servis Kartları (Pillars)</div>
               <ServicePillarEditor
                 content={content}
