@@ -3354,7 +3354,7 @@ app.get('/api/ai-models', async (_req: Request, res: Response) => {
 
     const response = await fetch('https://openrouter.ai/api/v1/models', {
       headers: {
-        'HTTP-Referer': 'https://beta.azexbuy.com',
+        'HTTP-Referer': 'https://azexbuy.com',
         'X-Title': 'AZEXBUY Admin Model Explorer',
       },
     });
@@ -3624,7 +3624,7 @@ və istifadəçiyə bildir ki, məsələni rəhbərliyə yönləndirirsən, əla
           headers: {
             'Authorization': `Bearer ${keyToUse}`,
             'Content-Type': 'application/json',
-            'HTTP-Referer': 'https://beta.azexbuy.com',
+            'HTTP-Referer': 'https://azexbuy.com',
             'X-Title': 'AZEXBUY Trade Desk',
           },
           body: JSON.stringify({

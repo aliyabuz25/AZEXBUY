@@ -13,8 +13,8 @@ services:
       PORT: "4320"
       NODE_ENV: "production"
       JWT_SECRET: "change_this_to_a_long_random_secret_min_32_chars"
-      SITE_URL: "https://beta.azexbuy.com"
-      ALLOWED_ORIGINS: "https://beta.azexbuy.com,http://beta.azexbuy.com"
+      SITE_URL: "https://azexbuy.com"
+      ALLOWED_ORIGINS: "https://azexbuy.com,http://azexbuy.com"
     volumes:
       - /datastore/azexbuy/uploads:/app/uploads
       - /datastore/azexbuy/data:/app/data
@@ -24,7 +24,7 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.docker.network=edge'
-      - 'traefik.http.routers.azexbuy.rule=Host(`beta.azexbuy.com`)'
+      - 'traefik.http.routers.azexbuy.rule=Host(`azexbuy.com`)'
       - 'traefik.http.routers.azexbuy.entrypoints=web,websecure'
       - 'traefik.http.routers.azexbuy.tls=true'
       - 'traefik.http.services.azexbuy.loadbalancer.server.port=4320'

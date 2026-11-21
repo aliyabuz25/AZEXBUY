@@ -2,7 +2,7 @@ import { test } from '@playwright/test';
 import path from 'path';
 import fs from 'fs';
 
-const BASE_URL = 'https://beta.azexbuy.com/octo-admin';
+const BASE_URL = 'https://azexbuy.com/octo-admin';
 const SCREENSHOT_DIR = path.join(process.cwd(), 'tests', 'screenshots');
 
 async function login(page: any) {

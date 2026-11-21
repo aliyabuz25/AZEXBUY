@@ -2,7 +2,7 @@ import { test, expect, Page } from '@playwright/test';
 import path from 'path';
 import fs from 'fs';
 
-const BASE_URL = 'https://beta.azexbuy.com/octo-admin';
+const BASE_URL = 'https://azexbuy.com/octo-admin';
 const USERNAME = 'admin';
 const PASSWORD = 'admin';
 const SCREENSHOT_DIR = path.join(process.cwd(), 'tests', 'screenshots');
@@ -356,16 +356,16 @@ test.describe('AZEXBUY Admin Panel — Comprehensive Tests', () => {
       try {
         const headers: Record<string, string> = {};
         if (ep.auth && token) headers['Authorization'] = `Bearer ${token}`;
-        const res = await page.request.get(`https://beta.azexbuy.com${ep.path}`, { headers });
+        const res = await page.request.get(`https://azexbuy.com${ep.path}`, { headers });
         const status = res.status();
         const icon = status < 400 ? '✅' : status === 401 ? '🔒' : '❌';
         console.log(`  ${icon} ${ep.path} → HTTP ${status}`);
         if (status >= 500) {
           bugs.push(`BUG: API ${ep.path} → HTTP ${status} (server error)`);
-          networkErrors.push({ url: `https://beta.azexbuy.com${ep.path}`, status, method: 'GET' });
+          networkErrors.push({ url: `https://azexbuy.com${ep.path}`, status, method: 'GET' });
         } else if (status === 404) {
           bugs.push(`BUG: API ${ep.path} → HTTP 404 (not found)`);
-          networkErrors.push({ url: `https://beta.azexbuy.com${ep.path}`, status, method: 'GET' });
+          networkErrors.push({ url: `https://azexbuy.com${ep.path}`, status, method: 'GET' });
         }
       } catch (e: any) {
         console.log(`  ❌ ${ep.path} → ERROR: ${e.message}`);
@@ -498,7 +498,7 @@ test.describe('AZEXBUY Admin Panel — Comprehensive Tests', () => {
       await ss(page, '17-backup-link-visible');
 
       const token = await page.evaluate(() => localStorage.getItem('octotech_admin_jwt') || '');
-      const res = await page.request.get('https://beta.azexbuy.com/api/backup/download', {
+      const res = await page.request.get('https://azexbuy.com/api/backup/download', {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       }).catch(() => null);
       if (res) {

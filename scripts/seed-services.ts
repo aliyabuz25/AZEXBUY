@@ -1,7 +1,7 @@
 import { SEED_SERVICES } from '../admin/src/seed.js';
 import { SERVICES_PILLARS } from '../src/data/translations.js';
 
-const BASE_URL = 'https://beta.azexbuy.com';
+const BASE_URL = 'https://azexbuy.com';
 
 async function main() {
   console.log('🚀 Seeding Services to AZEXBUY Live...');

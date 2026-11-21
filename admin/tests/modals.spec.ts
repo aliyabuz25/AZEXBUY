@@ -212,11 +212,11 @@ test('Producer Modal — open, fill, submit', async ({ page }) => {
 
 test('API Security — GET endpoints require auth', async ({ page }) => {
   // Test unauthenticated access
-  const rfqResp = await page.request.get('https://beta.azexbuy.com/api/azexbuy/rfqs');
+  const rfqResp = await page.request.get('https://azexbuy.com/api/azexbuy/rfqs');
   console.log('GET /rfqs without auth:', rfqResp.status());
   expect(rfqResp.status()).toBe(401);
 
-  const prodResp = await page.request.get('https://beta.azexbuy.com/api/azexbuy/producers');
+  const prodResp = await page.request.get('https://azexbuy.com/api/azexbuy/producers');
   console.log('GET /producers without auth:', prodResp.status());
   expect(prodResp.status()).toBe(401);
 

@@ -13,7 +13,7 @@ export default defineConfig({
     video: 'off',
     screenshot: 'only-on-failure',
     trace: 'off',
-    baseURL: 'https://beta.azexbuy.com',
+    baseURL: 'https://azexbuy.com',
   },
   projects: [
     {

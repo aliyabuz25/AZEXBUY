@@ -1,7 +1,7 @@
 import fs from 'fs';
 import readline from 'readline';
 
-const LIVE_URL = 'https://beta.azexbuy.com';
+const LIVE_URL = 'https://azexbuy.com';
 const CSV_PATH = '/Users/ali_new/Desktop/Azerbaycan_ihracat_mehsullari_tekrarsiz.csv';
 
 // Category mapping helper

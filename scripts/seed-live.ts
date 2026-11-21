@@ -1,6 +1,6 @@
 import { SEED_PRODUCTS, SEED_ARTICLES, SEED_CMS_PRODUCTS, SEED_SERVICES } from '../admin/src/seed.js';
 
-const BASE_URL = 'https://beta.azexbuy.com';
+const BASE_URL = 'https://azexbuy.com';
 
 async function main() {
   console.log('🚀 AZEXBUY Real Site Seeding Starting...');
